@@ -898,45 +898,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Conditional.
-   */
-
-  conditional: function() {
-    var captures;
-    if ((captures = /^(if|unless|else if|else)\b([^\n]*)/.exec(this.input))) {
-      this.consume(captures[0].length);
-      var type = captures[1].replace(/ /g, '-');
-      var js = captures[2] && captures[2].trim();
-      // type can be "if", "else-if" and "else"
-      var tok = this.tok(type, js);
-      this.incrementColumn(captures[0].length - js.length);
-
-      switch (type) {
-        case 'if':
-        case 'else-if':
-          this.assertExpression(js);
-          break;
-        case 'unless':
-          this.assertExpression(js);
-          tok.val = '!(' + js + ')';
-          tok.type = 'if';
-          break;
-        case 'else':
-          if (js) {
-            this.error(
-              'ELSE_CONDITION',
-              '`else` cannot have a condition, perhaps you meant `else if`'
-            );
-          }
-          break;
-      }
-      this.incrementColumn(js.length);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-  },
-
-  /**
    * While.
    */
 
@@ -1589,7 +1550,6 @@ Lexer.prototype = {
       this.callLexerFunction('include') ||
       this.callLexerFunction('mixin') ||
       this.callLexerFunction('call') ||
-      this.callLexerFunction('conditional') ||
       this.callLexerFunction('eachOf') ||
       this.callLexerFunction('each') ||
       this.callLexerFunction('while') ||

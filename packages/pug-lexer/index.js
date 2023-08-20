@@ -827,24 +827,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Case.
-   */
-
-  case: function() {
-    var tok = this.scanEndOfLine(/^case +([^\n]+)/, 'case');
-    if (tok) {
-      this.incrementColumn(-tok.val.length);
-      this.assertExpression(tok.val);
-      this.incrementColumn(tok.val.length);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-    if (this.scan(/^case\b/)) {
-      this.error('NO_CASE_EXPRESSION', 'missing expression for case');
-    }
-  },
-
-  /**
    * When.
    */
 
@@ -1638,7 +1620,6 @@ Lexer.prototype = {
       this.callLexerFunction('endInterpolation') ||
       this.callLexerFunction('yield') ||
       this.callLexerFunction('doctype') ||
-      this.callLexerFunction('case') ||
       this.callLexerFunction('when') ||
       this.callLexerFunction('default') ||
       this.callLexerFunction('extends') ||

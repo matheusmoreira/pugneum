@@ -1051,25 +1051,6 @@ Lexer.prototype = {
   },
 
   /**
-   * &attributes block
-   */
-  attributesBlock: function() {
-    if (/^&attributes\b/.test(this.input)) {
-      var consumed = 11;
-      this.consume(consumed);
-      var tok = this.tok('&attributes');
-      this.incrementColumn(consumed);
-      var args = this.bracketExpression();
-      consumed = args.end + 1;
-      this.consume(consumed);
-      tok.val = args.src;
-      this.incrementColumn(consumed);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-  },
-
-  /**
    * Indent | Outdent | Newline.
    */
 
@@ -1264,7 +1245,6 @@ Lexer.prototype = {
       this.callLexerFunction('dot') ||
       this.callLexerFunction('className') ||
       this.callLexerFunction('attrs') ||
-      this.callLexerFunction('attributesBlock') ||
       this.callLexerFunction('indent') ||
       this.callLexerFunction('text') ||
       this.callLexerFunction('textHtml') ||

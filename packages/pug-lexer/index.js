@@ -871,90 +871,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Code.
-   */
-
-  code: function() {
-    var captures;
-    if ((captures = /^(!?=|-)[ \t]*([^\n]+)/.exec(this.input))) {
-      var flags = captures[1];
-      var code = captures[2];
-      var shortened = 0;
-      if (this.interpolated) {
-        var parsed;
-        try {
-          parsed = characterParser.parseUntil(code, ']');
-        } catch (err) {
-          if (err.index !== undefined) {
-            this.incrementColumn(captures[0].length - code.length + err.index);
-          }
-          if (err.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-            this.error(
-              'NO_END_BRACKET',
-              'End of line was reached with no closing bracket for interpolation.'
-            );
-          } else if (err.code === 'CHARACTER_PARSER:MISMATCHED_BRACKET') {
-            this.error('BRACKET_MISMATCH', err.message);
-          } else {
-            throw err;
-          }
-        }
-        shortened = code.length - parsed.end;
-        code = parsed.src;
-      }
-      var consumed = captures[0].length - shortened;
-      this.consume(consumed);
-      var tok = this.tok('code', code);
-      tok.mustEscape = flags.charAt(0) === '=';
-      tok.buffer = flags.charAt(0) === '=' || flags.charAt(1) === '=';
-
-      // p #[!=    abc] hey
-      //     ^              original colno
-      //     -------------- captures[0]
-      //           -------- captures[2]
-      //     ------         captures[0] - captures[2]
-      //           ^        after colno
-
-      // =   abc
-      // ^                  original colno
-      // -------            captures[0]
-      //     ---            captures[2]
-      // ----               captures[0] - captures[2]
-      //     ^              after colno
-      this.incrementColumn(captures[0].length - captures[2].length);
-      this.tokens.push(tok);
-
-      // p #[!=    abc] hey
-      //           ^        original colno
-      //              ----- shortened
-      //           ---      code
-      //              ^     after colno
-
-      // =   abc
-      //     ^              original colno
-      //                    shortened
-      //     ---            code
-      //        ^           after colno
-      this.incrementColumn(code.length);
-      this.tokEnd(tok);
-      return true;
-    }
-  },
-
-  /**
-   * Block code.
-   */
-  blockCode: function() {
-    var tok;
-    if ((tok = this.scanEndOfLine(/^-/, 'blockcode'))) {
-      this.tokens.push(this.tokEnd(tok));
-      this.interpolationAllowed = false;
-      this.callLexerFunction('pipelessText');
-      return true;
-    }
-  },
-
-  /**
    * Attribute Name.
    */
   attribute: function(str) {
@@ -1410,8 +1326,6 @@ Lexer.prototype = {
       this.callLexerFunction('call') ||
       this.callLexerFunction('tag') ||
       this.callLexerFunction('filter') ||
-      this.callLexerFunction('blockCode') ||
-      this.callLexerFunction('code') ||
       this.callLexerFunction('id') ||
       this.callLexerFunction('dot') ||
       this.callLexerFunction('className') ||

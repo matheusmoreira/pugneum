@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('assert');
-var constantinople = require('constantinople');
 var runtime = require('pug-runtime');
 var stringify = require('js-stringify');
 
@@ -52,25 +51,6 @@ function compileAttrs(attrs, options) {
   var classEscaping = [];
 
   function addAttribute(key, val, mustEscape, buf) {
-    if (isConstant(val)) {
-      if (options.format === 'html') {
-        var str = stringify(
-          runtime.attr(key, toConstant(val), mustEscape, options.terse)
-        );
-        var last = buf[buf.length - 1];
-        if (last && last[last.length - 1] === str[0]) {
-          buf[buf.length - 1] = last.substr(0, last.length - 1) + str.substr(1);
-        } else {
-          buf.push(str);
-        }
-      } else {
-        val = toConstant(val);
-        if (mustEscape) {
-          val = runtime.escape(val);
-        }
-        buf.push(stringify(key) + ': ' + stringify(val));
-      }
-    } else {
       if (options.format === 'html') {
         buf.push(
           options.runtime('attr') +
@@ -90,7 +70,6 @@ function compileAttrs(attrs, options) {
         }
         buf.push(stringify(key) + ': ' + val);
       }
-    }
   }
 
   attrs.forEach(function(attr) {

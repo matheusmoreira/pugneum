@@ -850,21 +850,11 @@ Lexer.prototype = {
 
   call: function() {
     var tok, captures, increment;
-    if ((captures = /^\+(\s*)(([-\w]+)|(#\{))/.exec(this.input))) {
-      // try to consume simple or interpolated call
-      if (captures[3]) {
-        // simple call
-        increment = captures[0].length;
-        this.consume(increment);
-        tok = this.tok('call', captures[3]);
-      } else {
-        // interpolated call
-        var match = this.bracketExpression(2 + captures[1].length);
-        increment = match.end + 1;
-        this.consume(increment);
-        this.assertExpression(match.src);
-        tok = this.tok('call', '#{' + match.src + '}');
-      }
+    if ((captures = /^\+(\s*)([-\w]+)/.exec(this.input))) {
+      // consume simple call
+      increment = captures[0].length;
+      this.consume(increment);
+      tok = this.tok('call', captures[2]);
 
       this.incrementColumn(increment);
 
@@ -877,7 +867,6 @@ Lexer.prototype = {
           this.incrementColumn(1);
           this.consume(range.end + 1);
           tok.args = range.src;
-          this.assertExpression('[' + tok.args + ']');
           for (var i = 0; i <= tok.args.length; i++) {
             if (tok.args[i] === '\n') {
               this.incrementLine(1);

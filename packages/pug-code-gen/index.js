@@ -170,18 +170,21 @@ Compiler.prototype = {
   },
 
   /**
-   * Sets the default doctype `name`. Sets terse mode to `true` when
-   * html 5 is used, causing self-closing tags to end with ">" vs "/>",
-   * and boolean attributes are not mirrored.
+   * Sets the doctype to HTML 5 regardless of input.
+   *
+   *  - Self-closing void elements end with ">" rather than "/>"
+   *  - Boolean attributes are not mirrored
+   *
+   * https://html.spec.whatwg.org/multipage/syntax.html#the-doctype
    *
    * @param {string} name
    * @api public
    */
 
   setDoctype: function(name) {
-    this.doctype = doctypes[name.toLowerCase()] || '<!DOCTYPE ' + name + '>';
-    this.terse = this.doctype.toLowerCase() == '<!doctype html>';
-    this.xml = 0 == this.doctype.indexOf('<?xml');
+    this.doctype = '<!DOCTYPE html>';
+    this.terse = true;
+    this.xml = false;
   },
 
   /**

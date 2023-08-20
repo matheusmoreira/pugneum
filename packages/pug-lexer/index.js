@@ -898,25 +898,6 @@ Lexer.prototype = {
   },
 
   /**
-   * While.
-   */
-
-  while: function() {
-    var captures, tok;
-    if ((captures = /^while +([^\n]+)/.exec(this.input))) {
-      this.consume(captures[0].length);
-      this.assertExpression(captures[1]);
-      tok = this.tok('while', captures[1]);
-      this.incrementColumn(captures[0].length);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-    if (this.scan(/^while\b/)) {
-      this.error('NO_WHILE_EXPRESSION', 'missing expression for while');
-    }
-  },
-
-  /**
    * Each.
    */
 
@@ -1552,7 +1533,6 @@ Lexer.prototype = {
       this.callLexerFunction('call') ||
       this.callLexerFunction('eachOf') ||
       this.callLexerFunction('each') ||
-      this.callLexerFunction('while') ||
       this.callLexerFunction('tag') ||
       this.callLexerFunction('filter') ||
       this.callLexerFunction('blockCode') ||

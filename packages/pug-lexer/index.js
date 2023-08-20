@@ -827,35 +827,6 @@ Lexer.prototype = {
   },
 
   /**
-   * When.
-   */
-
-  when: function() {
-    var tok = this.scanEndOfLine(/^when +([^:\n]+)/, 'when');
-    if (tok) {
-      var parser = characterParser.default(tok.val);
-      while (parser.isNesting() || parser.isString()) {
-        var rest = /:([^:\n]+)/.exec(this.input);
-        if (!rest) break;
-
-        tok.val += rest[0];
-        this.consume(rest[0].length);
-        this.incrementColumn(rest[0].length);
-        parser = characterParser.default(tok.val);
-      }
-
-      this.incrementColumn(-tok.val.length);
-      this.assertExpression(tok.val);
-      this.incrementColumn(tok.val.length);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-    if (this.scan(/^when\b/)) {
-      this.error('NO_WHEN_EXPRESSION', 'missing expression for when');
-    }
-  },
-
-  /**
    * Default.
    */
 
@@ -1620,7 +1591,6 @@ Lexer.prototype = {
       this.callLexerFunction('endInterpolation') ||
       this.callLexerFunction('yield') ||
       this.callLexerFunction('doctype') ||
-      this.callLexerFunction('when') ||
       this.callLexerFunction('default') ||
       this.callLexerFunction('extends') ||
       this.callLexerFunction('append') ||

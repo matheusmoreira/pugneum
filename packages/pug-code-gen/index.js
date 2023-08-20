@@ -24,6 +24,16 @@ var INTERNAL_VARIABLES = [
   'pug_html',
 ];
 
+// Map of self-closing void elements literally copied from the standard.
+// https://html.spec.whatwg.org/multipage/syntax.html#void-elements
+const selfClosing =
+  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr'
+  .split(', ')
+  .reduce(function(voidElements, element) {
+    voidElements[element] = true;
+    return voidElements;
+  }, {});
+
 module.exports = generateCode;
 module.exports.CodeGenerator = Compiler;
 function generateCode(ast, options) {

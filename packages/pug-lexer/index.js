@@ -72,31 +72,6 @@ Lexer.prototype = {
     if (!value) this.error('ASSERT_FAILED', message);
   },
 
-  isExpression: function(exp) {
-    return isExpression(exp, {
-      throw: true,
-    });
-  },
-
-  assertExpression: function(exp, noThrow) {
-    //this verifies that a JavaScript expression is valid
-    try {
-      this.callLexerFunction('isExpression', exp);
-      return true;
-    } catch (ex) {
-      if (noThrow) return false;
-
-      // not coming from acorn
-      if (!ex.loc) throw ex;
-
-      this.incrementLine(ex.loc.line - 1);
-      this.incrementColumn(ex.loc.column);
-      var msg =
-        'Syntax Error: ' + ex.message.replace(/ \([0-9]+:[0-9]+\)$/, '');
-      this.error('SYNTAX_ERROR', msg);
-    }
-  },
-
   assertNestingCorrect: function(exp) {
     //this verifies that code is properly nested, but allows
     //invalid JavaScript such as the contents of `attributes`

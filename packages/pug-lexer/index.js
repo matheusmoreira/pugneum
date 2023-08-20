@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('assert');
-var isExpression = require('is-expression');
 var characterParser = require('character-parser');
 var error = require('pug-error');
 

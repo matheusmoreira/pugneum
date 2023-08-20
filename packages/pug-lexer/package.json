@@ -7,7 +7,6 @@
   ],
   "dependencies": {
     "character-parser": "^4.0.0",
-    "is-expression": "^4.0.0",
     "pug-error": "^1.3.3"
   },
   "devDependencies": {

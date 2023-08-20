@@ -6,7 +6,6 @@
     "pug"
   ],
   "dependencies": {
-    "doctypes": "^1.1.0",
     "js-stringify": "^1.0.2",
     "pug-attrs": "^2.0.4",
     "pug-error": "^1.3.3",

@@ -1,6 +1,5 @@
 'use strict';
 
-var doctypes = require('doctypes');
 var makeError = require('pug-error');
 var buildRuntime = require('pug-runtime/build');
 var runtime = require('pug-runtime');

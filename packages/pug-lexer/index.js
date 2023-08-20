@@ -363,28 +363,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Interpolated tag.
-   */
-
-  interpolation: function() {
-    if (/^#\{/.test(this.input)) {
-      var match = this.bracketExpression(1);
-      this.consume(match.end + 1);
-      var tok = this.tok('interpolation', match.src);
-      this.tokens.push(tok);
-      this.incrementColumn(2); // '#{'
-      this.assertExpression(match.src);
-
-      var splitted = match.src.split('\n');
-      var lines = splitted.length - 1;
-      this.incrementLine(lines);
-      this.incrementColumn(splitted[lines].length + 1); // + 1 → '}'
-      this.tokEnd(tok);
-      return true;
-    }
-  },
-
-  /**
    * Tag.
    */
 
@@ -1660,7 +1638,6 @@ Lexer.prototype = {
       this.callLexerFunction('endInterpolation') ||
       this.callLexerFunction('yield') ||
       this.callLexerFunction('doctype') ||
-      this.callLexerFunction('interpolation') ||
       this.callLexerFunction('case') ||
       this.callLexerFunction('when') ||
       this.callLexerFunction('default') ||

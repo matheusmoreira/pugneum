@@ -602,7 +602,6 @@ Lexer.prototype = {
       tok.mustEscape = matchOfStringInterp[2] === '#';
       tok.buffer = true;
       tok.val = range.src;
-      this.assertExpression(range.src);
 
       if (range.end + 1 < rest.length) {
         rest = rest.substr(range.end + 1);
@@ -949,7 +948,6 @@ Lexer.prototype = {
       // ----               captures[0] - captures[2]
       //     ^              after colno
       this.incrementColumn(captures[0].length - captures[2].length);
-      if (tok.buffer) this.assertExpression(code);
       this.tokens.push(tok);
 
       // p #[!=    abc] hey
@@ -1162,10 +1160,7 @@ Lexer.prototype = {
               const isColon = str[x] === ':';
               const isSpreadOperator =
                 str[x] + str[x + 1] + str[x + 2] === '...';
-              if (
-                (isNotPunctuator || isQuote || isColon || isSpreadOperator) &&
-                this.assertExpression(val, true)
-              ) {
+              if (isNotPunctuator || isQuote || isColon || isSpreadOperator) {
                 done = true;
               }
               break;
@@ -1181,7 +1176,7 @@ Lexer.prototype = {
 
         // if there's no whitespace and the character is not ',', the
         // attribute did not end.
-        if (str[i] === ',' && this.assertExpression(val, true)) {
+        if (str[i] === ',') {
           break;
         }
       }
@@ -1196,8 +1191,6 @@ Lexer.prototype = {
         col++;
       }
     }
-
-    this.assertExpression(val);
 
     this.lineno = line;
     this.colno = col;

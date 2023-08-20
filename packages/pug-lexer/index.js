@@ -456,11 +456,6 @@ Lexer.prototype = {
     var indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
     var indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
     var indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
-    var matchOfStringInterp = /(\\)?([#!]){((?:.|\n)*)$/.exec(value);
-    var indexOfStringInterp =
-      this.interpolationAllowed && matchOfStringInterp
-        ? matchOfStringInterp.index
-        : Infinity;
 
     if (indexOfEnd === -1) indexOfEnd = Infinity;
     if (indexOfStart === -1) indexOfStart = Infinity;
@@ -469,8 +464,7 @@ Lexer.prototype = {
     if (
       indexOfEscaped !== Infinity &&
       indexOfEscaped < indexOfEnd &&
-      indexOfEscaped < indexOfStart &&
-      indexOfEscaped < indexOfStringInterp
+      indexOfEscaped < indexOfStart
     ) {
       prefix = prefix + value.substring(0, indexOfEscaped) + '#[';
       return this.addText(
@@ -483,8 +477,7 @@ Lexer.prototype = {
     if (
       indexOfStart !== Infinity &&
       indexOfStart < indexOfEnd &&
-      indexOfStart < indexOfEscaped &&
-      indexOfStart < indexOfStringInterp
+      indexOfStart < indexOfEscaped
     ) {
       tok = this.tok(type, prefix + value.substring(0, indexOfStart));
       this.incrementColumn(prefix.length + indexOfStart + escaped);
@@ -520,72 +513,13 @@ Lexer.prototype = {
     if (
       indexOfEnd !== Infinity &&
       indexOfEnd < indexOfStart &&
-      indexOfEnd < indexOfEscaped &&
-      indexOfEnd < indexOfStringInterp
+      indexOfEnd < indexOfEscaped
     ) {
       if (prefix + value.substring(0, indexOfEnd)) {
         this.addText(type, value.substring(0, indexOfEnd), prefix);
       }
       this.ended = true;
       this.input = value.substr(value.indexOf(']') + 1) + this.input;
-      return;
-    }
-    if (indexOfStringInterp !== Infinity) {
-      if (matchOfStringInterp[1]) {
-        prefix =
-          prefix +
-          value.substring(0, indexOfStringInterp) +
-          matchOfStringInterp[2] +
-          '{';
-        return this.addText(
-          type,
-          value.substring(indexOfStringInterp + 3),
-          prefix,
-          escaped + 1
-        );
-      }
-      var before = value.substr(0, indexOfStringInterp);
-      if (prefix || before) {
-        before = prefix + before;
-        tok = this.tok(type, before);
-        this.incrementColumn(before.length + escaped);
-        this.tokens.push(this.tokEnd(tok));
-      }
-
-      var rest = matchOfStringInterp[3];
-      var range;
-      tok = this.tok('interpolated-code');
-      this.incrementColumn(2);
-      try {
-        range = characterParser.parseUntil(rest, '}');
-      } catch (ex) {
-        if (ex.index !== undefined) {
-          this.incrementColumn(ex.index);
-        }
-        if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-          this.error(
-            'NO_END_BRACKET',
-            'End of line was reached with no closing bracket for interpolation.'
-          );
-        } else if (ex.code === 'CHARACTER_PARSER:MISMATCHED_BRACKET') {
-          this.error('BRACKET_MISMATCH', ex.message);
-        } else {
-          throw ex;
-        }
-      }
-      tok.mustEscape = matchOfStringInterp[2] === '#';
-      tok.buffer = true;
-      tok.val = range.src;
-
-      if (range.end + 1 < rest.length) {
-        rest = rest.substr(range.end + 1);
-        this.incrementColumn(range.end + 1);
-        this.tokens.push(this.tokEnd(tok));
-        this.addText(type, rest);
-      } else {
-        this.incrementColumn(rest.length);
-        this.tokens.push(this.tokEnd(tok));
-      }
       return;
     }
 

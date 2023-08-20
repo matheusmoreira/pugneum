@@ -6,7 +6,6 @@ var buildRuntime = require('pug-runtime/build');
 var runtime = require('pug-runtime');
 var compileAttrs = require('pug-attrs');
 var selfClosing = require('void-elements');
-var constantinople = require('constantinople');
 var stringify = require('js-stringify');
 var addWith = require('with');
 
@@ -30,13 +29,6 @@ module.exports = generateCode;
 module.exports.CodeGenerator = Compiler;
 function generateCode(ast, options) {
   return new Compiler(ast, options).compile();
-}
-
-function isConstant(src) {
-  return constantinople(src, {pug: runtime, pug_interp: undefined});
-}
-function toConstant(src) {
-  return constantinople.toConstant(src, {pug: runtime, pug_interp: undefined});
 }
 
 /**
@@ -239,9 +231,6 @@ Compiler.prototype = {
    */
 
   bufferExpression: function(src) {
-    if (isConstant(src)) {
-      return this.buffer(toConstant(src) + '');
-    }
     if (
       this.lastBufferedIdx == this.buf.length &&
       this.bufferedConcatenationCount < 100

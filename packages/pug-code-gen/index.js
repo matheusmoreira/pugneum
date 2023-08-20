@@ -4,7 +4,6 @@ var makeError = require('pug-error');
 var buildRuntime = require('pug-runtime/build');
 var runtime = require('pug-runtime');
 var compileAttrs = require('pug-attrs');
-var selfClosing = require('void-elements');
 var stringify = require('js-stringify');
 var addWith = require('with');
 

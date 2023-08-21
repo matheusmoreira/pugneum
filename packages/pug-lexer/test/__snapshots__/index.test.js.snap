@@ -18368,1074 +18368,16 @@ Array [
 exports[`mixin.blocks.pug 1`] = `
 Array [
   Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "args": "method, action",
-    "loc": Object {
-      "end": Object {
-        "column": 27,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "mixin",
-    "val": "form",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 4,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 3,
-        "line": 4,
-      },
-    },
-    "type": "tag",
-    "val": "form",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 8,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 7,
-        "line": 4,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 8,
-        "line": 4,
-      },
-    },
-    "mustEscape": true,
-    "name": "method",
-    "type": "attribute",
-    "val": "method",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 36,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 23,
-        "line": 4,
-      },
-    },
-    "mustEscape": true,
-    "name": "action",
-    "type": "attribute",
-    "val": "action",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 37,
-        "line": 4,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 36,
-        "line": 4,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 5,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 5,
-      },
-    },
-    "type": "indent",
-    "val": 4,
-  },
-  Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 44,
-        "line": 5,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 5,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var csrf_token_from_somewhere = 'hey'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 6,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 10,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 6,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 10,
-        "line": 6,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 11,
-        "line": 6,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'hidden'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 38,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 26,
-        "line": 6,
-      },
-    },
-    "mustEscape": true,
-    "name": "name",
-    "type": "attribute",
-    "val": "'_csrf'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 71,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 40,
-        "line": 6,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "csrf_token_from_somewhere",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 72,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 71,
-        "line": 6,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 7,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 10,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 7,
-      },
-    },
-    "type": "mixin-block",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 9,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 9,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 9,
-      },
-    },
-    "type": "tag",
-    "val": "html",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 10,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 3,
-        "line": 10,
-      },
-    },
-    "type": "tag",
-    "val": "body",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 11,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 11,
-      },
-    },
-    "type": "indent",
-    "val": 4,
-  },
-  Object {
-    "args": "'GET', '/search'",
-    "loc": Object {
-      "end": Object {
-        "column": 28,
-        "line": 11,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 11,
-      },
-    },
-    "type": "call",
-    "val": "form",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 12,
-      },
-    },
-    "type": "indent",
-    "val": 6,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 7,
-        "line": 12,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 12,
-        "line": 12,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 13,
-        "line": 12,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'text'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 38,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 26,
-        "line": 12,
-      },
-    },
-    "mustEscape": true,
-    "name": "name",
-    "type": "attribute",
-    "val": "'query'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 60,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 40,
-        "line": 12,
-      },
-    },
-    "mustEscape": true,
-    "name": "placeholder",
-    "type": "attribute",
-    "val": "'Search'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 61,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 60,
-        "line": 12,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 7,
-        "line": 13,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 12,
-        "line": 13,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 26,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 13,
-        "line": 13,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'submit'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 42,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 28,
-        "line": 13,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "'Search'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 43,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 42,
-        "line": 13,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 15,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 15,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 15,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 15,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "tag",
-    "val": "html",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 16,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 16,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 16,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 3,
-        "line": 16,
-      },
-    },
-    "type": "tag",
-    "val": "body",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 17,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 17,
-      },
-    },
-    "type": "indent",
-    "val": 4,
-  },
-  Object {
-    "args": "'POST', '/search'",
-    "loc": Object {
-      "end": Object {
-        "column": 29,
-        "line": 17,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 17,
-      },
-    },
-    "type": "call",
-    "val": "form",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 18,
-      },
-    },
-    "type": "indent",
-    "val": 6,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 7,
-        "line": 18,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 12,
-        "line": 18,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 13,
-        "line": 18,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'text'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 38,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 26,
-        "line": 18,
-      },
-    },
-    "mustEscape": true,
-    "name": "name",
-    "type": "attribute",
-    "val": "'query'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 60,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 40,
-        "line": 18,
-      },
-    },
-    "mustEscape": true,
-    "name": "placeholder",
-    "type": "attribute",
-    "val": "'Search'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 61,
-        "line": 18,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 60,
-        "line": 18,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 19,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 7,
-        "line": 19,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 12,
-        "line": 19,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 26,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 13,
-        "line": 19,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'submit'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 42,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 28,
-        "line": 19,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "'Search'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 43,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 42,
-        "line": 19,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 21,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 21,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 21,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 21,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 21,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 21,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 21,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 21,
-      },
-    },
-    "type": "tag",
-    "val": "html",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 22,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 22,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 22,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 3,
-        "line": 22,
-      },
-    },
-    "type": "tag",
-    "val": "body",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 23,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 23,
-      },
-    },
-    "type": "indent",
-    "val": 4,
-  },
-  Object {
-    "args": "'POST', '/search'",
-    "loc": Object {
-      "end": Object {
-        "column": 29,
-        "line": 23,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 5,
-        "line": 23,
-      },
-    },
-    "type": "call",
-    "val": "form",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 25,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 25,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 25,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
-      "start": Object {
-        "column": 1,
-        "line": 25,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
     "args": null,
     "loc": Object {
       "end": Object {
         "column": 12,
-        "line": 25,
+        "line": 1,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 25,
+        "line": 1,
       },
     },
     "type": "mixin",
@@ -19445,12 +18387,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 26,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 26,
+        "line": 2,
       },
     },
     "type": "indent",
@@ -19460,12 +18402,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 26,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 3,
-        "line": 26,
+        "line": 2,
       },
     },
     "type": "id",
@@ -19475,12 +18417,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 27,
+        "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 27,
+        "line": 3,
       },
     },
     "type": "indent",
@@ -19490,12 +18432,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 10,
-        "line": 27,
+        "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 27,
+        "line": 3,
       },
     },
     "type": "mixin-block",
@@ -19504,12 +18446,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 29,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 29,
+        "line": 5,
       },
     },
     "type": "outdent",
@@ -19518,12 +18460,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 29,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 29,
+        "line": 5,
       },
     },
     "type": "outdent",
@@ -19533,12 +18475,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 12,
-        "line": 29,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 29,
+        "line": 5,
       },
     },
     "type": "mixin",
@@ -19548,12 +18490,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 30,
+        "line": 6,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 30,
+        "line": 6,
       },
     },
     "type": "indent",
@@ -19563,12 +18505,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 30,
+        "line": 6,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 3,
-        "line": 30,
+        "line": 6,
       },
     },
     "type": "id",
@@ -19578,12 +18520,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 31,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 31,
+        "line": 7,
       },
     },
     "type": "indent",
@@ -19594,12 +18536,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 31,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 31,
+        "line": 7,
       },
     },
     "type": "call",
@@ -19609,12 +18551,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 32,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 32,
+        "line": 8,
       },
     },
     "type": "indent",
@@ -19624,12 +18566,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 12,
-        "line": 32,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 7,
-        "line": 32,
+        "line": 8,
       },
     },
     "type": "mixin-block",
@@ -19638,12 +18580,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
     },
     "type": "outdent",
@@ -19652,12 +18594,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
     },
     "type": "outdent",
@@ -19666,12 +18608,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
     },
     "type": "outdent",
@@ -19681,12 +18623,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 34,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 34,
+        "line": 10,
       },
     },
     "type": "call",
@@ -19696,12 +18638,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 35,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 35,
+        "line": 11,
       },
     },
     "type": "indent",
@@ -19711,12 +18653,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 35,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 3,
-        "line": 35,
+        "line": 11,
       },
     },
     "type": "tag",
@@ -19726,12 +18668,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 35,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 35,
+        "line": 11,
       },
     },
     "type": "text",
@@ -19741,12 +18683,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 36,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 36,
+        "line": 12,
       },
     },
     "type": "newline",
@@ -19755,12 +18697,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 36,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 3,
-        "line": 36,
+        "line": 12,
       },
     },
     "type": "tag",
@@ -19770,12 +18712,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 36,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 36,
+        "line": 12,
       },
     },
     "type": "text",
@@ -19785,12 +18727,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 37,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 37,
+        "line": 13,
       },
     },
     "type": "newline",
@@ -19799,12 +18741,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 37,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 3,
-        "line": 37,
+        "line": 13,
       },
     },
     "type": "tag",
@@ -19814,12 +18756,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 10,
-        "line": 37,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 37,
+        "line": 13,
       },
     },
     "type": "text",
@@ -19829,12 +18771,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 40,
+        "line": 16,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 40,
+        "line": 16,
       },
     },
     "type": "outdent",
@@ -19844,12 +18786,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 10,
-        "line": 40,
+        "line": 16,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 40,
+        "line": 16,
       },
     },
     "type": "mixin",
@@ -19859,12 +18801,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 41,
+        "line": 17,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 41,
+        "line": 17,
       },
     },
     "type": "indent",
@@ -19874,12 +18816,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 41,
+        "line": 17,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 5,
-        "line": 41,
+        "line": 17,
       },
     },
     "type": "id",
@@ -19889,12 +18831,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 42,
+        "line": 18,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 42,
+        "line": 18,
       },
     },
     "type": "indent",
@@ -19904,12 +18846,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 14,
-        "line": 42,
+        "line": 18,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 9,
-        "line": 42,
+        "line": 18,
       },
     },
     "type": "mixin-block",
@@ -19918,12 +18860,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 44,
+        "line": 20,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 44,
+        "line": 20,
       },
     },
     "type": "outdent",
@@ -19932,59 +18874,99 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 44,
+        "line": 20,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 44,
+        "line": 20,
       },
     },
     "type": "outdent",
   },
   Object {
-    "args": "",
+    "args": null,
     "loc": Object {
       "end": Object {
-        "column": 7,
-        "line": 44,
+        "column": 5,
+        "line": 20,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
         "column": 1,
-        "line": 44,
+        "line": 20,
       },
     },
     "type": "call",
     "val": "baz",
   },
   Object {
-    "buffer": true,
     "loc": Object {
       "end": Object {
-        "column": 14,
-        "line": 44,
+        "column": 6,
+        "line": 20,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
-        "column": 7,
-        "line": 44,
+        "column": 5,
+        "line": 20,
       },
     },
-    "mustEscape": true,
-    "type": "code",
+    "type": "dot",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 6,
+        "line": 20,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
+      "start": Object {
+        "column": 6,
+        "line": 20,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 8,
+        "line": 21,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
+      "start": Object {
+        "column": 3,
+        "line": 21,
+      },
+    },
+    "type": "text",
     "val": "'123'",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 14,
-        "line": 44,
+        "column": 8,
+        "line": 21,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
       "start": Object {
-        "column": 14,
-        "line": 44,
+        "column": 8,
+        "line": 21,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 8,
+        "line": 21,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin.blocks.pug",
+      "start": Object {
+        "column": 8,
+        "line": 21,
       },
     },
     "type": "eos",

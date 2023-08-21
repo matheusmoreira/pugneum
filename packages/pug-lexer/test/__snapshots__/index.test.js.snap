@@ -16168,46 +16168,15 @@ Array [
 exports[`interpolation.escape.pug 1`] = `
 Array [
   Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 15,
-        "line": 1,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var id = 42;",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 2,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 2,
+        "line": 1,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 1,
-        "line": 2,
+        "line": 1,
       },
     },
     "type": "tag",
@@ -16217,12 +16186,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 3,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "indent",
@@ -16232,12 +16201,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 3,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 5,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "text",
@@ -16247,12 +16216,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 4,
+        "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 3,
       },
     },
     "type": "newline",
@@ -16261,6 +16230,35 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 13,
+        "line": 3,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
+      "start": Object {
+        "column": 5,
+        "line": 3,
+      },
+    },
+    "type": "text",
+    "val": "#[text]",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 4,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
+      "start": Object {
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 9,
         "line": 4,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
@@ -16270,93 +16268,18 @@ Array [
       },
     },
     "type": "text",
-    "val": "#{text}",
+    "val": "here",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 3,
+        "column": 1,
         "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 1,
         "line": 5,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 5,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 5,
-        "line": 5,
-      },
-    },
-    "type": "text",
-    "val": "!{here}",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 1,
-        "line": 6,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 5,
-        "line": 6,
-      },
-    },
-    "type": "text",
-    "val": "My ID ",
-  },
-  Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 31,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 11,
-        "line": 6,
-      },
-    },
-    "mustEscape": true,
-    "type": "interpolated-code",
-    "val": "\\"is {\\" + id + \\"}\\"",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
-      "start": Object {
-        "column": 1,
-        "line": 7,
       },
     },
     "type": "outdent",
@@ -16365,12 +16288,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 7,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/interpolation.escape.pug",
       "start": Object {
         "column": 1,
-        "line": 7,
+        "line": 5,
       },
     },
     "type": "eos",

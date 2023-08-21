@@ -20374,23 +20374,6 @@ Array [
     "val": "h1",
   },
   Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/mixin-hoist.pug",
-      "start": Object {
-        "column": 5,
-        "line": 3,
-      },
-    },
-    "mustEscape": true,
-    "type": "code",
-    "val": "title",
-  },
-  Object {
     "loc": Object {
       "end": Object {
         "column": 1,

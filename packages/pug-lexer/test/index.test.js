@@ -9,7 +9,7 @@ fs.readdirSync(dir).forEach(function(testCase) {
   if (/\.pug$/.test(testCase)) {
     test(testCase, () => {
       var result = lex(fs.readFileSync(dir + testCase, 'utf8'), {
-        filename: dir + testCase,
+        filename: '<basedir>/packages/pug-lexer/test/cases/' + testCase,
       });
       expect(result).toMatchSnapshot();
     });
@@ -23,7 +23,7 @@ fs.readdirSync(edir).forEach(function(testCase) {
       var actual;
       try {
         lex(fs.readFileSync(edir + testCase, 'utf8'), {
-          filename: edir + testCase,
+          filename: '<basedir>/packages/pug-lexer/test/errors/' + testCase,
         });
         throw new Error('Expected ' + testCase + ' to throw an exception.');
       } catch (ex) {

@@ -35,9 +35,7 @@ foo(abc
 foo(abc
     def)
 
-- var attrs = {foo: 'bar', bar: '<baz>'}
-
-div&attributes(attrs)
+div(foo=bar bar='<baz>')
 
 a(foo='foo' "bar"="bar")
 a(foo='foo' 'bar'='bar')

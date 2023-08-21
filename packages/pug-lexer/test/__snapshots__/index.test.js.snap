@@ -14694,206 +14694,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 3,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 3,
-        "line": 6,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 3,
-        "line": 6,
-      },
-    },
-    "type": "start-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 6,
-      },
-    },
-    "type": "tag",
-    "val": "strong",
-  },
-  Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 20,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 11,
-        "line": 6,
-      },
-    },
-    "mustEscape": true,
-    "type": "code",
-    "val": "'[foo]'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 20,
-        "line": 6,
-      },
-    },
-    "type": "end-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 6,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 21,
-        "line": 6,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 1,
-        "line": 7,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 3,
-        "line": 7,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 3,
-        "line": 7,
-      },
-    },
-    "type": "start-pug-interpolation",
-  },
-  Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 23,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 7,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var foo = 'foo]'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 23,
-        "line": 7,
-      },
-    },
-    "type": "end-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 7,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 24,
-        "line": 7,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 8,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 1,
-        "line": 8,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
         "column": 7,
-        "line": 8,
+        "line": 6,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 3,
-        "line": 8,
+        "line": 6,
       },
     },
     "type": "text",
@@ -14903,12 +14710,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
     },
     "type": "newline",
@@ -14917,12 +14724,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
     },
     "type": "text",
@@ -14932,12 +14739,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
     },
     "type": "end-pipeless-text",
@@ -14946,12 +14753,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
     },
     "type": "newline",
@@ -14960,12 +14767,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 10,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
     },
     "type": "tag",
@@ -14975,12 +14782,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 11,
+        "line": 9,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 11,
+        "line": 9,
       },
     },
     "type": "indent",
@@ -14990,12 +14797,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 11,
+        "line": 9,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 5,
-        "line": 11,
+        "line": 9,
       },
     },
     "type": "text",
@@ -15005,12 +14812,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "newline",
@@ -15019,12 +14826,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 5,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "text",
@@ -15034,12 +14841,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 5,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "start-pug-interpolation",
@@ -15048,12 +14855,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 13,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 7,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "tag",
@@ -15063,12 +14870,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 17,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 14,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "text",
@@ -15078,12 +14885,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 18,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 17,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "end-pug-interpolation",
@@ -15092,12 +14899,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 18,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 18,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "text",
@@ -15107,205 +14914,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 13,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 13,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 13,
-      },
-    },
-    "type": "start-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 7,
-        "line": 13,
-      },
-    },
-    "type": "tag",
-    "val": "strong",
-  },
-  Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 13,
-        "line": 13,
-      },
-    },
-    "mustEscape": true,
-    "type": "code",
-    "val": "'[foo]'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 23,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 22,
-        "line": 13,
-      },
-    },
-    "type": "end-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 23,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 23,
-        "line": 13,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 1,
-        "line": 14,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 14,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 5,
-        "line": 14,
-      },
-    },
-    "type": "start-pug-interpolation",
-  },
-  Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 25,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 7,
-        "line": 14,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var foo = 'foo]'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 26,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 25,
-        "line": 14,
-      },
-    },
-    "type": "end-pug-interpolation",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 26,
-        "line": 14,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 26,
-        "line": 14,
-      },
-    },
-    "type": "text",
-    "val": "",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 15,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
-      "start": Object {
-        "column": 1,
-        "line": 15,
+        "line": 11,
       },
     },
     "type": "newline",
@@ -15314,12 +14928,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 15,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 5,
-        "line": 15,
+        "line": 11,
       },
     },
     "type": "text",
@@ -15329,12 +14943,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 17,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 17,
+        "line": 13,
       },
     },
     "type": "outdent",
@@ -15343,12 +14957,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 17,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 17,
+        "line": 13,
       },
     },
     "type": "tag",
@@ -15358,12 +14972,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 17,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 2,
-        "line": 17,
+        "line": 13,
       },
     },
     "type": "dot",
@@ -15372,12 +14986,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 17,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 3,
-        "line": 17,
+        "line": 13,
       },
     },
     "type": "start-pipeless-text",
@@ -15386,12 +15000,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 21,
-        "line": 18,
+        "line": 14,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 3,
-        "line": 18,
+        "line": 14,
       },
     },
     "type": "text",
@@ -15401,12 +15015,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 1,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "newline",
@@ -15415,12 +15029,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 3,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "text",
@@ -15430,12 +15044,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 6,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "start-pug-interpolation",
@@ -15444,12 +15058,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 14,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 8,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "tag",
@@ -15459,12 +15073,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 22,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 15,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "text",
@@ -15474,12 +15088,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 22,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "end-pug-interpolation",
@@ -15488,12 +15102,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "text",
@@ -15503,12 +15117,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "end-pipeless-text",
@@ -15517,12 +15131,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/inline-tag.pug",
       "start": Object {
         "column": 23,
-        "line": 19,
+        "line": 15,
       },
     },
     "type": "eos",

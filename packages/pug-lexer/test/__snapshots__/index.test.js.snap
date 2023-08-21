@@ -20855,7 +20855,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 6,
+        "column": 17,
         "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/pipeless-tag.pug",
@@ -20865,39 +20865,7 @@ Array [
       },
     },
     "type": "text",
-    "val": "is ",
-  },
-  Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 16,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/pipeless-tag.pug",
-      "start": Object {
-        "column": 6,
-        "line": 3,
-      },
-    },
-    "mustEscape": true,
-    "type": "interpolated-code",
-    "val": "'going'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 17,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/pipeless-tag.pug",
-      "start": Object {
-        "column": 16,
-        "line": 3,
-      },
-    },
-    "type": "text",
-    "val": " ",
+    "val": "is #{'going'} ",
   },
   Object {
     "loc": Object {
@@ -20914,7 +20882,6 @@ Array [
     "type": "start-pug-interpolation",
   },
   Object {
-    "buffer": true,
     "loc": Object {
       "end": Object {
         "column": 28,
@@ -20926,9 +20893,8 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
-    "type": "interpolated-code",
-    "val": "'on'",
+    "type": "text",
+    "val": "#{'on'}",
   },
   Object {
     "loc": Object {

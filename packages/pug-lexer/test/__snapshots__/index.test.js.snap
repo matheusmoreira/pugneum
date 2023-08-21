@@ -443,7 +443,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 34,
+        "column": 35,
         "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
@@ -455,17 +455,17 @@ Array [
     "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "(1) ? 1 : 0",
+    "val": "'(1) ? 1 : 0'",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 36,
+        "column": 37,
         "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
-        "column": 35,
+        "column": 36,
         "line": 5,
       },
     },
@@ -1316,7 +1316,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 33,
+        "column": 34,
         "line": 16,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
@@ -1328,17 +1328,17 @@ Array [
     "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "(1) ? 1 : 0",
+    "val": "'(1) ? 1 : 0'",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 35,
+        "column": 36,
         "line": 16,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
-        "column": 34,
+        "column": 35,
         "line": 16,
       },
     },
@@ -1854,7 +1854,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
+        "column": 23,
         "line": 23,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
@@ -1866,17 +1866,17 @@ Array [
     "mustEscape": true,
     "name": "date",
     "type": "attribute",
-    "val": "new Date(0)",
+    "val": "'new Date(0)'",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 24,
         "line": 23,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
-        "column": 21,
+        "column": 23,
         "line": 23,
       },
     },
@@ -2443,46 +2443,15 @@ Array [
     "type": "newline",
   },
   Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 41,
-        "line": 38,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
-      "start": Object {
-        "column": 1,
-        "line": 38,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var attrs = {foo: 'bar', bar: '<baz>'}",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 40,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
-      "start": Object {
-        "column": 1,
-        "line": 40,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 40,
+        "line": 38,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 40,
+        "line": 38,
       },
     },
     "type": "tag",
@@ -2491,28 +2460,75 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
-        "line": 40,
+        "column": 5,
+        "line": 38,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 4,
-        "line": 40,
+        "line": 38,
       },
     },
-    "type": "&attributes",
-    "val": "attrs",
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 12,
+        "line": 38,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
+      "start": Object {
+        "column": 5,
+        "line": 38,
+      },
+    },
+    "mustEscape": true,
+    "name": "foo",
+    "type": "attribute",
+    "val": "bar",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 24,
+        "line": 38,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
+      "start": Object {
+        "column": 13,
+        "line": 38,
+      },
+    },
+    "mustEscape": true,
+    "name": "bar",
+    "type": "attribute",
+    "val": "'<baz>'",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 25,
+        "line": 38,
+      },
+      "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
+      "start": Object {
+        "column": 24,
+        "line": 38,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 42,
+        "line": 40,
       },
     },
     "type": "newline",
@@ -2521,12 +2537,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 42,
+        "line": 40,
       },
     },
     "type": "tag",
@@ -2536,12 +2552,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 2,
-        "line": 42,
+        "line": 40,
       },
     },
     "type": "start-attributes",
@@ -2550,12 +2566,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 12,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 3,
-        "line": 42,
+        "line": 40,
       },
     },
     "mustEscape": true,
@@ -2567,12 +2583,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 24,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 13,
-        "line": 42,
+        "line": 40,
       },
     },
     "mustEscape": true,
@@ -2584,12 +2600,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 25,
-        "line": 42,
+        "line": 40,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 24,
-        "line": 42,
+        "line": 40,
       },
     },
     "type": "end-attributes",
@@ -2598,12 +2614,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 43,
+        "line": 41,
       },
     },
     "type": "newline",
@@ -2612,12 +2628,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 43,
+        "line": 41,
       },
     },
     "type": "tag",
@@ -2627,12 +2643,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 2,
-        "line": 43,
+        "line": 41,
       },
     },
     "type": "start-attributes",
@@ -2641,12 +2657,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 12,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 3,
-        "line": 43,
+        "line": 41,
       },
     },
     "mustEscape": true,
@@ -2658,12 +2674,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 24,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 13,
-        "line": 43,
+        "line": 41,
       },
     },
     "mustEscape": true,
@@ -2675,12 +2691,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 25,
-        "line": 43,
+        "line": 41,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 24,
-        "line": 43,
+        "line": 41,
       },
     },
     "type": "end-attributes",
@@ -2689,12 +2705,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 44,
+        "line": 42,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 44,
+        "line": 42,
       },
     },
     "type": "newline",
@@ -2703,12 +2719,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 44,
+        "line": 42,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/attrs.pug",
       "start": Object {
         "column": 1,
-        "line": 44,
+        "line": 42,
       },
     },
     "type": "eos",

@@ -2,13 +2,11 @@
   "name": "pug-error",
   "version": "1.3.3",
   "description": "Standard error objects for pug",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
   "keywords": [
     "pug"
   ],
   "files": [
-    "lib/"
+    "index.js"
   ],
   "repository": {
     "type": "git",

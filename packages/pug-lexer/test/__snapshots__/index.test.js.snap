@@ -23402,280 +23402,16 @@ Array [
     "type": "newline",
   },
   Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 3,
-        "line": 9,
-      },
-    },
-    "type": "interpolation",
-    "val": "'foo'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 11,
-        "line": 9,
-      },
-    },
-    "type": "slash",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 1,
-        "line": 10,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 3,
-        "line": 10,
-      },
-    },
-    "type": "interpolation",
-    "val": "'foo'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 11,
-        "line": 10,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 12,
-        "line": 10,
-      },
-    },
-    "mustEscape": true,
-    "name": "bar",
-    "type": "attribute",
-    "val": "'baz'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 21,
-        "line": 10,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 23,
-        "line": 10,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 22,
-        "line": 10,
-      },
-    },
-    "type": "slash",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 11,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 1,
-        "line": 11,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 11,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 3,
-        "line": 11,
-      },
-    },
-    "type": "interpolation",
-    "val": "'foo'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 11,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 12,
-        "line": 11,
-      },
-    },
-    "type": "text",
-    "val": "/",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 1,
-        "line": 12,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 11,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 3,
-        "line": 12,
-      },
-    },
-    "type": "interpolation",
-    "val": "'foo'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 12,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 11,
-        "line": 12,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 12,
-        "line": 12,
-      },
-    },
-    "mustEscape": true,
-    "name": "bar",
-    "type": "attribute",
-    "val": "'baz'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 21,
-        "line": 12,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 24,
-        "line": 12,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 23,
-        "line": 12,
-      },
-    },
-    "type": "text",
-    "val": "/",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 13,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
     "buffer": false,
     "loc": Object {
       "end": Object {
         "column": 41,
-        "line": 13,
+        "line": 9,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 3,
-        "line": 13,
+        "line": 9,
       },
     },
     "type": "comment",
@@ -23685,12 +23421,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 14,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 10,
       },
     },
     "type": "newline",
@@ -23699,12 +23435,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 14,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 3,
-        "line": 14,
+        "line": 10,
       },
     },
     "type": "tag",
@@ -23714,12 +23450,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 14,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 6,
-        "line": 14,
+        "line": 10,
       },
     },
     "type": "text",
@@ -23729,12 +23465,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 15,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 1,
-        "line": 15,
+        "line": 11,
       },
     },
     "type": "newline",
@@ -23744,12 +23480,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 46,
-        "line": 15,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 3,
-        "line": 15,
+        "line": 11,
       },
     },
     "type": "comment",
@@ -23759,12 +23495,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 16,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 1,
-        "line": 16,
+        "line": 12,
       },
     },
     "type": "newline",
@@ -23773,12 +23509,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 16,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 3,
-        "line": 16,
+        "line": 12,
       },
     },
     "type": "tag",
@@ -23788,12 +23524,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 10,
-        "line": 16,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 7,
-        "line": 16,
+        "line": 12,
       },
     },
     "type": "text",
@@ -23802,58 +23538,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 3,
-        "line": 17,
+        "column": 1,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 1,
-        "line": 17,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 3,
-        "line": 17,
-      },
-    },
-    "type": "interpolation",
-    "val": "
-    'foo'
-  ",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 19,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 4,
-        "line": 19,
-      },
-    },
-    "type": "slash",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 20,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
-      "start": Object {
-        "column": 1,
-        "line": 20,
+        "line": 13,
       },
     },
     "type": "outdent",
@@ -23862,12 +23553,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 20,
+        "line": 13,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/tags.self-closing.pug",
       "start": Object {
         "column": 1,
-        "line": 20,
+        "line": 13,
       },
     },
     "type": "eos",

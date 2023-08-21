@@ -9589,46 +9589,15 @@ Array [
 exports[`html.pug 1`] = `
 Array [
   Object {
-    "buffer": false,
-    "loc": Object {
-      "end": Object {
-        "column": 30,
-        "line": 1,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
-      "start": Object {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "mustEscape": false,
-    "type": "code",
-    "val": "var version = 1449104952939",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 3,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
-      "start": Object {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 3,
+        "line": 1,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 3,
+        "line": 1,
       },
     },
     "type": "text-html",
@@ -9638,12 +9607,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 4,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 2,
       },
     },
     "type": "indent",
@@ -9653,12 +9622,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 15,
-        "line": 4,
+        "line": 2,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 3,
-        "line": 4,
+        "line": 2,
       },
     },
     "type": "text-html",
@@ -9668,12 +9637,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 5,
+        "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 5,
+        "line": 3,
       },
     },
     "type": "newline",
@@ -9682,12 +9651,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 15,
-        "line": 5,
+        "line": 3,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 3,
-        "line": 5,
+        "line": 3,
       },
     },
     "type": "text-html",
@@ -9697,12 +9666,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 6,
+        "line": 4,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 6,
+        "line": 4,
       },
     },
     "type": "newline",
@@ -9711,12 +9680,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 15,
-        "line": 6,
+        "line": 4,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 3,
-        "line": 6,
+        "line": 4,
       },
     },
     "type": "text-html",
@@ -9726,12 +9695,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 7,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 7,
+        "line": 5,
       },
     },
     "type": "outdent",
@@ -9740,12 +9709,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 7,
+        "line": 5,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 7,
+        "line": 5,
       },
     },
     "type": "text-html",
@@ -9755,12 +9724,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
     },
     "type": "newline",
@@ -9768,60 +9737,28 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
-        "line": 9,
+        "column": 47,
+        "line": 7,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 7,
       },
     },
     "type": "text-html",
-    "val": "<!--build:js /js/app.min.js?v=",
-  },
-  Object {
-    "buffer": true,
-    "loc": Object {
-      "end": Object {
-        "column": 41,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
-      "start": Object {
-        "column": 31,
-        "line": 9,
-      },
-    },
-    "mustEscape": true,
-    "type": "interpolated-code",
-    "val": "version",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 44,
-        "line": 9,
-      },
-      "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
-      "start": Object {
-        "column": 41,
-        "line": 9,
-      },
-    },
-    "type": "text-html",
-    "val": "-->",
+    "val": "<!--build:js /js/app.min.js?v=1449104952939-->",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
     },
     "type": "newline",
@@ -9830,12 +9767,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 16,
-        "line": 10,
+        "line": 8,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 10,
+        "line": 8,
       },
     },
     "type": "text-html",
@@ -9845,12 +9782,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "newline",
@@ -9859,12 +9796,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "tag",
@@ -9874,12 +9811,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 39,
-        "line": 12,
+        "line": 10,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 3,
-        "line": 12,
+        "line": 10,
       },
     },
     "type": "text",
@@ -9889,12 +9826,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 13,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 13,
+        "line": 11,
       },
     },
     "type": "newline",
@@ -9903,12 +9840,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 13,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 13,
+        "line": 11,
       },
     },
     "type": "tag",
@@ -9918,12 +9855,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 13,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 2,
-        "line": 13,
+        "line": 11,
       },
     },
     "type": ":",
@@ -9932,12 +9869,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 59,
-        "line": 13,
+        "line": 11,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 4,
-        "line": 13,
+        "line": 11,
       },
     },
     "type": "text-html",
@@ -9947,12 +9884,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 14,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 12,
       },
     },
     "type": "newline",
@@ -9961,12 +9898,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 14,
+        "line": 12,
       },
       "filename": "<basedir>/packages/pug-lexer/test/cases/html.pug",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 12,
       },
     },
     "type": "eos",

@@ -4,7 +4,7 @@ var fs = require('fs');
 var assert = require('assert');
 var lex = require('../');
 
-var dir = __dirname + '/cases/';
+var dir = __dirname + '/../../../test-cases/';
 fs.readdirSync(dir).forEach(function(testCase) {
   if (/\.pug$/.test(testCase)) {
     test(testCase, () => {

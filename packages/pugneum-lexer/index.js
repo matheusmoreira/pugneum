@@ -895,6 +895,14 @@ Lexer.prototype = {
       }
     }
 
+    let invalid = key.replaceAll(attributeName, '');
+    if (invalid.length !== 0) {
+        this.error(
+          'INVALID_ATTRIBUTE_NAME',
+          'Code points not allowed in HTML attribute names: ' + invalid
+        );
+    }
+
     tok.name = key;
 
     var valueResponse = this.attributeValue(str.substr(i));

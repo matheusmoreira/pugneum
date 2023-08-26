@@ -1,17 +1,25 @@
 {
-  "name": "pug-error",
-  "version": "1.3.3",
-  "description": "Standard error objects for pug",
+  "name": "pugneum-error",
+  "version": "0.1.0",
+  "description": "Standard error objects for pugneum",
   "keywords": [
-    "pug"
+    "pugneum",
+    "pug",
+    "error"
   ],
   "files": [
     "index.js"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pugjs/pug/tree/master/packages/pug-error"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-error"
   },
   "author": "Forbes Lindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
   "license": "MIT"
 }

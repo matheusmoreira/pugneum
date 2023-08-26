@@ -5,7 +5,7 @@ var characterParser = require('character-parser');
 var error = require('pug-error');
 
 module.exports = lex;
-module.exports.Lexer = Lexer;
+
 function lex(str, options) {
   var lexer = new Lexer(str, options);
   return JSON.parse(JSON.stringify(lexer.getTokens()));

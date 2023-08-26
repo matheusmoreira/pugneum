@@ -2,27 +2,22 @@
 
 var fs = require('fs');
 var parse = require('../');
+var lex = require('pugneum-lexer');
 
-var testCases = fs.readdirSync(__dirname + '/cases').filter(function(name) {
-  return /\.tokens\.json$/.test(name);
+var testCases = fs.readdirSync(__dirname + '/../../../test-cases/').filter(function(name) {
+  return /\.pg$/.test(name);
 });
 
-function parseNewlineJson(str) {
-  return str
-    .split('\n')
-    .filter(Boolean)
-    .map(JSON.parse);
-}
-
 function read(path) {
-  return fs.readFileSync(__dirname + '/cases/' + path, 'utf8');
+  return fs.readFileSync(__dirname + '/../../../test-cases/' + path, 'utf8');
 }
 
 testCases.forEach(function(filename) {
   test(filename, () => {
-    var actualAst = parse(parseNewlineJson(read(filename)), {
-      filename: filename,
-    });
-    expect(actualAst).toMatchSnapshot();
+    let input = read(filename),
+        tokens = lex(input, {filename: filename}),
+        ast = parse(tokens, {filename: filename});
+
+    expect(ast).toMatchSnapshot();
   });
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-var lex = require('pug-lexer');
+var lex = require('pugneum-lexer');
 var parse = require('../');
 
 const input = `

@@ -1,9 +1,11 @@
 {
-  "name": "pug-parser",
-  "version": "5.0.1",
-  "description": "The pug parser (takes an array of tokens and converts it to an abstract syntax tree)",
+  "name": "pugneum-parser",
+  "version": "0.1.0",
+  "description": "Parses an array of pugneum tokens into an abstract syntax tree",
   "keywords": [
-    "pug"
+    "pugneum",
+    "pug",
+    "parser"
   ],
   "dependencies": {
     "pugneum-error": "^0.1.0",
@@ -15,8 +17,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pugjs/pug/tree/master/packages/pug-parser"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-parser"
   },
   "author": "ForbesLindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
   "license": "MIT"
 }

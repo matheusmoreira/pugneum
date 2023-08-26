@@ -6505,33 +6505,23 @@ Object {
   "line": 0,
   "nodes": Array [
     Object {
-      "buffer": false,
-      "column": 1,
-      "filename": "interpolation.escape.pg",
-      "isInline": false,
-      "line": 2,
-      "mustEscape": false,
-      "type": "Code",
-      "val": "var id = 42;",
-    },
-    Object {
       "attributeBlocks": Array [],
       "attrs": Array [],
       "block": Object {
         "filename": "interpolation.escape.pg",
-        "line": 3,
+        "line": 1,
         "nodes": Array [
           Object {
             "column": 5,
             "filename": "interpolation.escape.pg",
-            "line": 4,
+            "line": 2,
             "type": "Text",
             "val": "some",
           },
           Object {
             "column": 1,
             "filename": "interpolation.escape.pg",
-            "line": 5,
+            "line": 3,
             "type": "Text",
             "val": "
 ",
@@ -6539,14 +6529,14 @@ Object {
           Object {
             "column": 5,
             "filename": "interpolation.escape.pg",
-            "line": 5,
+            "line": 3,
             "type": "Text",
-            "val": "#{text}",
+            "val": "#[text]",
           },
           Object {
             "column": 1,
             "filename": "interpolation.escape.pg",
-            "line": 6,
+            "line": 4,
             "type": "Text",
             "val": "
 ",
@@ -6554,34 +6544,9 @@ Object {
           Object {
             "column": 5,
             "filename": "interpolation.escape.pg",
-            "line": 6,
+            "line": 4,
             "type": "Text",
             "val": "here",
-          },
-          Object {
-            "column": 1,
-            "filename": "interpolation.escape.pg",
-            "line": 7,
-            "type": "Text",
-            "val": "
-",
-          },
-          Object {
-            "column": 5,
-            "filename": "interpolation.escape.pg",
-            "line": 7,
-            "type": "Text",
-            "val": "My ID ",
-          },
-          Object {
-            "buffer": true,
-            "column": 11,
-            "filename": "interpolation.escape.pg",
-            "isInline": true,
-            "line": 7,
-            "mustEscape": true,
-            "type": "Code",
-            "val": "\\"is {\\" + id + \\"}\\"",
           },
         ],
         "type": "Block",
@@ -6589,7 +6554,7 @@ Object {
       "column": 1,
       "filename": "interpolation.escape.pg",
       "isInline": false,
-      "line": 3,
+      "line": 1,
       "name": "foo",
       "selfClosing": false,
       "type": "Tag",

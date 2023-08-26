@@ -848,12 +848,12 @@ Lexer.prototype = {
   },
 
   /**
-   * Attribute Name.
+   * Attribute name and value.
    */
   attribute: function(str) {
     var quote = '';
     var quoteRe = /['"]/;
-    var key = '';
+    var key = '', value = '';
     var i;
 
     // consume all whitespace before the key
@@ -883,9 +883,7 @@ Lexer.prototype = {
       } else {
         if (
           this.whitespaceRe.test(str[i]) ||
-          str[i] === '!' ||
-          str[i] === '=' ||
-          str[i] === ','
+          str[i] === '='
         ) {
           break;
         }
@@ -910,160 +908,63 @@ Lexer.prototype = {
 
     tok.name = key;
 
-    var valueResponse = this.attributeValue(str.substr(i));
+    // consume all whitespace before the =
+    i = this.skipWhitespace(str, i);
 
-    if (valueResponse.val) {
-      tok.val = valueResponse.val;
-      tok.mustEscape = valueResponse.mustEscape;
-    } else {
-      // was a boolean attribute (ex: `input(disabled)`)
-      tok.val = true;
-      tok.mustEscape = true;
-    }
+    if (str[i] === '=') {
+      ++i;
 
-    str = valueResponse.remainingSource;
+      // consume all whitespace after the =
+      i = this.skipWhitespace(str, i);
 
-    this.tokens.push(this.tokEnd(tok));
-
-    for (i = 0; i < str.length; i++) {
-      if (!this.whitespaceRe.test(str[i])) {
-        break;
-      }
-      if (str[i] === '\n') {
-        this.incrementLine(1);
-      } else {
+      // quote?
+      if (quoteRe.test(str[i])) {
+        quote = str[i];
         this.incrementColumn(1);
-      }
-    }
+        i++;
+      } else { quote = null; }
 
-    if (str[i] === ',') {
-      this.incrementColumn(1);
-      i++;
-    }
-
-    return str.substr(i);
-  },
-
-  /**
-   * Attribute Value.
-   */
-  attributeValue: function(str) {
-    var quoteRe = /['"]/;
-    var val = '';
-    var done, i, x;
-    var escapeAttr = true;
-    var state = characterParser.defaultState();
-    var col = this.colno;
-    var line = this.lineno;
-
-    // consume all whitespace before the equals sign
-    for (i = 0; i < str.length; i++) {
-      if (!this.whitespaceRe.test(str[i])) break;
-      if (str[i] === '\n') {
-        line++;
-        col = 1;
-      } else {
-        col++;
-      }
-    }
-
-    if (i === str.length) {
-      return {remainingSource: str};
-    }
-
-    if (str[i] === '!') {
-      escapeAttr = false;
-      col++;
-      i++;
-      if (str[i] !== '=')
-        this.error(
-          'INVALID_KEY_CHARACTER',
-          'Unexpected character ' + str[i] + ' expected `=`'
-        );
-    }
-
-    if (str[i] !== '=') {
-      // check for anti-pattern `div("foo"bar)`
-      if (i === 0 && str && !this.whitespaceRe.test(str[0]) && str[0] !== ',') {
-        this.error(
-          'INVALID_KEY_CHARACTER',
-          'Unexpected character ' + str[0] + ' expected `=`'
-        );
-      } else {
-        return {remainingSource: str};
-      }
-    }
-
-    this.lineno = line;
-    this.colno = col + 1;
-    i++;
-
-    // consume all whitespace before the value
-    for (; i < str.length; i++) {
-      if (!this.whitespaceRe.test(str[i])) break;
-      if (str[i] === '\n') {
-        this.incrementLine(1);
-      } else {
-        this.incrementColumn(1);
-      }
-    }
-
-    line = this.lineno;
-    col = this.colno;
-
-    // start looping through the value
-    for (; i < str.length; i++) {
-      // if the character is in a string or in parentheses/brackets/braces
-      if (!(state.isNesting() || state.isString())) {
-        if (this.whitespaceRe.test(str[i])) {
-          done = false;
-
-          // find the first non-whitespace character
-          for (x = i; x < str.length; x++) {
-            if (!this.whitespaceRe.test(str[x])) {
-              // if it is a JavaScript punctuator, then assume that it is
-              // a part of the value
-              const isNotPunctuator = !characterParser.isPunctuator(str[x]);
-              const isQuote = quoteRe.test(str[x]);
-              const isColon = str[x] === ':';
-              const isSpreadOperator =
-                str[x] + str[x + 1] + str[x + 2] === '...';
-              if (isNotPunctuator || isQuote || isColon || isSpreadOperator) {
-                done = true;
-              }
-              break;
-            }
+      // start looping through the value
+      for (; i < str.length; i++) {
+        if (quote) {
+          if (str[i] === quote) {
+            this.incrementColumn(1);
+            i++;
+            break;
           }
-
-          // if everything else is whitespace, return now so last attribute
-          // does not include trailing whitespace
-          if (done || x === str.length) {
+        } else {
+          if (this.whitespaceRe.test(str[i])) {
             break;
           }
         }
 
-        // if there's no whitespace and the character is not ',', the
-        // attribute did not end.
-        if (str[i] === ',') {
-          break;
+        value += str[i];
+
+        if (str[i] === '\n') {
+          this.incrementLine(1);
+        } else {
+          this.incrementColumn(1);
         }
       }
-
-      state = characterParser.parseChar(str[i], state);
-      val += str[i];
-
-      if (str[i] === '\n') {
-        line++;
-        col = 1;
-      } else {
-        col++;
-      }
+    } else {
+      // was a boolean attribute (ex: `input(disabled)`)
+      value = true;
     }
 
-    this.lineno = line;
-    this.colno = col;
+    tok.val = value;
 
-    return {val: val, mustEscape: escapeAttr, remainingSource: str.substr(i)};
+    this.tokens.push(this.tokEnd(tok));
+
+    if (quote && str[i] && !this.whitespaceRe.test(str[i])) {
+      this.error(
+        'MALFORMED_ATTRIBUTE',
+        'Invalid code point after attribute value: `' + str[i] + '`'
+        );
+    }
+
+    i = this.skipWhitespace(str, i);
+
+    return str.substr(i);
   },
 
   /**

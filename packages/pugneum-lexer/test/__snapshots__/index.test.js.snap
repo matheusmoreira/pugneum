@@ -34,7 +34,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 17,
         "line": 1,
       },
       "filename": "attrs.pg",
@@ -43,20 +43,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'/contact'",
+    "val": "/contact",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 19,
+        "column": 18,
         "line": 1,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 18,
+        "column": 17,
         "line": 1,
       },
     },
@@ -65,12 +64,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 1,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 20,
+        "column": 19,
         "line": 1,
       },
     },
@@ -123,7 +122,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 15,
+        "column": 14,
         "line": 2,
       },
       "filename": "attrs.pg",
@@ -132,20 +131,19 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'/save'",
+    "val": "/save",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 15,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 15,
+        "column": 14,
         "line": 2,
       },
     },
@@ -154,12 +152,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 16,
+        "column": 15,
         "line": 2,
       },
     },
@@ -169,12 +167,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 28,
+        "column": 27,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 24,
+        "column": 23,
         "line": 2,
       },
     },
@@ -227,7 +225,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 6,
+        "column": 7,
         "line": 3,
       },
       "filename": "attrs.pg",
@@ -236,7 +234,6 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
     "val": true,
@@ -249,11 +246,10 @@ Array [
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 8,
+        "column": 7,
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
     "val": true,
@@ -261,16 +257,120 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 14,
         "line": 3,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 13,
+        "column": 11,
         "line": 3,
       },
     },
-    "mustEscape": true,
+    "name": "baz",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 15,
+        "line": 3,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 14,
+        "line": 3,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 4,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 8,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 4,
+      },
+    },
+    "name": "foo,",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 13,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 8,
+        "line": 4,
+      },
+    },
+    "name": "bar,",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 16,
+        "line": 4,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 13,
+        "line": 4,
+      },
+    },
     "name": "baz",
     "type": "attribute",
     "val": true,
@@ -279,12 +379,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 17,
-        "line": 3,
+        "line": 4,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 16,
-        "line": 3,
+        "line": 4,
       },
     },
     "type": "end-attributes",
@@ -293,12 +393,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "newline",
@@ -307,12 +407,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 4,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "tag",
@@ -322,12 +422,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 4,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 2,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "start-attributes",
@@ -335,691 +435,45 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
-        "line": 4,
+        "column": 21,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 4,
+        "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
-    "val": "'foo, bar, baz'",
+    "val": "foo, bar, baz",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
-        "line": 4,
+        "column": 26,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 24,
-        "line": 4,
+        "column": 22,
+        "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
     "val": "1",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 30,
-        "line": 4,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 29,
-        "line": 4,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 5,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 5,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 5,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 16,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 5,
-      },
-    },
-    "mustEscape": true,
-    "name": "foo",
-    "type": "attribute",
-    "val": "'((foo))'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 35,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 18,
-        "line": 5,
-      },
-    },
-    "mustEscape": true,
-    "name": "bar",
-    "type": "attribute",
-    "val": "'(1) ? 1 : 0'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 37,
-        "line": 5,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 36,
-        "line": 5,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 6,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 6,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 6,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 6,
-      },
-    },
-    "type": "tag",
-    "val": "select",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 7,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 9,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 7,
-      },
-    },
-    "type": "tag",
-    "val": "option",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 10,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 9,
-        "line": 7,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 10,
-        "line": 7,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "'foo'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 31,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 23,
-        "line": 7,
-      },
-    },
-    "mustEscape": true,
-    "name": "selected",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 32,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 31,
-        "line": 7,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 36,
-        "line": 7,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 33,
-        "line": 7,
-      },
-    },
-    "type": "text",
-    "val": "Foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 8,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 9,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 8,
-      },
-    },
-    "type": "tag",
-    "val": "option",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 10,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 9,
-        "line": 8,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 18,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 10,
-        "line": 8,
-      },
-    },
-    "mustEscape": true,
-    "name": "selected",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 31,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 20,
-        "line": 8,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "'bar'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 32,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 31,
-        "line": 8,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 36,
-        "line": 8,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 33,
-        "line": 8,
-      },
-    },
-    "type": "text",
-    "val": "Bar",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 9,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 9,
-      },
-    },
-    "type": "outdent",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 9,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 9,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 9,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 9,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 15,
-        "line": 9,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 9,
-      },
-    },
-    "mustEscape": true,
-    "name": "foo",
-    "type": "attribute",
-    "val": "\\"class:\\"",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 16,
-        "line": 9,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 15,
-        "line": 9,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 10,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 10,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 6,
-        "line": 10,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 10,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 10,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 6,
-        "line": 10,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 21,
-        "line": 10,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 7,
-        "line": 10,
-      },
-    },
-    "mustEscape": true,
-    "name": "pattern",
-    "type": "attribute",
-    "val": "'\\\\\\\\S+'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 10,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 21,
-        "line": 10,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 12,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 12,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 12,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 12,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 12,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 12,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 18,
-        "line": 12,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 12,
-      },
-    },
-    "mustEscape": true,
-    "name": "href",
-    "type": "attribute",
-    "val": "'/contact'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 19,
-        "line": 12,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 18,
-        "line": 12,
-      },
-    },
-    "type": "end-attributes",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 27,
-        "line": 12,
+        "line": 5,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 20,
-        "line": 12,
-      },
-    },
-    "type": "text",
-    "val": "contact",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 13,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 15,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 13,
-      },
-    },
-    "mustEscape": true,
-    "name": "href",
-    "type": "attribute",
-    "val": "'/save'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 16,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 15,
-        "line": 13,
+        "column": 26,
+        "line": 5,
       },
     },
     "type": "end-attributes",
@@ -1027,43 +481,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 16,
-        "line": 13,
-      },
-    },
-    "type": "class",
-    "val": "button",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 28,
-        "line": 13,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 24,
-        "line": 13,
-      },
-    },
-    "type": "text",
-    "val": "save",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
         "column": 1,
-        "line": 14,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 6,
       },
     },
     "type": "newline",
@@ -1072,12 +496,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 14,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 6,
       },
     },
     "type": "tag",
@@ -1087,12 +511,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 14,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 2,
-        "line": 14,
+        "line": 6,
       },
     },
     "type": "start-attributes",
@@ -1100,246 +524,45 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 6,
-        "line": 14,
+        "column": 15,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 14,
+        "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
-    "val": true,
+    "val": "((foo))",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 10,
-        "line": 14,
+        "column": 32,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 7,
-        "line": 14,
+        "column": 16,
+        "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 14,
-        "line": 14,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 11,
-        "line": 14,
-      },
-    },
-    "mustEscape": true,
-    "name": "baz",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 15,
-        "line": 14,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 14,
-        "line": 14,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 15,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 15,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 15,
-      },
-    },
-    "mustEscape": true,
-    "name": "foo",
-    "type": "attribute",
-    "val": "'foo, bar, baz'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 28,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 23,
-        "line": 15,
-      },
-    },
-    "mustEscape": true,
-    "name": "bar",
-    "type": "attribute",
-    "val": "1",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 29,
-        "line": 15,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 28,
-        "line": 15,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 16,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 16,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 16,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 16,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 16,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 2,
-        "line": 16,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 16,
-        "line": 16,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 3,
-        "line": 16,
-      },
-    },
-    "mustEscape": true,
-    "name": "foo",
-    "type": "attribute",
-    "val": "'((foo))'",
+    "val": "(1) ? 1 : 0",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 34,
-        "line": 16,
+        "line": 6,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 17,
-        "line": 16,
-      },
-    },
-    "mustEscape": true,
-    "name": "bar",
-    "type": "attribute",
-    "val": "'(1) ? 1 : 0'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 36,
-        "line": 16,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 35,
-        "line": 16,
+        "column": 33,
+        "line": 6,
       },
     },
     "type": "end-attributes",
@@ -1348,12 +571,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 17,
+        "line": 7,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 17,
+        "line": 7,
       },
     },
     "type": "newline",
@@ -1362,12 +585,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 17,
+        "line": 7,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 17,
+        "line": 7,
       },
     },
     "type": "tag",
@@ -1377,12 +600,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 18,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 18,
+        "line": 8,
       },
     },
     "type": "indent",
@@ -1392,12 +615,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 18,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 18,
+        "line": 8,
       },
     },
     "type": "tag",
@@ -1407,12 +630,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 10,
-        "line": 18,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 9,
-        "line": 18,
+        "line": 8,
       },
     },
     "type": "start-attributes",
@@ -1420,33 +643,31 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
-        "line": 18,
+        "column": 20,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 10,
-        "line": 18,
+        "line": 8,
       },
     },
-    "mustEscape": true,
     "name": "value",
     "type": "attribute",
-    "val": "'foo'",
+    "val": "foo",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
-        "line": 18,
+        "column": 29,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 22,
-        "line": 18,
+        "column": 21,
+        "line": 8,
       },
     },
-    "mustEscape": true,
     "name": "selected",
     "type": "attribute",
     "val": true,
@@ -1454,13 +675,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
-        "line": 18,
+        "column": 30,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 30,
-        "line": 18,
+        "column": 29,
+        "line": 8,
       },
     },
     "type": "end-attributes",
@@ -1468,13 +689,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 35,
-        "line": 18,
+        "column": 34,
+        "line": 8,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 32,
-        "line": 18,
+        "column": 31,
+        "line": 8,
       },
     },
     "type": "text",
@@ -1484,6 +705,759 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 9,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 9,
+      },
+    },
+    "type": "tag",
+    "val": "option",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 10,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 9,
+        "line": 9,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 19,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 10,
+        "line": 9,
+      },
+    },
+    "name": "selected",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 29,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 19,
+        "line": 9,
+      },
+    },
+    "name": "value",
+    "type": "attribute",
+    "val": "bar",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 30,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 29,
+        "line": 9,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 34,
+        "line": 9,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 31,
+        "line": 9,
+      },
+    },
+    "type": "text",
+    "val": "Bar",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 10,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 10,
+      },
+    },
+    "type": "outdent",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 10,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 10,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 10,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 10,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 14,
+        "line": 10,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 10,
+      },
+    },
+    "name": "foo",
+    "type": "attribute",
+    "val": "class:",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 15,
+        "line": 10,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 14,
+        "line": 10,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 11,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 11,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 6,
+        "line": 11,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 11,
+      },
+    },
+    "type": "tag",
+    "val": "input",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 7,
+        "line": 11,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 6,
+        "line": 11,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 20,
+        "line": 11,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 7,
+        "line": 11,
+      },
+    },
+    "name": "pattern",
+    "type": "attribute",
+    "val": "\\\\\\\\S+",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 21,
+        "line": 11,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 20,
+        "line": 11,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 13,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 13,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 13,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 17,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 13,
+      },
+    },
+    "name": "href",
+    "type": "attribute",
+    "val": "/contact",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 18,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 17,
+        "line": 13,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 26,
+        "line": 13,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 19,
+        "line": 13,
+      },
+    },
+    "type": "text",
+    "val": "contact",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 14,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 14,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 14,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 14,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 14,
+      },
+    },
+    "name": "href",
+    "type": "attribute",
+    "val": "/save",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 15,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 14,
+        "line": 14,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 22,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 15,
+        "line": 14,
+      },
+    },
+    "type": "class",
+    "val": "button",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 27,
+        "line": 14,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 23,
+        "line": 14,
+      },
+    },
+    "type": "text",
+    "val": "save",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 15,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 15,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 15,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 7,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 15,
+      },
+    },
+    "name": "foo",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 11,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 7,
+        "line": 15,
+      },
+    },
+    "name": "bar",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 14,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 11,
+        "line": 15,
+      },
+    },
+    "name": "baz",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 15,
+        "line": 15,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 14,
+        "line": 15,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 16,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 16,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 16,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 21,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 16,
+      },
+    },
+    "name": "foo",
+    "type": "attribute",
+    "val": "foo, bar, baz",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 26,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 22,
+        "line": 16,
+      },
+    },
+    "name": "bar",
+    "type": "attribute",
+    "val": "1",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 27,
+        "line": 16,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 26,
+        "line": 16,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 17,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 2,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 17,
+      },
+    },
+    "type": "tag",
+    "val": "a",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 2,
+        "line": 17,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 15,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 17,
+      },
+    },
+    "name": "foo",
+    "type": "attribute",
+    "val": "((foo))",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 32,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 16,
+        "line": 17,
+      },
+    },
+    "name": "bar",
+    "type": "attribute",
+    "val": "(1) ? 1 : 0",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 34,
+        "line": 17,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 33,
+        "line": 17,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 18,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 18,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 7,
+        "line": 18,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 18,
+      },
+    },
+    "type": "tag",
+    "val": "select",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
         "line": 19,
       },
       "filename": "attrs.pg",
@@ -1492,7 +1466,8 @@ Array [
         "line": 19,
       },
     },
-    "type": "newline",
+    "type": "indent",
+    "val": 2,
   },
   Object {
     "loc": Object {
@@ -1526,7 +1501,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 20,
         "line": 19,
       },
       "filename": "attrs.pg",
@@ -1535,7 +1510,22 @@ Array [
         "line": 19,
       },
     },
-    "mustEscape": true,
+    "name": "value",
+    "type": "attribute",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 29,
+        "line": 19,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 21,
+        "line": 19,
+      },
+    },
     "name": "selected",
     "type": "attribute",
     "val": true,
@@ -1548,24 +1538,7 @@ Array [
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 19,
-        "line": 19,
-      },
-    },
-    "mustEscape": true,
-    "name": "value",
-    "type": "attribute",
-    "val": "'bar'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 31,
-        "line": 19,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 19,
       },
     },
@@ -1574,13 +1547,117 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 35,
+        "column": 34,
         "line": 19,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 19,
+      },
+    },
+    "type": "text",
+    "val": "Foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 20,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 9,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 20,
+      },
+    },
+    "type": "tag",
+    "val": "option",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 10,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 9,
+        "line": 20,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 19,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 10,
+        "line": 20,
+      },
+    },
+    "name": "selected",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 29,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 19,
+        "line": 20,
+      },
+    },
+    "name": "value",
+    "type": "attribute",
+    "val": "bar",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 30,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 29,
+        "line": 20,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 34,
+        "line": 20,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 31,
+        "line": 20,
       },
     },
     "type": "text",
@@ -1590,12 +1667,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 20,
+        "line": 21,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 20,
+        "line": 21,
       },
     },
     "type": "outdent",
@@ -1604,12 +1681,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 20,
+        "line": 21,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 20,
+        "line": 21,
       },
     },
     "type": "tag",
@@ -1619,12 +1696,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 20,
+        "line": 21,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 2,
-        "line": 20,
+        "line": 21,
       },
     },
     "type": "start-attributes",
@@ -1632,30 +1709,29 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 15,
-        "line": 20,
+        "column": 14,
+        "line": 21,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 20,
+        "line": 21,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
-    "val": "\\"class:\\"",
+    "val": "class:",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
-        "line": 20,
+        "column": 15,
+        "line": 21,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 15,
-        "line": 20,
+        "column": 14,
+        "line": 21,
       },
     },
     "type": "end-attributes",
@@ -1664,12 +1740,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 21,
+        "line": 22,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 21,
+        "line": 22,
       },
     },
     "type": "newline",
@@ -1678,12 +1754,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 21,
+        "line": 22,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 21,
+        "line": 22,
       },
     },
     "type": "tag",
@@ -1693,12 +1769,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 21,
+        "line": 22,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 6,
-        "line": 21,
+        "line": 22,
       },
     },
     "type": "start-attributes",
@@ -1706,178 +1782,175 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
-        "line": 21,
+        "column": 20,
+        "line": 22,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 7,
-        "line": 21,
+        "line": 22,
       },
     },
-    "mustEscape": true,
     "name": "pattern",
     "type": "attribute",
-    "val": "'\\\\\\\\S+'",
+    "val": "\\\\\\\\S+",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 21,
+        "line": 22,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 20,
+        "line": 22,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 23,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 23,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 23,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 23,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 23,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 23,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 16,
+        "line": 23,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 5,
+        "line": 23,
+      },
+    },
+    "name": "terse",
+    "type": "attribute",
+    "val": "true",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 17,
+        "line": 23,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 16,
+        "line": 23,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 24,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 24,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 24,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 24,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 24,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 24,
+      },
+    },
+    "type": "start-attributes",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 22,
-        "line": 21,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 21,
-        "line": 21,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 22,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 22,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 22,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 22,
-      },
-    },
-    "type": "tag",
-    "val": "foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 22,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 4,
-        "line": 22,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 17,
-        "line": 22,
+        "line": 24,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 22,
+        "line": 24,
       },
     },
-    "mustEscape": true,
-    "name": "terse",
-    "type": "attribute",
-    "val": "\\"true\\"",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 18,
-        "line": 22,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 17,
-        "line": 22,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 23,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 23,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 23,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 23,
-      },
-    },
-    "type": "tag",
-    "val": "foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 23,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 4,
-        "line": 23,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 23,
-        "line": 23,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 5,
-        "line": 23,
-      },
-    },
-    "mustEscape": true,
     "name": "date",
     "type": "attribute",
-    "val": "'new Date(0)'",
+    "val": "new Date(0)",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 23,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
         "column": 23,
-        "line": 23,
+        "line": 24,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 22,
+        "line": 24,
       },
     },
     "type": "end-attributes",
@@ -1886,12 +1959,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 25,
+        "line": 26,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 25,
+        "line": 26,
       },
     },
     "type": "newline",
@@ -1900,12 +1973,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 25,
+        "line": 26,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 25,
+        "line": 26,
       },
     },
     "type": "tag",
@@ -1915,12 +1988,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 25,
+        "line": 26,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 4,
-        "line": 25,
+        "line": 26,
       },
     },
     "type": "start-attributes",
@@ -1928,16 +2001,15 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 8,
-        "line": 25,
+        "column": 5,
+        "line": 27,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 25,
+        "line": 26,
       },
     },
-    "mustEscape": true,
     "name": "abc",
     "type": "attribute",
     "val": true,
@@ -1946,15 +2018,14 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 26,
+        "line": 27,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 26,
+        "line": 27,
       },
     },
-    "mustEscape": true,
     "name": "def",
     "type": "attribute",
     "val": true,
@@ -1963,12 +2034,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 26,
+        "line": 27,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 8,
-        "line": 26,
+        "line": 27,
       },
     },
     "type": "end-attributes",
@@ -1977,12 +2048,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 27,
+        "line": 28,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 27,
+        "line": 28,
       },
     },
     "type": "newline",
@@ -1991,12 +2062,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 27,
+        "line": 28,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 27,
+        "line": 28,
       },
     },
     "type": "tag",
@@ -2006,12 +2077,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 27,
+        "line": 28,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 4,
-        "line": 27,
+        "line": 28,
       },
     },
     "type": "start-attributes",
@@ -2019,16 +2090,15 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 8,
-        "line": 27,
+        "column": 4,
+        "line": 29,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 27,
+        "line": 28,
       },
     },
-    "mustEscape": true,
     "name": "abc",
     "type": "attribute",
     "val": true,
@@ -2037,15 +2107,103 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 28,
+        "line": 29,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 29,
+      },
+    },
+    "name": ",def",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 9,
+        "line": 29,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 8,
+        "line": 29,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 30,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 30,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 30,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 30,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 30,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 30,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 31,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 28,
+        "line": 30,
       },
     },
-    "mustEscape": true,
+    "name": "abc,",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 8,
+        "line": 31,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 5,
+        "line": 31,
+      },
+    },
     "name": "def",
     "type": "attribute",
     "val": true,
@@ -2054,12 +2212,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 28,
+        "line": 31,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 8,
-        "line": 28,
+        "line": 31,
       },
     },
     "type": "end-attributes",
@@ -2068,12 +2226,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 29,
+        "line": 32,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 29,
+        "line": 32,
       },
     },
     "type": "newline",
@@ -2082,12 +2240,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 29,
+        "line": 32,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 29,
+        "line": 32,
       },
     },
     "type": "tag",
@@ -2097,12 +2255,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 29,
+        "line": 32,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 4,
-        "line": 29,
+        "line": 32,
       },
     },
     "type": "start-attributes",
@@ -2110,17 +2268,16 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 8,
-        "line": 29,
+        "column": 3,
+        "line": 33,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 29,
+        "line": 32,
       },
     },
-    "mustEscape": true,
-    "name": "abc",
+    "name": "abc,",
     "type": "attribute",
     "val": true,
   },
@@ -2128,15 +2285,14 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 30,
+        "line": 33,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 30,
+        "line": 33,
       },
     },
-    "mustEscape": true,
     "name": "def",
     "type": "attribute",
     "val": true,
@@ -2145,12 +2301,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 30,
+        "line": 33,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 6,
-        "line": 30,
+        "line": 33,
       },
     },
     "type": "end-attributes",
@@ -2159,180 +2315,87 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 31,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 31,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 31,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 31,
-      },
-    },
-    "type": "tag",
-    "val": "foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 31,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 4,
-        "line": 31,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 8,
-        "line": 31,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 5,
-        "line": 31,
-      },
-    },
-    "mustEscape": true,
-    "name": "abc",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 32,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 4,
-        "line": 32,
-      },
-    },
-    "mustEscape": true,
-    "name": "def",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 8,
-        "line": 32,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 7,
-        "line": 32,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 33,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 33,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 33,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 1,
-        "line": 33,
-      },
-    },
-    "type": "tag",
-    "val": "foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 33,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 4,
-        "line": 33,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 8,
-        "line": 33,
-      },
-      "filename": "attrs.pg",
-      "start": Object {
-        "column": 5,
-        "line": 33,
-      },
-    },
-    "mustEscape": true,
-    "name": "abc",
-    "type": "attribute",
-    "val": true,
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 6,
         "line": 34,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 34,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 34,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 34,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 34,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 34,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 3,
+        "line": 35,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 5,
+        "line": 34,
+      },
+    },
+    "name": "abc",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 7,
+        "line": 35,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 34,
+        "line": 35,
       },
     },
-    "mustEscape": true,
-    "name": "def",
+    "name": ",def",
     "type": "attribute",
     "val": true,
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 7,
-        "line": 34,
+        "column": 8,
+        "line": 35,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 6,
-        "line": 34,
+        "column": 7,
+        "line": 35,
       },
     },
     "type": "end-attributes",
@@ -2341,12 +2404,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 35,
+        "line": 36,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 35,
+        "line": 36,
       },
     },
     "type": "newline",
@@ -2355,12 +2418,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 35,
+        "line": 36,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 35,
+        "line": 36,
       },
     },
     "type": "tag",
@@ -2370,12 +2433,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 35,
+        "line": 36,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 4,
-        "line": 35,
+        "line": 36,
       },
     },
     "type": "start-attributes",
@@ -2383,16 +2446,104 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 8,
-        "line": 35,
+        "column": 3,
+        "line": 37,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 35,
+        "line": 36,
       },
     },
-    "mustEscape": true,
+    "name": "abc",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 6,
+        "line": 37,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 3,
+        "line": 37,
+      },
+    },
+    "name": "def",
+    "type": "attribute",
+    "val": true,
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 7,
+        "line": 37,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 6,
+        "line": 37,
+      },
+    },
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 38,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 38,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 38,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 1,
+        "line": 38,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 38,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 4,
+        "line": 38,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 39,
+      },
+      "filename": "attrs.pg",
+      "start": Object {
+        "column": 5,
+        "line": 38,
+      },
+    },
     "name": "abc",
     "type": "attribute",
     "val": true,
@@ -2401,15 +2552,14 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 8,
-        "line": 36,
+        "line": 39,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 36,
+        "line": 39,
       },
     },
-    "mustEscape": true,
     "name": "def",
     "type": "attribute",
     "val": true,
@@ -2418,12 +2568,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 9,
-        "line": 36,
+        "line": 39,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 8,
-        "line": 36,
+        "line": 39,
       },
     },
     "type": "end-attributes",
@@ -2432,12 +2582,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 38,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 38,
+        "line": 41,
       },
     },
     "type": "newline",
@@ -2446,12 +2596,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 38,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 38,
+        "line": 41,
       },
     },
     "type": "tag",
@@ -2461,12 +2611,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 38,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 4,
-        "line": 38,
+        "line": 41,
       },
     },
     "type": "start-attributes",
@@ -2474,16 +2624,15 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 12,
-        "line": 38,
+        "column": 11,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 5,
-        "line": 38,
+        "line": 41,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
     "val": "bar",
@@ -2491,30 +2640,29 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 38,
+        "column": 22,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 13,
-        "line": 38,
+        "column": 12,
+        "line": 41,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "'<baz>'",
+    "val": "<baz>",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
-        "line": 38,
+        "column": 23,
+        "line": 41,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 24,
-        "line": 38,
+        "column": 22,
+        "line": 41,
       },
     },
     "type": "end-attributes",
@@ -2523,12 +2671,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 40,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 40,
+        "line": 43,
       },
     },
     "type": "newline",
@@ -2537,12 +2685,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 40,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 40,
+        "line": 43,
       },
     },
     "type": "tag",
@@ -2552,12 +2700,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 40,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 2,
-        "line": 40,
+        "line": 43,
       },
     },
     "type": "start-attributes",
@@ -2565,47 +2713,45 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 12,
-        "line": 40,
+        "column": 11,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 40,
+        "line": 43,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
-    "val": "'foo'",
+    "val": "foo",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 40,
+        "column": 22,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 13,
-        "line": 40,
+        "column": 12,
+        "line": 43,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "\\"bar\\"",
+    "val": "bar",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
-        "line": 40,
+        "column": 23,
+        "line": 43,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 24,
-        "line": 40,
+        "column": 22,
+        "line": 43,
       },
     },
     "type": "end-attributes",
@@ -2614,12 +2760,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 41,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 41,
+        "line": 44,
       },
     },
     "type": "newline",
@@ -2628,12 +2774,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 41,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 41,
+        "line": 44,
       },
     },
     "type": "tag",
@@ -2643,12 +2789,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 3,
-        "line": 41,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 2,
-        "line": 41,
+        "line": 44,
       },
     },
     "type": "start-attributes",
@@ -2656,47 +2802,45 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 12,
-        "line": 41,
+        "column": 11,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 3,
-        "line": 41,
+        "line": 44,
       },
     },
-    "mustEscape": true,
     "name": "foo",
     "type": "attribute",
-    "val": "'foo'",
+    "val": "foo",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 41,
+        "column": 22,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 13,
-        "line": 41,
+        "column": 12,
+        "line": 44,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "'bar'",
+    "val": "bar",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
-        "line": 41,
+        "column": 23,
+        "line": 44,
       },
       "filename": "attrs.pg",
       "start": Object {
-        "column": 24,
-        "line": 41,
+        "column": 22,
+        "line": 44,
       },
     },
     "type": "end-attributes",
@@ -2705,12 +2849,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 42,
+        "line": 45,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 42,
+        "line": 45,
       },
     },
     "type": "newline",
@@ -2719,12 +2863,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 42,
+        "line": 45,
       },
       "filename": "attrs.pg",
       "start": Object {
         "column": 1,
-        "line": 42,
+        "line": 45,
       },
     },
     "type": "eos",
@@ -2766,7 +2910,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
       "filename": "attrs.unescaped.pg",
@@ -2775,20 +2919,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/x-template'",
+    "val": "text/x-template",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 1,
       },
       "filename": "attrs.unescaped.pg",
       "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
     },
@@ -2841,7 +2984,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 2,
       },
       "filename": "attrs.unescaped.pg",
@@ -2850,20 +2993,19 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": false,
-    "name": "id",
+    "name": "id!",
     "type": "attribute",
-    "val": "'user-<%= user.id %>'",
+    "val": "user-<%= user.id %>",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 33,
+        "column": 32,
         "line": 2,
       },
       "filename": "attrs.unescaped.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 2,
       },
     },
@@ -3384,7 +3526,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 2,
       },
       "filename": "block-expansion.pg",
@@ -3393,20 +3535,19 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'#'",
+    "val": "#",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 17,
         "line": 2,
       },
       "filename": "block-expansion.pg",
       "start": Object {
-        "column": 17,
+        "column": 16,
         "line": 2,
       },
     },
@@ -3415,12 +3556,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 2,
       },
       "filename": "block-expansion.pg",
       "start": Object {
-        "column": 19,
+        "column": 18,
         "line": 2,
       },
     },
@@ -3502,7 +3643,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 3,
       },
       "filename": "block-expansion.pg",
@@ -3511,20 +3652,19 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'#'",
+    "val": "#",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 17,
         "line": 3,
       },
       "filename": "block-expansion.pg",
       "start": Object {
-        "column": 17,
+        "column": 16,
         "line": 3,
       },
     },
@@ -3533,12 +3673,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 3,
       },
       "filename": "block-expansion.pg",
       "start": Object {
-        "column": 19,
+        "column": 18,
         "line": 3,
       },
     },
@@ -4095,7 +4235,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 21,
         "line": 1,
       },
       "filename": "classes.pg",
@@ -4104,20 +4244,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "['foo', 'bar', 'baz']",
+    "val": "foo bar baz",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 22,
         "line": 1,
       },
       "filename": "classes.pg",
       "start": Object {
-        "column": 30,
+        "column": 21,
         "line": 1,
       },
     },
@@ -4127,12 +4266,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 5,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 5,
+        "line": 2,
       },
     },
     "type": "newline",
@@ -4141,12 +4280,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 5,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 5,
+        "line": 2,
       },
     },
     "type": "tag",
@@ -4156,12 +4295,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 6,
-        "line": 5,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 2,
-        "line": 5,
+        "line": 2,
       },
     },
     "type": "class",
@@ -4171,12 +4310,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 5,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 6,
-        "line": 5,
+        "line": 2,
       },
     },
     "type": "start-attributes",
@@ -4184,30 +4323,29 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
-        "line": 5,
+        "column": 15,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 7,
-        "line": 5,
+        "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "'bar'",
+    "val": "bar",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 19,
-        "line": 5,
+        "column": 16,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
-        "column": 18,
-        "line": 5,
+        "column": 15,
+        "line": 2,
       },
     },
     "type": "end-attributes",
@@ -4215,13 +4353,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
-        "line": 5,
+        "column": 20,
+        "line": 2,
       },
       "filename": "classes.pg",
       "start": Object {
-        "column": 19,
-        "line": 5,
+        "column": 16,
+        "line": 2,
       },
     },
     "type": "class",
@@ -4231,12 +4369,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 9,
+        "line": 3,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 3,
       },
     },
     "type": "newline",
@@ -4245,12 +4383,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 9,
+        "line": 3,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 9,
+        "line": 3,
       },
     },
     "type": "tag",
@@ -4260,12 +4398,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 14,
-        "line": 9,
+        "line": 3,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 2,
-        "line": 9,
+        "line": 3,
       },
     },
     "type": "class",
@@ -4275,12 +4413,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 11,
+        "line": 4,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 11,
+        "line": 4,
       },
     },
     "type": "newline",
@@ -4289,86 +4427,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 11,
+        "line": 4,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 11,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 11,
-      },
-      "filename": "classes.pg",
-      "start": Object {
-        "column": 2,
-        "line": 11,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 43,
-        "line": 11,
-      },
-      "filename": "classes.pg",
-      "start": Object {
-        "column": 3,
-        "line": 11,
-      },
-    },
-    "mustEscape": true,
-    "name": "class",
-    "type": "attribute",
-    "val": "{foo: true, bar: false, baz: true}",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 44,
-        "line": 11,
-      },
-      "filename": "classes.pg",
-      "start": Object {
-        "column": 43,
-        "line": 11,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 13,
-      },
-      "filename": "classes.pg",
-      "start": Object {
-        "column": 1,
-        "line": 13,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 13,
-      },
-      "filename": "classes.pg",
-      "start": Object {
-        "column": 1,
-        "line": 13,
+        "line": 4,
       },
     },
     "type": "tag",
@@ -4378,12 +4442,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 13,
+        "line": 4,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 2,
-        "line": 13,
+        "line": 4,
       },
     },
     "type": "class",
@@ -4393,12 +4457,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 14,
+        "line": 5,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 5,
       },
     },
     "type": "newline",
@@ -4407,12 +4471,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 2,
-        "line": 14,
+        "line": 5,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 14,
+        "line": 5,
       },
     },
     "type": "tag",
@@ -4422,12 +4486,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 7,
-        "line": 14,
+        "line": 5,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 2,
-        "line": 14,
+        "line": 5,
       },
     },
     "type": "class",
@@ -4437,12 +4501,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 15,
+        "line": 6,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 15,
+        "line": 6,
       },
     },
     "type": "newline",
@@ -4451,12 +4515,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 15,
+        "line": 6,
       },
       "filename": "classes.pg",
       "start": Object {
         "column": 1,
-        "line": 15,
+        "line": 6,
       },
     },
     "type": "eos",
@@ -4498,7 +4562,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 11,
+        "column": 10,
         "line": 1,
       },
       "filename": "classes-empty.pg",
@@ -4507,20 +4571,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "''",
+    "val": "",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 12,
+        "column": 11,
         "line": 1,
       },
       "filename": "classes-empty.pg",
       "start": Object {
-        "column": 11,
+        "column": 10,
         "line": 1,
       },
     },
@@ -4543,147 +4606,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 2,
+        "column": 1,
         "line": 2,
       },
       "filename": "classes-empty.pg",
       "start": Object {
         "column": 1,
         "line": 2,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 2,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 2,
-        "line": 2,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 13,
-        "line": 2,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 3,
-        "line": 2,
-      },
-    },
-    "mustEscape": true,
-    "name": "class",
-    "type": "attribute",
-    "val": "null",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 14,
-        "line": 2,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 13,
-        "line": 2,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 2,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "tag",
-    "val": "a",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 3,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 2,
-        "line": 3,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 18,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 3,
-        "line": 3,
-      },
-    },
-    "mustEscape": true,
-    "name": "class",
-    "type": "attribute",
-    "val": "undefined",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 19,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 18,
-        "line": 3,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 19,
-        "line": 3,
-      },
-      "filename": "classes-empty.pg",
-      "start": Object {
-        "column": 19,
-        "line": 3,
       },
     },
     "type": "eos",
@@ -6224,30 +6153,102 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
+        "column": 21,
+        "line": 1,
+      },
+      "filename": "escaping-class-attribute.pg",
+      "start": Object {
+        "column": 5,
+        "line": 1,
+      },
+    },
+    "name": "attr",
+    "type": "attribute",
+    "val": "<%= bar %>",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
         "column": 22,
         "line": 1,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
-        "column": 5,
+        "column": 21,
         "line": 1,
       },
     },
-    "mustEscape": true,
-    "name": "attr",
+    "type": "end-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 2,
+      },
+      "filename": "escaping-class-attribute.pg",
+      "start": Object {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 4,
+        "line": 2,
+      },
+      "filename": "escaping-class-attribute.pg",
+      "start": Object {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "tag",
+    "val": "foo",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 5,
+        "line": 2,
+      },
+      "filename": "escaping-class-attribute.pg",
+      "start": Object {
+        "column": 4,
+        "line": 2,
+      },
+    },
+    "type": "start-attributes",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 22,
+        "line": 2,
+      },
+      "filename": "escaping-class-attribute.pg",
+      "start": Object {
+        "column": 5,
+        "line": 2,
+      },
+    },
+    "name": "class",
     "type": "attribute",
-    "val": "\\"<%= bar %>\\"",
+    "val": "<%= bar %>",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 1,
+        "line": 2,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 22,
-        "line": 1,
+        "line": 2,
       },
     },
     "type": "end-attributes",
@@ -6256,12 +6257,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 2,
+        "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 2,
+        "line": 3,
       },
     },
     "type": "newline",
@@ -6270,12 +6271,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 2,
+        "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 2,
+        "line": 3,
       },
     },
     "type": "tag",
@@ -6285,12 +6286,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 2,
+        "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 4,
-        "line": 2,
+        "line": 3,
       },
     },
     "type": "start-attributes",
@@ -6298,30 +6299,29 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
-        "line": 2,
+        "column": 22,
+        "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 5,
-        "line": 2,
+        "line": 3,
       },
     },
-    "mustEscape": true,
-    "name": "class",
+    "name": "attr!",
     "type": "attribute",
-    "val": "\\"<%= bar %>\\"",
+    "val": "<%= bar %>",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 2,
+        "column": 23,
+        "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
-        "column": 23,
-        "line": 2,
+        "column": 22,
+        "line": 3,
       },
     },
     "type": "end-attributes",
@@ -6330,12 +6330,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 3,
+        "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 3,
+        "line": 4,
       },
     },
     "type": "newline",
@@ -6344,12 +6344,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 3,
+        "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 3,
+        "line": 4,
       },
     },
     "type": "tag",
@@ -6359,12 +6359,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 3,
+        "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 4,
-        "line": 3,
+        "line": 4,
       },
     },
     "type": "start-attributes",
@@ -6373,29 +6373,28 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 23,
-        "line": 3,
+        "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 5,
-        "line": 3,
+        "line": 4,
       },
     },
-    "mustEscape": false,
-    "name": "attr",
+    "name": "class!",
     "type": "attribute",
-    "val": "\\"<%= bar %>\\"",
+    "val": "<%= bar %>",
   },
   Object {
     "loc": Object {
       "end": Object {
         "column": 24,
-        "line": 3,
+        "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 23,
-        "line": 3,
+        "line": 4,
       },
     },
     "type": "end-attributes",
@@ -6404,12 +6403,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "newline",
@@ -6418,12 +6417,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 4,
-        "line": 4,
+        "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 1,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "tag",
@@ -6433,12 +6432,12 @@ Array [
     "loc": Object {
       "end": Object {
         "column": 5,
-        "line": 4,
+        "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 4,
-        "line": 4,
+        "line": 5,
       },
     },
     "type": "start-attributes",
@@ -6446,76 +6445,18 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
-        "line": 4,
+        "column": 32,
+        "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
         "column": 5,
-        "line": 4,
+        "line": 5,
       },
     },
-    "mustEscape": false,
-    "name": "class",
+    "name": "class!",
     "type": "attribute",
-    "val": "\\"<%= bar %>\\"",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 25,
-        "line": 4,
-      },
-      "filename": "escaping-class-attribute.pg",
-      "start": Object {
-        "column": 24,
-        "line": 4,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 5,
-      },
-      "filename": "escaping-class-attribute.pg",
-      "start": Object {
-        "column": 1,
-        "line": 5,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 4,
-        "line": 5,
-      },
-      "filename": "escaping-class-attribute.pg",
-      "start": Object {
-        "column": 1,
-        "line": 5,
-      },
-    },
-    "type": "tag",
-    "val": "foo",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 5,
-        "line": 5,
-      },
-      "filename": "escaping-class-attribute.pg",
-      "start": Object {
-        "column": 4,
-        "line": 5,
-      },
-    },
-    "type": "start-attributes",
+    "val": "<%= bar %> lol rofl",
   },
   Object {
     "loc": Object {
@@ -6525,24 +6466,7 @@ Array [
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
-        "column": 5,
-        "line": 5,
-      },
-    },
-    "mustEscape": false,
-    "name": "class",
-    "type": "attribute",
-    "val": "\\"<%= bar %> lol rofl\\"",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 34,
-        "line": 5,
-      },
-      "filename": "escaping-class-attribute.pg",
-      "start": Object {
-        "column": 33,
+        "column": 32,
         "line": 5,
       },
     },
@@ -6594,7 +6518,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 45,
+        "column": 44,
         "line": 6,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6603,20 +6527,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": false,
-    "name": "class",
+    "name": "class!",
     "type": "attribute",
-    "val": "\\"<%= bar %> lol rofl <%= lmao %>\\"",
+    "val": "<%= bar %> lol rofl <%= lmao %>",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 46,
+        "column": 45,
         "line": 6,
       },
       "filename": "escaping-class-attribute.pg",
       "start": Object {
-        "column": 45,
+        "column": 44,
         "line": 6,
       },
     },
@@ -6758,7 +6681,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
       "filename": "filters.coffeescript.pg",
@@ -6767,20 +6690,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/javascript'",
+    "val": "text/javascript",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 1,
       },
       "filename": "filters.coffeescript.pg",
       "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
     },
@@ -6905,7 +6827,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
@@ -6914,7 +6836,6 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "minify",
     "type": "attribute",
     "val": "true",
@@ -6922,12 +6843,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
       "start": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
     },
@@ -6936,12 +6857,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
       "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 4,
       },
     },
@@ -7130,7 +7051,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 3,
       },
       "filename": "filters.custom.pg",
@@ -7139,24 +7060,22 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "opt",
     "type": "attribute",
-    "val": "'val'",
+    "val": "val",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 28,
+        "column": 26,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": Object {
-        "column": 23,
+        "column": 22,
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "num",
     "type": "attribute",
     "val": "2",
@@ -7164,12 +7083,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 27,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": Object {
-        "column": 28,
+        "column": 26,
         "line": 3,
       },
     },
@@ -7178,12 +7097,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 27,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": Object {
-        "column": 29,
+        "column": 27,
         "line": 3,
       },
     },
@@ -7488,7 +7407,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
@@ -7497,24 +7416,22 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "opt",
     "type": "attribute",
-    "val": "'val'",
+    "val": "val",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 37,
+        "column": 35,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "num",
     "type": "attribute",
     "val": "2",
@@ -7522,12 +7439,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 38,
+        "column": 36,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": Object {
-        "column": 37,
+        "column": 35,
         "line": 4,
       },
     },
@@ -7536,12 +7453,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 64,
+        "column": 62,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": Object {
-        "column": 39,
+        "column": 37,
         "line": 4,
       },
     },
@@ -7803,7 +7720,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 40,
+        "column": 39,
         "line": 5,
       },
       "filename": "filters.include.pg",
@@ -7812,7 +7729,6 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "minify",
     "type": "attribute",
     "val": "true",
@@ -7820,12 +7736,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 41,
+        "column": 40,
         "line": 5,
       },
       "filename": "filters.include.pg",
       "start": Object {
-        "column": 40,
+        "column": 39,
         "line": 5,
       },
     },
@@ -7834,12 +7750,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 70,
+        "column": 69,
         "line": 5,
       },
       "filename": "filters.include.pg",
       "start": Object {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
     },
@@ -7951,7 +7867,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 47,
+        "column": 46,
         "line": 7,
       },
       "filename": "filters.include.pg",
@@ -7960,7 +7876,6 @@ Array [
         "line": 7,
       },
     },
-    "mustEscape": true,
     "name": "minify",
     "type": "attribute",
     "val": "false",
@@ -7968,12 +7883,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 48,
+        "column": 47,
         "line": 7,
       },
       "filename": "filters.include.pg",
       "start": Object {
-        "column": 47,
+        "column": 46,
         "line": 7,
       },
     },
@@ -7982,12 +7897,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 77,
+        "column": 76,
         "line": 7,
       },
       "filename": "filters.include.pg",
       "start": Object {
-        "column": 49,
+        "column": 48,
         "line": 7,
       },
     },
@@ -8269,7 +8184,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 3,
       },
       "filename": "filters.less.pg",
@@ -8278,20 +8193,19 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "\\"text/css\\"",
+    "val": "text/css",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 3,
       },
       "filename": "filters.less.pg",
       "start": Object {
-        "column": 26,
+        "column": 25,
         "line": 3,
       },
     },
@@ -9188,7 +9102,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 3,
       },
       "filename": "filters.stylus.pg",
@@ -9197,20 +9111,19 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "\\"text/css\\"",
+    "val": "text/css",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 3,
       },
       "filename": "filters.stylus.pg",
       "start": Object {
-        "column": 26,
+        "column": 25,
         "line": 3,
       },
     },
@@ -9974,7 +9887,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 2,
       },
       "filename": "html5.pg",
@@ -9983,24 +9896,22 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'checkbox'",
+    "val": "checkbox",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 29,
         "line": 2,
       },
       "filename": "html5.pg",
       "start": Object {
-        "column": 24,
+        "column": 22,
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "checked",
     "type": "attribute",
     "val": true,
@@ -10008,12 +9919,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 30,
         "line": 2,
       },
       "filename": "html5.pg",
       "start": Object {
-        "column": 31,
+        "column": 29,
         "line": 2,
       },
     },
@@ -10036,181 +9947,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 6,
+        "column": 1,
         "line": 3,
       },
       "filename": "html5.pg",
       "start": Object {
         "column": 1,
         "line": 3,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 3,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 6,
-        "line": 3,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 3,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 7,
-        "line": 3,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'checkbox'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 36,
-        "line": 3,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 24,
-        "line": 3,
-      },
-    },
-    "mustEscape": true,
-    "name": "checked",
-    "type": "attribute",
-    "val": "true",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 37,
-        "line": 3,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 36,
-        "line": 3,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 1,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 1,
-        "line": 4,
-      },
-    },
-    "type": "newline",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 6,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 1,
-        "line": 4,
-      },
-    },
-    "type": "tag",
-    "val": "input",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 7,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 6,
-        "line": 4,
-      },
-    },
-    "type": "start-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 22,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 7,
-        "line": 4,
-      },
-    },
-    "mustEscape": true,
-    "name": "type",
-    "type": "attribute",
-    "val": "'checkbox'",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 37,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 24,
-        "line": 4,
-      },
-    },
-    "mustEscape": true,
-    "name": "checked",
-    "type": "attribute",
-    "val": "false",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 38,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 37,
-        "line": 4,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 38,
-        "line": 4,
-      },
-      "filename": "html5.pg",
-      "start": Object {
-        "column": 38,
-        "line": 4,
       },
     },
     "type": "eos",
@@ -10267,7 +10010,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 43,
+        "column": 42,
         "line": 1,
       },
       "filename": "include.script.pg",
@@ -10276,20 +10019,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/x-template'",
+    "val": "text/x-template",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 44,
+        "column": 43,
         "line": 1,
       },
       "filename": "include.script.pg",
       "start": Object {
-        "column": 43,
+        "column": 42,
         "line": 1,
       },
     },
@@ -11252,7 +10994,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 3,
       },
       "filename": "include-with-text.pg",
@@ -11261,20 +11003,19 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/caustic.js'",
+    "val": "/caustic.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 3,
       },
       "filename": "include-with-text.pg",
       "start": Object {
-        "column": 29,
+        "column": 28,
         "line": 3,
       },
     },
@@ -11326,7 +11067,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 4,
       },
       "filename": "include-with-text.pg",
@@ -11335,20 +11076,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/app.js'",
+    "val": "/app.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 4,
       },
       "filename": "include-with-text.pg",
       "start": Object {
-        "column": 25,
+        "column": 24,
         "line": 4,
       },
     },
@@ -11463,7 +11203,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
@@ -11472,10 +11212,23 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/javascript'",
+    "val": "text/javascript",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 32,
+        "line": 2,
+      },
+      "filename": "include-with-text-head.pg",
+      "start": Object {
+        "column": 31,
+        "line": 2,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
@@ -11489,31 +11242,17 @@ Array [
         "line": 2,
       },
     },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 34,
-        "line": 2,
-      },
-      "filename": "include-with-text-head.pg",
-      "start": Object {
-        "column": 33,
-        "line": 2,
-      },
-    },
     "type": "dot",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 34,
+        "column": 33,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
       "start": Object {
-        "column": 34,
+        "column": 33,
         "line": 2,
       },
     },
@@ -11816,7 +11555,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 9,
       },
       "filename": "includes.pg",
@@ -11825,20 +11564,19 @@ Array [
         "line": 9,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "\\"text/javascript\\"",
+    "val": "text/javascript",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 33,
+        "column": 32,
         "line": 9,
       },
       "filename": "includes.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 9,
       },
     },
@@ -12413,7 +12151,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
       "filename": "inheritance.defaults.pg",
@@ -12422,20 +12160,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 4,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
     },
@@ -12487,7 +12224,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 5,
       },
       "filename": "inheritance.defaults.pg",
@@ -12496,20 +12233,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'keymaster.js'",
+    "val": "keymaster.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 33,
+        "column": 32,
         "line": 5,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 5,
       },
     },
@@ -12561,7 +12297,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
@@ -12570,20 +12306,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'caustic.js'",
+    "val": "caustic.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 6,
       },
     },
@@ -12592,12 +12327,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
     },
@@ -12606,12 +12341,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
     },
@@ -12620,12 +12355,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
     },
@@ -12634,12 +12369,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": Object {
-        "column": 31,
+        "column": 30,
         "line": 6,
       },
     },
@@ -12770,7 +12505,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
       "filename": "inheritance.extend.include.pg",
@@ -12779,20 +12514,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.extend.include.pg",
       "start": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
     },
@@ -13326,7 +13060,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
       "filename": "inheritance.extend.pg",
@@ -13335,20 +13069,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.extend.pg",
       "start": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
     },
@@ -13763,7 +13496,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 6,
       },
       "filename": "inheritance.extend.whitespace.pg",
@@ -13772,20 +13505,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 6,
       },
       "filename": "inheritance.extend.whitespace.pg",
       "start": Object {
-        "column": 25,
+        "column": 24,
         "line": 6,
       },
     },
@@ -14063,7 +13795,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
       "filename": "inheritance.pg",
@@ -14072,20 +13804,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.pg",
       "start": Object {
-        "column": 25,
+        "column": 24,
         "line": 5,
       },
     },
@@ -15237,7 +14968,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 19,
+        "column": 18,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
@@ -15246,37 +14977,35 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'#'",
+    "val": "#",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 42,
+        "column": 39,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 21,
+        "column": 19,
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "'rho--modifier'",
+    "val": "rho--modifier",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 43,
+        "column": 40,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 42,
+        "column": 39,
         "line": 1,
       },
     },
@@ -15285,12 +15014,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 60,
+        "column": 57,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 44,
+        "column": 41,
         "line": 1,
       },
     },
@@ -15300,12 +15029,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 61,
+        "column": 58,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 60,
+        "column": 57,
         "line": 1,
       },
     },
@@ -15314,12 +15043,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 61,
+        "column": 58,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 61,
+        "column": 58,
         "line": 1,
       },
     },
@@ -15431,7 +15160,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
@@ -15440,37 +15169,35 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'#'",
+    "val": "#",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 52,
+        "column": 49,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 31,
+        "column": 29,
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "'rho--modifier'",
+    "val": "rho--modifier",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 53,
+        "column": 50,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 52,
+        "column": 49,
         "line": 2,
       },
     },
@@ -15479,12 +15206,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 54,
+        "column": 51,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 53,
+        "column": 50,
         "line": 2,
       },
     },
@@ -15493,12 +15220,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 54,
+        "column": 51,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 54,
+        "column": 51,
         "line": 2,
       },
     },
@@ -15610,7 +15337,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
@@ -15619,37 +15346,35 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "href",
     "type": "attribute",
-    "val": "'#'",
+    "val": "#",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 52,
+        "column": 49,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 31,
+        "column": 29,
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "class",
     "type": "attribute",
-    "val": "'rho--modifier'",
+    "val": "rho--modifier",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 53,
+        "column": 50,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 52,
+        "column": 49,
         "line": 3,
       },
     },
@@ -15658,12 +15383,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 70,
+        "column": 67,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 54,
+        "column": 51,
         "line": 3,
       },
     },
@@ -15673,12 +15398,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 71,
+        "column": 68,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 70,
+        "column": 67,
         "line": 3,
       },
     },
@@ -15687,12 +15412,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 71,
+        "column": 68,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 71,
+        "column": 68,
         "line": 3,
       },
     },
@@ -15702,13 +15427,27 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 71,
-        "line": 3,
+        "column": 1,
+        "line": 4,
       },
       "filename": "intepolated-elements.pg",
       "start": Object {
-        "column": 71,
-        "line": 3,
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "newline",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 1,
+        "line": 4,
+      },
+      "filename": "intepolated-elements.pg",
+      "start": Object {
+        "column": 1,
+        "line": 4,
       },
     },
     "type": "eos",
@@ -16010,7 +15749,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
       "filename": "layout.append.pg",
@@ -16019,20 +15758,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo.js'",
+    "val": "foo.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.append.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
     },
@@ -16084,7 +15822,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
       "filename": "layout.append.pg",
@@ -16093,20 +15831,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'bar.js'",
+    "val": "bar.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.append.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
     },
@@ -16265,7 +16002,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
       "filename": "layout.append.without-block.pg",
@@ -16274,20 +16011,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo.js'",
+    "val": "foo.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.append.without-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
     },
@@ -16339,7 +16075,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
       "filename": "layout.append.without-block.pg",
@@ -16348,20 +16084,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'bar.js'",
+    "val": "bar.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.append.without-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
     },
@@ -16926,7 +16661,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 24,
+        "column": 23,
         "line": 16,
       },
       "filename": "layout.multi.append.prepend.block.pg",
@@ -16935,20 +16670,19 @@ Array [
         "line": 16,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'jquery.js'",
+    "val": "jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 25,
+        "column": 24,
         "line": 16,
       },
       "filename": "layout.multi.append.prepend.block.pg",
       "start": Object {
-        "column": 24,
+        "column": 23,
         "line": 16,
       },
     },
@@ -17031,7 +16765,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
+        "column": 20,
         "line": 19,
       },
       "filename": "layout.multi.append.prepend.block.pg",
@@ -17040,20 +16774,19 @@ Array [
         "line": 19,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo.js'",
+    "val": "foo.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 19,
       },
       "filename": "layout.multi.append.prepend.block.pg",
       "start": Object {
-        "column": 21,
+        "column": 20,
         "line": 19,
       },
     },
@@ -17212,7 +16945,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
       "filename": "layout.prepend.pg",
@@ -17221,20 +16954,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo.js'",
+    "val": "foo.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.prepend.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
     },
@@ -17286,7 +17018,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
       "filename": "layout.prepend.pg",
@@ -17295,20 +17027,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'bar.js'",
+    "val": "bar.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.prepend.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
     },
@@ -17467,7 +17198,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
       "filename": "layout.prepend.without-block.pg",
@@ -17476,20 +17207,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo.js'",
+    "val": "foo.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.prepend.without-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 5,
       },
     },
@@ -17541,7 +17271,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
       "filename": "layout.prepend.without-block.pg",
@@ -17550,20 +17280,19 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'bar.js'",
+    "val": "bar.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.prepend.without-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 21,
         "line": 6,
       },
     },
@@ -20110,7 +19839,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 2,
       },
       "filename": "namespaces.pg",
@@ -20119,20 +19848,19 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "fb:foo",
     "type": "attribute",
-    "val": "'bar'",
+    "val": "bar",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 17,
         "line": 2,
       },
       "filename": "namespaces.pg",
       "start": Object {
-        "column": 17,
+        "column": 16,
         "line": 2,
       },
     },
@@ -20141,12 +19869,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 18,
+        "column": 17,
         "line": 2,
       },
       "filename": "namespaces.pg",
       "start": Object {
-        "column": 18,
+        "column": 17,
         "line": 2,
       },
     },
@@ -21807,7 +21535,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 42,
+        "column": 41,
         "line": 1,
       },
       "filename": "scripts.non-js.pg",
@@ -21816,20 +21544,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/template'",
+    "val": "text/template",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 43,
+        "column": 42,
         "line": 1,
       },
       "filename": "scripts.non-js.pg",
       "start": Object {
-        "column": 42,
+        "column": 41,
         "line": 1,
       },
     },
@@ -22029,7 +21756,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 42,
+        "column": 41,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
@@ -22038,10 +21765,23 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/template'",
+    "val": "text/template",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 42,
+        "line": 6,
+      },
+      "filename": "scripts.non-js.pg",
+      "start": Object {
+        "column": 41,
+        "line": 6,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
@@ -22055,31 +21795,17 @@ Array [
         "line": 6,
       },
     },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 44,
-        "line": 6,
-      },
-      "filename": "scripts.non-js.pg",
-      "start": Object {
-        "column": 43,
-        "line": 6,
-      },
-    },
     "type": "dot",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 44,
+        "column": 43,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
       "start": Object {
-        "column": 44,
+        "column": 43,
         "line": 6,
       },
     },
@@ -22732,7 +22458,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 23,
+        "column": 20,
         "line": 2,
       },
       "filename": "source.pg",
@@ -22741,24 +22467,22 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "preload",
     "type": "attribute",
-    "val": "'auto'",
+    "val": "auto",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 35,
+        "column": 32,
         "line": 2,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 25,
+        "column": 21,
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "autobuffer",
     "type": "attribute",
     "val": true,
@@ -22766,16 +22490,15 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 45,
+        "column": 40,
         "line": 2,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 37,
+        "column": 32,
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "controls",
     "type": "attribute",
     "val": true,
@@ -22783,12 +22506,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 46,
+        "column": 41,
         "line": 2,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 45,
+        "column": 40,
         "line": 2,
       },
     },
@@ -22841,7 +22564,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
+        "column": 18,
         "line": 3,
       },
       "filename": "source.pg",
@@ -22850,20 +22573,19 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'foo'",
+    "val": "foo",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 19,
         "line": 3,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 21,
+        "column": 18,
         "line": 3,
       },
     },
@@ -22915,7 +22637,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 21,
+        "column": 18,
         "line": 4,
       },
       "filename": "source.pg",
@@ -22924,20 +22646,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'bar'",
+    "val": "bar",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
+        "column": 19,
         "line": 4,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 21,
+        "column": 18,
         "line": 4,
       },
     },
@@ -22946,13 +22667,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
     },
     "type": "outdent",
@@ -22960,13 +22681,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
     },
     "type": "outdent",
@@ -22974,13 +22695,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
       "filename": "source.pg",
       "start": Object {
-        "column": 22,
-        "line": 4,
+        "column": 1,
+        "line": 5,
       },
     },
     "type": "eos",
@@ -23095,7 +22816,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 15,
         "line": 4,
       },
       "filename": "tags.self-closing.pg",
@@ -23104,20 +22825,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "'baz'",
+    "val": "baz",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 4,
       },
       "filename": "tags.self-closing.pg",
       "start": Object {
-        "column": 16,
+        "column": 15,
         "line": 4,
       },
     },
@@ -23212,7 +22932,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 15,
         "line": 6,
       },
       "filename": "tags.self-closing.pg",
@@ -23221,10 +22941,23 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "'baz'",
+    "val": "baz",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 16,
+        "line": 6,
+      },
+      "filename": "tags.self-closing.pg",
+      "start": Object {
+        "column": 15,
+        "line": 6,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
@@ -23235,20 +22968,6 @@ Array [
       "filename": "tags.self-closing.pg",
       "start": Object {
         "column": 16,
-        "line": 6,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 18,
-        "line": 6,
-      },
-      "filename": "tags.self-closing.pg",
-      "start": Object {
-        "column": 17,
         "line": 6,
       },
     },
@@ -23344,7 +23063,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 15,
         "line": 8,
       },
       "filename": "tags.self-closing.pg",
@@ -23353,20 +23072,19 @@ Array [
         "line": 8,
       },
     },
-    "mustEscape": true,
     "name": "bar",
     "type": "attribute",
-    "val": "'baz'",
+    "val": "baz",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 8,
       },
       "filename": "tags.self-closing.pg",
       "start": Object {
-        "column": 16,
+        "column": 15,
         "line": 8,
       },
     },
@@ -23375,12 +23093,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 19,
+        "column": 18,
         "line": 8,
       },
       "filename": "tags.self-closing.pg",
       "start": Object {
-        "column": 18,
+        "column": 17,
         "line": 8,
       },
     },
@@ -23600,7 +23318,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
       "filename": "template.pg",
@@ -23609,20 +23327,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/x-template'",
+    "val": "text/x-template",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 1,
       },
       "filename": "template.pg",
       "start": Object {
-        "column": 30,
+        "column": 29,
         "line": 1,
       },
     },
@@ -23807,7 +23524,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 6,
       },
       "filename": "template.pg",
@@ -23816,10 +23533,23 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text/x-template'",
+    "val": "text/x-template",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 30,
+        "line": 6,
+      },
+      "filename": "template.pg",
+      "start": Object {
+        "column": 29,
+        "line": 6,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
@@ -23833,31 +23563,17 @@ Array [
         "line": 6,
       },
     },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 32,
-        "line": 6,
-      },
-      "filename": "template.pg",
-      "start": Object {
-        "column": 31,
-        "line": 6,
-      },
-    },
     "type": "dot",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 6,
       },
       "filename": "template.pg",
       "start": Object {
-        "column": 32,
+        "column": 31,
         "line": 6,
       },
     },
@@ -24001,7 +23717,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 16,
+        "column": 15,
         "line": 1,
       },
       "filename": "text.pg",
@@ -24010,20 +23726,19 @@ Array [
         "line": 1,
       },
     },
-    "mustEscape": true,
     "name": "value",
     "type": "attribute",
-    "val": "''",
+    "val": "",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 17,
+        "column": 16,
         "line": 1,
       },
       "filename": "text.pg",
       "start": Object {
-        "column": 16,
+        "column": 15,
         "line": 1,
       },
     },
@@ -24032,12 +23747,12 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 34,
+        "column": 33,
         "line": 1,
       },
       "filename": "text.pg",
       "start": Object {
-        "column": 18,
+        "column": 17,
         "line": 1,
       },
     },
@@ -25382,7 +25097,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 20,
+        "column": 19,
         "line": 3,
       },
       "filename": "text-block.pg",
@@ -25391,37 +25106,35 @@ Array [
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text'",
+    "val": "text",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 39,
+        "column": 36,
         "line": 3,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 20,
         "line": 3,
       },
     },
-    "mustEscape": true,
     "name": "name",
     "type": "attribute",
-    "val": "'user[name]'",
+    "val": "user[name]",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 40,
+        "column": 37,
         "line": 3,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 39,
+        "column": 36,
         "line": 3,
       },
     },
@@ -25518,7 +25231,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 20,
+        "column": 19,
         "line": 6,
       },
       "filename": "text-block.pg",
@@ -25527,37 +25240,35 @@ Array [
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "type",
     "type": "attribute",
-    "val": "'text'",
+    "val": "text",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 39,
+        "column": 36,
         "line": 6,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 22,
+        "column": 20,
         "line": 6,
       },
     },
-    "mustEscape": true,
     "name": "name",
     "type": "attribute",
-    "val": "'user[pass]'",
+    "val": "user[pass]",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 40,
+        "column": 37,
         "line": 6,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 39,
+        "column": 36,
         "line": 6,
       },
     },
@@ -25566,13 +25277,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 40,
-        "line": 6,
+        "column": 1,
+        "line": 7,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 40,
-        "line": 6,
+        "column": 1,
+        "line": 7,
       },
     },
     "type": "outdent",
@@ -25580,13 +25291,13 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 40,
-        "line": 6,
+        "column": 1,
+        "line": 7,
       },
       "filename": "text-block.pg",
       "start": Object {
-        "column": 40,
-        "line": 6,
+        "column": 1,
+        "line": 7,
       },
     },
     "type": "eos",
@@ -25720,7 +25431,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 2,
       },
       "filename": "xml.pg",
@@ -25729,10 +25440,23 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "term",
     "type": "attribute",
-    "val": "'some term'",
+    "val": "some term",
+  },
+  Object {
+    "loc": Object {
+      "end": Object {
+        "column": 26,
+        "line": 2,
+      },
+      "filename": "xml.pg",
+      "start": Object {
+        "column": 25,
+        "line": 2,
+      },
+    },
+    "type": "end-attributes",
   },
   Object {
     "loc": Object {
@@ -25743,20 +25467,6 @@ Array [
       "filename": "xml.pg",
       "start": Object {
         "column": 26,
-        "line": 2,
-      },
-    },
-    "type": "end-attributes",
-  },
-  Object {
-    "loc": Object {
-      "end": Object {
-        "column": 28,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": Object {
-        "column": 27,
         "line": 2,
       },
     },
@@ -25961,7 +25671,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 31,
+        "column": 30,
         "line": 4,
       },
       "filename": "yield.pg",
@@ -25970,20 +25680,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/caustic.js'",
+    "val": "/caustic.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 32,
+        "column": 31,
         "line": 4,
       },
       "filename": "yield.pg",
       "start": Object {
-        "column": 31,
+        "column": 30,
         "line": 4,
       },
     },
@@ -26035,7 +25744,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 5,
       },
       "filename": "yield.pg",
@@ -26044,20 +25753,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/app.js'",
+    "val": "/app.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 28,
+        "column": 27,
         "line": 5,
       },
       "filename": "yield.pg",
       "start": Object {
-        "column": 27,
+        "column": 26,
         "line": 5,
       },
     },
@@ -26186,7 +25894,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 2,
       },
       "filename": "yield-head.pg",
@@ -26195,20 +25903,19 @@ Array [
         "line": 2,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/jquery.js'",
+    "val": "/jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 2,
       },
       "filename": "yield-head.pg",
       "start": Object {
-        "column": 26,
+        "column": 25,
         "line": 2,
       },
     },
@@ -26288,7 +25995,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
       "filename": "yield-head.pg",
@@ -26297,20 +26004,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/jquery.ui.js'",
+    "val": "/jquery.ui.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 4,
       },
       "filename": "yield-head.pg",
       "start": Object {
-        "column": 29,
+        "column": 28,
         "line": 4,
       },
     },
@@ -26649,7 +26355,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 26,
+        "column": 25,
         "line": 4,
       },
       "filename": "yield-title-head.pg",
@@ -26658,20 +26364,19 @@ Array [
         "line": 4,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/jquery.js'",
+    "val": "/jquery.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 27,
+        "column": 26,
         "line": 4,
       },
       "filename": "yield-title-head.pg",
       "start": Object {
-        "column": 26,
+        "column": 25,
         "line": 4,
       },
     },
@@ -26723,7 +26428,7 @@ Array [
   Object {
     "loc": Object {
       "end": Object {
-        "column": 29,
+        "column": 28,
         "line": 5,
       },
       "filename": "yield-title-head.pg",
@@ -26732,20 +26437,19 @@ Array [
         "line": 5,
       },
     },
-    "mustEscape": true,
     "name": "src",
     "type": "attribute",
-    "val": "'/jquery.ui.js'",
+    "val": "/jquery.ui.js",
   },
   Object {
     "loc": Object {
       "end": Object {
-        "column": 30,
+        "column": 29,
         "line": 5,
       },
       "filename": "yield-title-head.pg",
       "start": Object {
-        "column": 29,
+        "column": 28,
         "line": 5,
       },
     },

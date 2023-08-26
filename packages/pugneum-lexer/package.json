@@ -1,9 +1,9 @@
 {
-  "name": "shib-lexer",
+  "name": "pugneum-lexer",
   "version": "0.1.0",
-  "description": "Lexes shib templates and transforms them into arrays of tokens",
+  "description": "Lexes pugneum templates and transforms them into arrays of tokens",
   "keywords": [
-    "shib",
+    "pugneum",
     "pug",
     "lexer"
   ],
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/shib/tree/master/packages/pug-lexer"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-lexer"
   },
   "author": "ForbesLindesay",
   "contributors": [

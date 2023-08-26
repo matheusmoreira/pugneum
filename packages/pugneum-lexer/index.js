@@ -498,7 +498,7 @@ Lexer.prototype = {
       } catch (ex) {
         if (ex.code && /^PUGNEUM:/.test(ex.code)) {
           this.colno = ex.column;
-          this.error(ex.code.substr(4), ex.msg);
+          this.error(ex.code.substr(8), ex.msg);
         }
         throw ex;
       }

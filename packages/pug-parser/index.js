@@ -904,24 +904,11 @@ Parser.prototype = {
     node.file.line = path.loc.start.line;
     node.file.column = path.loc.start.column;
 
-    if (
-      (/\.jade$/.test(node.file.path) || /\.pug$/.test(node.file.path)) &&
-      !filters.length
-    ) {
+    if (/\.pg$/.test(node.file.path) && !filters.length) {
       node.block =
         'indent' == this.peek().type
           ? this.block()
           : this.emptyBlock(tok.loc.start.line);
-      if (/\.jade$/.test(node.file.path)) {
-        console.warn(
-          this.filename +
-            ', line ' +
-            tok.loc.start.line +
-            ':\nThe .jade extension is deprecated, use .pug for "' +
-            node.file.path +
-            '".'
-        );
-      }
     } else {
       node.type = 'RawInclude';
       node.filters = filters;

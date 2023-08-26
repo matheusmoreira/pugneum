@@ -8097,7 +8097,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -8141,7 +8141,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -14442,7 +14442,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -14486,7 +14486,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -14616,7 +14616,7 @@ Array [
         "line": 5,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -14660,7 +14660,7 @@ Array [
         "line": 5,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -14849,7 +14849,7 @@ Array [
         "line": 10,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -14893,7 +14893,7 @@ Array [
         "line": 10,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -15052,7 +15052,7 @@ Array [
         "line": 15,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -15096,7 +15096,7 @@ Array [
         "line": 15,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -15188,7 +15188,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -15309,7 +15309,7 @@ Array [
         "line": 1,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -15382,7 +15382,7 @@ Array [
         "line": 2,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -15488,7 +15488,7 @@ Array [
         "line": 2,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -15561,7 +15561,7 @@ Array [
         "line": 3,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -15682,7 +15682,7 @@ Array [
         "line": 3,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {
@@ -20879,7 +20879,7 @@ Array [
         "line": 3,
       },
     },
-    "type": "start-pug-interpolation",
+    "type": "start-interpolation",
   },
   Object {
     "loc": Object {
@@ -20908,7 +20908,7 @@ Array [
         "line": 3,
       },
     },
-    "type": "end-pug-interpolation",
+    "type": "end-interpolation",
   },
   Object {
     "loc": Object {

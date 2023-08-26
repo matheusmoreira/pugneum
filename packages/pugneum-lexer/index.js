@@ -482,7 +482,7 @@ Lexer.prototype = {
       tok = this.tok(type, prefix + value.substring(0, indexOfStart));
       this.incrementColumn(prefix.length + indexOfStart + escaped);
       this.tokens.push(this.tokEnd(tok));
-      tok = this.tok('start-pug-interpolation');
+      tok = this.tok('start-interpolation');
       this.incrementColumn(2);
       this.tokens.push(this.tokEnd(tok));
       var child = new this.constructor(value.substr(indexOfStart + 2), {
@@ -504,7 +504,7 @@ Lexer.prototype = {
       }
       this.colno = child.colno;
       this.tokens = this.tokens.concat(interpolated);
-      tok = this.tok('end-pug-interpolation');
+      tok = this.tok('end-interpolation');
       this.incrementColumn(1);
       this.tokens.push(this.tokEnd(tok));
       this.addText(type, child.input);

@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 var TokenStream = require('token-stream');
-var error = require('pug-error');
+var error = require('pugneum-error');
 var inlineTags = require('./lib/inline-tags');
 
 module.exports = parse;

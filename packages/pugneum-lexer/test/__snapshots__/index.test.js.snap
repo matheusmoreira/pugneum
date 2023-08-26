@@ -5858,7 +5858,7 @@ Array [
 
 exports[`default-with-expression.pg 1`] = `
 Object {
-  "code": "PUG:DEFAULT_WITH_EXPRESSION",
+  "code": "PUGNEUM:DEFAULT_WITH_EXPRESSION",
   "column": 8,
   "line": 1,
   "msg": "default should not have an expression",
@@ -6655,7 +6655,7 @@ Array [
 
 exports[`extends-no-path.pg 1`] = `
 Object {
-  "code": "PUG:NO_EXTENDS_PATH",
+  "code": "PUGNEUM:NO_EXTENDS_PATH",
   "column": 8,
   "line": 1,
   "msg": "missing path for extends",
@@ -10766,7 +10766,7 @@ Array [
 
 exports[`include-filter-no-path.pg 1`] = `
 Object {
-  "code": "PUG:NO_INCLUDE_PATH",
+  "code": "PUGNEUM:NO_INCLUDE_PATH",
   "column": 12,
   "line": 1,
   "msg": "missing path for include",
@@ -10775,7 +10775,7 @@ Object {
 
 exports[`include-filter-no-path-2.pg 1`] = `
 Object {
-  "code": "PUG:NO_INCLUDE_PATH",
+  "code": "PUGNEUM:NO_INCLUDE_PATH",
   "column": 12,
   "line": 1,
   "msg": "missing path for include",
@@ -10784,7 +10784,7 @@ Object {
 
 exports[`include-filter-no-space.pg 1`] = `
 Object {
-  "code": "PUG:UNEXPECTED_TEXT",
+  "code": "PUGNEUM:UNEXPECTED_TEXT",
   "column": 14,
   "line": 1,
   "msg": "unexpected text \\"foo.£\\"",
@@ -10793,7 +10793,7 @@ Object {
 
 exports[`include-no-path.pg 1`] = `
 Object {
-  "code": "PUG:NO_INCLUDE_PATH",
+  "code": "PUGNEUM:NO_INCLUDE_PATH",
   "column": 8,
   "line": 1,
   "msg": "missing path for include",
@@ -12086,7 +12086,7 @@ Array [
 
 exports[`inconsistent-indentation.pg 1`] = `
 Object {
-  "code": "PUG:INCONSISTENT_INDENTATION",
+  "code": "PUGNEUM:INCONSISTENT_INDENTATION",
   "column": 1,
   "line": 4,
   "msg": "Inconsistent indentation. Expecting either 2 or 6 spaces/tabs.",
@@ -15854,7 +15854,7 @@ Array [
 
 exports[`invalid-class-name-1.pg 1`] = `
 Object {
-  "code": "PUG:INVALID_CLASS_NAME",
+  "code": "PUGNEUM:INVALID_CLASS_NAME",
   "column": 1,
   "line": 1,
   "msg": "Class names must contain at least one letter or underscore.",
@@ -15863,7 +15863,7 @@ Object {
 
 exports[`invalid-class-name-2.pg 1`] = `
 Object {
-  "code": "PUG:INVALID_CLASS_NAME",
+  "code": "PUGNEUM:INVALID_CLASS_NAME",
   "column": 1,
   "line": 1,
   "msg": "Class names must contain at least one letter or underscore.",
@@ -15872,7 +15872,7 @@ Object {
 
 exports[`invalid-class-name-3.pg 1`] = `
 Object {
-  "code": "PUG:INVALID_CLASS_NAME",
+  "code": "PUGNEUM:INVALID_CLASS_NAME",
   "column": 1,
   "line": 1,
   "msg": "\\"ä\\" is not a valid class name.  Class names can only contain \\"_\\", \\"-\\", a-z and 0-9, and must contain at least one of \\"_\\", or a-z",
@@ -15881,7 +15881,7 @@ Object {
 
 exports[`invalid-id.pg 1`] = `
 Object {
-  "code": "PUG:INVALID_ID",
+  "code": "PUGNEUM:INVALID_ID",
   "column": 1,
   "line": 1,
   "msg": "\\"ä\\" is not a valid ID.",
@@ -17602,7 +17602,7 @@ Array [
 
 exports[`malformed-extend.pg 1`] = `
 Object {
-  "code": "PUG:MALFORMED_EXTENDS",
+  "code": "PUGNEUM:MALFORMED_EXTENDS",
   "column": 7,
   "line": 1,
   "msg": "malformed extends",
@@ -17611,7 +17611,7 @@ Object {
 
 exports[`malformed-include.pg 1`] = `
 Object {
-  "code": "PUG:MALFORMED_INCLUDE",
+  "code": "PUGNEUM:MALFORMED_INCLUDE",
   "column": 8,
   "line": 1,
   "msg": "malformed include",
@@ -17620,7 +17620,7 @@ Object {
 
 exports[`mismatched-inline-tag.pg 1`] = `
 Object {
-  "code": "PUG:NO_END_BRACKET",
+  "code": "PUGNEUM:NO_END_BRACKET",
   "column": 14,
   "line": 2,
   "msg": "End of line was reached with no closing bracket for interpolation.",
@@ -20025,7 +20025,7 @@ Array [
 
 exports[`multi-line-interpolation.pg 1`] = `
 Object {
-  "code": "PUG:NO_END_BRACKET",
+  "code": "PUGNEUM:NO_END_BRACKET",
   "column": 65,
   "line": 2,
   "msg": "End of line was reached with no closing bracket for interpolation.",
@@ -20500,7 +20500,7 @@ Array [
 
 exports[`open-interpolation.pg 1`] = `
 Object {
-  "code": "PUG:NO_END_BRACKET",
+  "code": "PUGNEUM:NO_END_BRACKET",
   "column": 54,
   "line": 1,
   "msg": "End of line was reached with no closing bracket for interpolation.",

@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 var characterParser = require('character-parser');
-var error = require('pug-error');
+var error = require('pugneum-error');
 
 module.exports = lex;
 
@@ -496,7 +496,7 @@ Lexer.prototype = {
       try {
         interpolated = child.getTokens();
       } catch (ex) {
-        if (ex.code && /^PUG:/.test(ex.code)) {
+        if (ex.code && /^PUGNEUM:/.test(ex.code)) {
           this.colno = ex.column;
           this.error(ex.code.substr(4), ex.msg);
         }

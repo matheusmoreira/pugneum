@@ -6,7 +6,7 @@ var error = require('pug-error');
 var inlineTags = require('./lib/inline-tags');
 
 module.exports = parse;
-module.exports.Parser = Parser;
+
 function parse(tokens, options) {
   var parser = new Parser(tokens, options);
   var ast = parser.parse();

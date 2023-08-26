@@ -835,6 +835,18 @@ Lexer.prototype = {
     }
   },
 
+  skipWhitespace: function (str, i) {
+    for (; i < str.length; i++) {
+      if (!this.whitespaceRe.test(str[i])) break;
+      if (str[i] === '\n') {
+        this.incrementLine(1);
+      } else {
+        this.incrementColumn(1);
+      }
+    }
+    return i;
+  },
+
   /**
    * Attribute Name.
    */
@@ -845,14 +857,7 @@ Lexer.prototype = {
     var i;
 
     // consume all whitespace before the key
-    for (i = 0; i < str.length; i++) {
-      if (!this.whitespaceRe.test(str[i])) break;
-      if (str[i] === '\n') {
-        this.incrementLine(1);
-      } else {
-        this.incrementColumn(1);
-      }
-    }
+    i = this.skipWhitespace(str, 0);
 
     if (i === str.length) {
       return '';

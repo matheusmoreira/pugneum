@@ -9,7 +9,6 @@
     "pugneum-error": "^0.1.0",
     "token-stream": "1.0.0"
   },
-  "devDependencies": {},
   "files": [
     "lib/inline-tags.js",
     "index.js"

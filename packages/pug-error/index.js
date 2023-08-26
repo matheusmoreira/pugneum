@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = makeError;
+
 function makeError(code, message, options) {
   var line = options.line;
   var column = options.column;
@@ -27,9 +28,9 @@ function makeError(code, message, options) {
       })
       .join('\n');
     fullMessage =
-      (filename || 'Pug') + ':' + location + '\n' + context + '\n\n' + message;
+      (filename? filename + ':' : '') + location + '\n' + context + '\n\n' + message;
   } else {
-    fullMessage = (filename || 'Pug') + ':' + location + '\n\n' + message;
+    fullMessage = (filename? filename + ':' : '') + location + '\n\n' + message;
   }
   var err = new Error(fullMessage);
   err.code = 'PUG:' + code;

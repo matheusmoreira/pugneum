@@ -240,7 +240,7 @@ Parser.prototype = {
         return this.parseComment();
       case 'text':
       case 'interpolated-code':
-      case 'start-pug-interpolation':
+      case 'start-interpolation':
         return this.parseText({block: true});
       case 'text-html':
         return this.initBlock(this.peek().loc.start.line, this.parseTextHtml());
@@ -337,10 +337,10 @@ Parser.prototype = {
             });
           }
           break;
-        case 'start-pug-interpolation':
+        case 'start-interpolation':
           this.advance();
           tags.push(this.parseExpr());
-          this.expect('end-pug-interpolation');
+          this.expect('end-interpolation');
           break;
         default:
           var pluginResult = this.runPlugin('textTokens', nextTok, tags);
@@ -1027,9 +1027,9 @@ Parser.prototype = {
             filename: this.filename,
           });
           break;
-        case 'start-pug-interpolation':
+        case 'start-interpolation':
           block.nodes.push(this.parseExpr());
-          this.expect('end-pug-interpolation');
+          this.expect('end-interpolation');
           break;
         case 'interpolated-code':
           block.nodes.push({
@@ -1224,7 +1224,7 @@ Parser.prototype = {
       case 'outdent':
       case 'eos':
       case 'start-pipeless-text':
-      case 'end-pug-interpolation':
+      case 'end-interpolation':
         break;
       case 'slash':
         if (selfClosingAllowed) {

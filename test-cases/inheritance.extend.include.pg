@@ -1,5 +1,5 @@
 
-extend auxiliary/layout.include.pug
+extend auxiliary/layout.include.pg
 
 block head
   script(src='jquery.js')

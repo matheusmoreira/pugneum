@@ -1,5 +1,5 @@
 
-extends ../fixtures/prepend-without-block/app-layout.pug
+extends ../fixtures/prepend-without-block/app-layout.pg
 
 prepend head
   script(src='foo.js')

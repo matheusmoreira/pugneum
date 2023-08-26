@@ -1,5 +1,5 @@
 html
   body
     p
-      include include-only-text-body.pug
+      include include-only-text-body.pg
         em hello world

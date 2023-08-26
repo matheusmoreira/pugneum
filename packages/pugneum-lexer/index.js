@@ -11,6 +11,37 @@ function lex(str, options) {
   return JSON.parse(JSON.stringify(lexer.getTokens()));
 }
 
+// https://infra.spec.whatwg.org/#c0-control
+const c0 = '\u0000-\u001F';
+
+// https://infra.spec.whatwg.org/#control
+const control = c0 + '\u007F-\u009F';
+
+// https://infra.spec.whatwg.org/#noncharacter
+const noncharacter  =
+  '\uFDD0-\uFDEF'   +
+  '\uFFFE\uFFFF'    +
+  '\u1FFFE\u1FFFF'  +
+  '\u2FFFE\u2FFFF'  +
+  '\u3FFFE\u3FFFF'  +
+  '\u4FFFE\u4FFFF'  +
+  '\u5FFFE\u5FFFF'  +
+  '\u6FFFE\u6FFFF'  +
+  '\u7FFFE\u7FFFF'  +
+  '\u8FFFE\u8FFFF'  +
+  '\u9FFFE\u9FFFF'  +
+  '\uAFFFE\uAFFFF'  +
+  '\uBFFFE\uBFFFF'  +
+  '\uCFFFE\uCFFFF'  +
+  '\uDFFFE\uDFFFF'  +
+  '\uEFFFE\uEFFFF'  +
+  '\uFFFFE\uFFFFF'  +
+  '\u10FFFE\u10FFFF';
+
+// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
+const attributeNamePunctuation = ' \'">/=';
+const attributeName = new RegExp('[^' + control + attributeNamePunctuation + noncharacter + ']', 'g');
+
 /**
  * Initialize `Lexer` with the given `str`.
  *

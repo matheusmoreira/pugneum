@@ -521,7 +521,7 @@ Parser.prototype = {
     var tok = this.expect('code');
     assert(
       typeof tok.mustEscape === 'boolean',
-      'Please update to the newest version of pug-lexer.'
+      'Please update to the newest version of pugneum-lexer.'
     );
     var node = {
       type: 'Code',
@@ -1165,7 +1165,7 @@ Parser.prototype = {
               this.filename +
                 ', line ' +
                 this.peek().loc.start.line +
-                ':\nYou should not have pug tags with multiple attributes.'
+                ':\nYou should not have pugneum tags with multiple attributes.'
             );
           }
           seenAttrs = true;

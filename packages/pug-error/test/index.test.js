@@ -13,7 +13,7 @@ describe('with a source', function() {
     expect(err.message).toBe(
       'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
     );
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
@@ -27,7 +27,7 @@ describe('with a source', function() {
     expect(err.message).toBe(
       '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
     );
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
@@ -39,7 +39,7 @@ describe('without source', function() {
   test('and with a filename', function() {
     var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile'});
     expect(err.message).toBe('myfile:3\n\nMy message');
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
@@ -48,7 +48,7 @@ describe('without source', function() {
   test('and with no filename', function() {
     var err = error('MY_CODE', 'My message', {line: 3});
     expect(err.message).toBe('3\n\nMy message');
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
@@ -67,7 +67,7 @@ describe('with column', function() {
     expect(err.message).toBe(
       'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message'
     );
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
@@ -76,7 +76,7 @@ describe('with column', function() {
   test('and with no filename', function() {
     var err = error('MY_CODE', 'My message', {line: 3, column: 1});
     expect(err.message).toBe('3:1\n\nMy message');
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
@@ -94,7 +94,7 @@ describe('invalid information', function() {
     expect(err.message).toBe(
       '3:-1\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
     );
-    expect(err.code).toBe('PUG:MY_CODE');
+    expect(err.code).toBe('PUGNEUM:MY_CODE');
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
@@ -110,7 +110,7 @@ describe('invalid information', function() {
         src: 'foo\nbar\nbaz\nbash\nbing',
       });
       expect(err.message).toBe(line + '\n\nMy message');
-      expect(err.code).toBe('PUG:MY_CODE');
+      expect(err.code).toBe('PUGNEUM:MY_CODE');
       expect(err.msg).toBe('My message');
       expect(err.line).toBe(line);
       expect(err.filename).toBe(undefined);

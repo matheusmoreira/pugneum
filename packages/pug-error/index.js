@@ -33,7 +33,7 @@ function makeError(code, message, options) {
     fullMessage = (filename? filename + ':' : '') + location + '\n\n' + message;
   }
   var err = new Error(fullMessage);
-  err.code = 'PUG:' + code;
+  err.code = 'PUGNEUM:' + code;
   err.msg = message;
   err.line = line;
   err.column = column;

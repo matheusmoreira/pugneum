@@ -4054,45 +4054,17 @@ Object {
   "line": 0,
   "nodes": Array [
     Object {
-      "buffer": false,
-      "column": 1,
-      "filename": "html.pg",
-      "isInline": false,
-      "line": 1,
-      "mustEscape": false,
-      "type": "Code",
-      "val": "var version = 1449104952939",
-    },
-    Object {
       "column": 1,
       "filename": "html.pg",
       "isHtml": true,
-      "line": 3,
+      "line": 1,
       "type": "Text",
       "val": "<ul>
 <li>foo</li>
 <li>bar</li>
 <li>baz</li>
 </ul>
-<!--build:js /js/app.min.js?v=",
-    },
-    Object {
-      "buffer": true,
-      "column": 31,
-      "filename": "html.pg",
-      "isInline": true,
-      "line": 9,
-      "mustEscape": true,
-      "type": "Code",
-      "val": "version",
-    },
-    Object {
-      "column": 41,
-      "filename": "html.pg",
-      "isHtml": true,
-      "line": 9,
-      "type": "Text",
-      "val": "-->
+<!--build:js /js/app.min.js?v=1449104952939-->
 <!--endbuild-->",
     },
     Object {
@@ -4100,12 +4072,12 @@ Object {
       "attrs": Array [],
       "block": Object {
         "filename": "html.pg",
-        "line": 12,
+        "line": 10,
         "nodes": Array [
           Object {
             "column": 3,
             "filename": "html.pg",
-            "line": 12,
+            "line": 10,
             "type": "Text",
             "val": "You can <em>embed</em> html as well.",
           },
@@ -4115,7 +4087,7 @@ Object {
       "column": 1,
       "filename": "html.pg",
       "isInline": false,
-      "line": 12,
+      "line": 10,
       "name": "p",
       "selfClosing": false,
       "type": "Tag",
@@ -4125,13 +4097,13 @@ Object {
       "attrs": Array [],
       "block": Object {
         "filename": "html.pg",
-        "line": 13,
+        "line": 11,
         "nodes": Array [
           Object {
             "column": 4,
             "filename": "html.pg",
             "isHtml": true,
-            "line": 13,
+            "line": 11,
             "type": "Text",
             "val": "<strong>Even</strong> as the body of a block expansion.",
           },
@@ -4141,7 +4113,7 @@ Object {
       "column": 1,
       "filename": "html.pg",
       "isInline": false,
-      "line": 13,
+      "line": 11,
       "name": "p",
       "selfClosing": false,
       "type": "Tag",

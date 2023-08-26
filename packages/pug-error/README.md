@@ -1,24 +1,21 @@
-# pug-error
+# pugneum-error
 
-Standard error objects for pug.  This module is intended for use by the lexer, parser, loader, linker, code-generator and any plugins.
-
-[![Build Status](https://img.shields.io/travis/pugjs/pug-error/master.svg)](https://travis-ci.org/pugjs/pug-error)
-[![Dependencies Status](https://david-dm.org/pugjs/pug/status.svg?path=packages/pug-error)](https://david-dm.org/pugjs/pug?path=packages/pug-error)
-[![NPM version](https://img.shields.io/npm/v/pug-error.svg)](https://www.npmjs.org/package/pug-error)
+Standard pugneum error object factory function.
+This module is intended for use by the lexer, parser, loader, linker, code generator and any plugins.
 
 ## Installation
 
-    npm install pug-error
+    npm install pugneum-error
 
 ## Usage
 
 ```js
-var error = require('pug-error');
+var error = require('pugneum-error');
 ```
 
 ### `error(code, message, options)`
 
-Create a Pug error object.
+Create a pugneum error object.
 
 `code` is a required unique code for the error type that can be used to pinpoint a certain error.
 
@@ -26,20 +23,20 @@ Create a Pug error object.
 
 `options` can contain any of the following properties:
 
-- `filename`: the name of the file causing the error
-- `line`: the offending line
-- `column`: the offending column
-- `src`: the Pug source, if available, for pretty-printing the error context
+ - `filename`: the name of the file causing the error
+ - `line`: the offending line
+ - `column`: the offending column
+ - `src`: the pugneum source, if available, for pretty-printing the error context
 
 The resulting error object is a simple Error object with additional properties given in the arguments.
 
 **Caveat:** the `message` argument is stored in `err.msg`, not `err.message`, which is occupied with a better-formatted message.
 
 ```js
-var error = require('pug-error');
+var error = require('pugneum-error');
 
 var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile', src: 'foo\nbar\nbaz\nbash\nbing'});
-// { code: 'PUG:MY_CODE',
+// { code: 'PUGNEUM:MY_CODE',
 //   msg: 'My message',
 //   line: 3,
 //   column: undefined,

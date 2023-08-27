@@ -1,6 +1,6 @@
-extends bar.pug
+extends bar.pg
 
 block bing
-  include bing.pug
+  include bing.pg
   script
     include script.js

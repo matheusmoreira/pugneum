@@ -1,24 +1,25 @@
 {
-  "name": "pug-code-gen",
-  "version": "2.0.2",
-  "description": "Default code-generator for pug.  It generates HTML via a JavaScript template function.",
+  "name": "pugneum-renderer",
+  "version": "0.1.0",
+  "description": "Renders pugneum abstract syntax trees into HTML",
   "keywords": [
-    "pug"
+    "pugneum",
+    "renderer",
+    "compiler"
   ],
   "dependencies": {
-    "js-stringify": "^1.0.2",
-    "pug-attrs": "^2.0.4",
-    "pug-error": "^1.3.3",
-    "pug-runtime": "^2.0.5",
-    "with": "^7.0.0"
+    "pugneum-error": "^0.1.0"
   },
-  "files": [
-    "index.js"
-  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pugjs/pug/tree/master/packages/pug-code-gen"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/renderer"
   },
   "author": "Forbes Lindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
   "license": "MIT"
 }

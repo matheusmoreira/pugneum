@@ -21,9 +21,9 @@ console.log(source);
     ast,
     function(node) {
       if (node.filename)
-        node.filename = '<dirname>/' + path.basename(node.filename);
+        node.filename = path.basename(node.filename);
       if (node.fullPath)
-        node.fullPath = '<dirname>/' + path.basename(node.fullPath);
+        node.fullPath = path.basename(node.fullPath);
     },
     {includeDependencies: true}
   );

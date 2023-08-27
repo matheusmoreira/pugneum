@@ -297,8 +297,13 @@ Compiler.prototype = {
    */
 
   visitTag: function(tag, interpolated) {
+    this.buffer('<');
+    this.buffer(tag.name);
+    if (tag.attrs.length > 0) { this.buffer(' '); }
+    this.visitAttributes(tag.attrs);
 
-
+    if (tag.selfClosing || selfClosing[tag.name]) {
+      this.buffer('/>');
 
       // if it is non-empty throw an error
       if (
@@ -309,26 +314,19 @@ Compiler.prototype = {
           }))
       ) {
         this.error(
-          name +
+          tag.name +
             ' is a self closing element: <' +
-            name +
+            tag.name +
             '/> but contains nested content.',
           'SELF_CLOSING_CONTENT',
           tag
         );
       }
     } else {
-      // Optimize attributes buffering
-      this.buffer('<');
-      bufferName();
-      this.visitAttributes(
-        tag.attrs,
-        this.attributeBlocks(tag.attributeBlocks)
-      );
       this.buffer('>');
       this.visit(tag.block, tag);
       this.buffer('</');
-      bufferName();
+      this.buffer(tag.name);
       this.buffer('>');
     }
   /**

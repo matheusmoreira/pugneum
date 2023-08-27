@@ -146,38 +146,6 @@ Compiler.prototype = {
   },
 
   /**
-   * Visit case `node`.
-   *
-   * @param {Literal} node
-   * @api public
-   */
-
-  visitCase: function(node) {
-    this.buf.push('switch (' + node.expr + '){');
-    this.visit(node.block, node);
-    this.buf.push('}');
-  },
-
-  /**
-   * Visit when `node`.
-   *
-   * @param {Literal} node
-   * @api public
-   */
-
-  visitWhen: function(node) {
-    if ('default' == node.expr) {
-      this.buf.push('default:');
-    } else {
-      this.buf.push('case ' + node.expr + ':');
-    }
-    if (node.block) {
-      this.visit(node.block, node);
-      this.buf.push('  break;');
-    }
-  },
-
-  /**
    * Visit literal `node`.
    *
    * @param {Literal} node

@@ -2,38 +2,38 @@
 
 exports[`filters can be aliased 1`] = `
 Object {
-  "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+  "filename": "filter-aliases.test.js",
   "line": 0,
   "nodes": Array [
     Object {
       "attributeBlocks": Array [],
       "attrs": Array [],
       "block": Object {
-        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+        "filename": "filter-aliases.test.js",
         "line": 2,
         "nodes": Array [
           Object {
             "attrs": Array [],
             "block": Object {
-              "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+              "filename": "filter-aliases.test.js",
               "line": 3,
               "nodes": Array [
                 Object {
                   "attrs": Array [],
                   "block": Object {
-                    "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                    "filename": "filter-aliases.test.js",
                     "line": 3,
                     "nodes": Array [
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 4,
                         "type": "Text",
                         "val": "function myFunc(foo) {",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 5,
                         "type": "Text",
                         "val": "
@@ -41,14 +41,14 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 5,
                         "type": "Text",
                         "val": "  return foo;",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 6,
                         "type": "Text",
                         "val": "
@@ -56,7 +56,7 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 6,
                         "type": "Text",
                         "val": "}",
@@ -65,7 +65,7 @@ Object {
                     "type": "Block",
                   },
                   "column": 9,
-                  "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                  "filename": "filter-aliases.test.js",
                   "line": 3,
                   "name": "minify",
                   "type": "Text",
@@ -78,7 +78,7 @@ Object {
               "type": "Block",
             },
             "column": 3,
-            "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+            "filename": "filter-aliases.test.js",
             "line": 3,
             "name": "cdata",
             "type": "Text",
@@ -88,7 +88,7 @@ Object {
         "type": "Block",
       },
       "column": 1,
-      "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+      "filename": "filter-aliases.test.js",
       "isInline": false,
       "line": 2,
       "name": "script",
@@ -102,38 +102,38 @@ Object {
 
 exports[`options are applied before aliases 1`] = `
 Object {
-  "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+  "filename": "filter-aliases.test.js",
   "line": 0,
   "nodes": Array [
     Object {
       "attributeBlocks": Array [],
       "attrs": Array [],
       "block": Object {
-        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+        "filename": "filter-aliases.test.js",
         "line": 2,
         "nodes": Array [
           Object {
             "attrs": Array [],
             "block": Object {
-              "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+              "filename": "filter-aliases.test.js",
               "line": 3,
               "nodes": Array [
                 Object {
                   "attrs": Array [],
                   "block": Object {
-                    "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                    "filename": "filter-aliases.test.js",
                     "line": 3,
                     "nodes": Array [
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 4,
                         "type": "Text",
                         "val": "function myFunc(foo) {",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 5,
                         "type": "Text",
                         "val": "
@@ -141,14 +141,14 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 5,
                         "type": "Text",
                         "val": "  return foo;",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 6,
                         "type": "Text",
                         "val": "
@@ -156,7 +156,7 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 6,
                         "type": "Text",
                         "val": "}",
@@ -165,7 +165,7 @@ Object {
                     "type": "Block",
                   },
                   "column": 9,
-                  "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                  "filename": "filter-aliases.test.js",
                   "line": 3,
                   "name": "minify",
                   "type": "Text",
@@ -178,7 +178,7 @@ Object {
               "type": "Block",
             },
             "column": 3,
-            "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+            "filename": "filter-aliases.test.js",
             "line": 3,
             "name": "cdata",
             "type": "Text",
@@ -189,25 +189,25 @@ Object {
           Object {
             "attrs": Array [],
             "block": Object {
-              "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+              "filename": "filter-aliases.test.js",
               "line": 7,
               "nodes": Array [
                 Object {
                   "attrs": Array [],
                   "block": Object {
-                    "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                    "filename": "filter-aliases.test.js",
                     "line": 7,
                     "nodes": Array [
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 8,
                         "type": "Text",
                         "val": "function myFunc(foo) {",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 9,
                         "type": "Text",
                         "val": "
@@ -215,14 +215,14 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 9,
                         "type": "Text",
                         "val": "  return foo;",
                       },
                       Object {
                         "column": 1,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 10,
                         "type": "Text",
                         "val": "
@@ -230,7 +230,7 @@ Object {
                       },
                       Object {
                         "column": 5,
-                        "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                        "filename": "filter-aliases.test.js",
                         "line": 10,
                         "type": "Text",
                         "val": "}",
@@ -239,7 +239,7 @@ Object {
                     "type": "Block",
                   },
                   "column": 9,
-                  "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+                  "filename": "filter-aliases.test.js",
                   "line": 7,
                   "name": "uglify-js",
                   "type": "Text",
@@ -252,7 +252,7 @@ Object {
               "type": "Block",
             },
             "column": 3,
-            "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+            "filename": "filter-aliases.test.js",
             "line": 7,
             "name": "cdata",
             "type": "Text",
@@ -262,7 +262,7 @@ Object {
         "type": "Block",
       },
       "column": 1,
-      "filename": "<basedir>/packages/pug-filters/test/filter-aliases.test.js",
+      "filename": "filter-aliases.test.js",
       "isInline": false,
       "line": 2,
       "name": "script",
@@ -277,7 +277,7 @@ Object {
 exports[`we do not support chains of aliases 1`] = `
 Object {
   "code": "PUG:FILTER_ALISE_CHAIN",
-  "message": "<basedir>/packages/pug-filters/test/filter-aliases.test.js:3:9
+  "message": "filter-aliases.test.js:3:9
 
 The filter \\"minify-js\\" is an alias for \\"minify\\", which is an alias for \\"uglify-js\\".  Pug does not support chains of filter aliases.",
 }

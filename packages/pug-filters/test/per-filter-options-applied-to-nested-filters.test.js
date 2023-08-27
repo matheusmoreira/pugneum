@@ -3,6 +3,8 @@ const parse = require('pugneum-parser');
 const handleFilters = require('../').handleFilters;
 
 const customFilters = {};
+const filename = require('path').basename(__filename);
+
 test('per filter options are applied, even to nested filters', () => {
   const source = `
 script
@@ -12,8 +14,8 @@ script
     }
   `;
 
-  const ast = parse(lex(source, {filename: __filename}), {
-    filename: __filename,
+  const ast = parse(lex(source, {filename}), {
+    filename,
     src: source,
   });
 

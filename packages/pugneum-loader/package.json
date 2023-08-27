@@ -1,0 +1,30 @@
+{
+  "name": "pugneum-loader",
+  "version": "0.1.0",
+  "description": "Loads the dependencies of pugneum templates",
+  "keywords": [
+    "pugneum",
+    "loader",
+    "resolver",
+    "pug"
+  ],
+  "dependencies": {
+    "pugneum-walk": "^0.1.0"
+  },
+  "devDependencies": {
+    "pugneum-lexer": "^0.1.0",
+    "pugneum-parser": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-loader"
+  },
+  "author": "Forbes Lindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "license": "MIT"
+}

@@ -317,8 +317,8 @@ Compiler.prototype = {
           tag.name +
             ' is a self closing element: <' +
             tag.name +
-            '/> but contains nested content.',
-          'SELF_CLOSING_CONTENT',
+            '/> but contains nested content',
+          'VOID_ELEMENT_WITH_CONTENT',
           tag
         );
       }

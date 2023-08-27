@@ -5,7 +5,8 @@ const path = require('path');
 const walk = require('pugneum-walk');
 const assign = Object.assign;
 
-module.exports = load;
+module.exports = { load, resolve, read, validateOptions };
+
 function load(ast, options) {
   options = getOptions(options);
   // clone the ast
@@ -44,7 +45,7 @@ function load(ast, options) {
   });
 }
 
-load.resolve = function resolve(filename, source, options) {
+function resolve(filename, source, options) {
   filename = filename.trim();
   if (filename[0] !== '/' && !source)
     throw new Error(
@@ -62,12 +63,13 @@ load.resolve = function resolve(filename, source, options) {
   );
 
   return filename;
-};
-load.read = function read(filename, options) {
-  return fs.readFileSync(filename, 'utf8');
-};
+}
 
-load.validateOptions = function validateOptions(options) {
+function read(filename, options) {
+  return fs.readFileSync(filename, 'utf8');
+}
+
+function validateOptions(options) {
   /* istanbul ignore if */
   if (typeof options !== 'object') {
     throw new TypeError('options must be an object');
@@ -88,14 +90,14 @@ load.validateOptions = function validateOptions(options) {
   if (options.read && typeof options.read !== 'function') {
     throw new TypeError('options.read must be a function');
   }
-};
+}
 
 function getOptions(options) {
-  load.validateOptions(options);
+  validateOptions(options);
   return assign(
     {
-      resolve: load.resolve,
-      read: load.read,
+      resolve: resolve,
+      read: read,
     },
     options
   );

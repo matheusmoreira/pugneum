@@ -198,7 +198,6 @@ Compiler.prototype = {
     var block = mixin.block;
     var attrs = mixin.attrs;
     var attrsBlocks = this.attributeBlocks(mixin.attributeBlocks);
-    var pp = this.pp;
     var dynamic = mixin.name[0] === '#';
     var key = mixin.name;
     if (dynamic) this.dynamicMixins = true;
@@ -210,12 +209,6 @@ Compiler.prototype = {
     this.mixins[key] = this.mixins[key] || {used: false, instances: []};
     if (mixin.call) {
       this.mixins[key].used = true;
-      if (pp)
-        this.buf.push(
-          'pug_indent.push(' +
-            stringify(Array(this.indents + 1).join(pp)) +
-            ');'
-        );
       if (block || attrs.length || attrsBlocks.length) {
         this.buf.push(name + '.call({');
 
@@ -223,12 +216,7 @@ Compiler.prototype = {
           this.buf.push('block: function(){');
 
           // Render block with no indents, dynamically added when rendered
-          this.parentIndents++;
-          var _indents = this.indents;
-          this.indents = 0;
           this.visit(mixin.block, mixin);
-          this.indents = _indents;
-          this.parentIndents--;
 
           if (attrs.length || attrsBlocks.length) {
             this.buf.push('},');
@@ -266,7 +254,6 @@ Compiler.prototype = {
       } else {
         this.buf.push(name + '(' + args + ');');
       }
-      if (pp) this.buf.push('pug_indent.pop();');
     } else {
       var mixin_start = this.buf.length;
       args = args ? args.split(',') : [];
@@ -293,9 +280,7 @@ Compiler.prototype = {
         this.buf.push('  ' + rest + '.push(arguments[pug_interp]);');
         this.buf.push('}');
       }
-      this.parentIndents++;
       this.visit(block, mixin);
-      this.parentIndents--;
       this.buf.push('};');
       var mixin_end = this.buf.length;
       this.mixins[key].instances.push({start: mixin_start, end: mixin_end});
@@ -312,18 +297,7 @@ Compiler.prototype = {
    */
 
   visitTag: function(tag, interpolated) {
-    this.indents++;
-    var name = tag.name,
-      pp = this.pp,
-      self = this;
 
-    function bufferName() {
-      if (interpolated) self.bufferExpression(tag.expr);
-      else self.buffer(name);
-    }
-
-    if (WHITE_SPACE_SENSITIVE_TAGS[tag.name] === true)
-      this.escapePrettyMode = true;
 
     if (!this.hasCompiledTag) {
       if (!this.hasCompiledDoctype && 'html' == name) {
@@ -332,20 +306,6 @@ Compiler.prototype = {
       this.hasCompiledTag = true;
     }
 
-    // pretty print
-    if (pp && !tag.isInline) this.prettyIndent(0, true);
-    if (tag.selfClosing || (!this.xml && selfClosing[tag.name])) {
-      this.buffer('<');
-      bufferName();
-      this.visitAttributes(
-        tag.attrs,
-        this.attributeBlocks(tag.attributeBlocks)
-      );
-      if (this.terse && !tag.selfClosing) {
-        this.buffer('>');
-      } else {
-        this.buffer('/>');
-      }
       // if it is non-empty throw an error
       if (
         tag.code ||
@@ -375,27 +335,10 @@ Compiler.prototype = {
       this.buffer('>');
       if (tag.code) this.visitCode(tag.code);
       this.visit(tag.block, tag);
-
-      // pretty print
-      if (
-        pp &&
-        !tag.isInline &&
-        WHITE_SPACE_SENSITIVE_TAGS[tag.name] !== true &&
-        !tagCanInline(tag)
-      )
-        this.prettyIndent(0, true);
-
       this.buffer('</');
       bufferName();
       this.buffer('>');
     }
-
-    if (WHITE_SPACE_SENSITIVE_TAGS[tag.name] === true)
-      this.escapePrettyMode = false;
-
-    this.indents--;
-  },
-
   /**
    * Visit InterpolatedTag.
    *
@@ -427,7 +370,6 @@ Compiler.prototype = {
 
   visitComment: function(comment) {
     if (!comment.buffer) return;
-    if (this.pp) this.prettyIndent(1, true);
     this.buffer('<!--' + comment.val + '-->');
   },
 
@@ -451,10 +393,8 @@ Compiler.prototype = {
 
   visitBlockComment: function(comment) {
     if (!comment.buffer) return;
-    if (this.pp) this.prettyIndent(1, true);
     this.buffer('<!--' + (comment.val || ''));
     this.visit(comment.block, comment);
-    if (this.pp) this.prettyIndent(1, true);
     this.buffer('-->');
   },
 

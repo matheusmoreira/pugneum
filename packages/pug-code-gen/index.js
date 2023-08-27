@@ -32,18 +32,7 @@ function Compiler(node, options) {
   this.bufferedConcatenationCount = 0;
   this.hasCompiledDoctype = false;
   this.hasCompiledTag = false;
-  this.pp = options.pretty || false;
-  if (this.pp && typeof this.pp !== 'string') {
-    this.pp = '  ';
-  }
-  if (this.pp && !/^\s+$/.test(this.pp)) {
-    throw new Error(
-      'The pretty parameter should either be a boolean or whitespace only string'
-    );
-  }
   this.debug = false !== options.compileDebug;
-  this.indents = 0;
-  this.parentIndents = 0;
   this.terse = false;
   this.mixins = {};
   this.dynamicMixins = false;

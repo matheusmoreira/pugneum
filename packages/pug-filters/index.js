@@ -4,7 +4,6 @@ var dirname = require('path').dirname;
 var walk = require('pugneum-walk');
 var error = require('pugneum-error');
 var jstransformer = require('jstransformer');
-var resolve = require('resolve');
 
 function handleFilters(ast, filters, options, filterAliases) {
   options = options || {};
@@ -143,13 +142,7 @@ function runFilter(name, str, options, currentDirectory, funcName) {
   funcName = funcName || 'render';
   var trPath;
   try {
-    try {
-      trPath = resolve.sync('jstransformer-' + name, {
-        basedir: currentDirectory || process.cwd(),
-      });
-    } catch (ex) {
-      trPath = require.resolve('jstransformer-' + name);
-    }
+    trPath = require.resolve('jstransformer-' + name);
   } catch (ex) {
     var err = new Error('unknown filter ":' + name + '"');
     err.code = 'UNKNOWN_FILTER';

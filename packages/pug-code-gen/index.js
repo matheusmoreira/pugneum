@@ -185,24 +185,6 @@ Compiler.prototype = {
   },
 
   /**
-   * Visit `doctype`. Sets terse mode to `true` when html 5
-   * is used, causing self-closing tags to end with ">" vs "/>",
-   * and boolean attributes are not mirrored.
-   *
-   * @param {Doctype} doctype
-   * @api public
-   */
-
-  visitDoctype: function(doctype) {
-    if (doctype && (doctype.val || !this.doctype)) {
-      this.setDoctype(doctype.val || 'html');
-    }
-
-    if (this.doctype) this.buffer(this.doctype);
-    this.hasCompiledDoctype = true;
-  },
-
-  /**
    * Visit `mixin`, generating a function that
    * may be called within the template.
    *

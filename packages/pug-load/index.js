@@ -34,12 +34,10 @@ function load(ast, options) {
         file.str = str;
         file.raw = raw;
         if (node.type === 'Extends' || node.type === 'Include') {
-          file.ast = load.string(
-            str,
-            assign({}, options, {
-              filename: path,
-            })
-          );
+          let opts = assign({}, options, {filename: path, src: str});
+          let tokens = options.lex(str, opts);
+          let ast = options.parse(tokens, opts);
+          file.ast = load(ast, opts);
         }
       }
     }

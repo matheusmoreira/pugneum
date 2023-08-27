@@ -12,12 +12,6 @@
     "resolve": "^1.15.1"
   },
   "devDependencies": {
-    "jstransformer-cdata": "^1.0.0",
-    "jstransformer-coffee-script": "^1.1.1",
-    "jstransformer-less": "^2.3.0",
-    "jstransformer-markdown-it": "^2.0.0",
-    "jstransformer-stylus": "^1.5.0",
-    "jstransformer-uglify-js": "^1.2.0",
     "pugneum-lexer": "^0.1.0",
     "pugneum-load": "^0.1.0",
     "pugneum-parser": "^0.1.0"

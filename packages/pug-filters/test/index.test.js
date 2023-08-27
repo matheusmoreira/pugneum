@@ -3,7 +3,14 @@
 var fs = require('fs');
 var assert = require('assert');
 var handleFilters = require('../').handleFilters;
-var customFilters = require('./custom-filters.js');
+
+var customFilters = {
+  custom: function(str, options) {
+    expect(options.opt).toBe('val');
+    expect(options.num).toBe(2);
+    return 'BEGIN' + str + 'END';
+  }
+};
 
 process.chdir(__dirname + '/../');
 

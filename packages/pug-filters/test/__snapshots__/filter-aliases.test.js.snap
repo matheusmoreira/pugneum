@@ -19,60 +19,11 @@ Object {
               "line": 3,
               "nodes": Array [
                 Object {
-                  "attrs": Array [],
-                  "block": Object {
-                    "filename": "filter-aliases.test.js",
-                    "line": 3,
-                    "nodes": Array [
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 4,
-                        "type": "Text",
-                        "val": "function myFunc(foo) {",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "  return foo;",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "}",
-                      },
-                    ],
-                    "type": "Block",
-                  },
-                  "column": 9,
+                  "column": 5,
                   "filename": "filter-aliases.test.js",
-                  "line": 3,
-                  "name": "minify",
+                  "line": 4,
                   "type": "Text",
-                  "val": "function myFunc(n) {
-  return n;
-}
-",
+                  "val": "Filters can be aliased.",
                 },
               ],
               "type": "Block",
@@ -80,9 +31,11 @@ Object {
             "column": 3,
             "filename": "filter-aliases.test.js",
             "line": 3,
-            "name": "cdata",
+            "name": "aliased",
             "type": "Text",
-            "val": "<![CDATA[function myFunc(n){return n}]]>",
+            "val": "BEGIN ALIASED
+Filters can be aliased.
+END ALIASED",
           },
         ],
         "type": "Block",
@@ -91,7 +44,7 @@ Object {
       "filename": "filter-aliases.test.js",
       "isInline": false,
       "line": 2,
-      "name": "script",
+      "name": "p",
       "selfClosing": false,
       "type": "Tag",
     },
@@ -119,60 +72,11 @@ Object {
               "line": 3,
               "nodes": Array [
                 Object {
-                  "attrs": Array [],
-                  "block": Object {
-                    "filename": "filter-aliases.test.js",
-                    "line": 3,
-                    "nodes": Array [
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 4,
-                        "type": "Text",
-                        "val": "function myFunc(foo) {",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "  return foo;",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "}",
-                      },
-                    ],
-                    "type": "Block",
-                  },
-                  "column": 9,
+                  "column": 5,
                   "filename": "filter-aliases.test.js",
-                  "line": 3,
-                  "name": "minify",
+                  "line": 4,
                   "type": "Text",
-                  "val": "function myFunc(n) {
-  return n;
-}
-",
+                  "val": "Will be wrapped.",
                 },
               ],
               "type": "Block",
@@ -180,83 +84,34 @@ Object {
             "column": 3,
             "filename": "filter-aliases.test.js",
             "line": 3,
-            "name": "cdata",
+            "name": "check-options",
             "type": "Text",
-            "val": "<![CDATA[function myFunc(n) {
-    return n;
-}]]>",
+            "val": "CHECKED
+Will be wrapped.
+END CHECKED",
           },
           Object {
             "attrs": Array [],
             "block": Object {
               "filename": "filter-aliases.test.js",
-              "line": 7,
+              "line": 5,
               "nodes": Array [
                 Object {
-                  "attrs": Array [],
-                  "block": Object {
-                    "filename": "filter-aliases.test.js",
-                    "line": 7,
-                    "nodes": Array [
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 8,
-                        "type": "Text",
-                        "val": "function myFunc(foo) {",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 9,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 9,
-                        "type": "Text",
-                        "val": "  return foo;",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "filter-aliases.test.js",
-                        "line": 10,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "filter-aliases.test.js",
-                        "line": 10,
-                        "type": "Text",
-                        "val": "}",
-                      },
-                    ],
-                    "type": "Block",
-                  },
-                  "column": 9,
+                  "column": 5,
                   "filename": "filter-aliases.test.js",
-                  "line": 7,
-                  "name": "uglify-js",
+                  "line": 6,
                   "type": "Text",
-                  "val": "function myFunc(n) {
-  return n;
-}
-",
+                  "val": "Will not be wrapped.",
                 },
               ],
               "type": "Block",
             },
             "column": 3,
             "filename": "filter-aliases.test.js",
-            "line": 7,
-            "name": "cdata",
+            "line": 5,
+            "name": "aliased",
             "type": "Text",
-            "val": "<![CDATA[function myFunc(n){return n}]]>",
+            "val": "Will not be wrapped.",
           },
         ],
         "type": "Block",
@@ -277,8 +132,8 @@ Object {
 exports[`we do not support chains of aliases 1`] = `
 Object {
   "code": "PUGNEUM:FILTER_ALIAS_CHAIN",
-  "message": "filter-aliases.test.js:3:9
+  "message": "filter-aliases.test.js:3:3
 
-The filter \\"minify-js\\" is an alias for \\"minify\\", which is an alias for \\"uglify-js\\".  pugneum does not support chains of filter aliases.",
+The filter \\"aliased-again\\" is an alias for \\"aliased\\", which is an alias for \\"alias\\".  pugneum does not support chains of filter aliases.",
 }
 `;

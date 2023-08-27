@@ -2,17 +2,23 @@ const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
 const handleFilters = require('../').handleFilters;
 
-const customFilters = {};
 const filename = require('path').basename(__filename);
+
+const customFilters = {
+  alias: function(str, options) {
+    return 'BEGIN ALIASED\n' + str + '\nEND ALIASED';
+  },
+  'check-options': function(str, options) {
+    return options.wrap? 'CHECKED\n' + str + '\nEND CHECKED' : str;
+  }
+};
 
 test('filters can be aliased', () => {
   const source = `
-script
-  :cdata:minify
-    function myFunc(foo) {
-      return foo;
-    }
-  `;
+p
+  :aliased
+    Filters can be aliased.
+`;
 
   const ast = parse(lex(source, {filename}), {
     filename,
@@ -21,7 +27,7 @@ script
 
   const options = {};
   const aliases = {
-    minify: 'uglify-js',
+    aliased: 'alias',
   };
 
   const output = handleFilters(ast, customFilters, options, aliases);
@@ -30,11 +36,9 @@ script
 
 test('we do not support chains of aliases', () => {
   const source = `
-script
-  :cdata:minify-js
-    function myFunc(foo) {
-      return foo;
-    }
+p
+  :aliased-again
+    Alias chains are not supported.
   `;
 
   const ast = parse(lex(source, {filename}), {
@@ -44,8 +48,8 @@ script
 
   const options = {};
   const aliases = {
-    'minify-js': 'minify',
-    minify: 'uglify-js',
+    aliased: 'alias',
+    'aliased-again': 'aliased',
   };
 
   try {
@@ -63,15 +67,11 @@ script
 test('options are applied before aliases', () => {
   const source = `
 script
-  :cdata:minify
-    function myFunc(foo) {
-      return foo;
-    }
-  :cdata:uglify-js
-    function myFunc(foo) {
-      return foo;
-    }
-  `;
+  :check-options
+    Will be wrapped.
+  :aliased
+    Will not be wrapped.
+`;
 
   const ast = parse(lex(source, {filename}), {
     filename,
@@ -79,10 +79,10 @@ script
   });
 
   const options = {
-    minify: {output: {beautify: true}},
+    'check-options': {wrap: true}
   };
   const aliases = {
-    minify: 'uglify-js',
+    aliased: 'check-options',
   };
 
   const output = handleFilters(ast, customFilters, options, aliases);

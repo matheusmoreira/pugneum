@@ -3,7 +3,6 @@
 var assert = require('assert');
 var TokenStream = require('token-stream');
 var error = require('pugneum-error');
-var inlineTags = require('./lib/inline-tags');
 
 module.exports = parse;
 
@@ -12,6 +11,26 @@ function parse(tokens, options) {
   var ast = parser.parse();
   return JSON.parse(JSON.stringify(ast));
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
+// https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
+var inlineTags = [
+  'a', 'abbr', 'acronym', 'address', 'audio',
+  'b', 'bdi', 'bdo', 'br',
+  'cite', 'code',
+  'data', 'dfn',
+  'em',
+  'i', 'img',
+  'kbd',
+  'mark',
+  'q',
+  'rp', 'rt', 'ruby',
+  's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
+  'time',
+  'u',
+  'var', 'video',
+  'wbr',
+];
 
 /**
  * Initialize `Parser` with the given input `str` and `filename`.

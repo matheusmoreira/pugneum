@@ -9610,7 +9610,7 @@ Object {
             },
             "column": 3,
             "filename": "source.pg",
-            "isInline": false,
+            "isInline": true,
             "line": 2,
             "name": "audio",
             "selfClosing": false,

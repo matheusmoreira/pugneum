@@ -42,10 +42,6 @@ function Compiler(node, options) {
   }
 }
 
-/**
- * Compiler prototype.
- */
-
 Compiler.prototype = {
   runtime: function(name) {
     if (this.inlineRuntimeFunctions) {

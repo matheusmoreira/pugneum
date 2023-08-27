@@ -104,37 +104,6 @@ Compiler.prototype = {
   },
 
   /**
-   * Buffer the given `src` so it is evaluated at run time
-   *
-   * @param {String} src
-   * @api public
-   */
-
-  bufferExpression: function(src) {
-    if (
-      this.lastBufferedIdx == this.buf.length &&
-      this.bufferedConcatenationCount < 100
-    ) {
-      this.bufferedConcatenationCount++;
-      if (this.lastBufferedType === 'text') this.lastBuffered += '"';
-      this.lastBufferedType = 'code';
-      this.lastBuffered += ' + (' + src + ')';
-      this.buf[this.lastBufferedIdx - 1] =
-        'pug_html = pug_html + (' +
-        this.bufferStartChar +
-        this.lastBuffered +
-        ');';
-    } else {
-      this.bufferedConcatenationCount = 0;
-      this.buf.push('pug_html = pug_html + (' + src + ');');
-      this.lastBufferedType = 'code';
-      this.bufferStartChar = '';
-      this.lastBuffered = '(' + src + ')';
-      this.lastBufferedIdx = this.buf.length;
-    }
-  },
-
-  /**
    * Buffer an indent based on the current `indent`
    * property and an additional `offset`.
    *

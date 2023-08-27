@@ -30,14 +30,12 @@ function Compiler(node, options) {
   this.options = options = options || {};
   this.node = node;
   this.bufferedConcatenationCount = 0;
-  this.hasCompiledDoctype = false;
   this.hasCompiledTag = false;
   this.debug = false !== options.compileDebug;
-  this.terse = false;
+  this.terse = true;
   this.mixins = {};
   this.dynamicMixins = false;
   this.eachCount = 0;
-  if (options.doctype) this.setDoctype(options.doctype);
   this.runtimeFunctionsUsed = [];
   this.inlineRuntimeFunctions = options.inlineRuntimeFunctions || false;
   if (this.debug && this.inlineRuntimeFunctions) {

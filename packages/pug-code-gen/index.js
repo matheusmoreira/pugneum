@@ -104,23 +104,6 @@ Compiler.prototype = {
   },
 
   /**
-   * Buffer an indent based on the current `indent`
-   * property and an additional `offset`.
-   *
-   * @param {Number} offset
-   * @param {Boolean} newline
-   * @api public
-   */
-
-  prettyIndent: function(offset, newline) {
-    offset = offset || 0;
-    newline = newline ? '\n' : '';
-    this.buffer(newline + Array(this.indents + offset).join(this.pp));
-    if (this.parentIndents)
-      this.buf.push('pug_html = pug_html + pug_indent.join("");');
-  },
-
-  /**
    * Visit `node`.
    *
    * @param {Node} node

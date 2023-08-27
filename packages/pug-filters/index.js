@@ -79,7 +79,7 @@ function handleFilters(ast, filters, options, filterAliases) {
       filterName = filterAliases[filterName];
       if (filterAliases[filterName]) {
         throw error(
-          'FILTER_ALISE_CHAIN',
+          'FILTER_ALIAS_CHAIN',
           'The filter "' +
             filter.name +
             '" is an alias for "' +

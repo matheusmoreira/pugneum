@@ -1,8 +1,8 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var walk = require('pug-walk');
+const fs = require('fs');
+const path = require('path');
+const walk = require('pugneum-walk');
 var assign = require('object-assign');
 
 module.exports = load;

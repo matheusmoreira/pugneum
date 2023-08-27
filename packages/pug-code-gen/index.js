@@ -31,7 +31,6 @@ function Compiler(node, options) {
   this.node = node;
   this.bufferedConcatenationCount = 0;
   this.hasCompiledTag = false;
-  this.debug = false !== options.compileDebug;
   this.terse = true;
   this.mixins = {};
   this.dynamicMixins = false;

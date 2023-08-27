@@ -2,17 +2,23 @@ const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
 const handleFilters = require('../').handleFilters;
 
-const customFilters = {};
 const filename = require('path').basename(__filename);
+
+const customFilters = {
+  first: function(str, options) {
+    return options.wrap? 'FIRST\n' + str + '\nEND FIRST' : str;
+  },
+  second: function(str, options) {
+    return options.wrap? 'SECOND\n' + str + '\nEND SECOND' : str;
+  }
+};
 
 test('per filter options are applied, even to nested filters', () => {
   const source = `
-script
-  :cdata:uglify-js
-    function myFunc(foo) {
-      return foo;
-    }
-  `;
+p
+  :first:second
+    Will be wrapped in second.
+`;
 
   const ast = parse(lex(source, {filename}), {
     filename,
@@ -20,11 +26,9 @@ script
   });
 
   const options = {
-    'uglify-js': {output: {beautify: true}},
+      second: {wrap: true},
   };
 
   const output = handleFilters(ast, customFilters, options);
   expect(output).toMatchSnapshot();
-
-  // TODO: render with `options.filterOptions['uglify-js']`
 });

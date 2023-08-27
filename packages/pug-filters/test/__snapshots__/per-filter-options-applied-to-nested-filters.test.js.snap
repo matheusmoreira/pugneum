@@ -29,37 +29,7 @@ Object {
                         "filename": "per-filter-options-applied-to-nested-filters.test.js",
                         "line": 4,
                         "type": "Text",
-                        "val": "function myFunc(foo) {",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                        "line": 5,
-                        "type": "Text",
-                        "val": "  return foo;",
-                      },
-                      Object {
-                        "column": 1,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "
-",
-                      },
-                      Object {
-                        "column": 5,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                        "line": 6,
-                        "type": "Text",
-                        "val": "}",
+                        "val": "Will be wrapped in second.",
                       },
                     ],
                     "type": "Block",
@@ -67,12 +37,11 @@ Object {
                   "column": 9,
                   "filename": "per-filter-options-applied-to-nested-filters.test.js",
                   "line": 3,
-                  "name": "uglify-js",
+                  "name": "second",
                   "type": "Text",
-                  "val": "function myFunc(n) {
-  return n;
-}
-",
+                  "val": "SECOND
+Will be wrapped in second.
+END SECOND",
                 },
               ],
               "type": "Block",
@@ -80,11 +49,11 @@ Object {
             "column": 3,
             "filename": "per-filter-options-applied-to-nested-filters.test.js",
             "line": 3,
-            "name": "cdata",
+            "name": "first",
             "type": "Text",
-            "val": "<![CDATA[function myFunc(n) {
-    return n;
-}]]>",
+            "val": "SECOND
+Will be wrapped in second.
+END SECOND",
           },
         ],
         "type": "Block",
@@ -93,7 +62,7 @@ Object {
       "filename": "per-filter-options-applied-to-nested-filters.test.js",
       "isInline": false,
       "line": 2,
-      "name": "script",
+      "name": "p",
       "selfClosing": false,
       "type": "Tag",
     },

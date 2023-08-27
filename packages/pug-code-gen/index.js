@@ -308,10 +308,9 @@ Compiler.prototype = {
 
       // if it is non-empty throw an error
       if (
-        tag.code ||
-        (tag.block &&
+          tag.block &&
           !(tag.block.type === 'Block' && tag.block.nodes.length === 0) &&
-          tag.block.nodes.some(function(tag) {
+          (tag.block.nodes.some(function(tag) {
             return tag.type !== 'Text' || !/^\s*$/.test(tag.val);
           }))
       ) {
@@ -333,7 +332,6 @@ Compiler.prototype = {
         this.attributeBlocks(tag.attributeBlocks)
       );
       this.buffer('>');
-      if (tag.code) this.visitCode(tag.code);
       this.visit(tag.block, tag);
       this.buffer('</');
       bufferName();

@@ -46,14 +46,6 @@ function load(ast, options) {
   });
 }
 
-load.string = function loadString(src, options) {
-  options = assign(getOptions(options), {
-    src: src,
-  });
-  var tokens = options.lex(src, options);
-  var ast = options.parse(tokens, options);
-  return load(ast, options);
-};
 load.file = function loadFile(filename, options) {
   options = assign(getOptions(options), {
     filename: filename,

@@ -84,8 +84,6 @@ Compiler.prototype = {
    */
 
   visit: function(node, parent) {
-    var debug = this.debug;
-
     if (!node) {
       var msg;
       if (parent) {
@@ -102,15 +100,6 @@ Compiler.prototype = {
       }
       msg += ' is ' + node + ', expected a Pug AST Node.';
       throw new TypeError(msg);
-    }
-
-    if (debug && node.debug !== false && node.type !== 'Block') {
-      if (node.line) {
-        var js = ';pug_debug_line = ' + node.line;
-        if (node.filename)
-          js += ';pug_debug_filename = ' + stringify(node.filename);
-        this.buf.push(js + ';');
-      }
     }
 
     if (!this['visit' + node.type]) {

@@ -1,63 +1,33 @@
-# pug-code-gen
+# pugneum-renderer
 
-Default code-generator for pug.  It generates HTML via a JavaScript template function.
-
-<!-- [![Build Status](https://img.shields.io/travis/pugjs/pug-code-gen/master.svg)](https://travis-ci.org/pugjs/pug-code-gen) -->
-[![Dependencies Status](https://david-dm.org/pugjs/pug/status.svg?path=packages/pug-code-gen)](https://david-dm.org/pugjs/pug?path=packages/pug-code-gen)
-[![npm version](https://img.shields.io/npm/v/pug-code-gen.svg)](https://www.npmjs.org/package/pug-code-gen)
+Renders pugneum abstract syntax trees into HTML.
 
 ## Installation
 
-    npm install pug-code-gen
+    npm install pugneum-renderer
 
 ## Usage
 
 ```js
-var generateCode = require('pug-code-gen');
+var render = require('pugneum-renderer');
 ```
 
-### `generateCode(ast, options)`
+### `render(ast, options)`
 
-Generate a JavaScript function string for the given AST.
+Compile the given pugneum abstract syntax tree,
+rendering it into an HTML string.
 
-`ast` is a fully expanded AST for Pug, with all inclusion, extends, and filters resolved.
-
-`options` may contain the following properties that have the same meaning as the options with the same names in `pug`:
-
- - pretty (boolean): default is `false`
- - compileDebug (boolean): default is `true`
- - doctype (string): default is `undefined`
- - inlineRuntimeFunctions (boolean): default is `false`
- - globals (array of strings): default is `[]`
- - self (boolean): default is `false`
-
-In addition to above, `pug-code-gen` has the following unique options:
-
- - includeSources (object): map of filename to source string; used if `compileDebug` is `true`; default is `undefined`
- - templateName (string): the name of the generated function; default is `'template'`
+`ast` is a fully loaded and linked pugneum abstract syntax tree:
+all includes, extends and filters must be resolved.
 
 ```js
-var lex = require('pug-lexer');
-var parse = require('pug-parser');
-var wrap = require('pug-runtime/wrap');
-var generateCode = require('pug-code-gen');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var render = require('pugneum-renderer');
 
-var funcStr = generateCode(parse(lex('p Hello world!')), {
-  compileDebug: false,
-  pretty: true,
-  inlineRuntimeFunctions: false,
-  templateName: 'helloWorld'
-});
-//=> 'function helloWorld(locals) { ... }'
-
-var func = wrap(funcStr, 'helloWorld');
-func();
-//=> '\n<p>Hello world!</p>'
+let html = render(parse(lex('p Hello, world!')));
+//=> '<p>Hello, world!</p>'
 ```
-
-### `new generateCode.CodeGenerator(ast, options)`
-
-The constructor for the internal class of the code generator. You shouldn't need to use this for most purposes.
 
 ## License
 

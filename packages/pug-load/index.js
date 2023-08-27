@@ -46,14 +46,6 @@ function load(ast, options) {
   });
 }
 
-load.file = function loadFile(filename, options) {
-  options = assign(getOptions(options), {
-    filename: filename,
-  });
-  var str = options.read(filename).toString('utf8');
-  return load.string(str, options);
-};
-
 load.resolve = function resolve(filename, source, options) {
   filename = filename.trim();
   if (filename[0] !== '/' && !source)

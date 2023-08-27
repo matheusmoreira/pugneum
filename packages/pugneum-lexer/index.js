@@ -932,6 +932,27 @@ Lexer.prototype = {
             i++;
             break;
           }
+          if (str[i] === '\\') {
+            ++i;
+            switch (str[i]) {
+            case '\'':
+              value += '\'';
+              break;
+            case '"':
+              value += '"';
+              break;
+            case 'n':
+              value += '\n';
+              break;
+            case 't':
+              value += '\t';
+              break;
+            default:
+              value += str[i];
+              break;
+            }
+            ++i;
+          }
         } else {
           if (this.whitespaceRe.test(str[i])) {
             break;

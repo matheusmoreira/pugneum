@@ -2,12 +2,6 @@
 
 var makeError = require('pugneum-error');
 
-// This is used to prevent pretty printing inside certain tags
-var WHITE_SPACE_SENSITIVE_TAGS = {
-  pre: true,
-  textarea: true,
-};
-
 var INTERNAL_VARIABLES = [
   'pug',
   'pug_mixins',

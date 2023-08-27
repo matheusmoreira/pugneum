@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pug-load 1`] = `
+exports[`pugneum-loader 1`] = `
 Object {
-  "filename": "<dirname>/foo.pug",
+  "filename": "foo.pg",
   "line": 0,
   "nodes": Array [
     Object {
       "column": 1,
       "file": Object {
         "ast": Object {
-          "filename": "<dirname>/bar.pug",
+          "filename": "bar.pg",
           "line": 0,
           "nodes": Array [
             Object {
               "column": 1,
-              "filename": "<dirname>/bar.pug",
+              "filename": "bar.pg",
               "line": 1,
               "mode": "replace",
               "name": "bing",
@@ -25,33 +25,30 @@ Object {
           "type": "Block",
         },
         "column": 9,
-        "filename": "<dirname>/foo.pug",
-        "fullPath": "<dirname>/bar.pug",
+        "filename": "foo.pg",
+        "fullPath": "bar.pg",
         "line": 1,
-        "path": "bar.pug",
-        "raw": Object {
-          "hash": "538bf7d4b81ef364b1f2e9d42c11f156",
-          "size": 11,
-          "type": "Buffer",
-        },
+        "path": "bar.pg",
+        "raw": "block bing
+",
         "str": "block bing
 ",
         "type": "FileReference",
       },
-      "filename": "<dirname>/foo.pug",
+      "filename": "foo.pg",
       "line": 1,
       "type": "Extends",
     },
     Object {
       "column": 1,
-      "filename": "<dirname>/foo.pug",
+      "filename": "foo.pg",
       "line": 3,
       "mode": "replace",
       "name": "bing",
       "nodes": Array [
         Object {
           "block": Object {
-            "filename": "<dirname>/foo.pug",
+            "filename": "foo.pg",
             "line": 4,
             "nodes": Array [],
             "type": "Block",
@@ -59,7 +56,7 @@ Object {
           "column": 3,
           "file": Object {
             "ast": Object {
-              "filename": "<dirname>/bing.pug",
+              "filename": "bing.pg",
               "line": 0,
               "nodes": Array [
                 Object {
@@ -67,7 +64,7 @@ Object {
                   "attrs": Array [
                     Object {
                       "column": 1,
-                      "filename": "<basedir>/packages/pug-load/test/bing.pug",
+                      "filename": "bing.pg",
                       "line": 1,
                       "mustEscape": false,
                       "name": "class",
@@ -75,12 +72,12 @@ Object {
                     },
                   ],
                   "block": Object {
-                    "filename": "<dirname>/bing.pug",
+                    "filename": "bing.pg",
                     "line": 1,
                     "nodes": Array [
                       Object {
                         "column": 7,
-                        "filename": "<dirname>/bing.pug",
+                        "filename": "bing.pg",
                         "line": 1,
                         "type": "Text",
                         "val": "bong",
@@ -89,7 +86,7 @@ Object {
                     "type": "Block",
                   },
                   "column": 1,
-                  "filename": "<dirname>/bing.pug",
+                  "filename": "bing.pg",
                   "isInline": false,
                   "line": 1,
                   "name": "div",
@@ -100,20 +97,17 @@ Object {
               "type": "Block",
             },
             "column": 11,
-            "filename": "<dirname>/foo.pug",
-            "fullPath": "<dirname>/bing.pug",
+            "filename": "foo.pg",
+            "fullPath": "bing.pg",
             "line": 4,
-            "path": "bing.pug",
-            "raw": Object {
-              "hash": "58ecbe086e7a045084cbddac849a2563",
-              "size": 11,
-              "type": "Buffer",
-            },
+            "path": "bing.pg",
+            "raw": ".bing bong
+",
             "str": ".bing bong
 ",
             "type": "FileReference",
           },
-          "filename": "<dirname>/foo.pug",
+          "filename": "foo.pg",
           "line": 4,
           "type": "Include",
         },
@@ -121,27 +115,24 @@ Object {
           "attributeBlocks": Array [],
           "attrs": Array [],
           "block": Object {
-            "filename": "<dirname>/foo.pug",
+            "filename": "foo.pg",
             "line": 5,
             "nodes": Array [
               Object {
                 "column": 5,
                 "file": Object {
                   "column": 13,
-                  "filename": "<dirname>/foo.pug",
-                  "fullPath": "<dirname>/script.js",
+                  "filename": "foo.pg",
+                  "fullPath": "script.js",
                   "line": 6,
                   "path": "script.js",
-                  "raw": Object {
-                    "hash": "86d4f8e34165faeb09f10255121078f8",
-                    "size": 32,
-                    "type": "Buffer",
-                  },
+                  "raw": "document.write('hello world!');
+",
                   "str": "document.write('hello world!');
 ",
                   "type": "FileReference",
                 },
-                "filename": "<dirname>/foo.pug",
+                "filename": "foo.pg",
                 "filters": Array [],
                 "line": 6,
                 "type": "RawInclude",
@@ -150,7 +141,7 @@ Object {
             "type": "Block",
           },
           "column": 3,
-          "filename": "<dirname>/foo.pug",
+          "filename": "foo.pg",
           "isInline": false,
           "line": 5,
           "name": "script",

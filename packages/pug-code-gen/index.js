@@ -299,12 +299,6 @@ Compiler.prototype = {
   visitTag: function(tag, interpolated) {
 
 
-    if (!this.hasCompiledTag) {
-      if (!this.hasCompiledDoctype && 'html' == name) {
-        this.visitDoctype();
-      }
-      this.hasCompiledTag = true;
-    }
 
       // if it is non-empty throw an error
       if (

@@ -54,76 +54,11 @@ Compiler.prototype = {
 
   compile: function() {
     this.buf = [];
-    if (this.pp) this.buf.push('var pug_indent = [];');
     this.lastBufferedIdx = -1;
     this.visit(this.node);
-    if (!this.dynamicMixins) {
-      // if there are no dynamic mixins we can remove any un-used mixins
-      var mixinNames = Object.keys(this.mixins);
-      for (var i = 0; i < mixinNames.length; i++) {
-        var mixin = this.mixins[mixinNames[i]];
-        if (!mixin.used) {
-          for (var x = 0; x < mixin.instances.length; x++) {
-            for (
-              var y = mixin.instances[x].start;
-              y < mixin.instances[x].end;
-              y++
-            ) {
-              this.buf[y] = '';
-            }
-          }
-        }
-      }
-    }
-    var js = this.buf.join('\n');
-    var globals = this.options.globals
-      ? this.options.globals.concat(INTERNAL_VARIABLES)
-      : INTERNAL_VARIABLES;
-    if (this.options.self) {
-      js = 'var self = locals || {};' + js;
-    } else {
-      js = addWith(
-        'locals || {}',
-        js,
-        globals.concat(
-          this.runtimeFunctionsUsed.map(function(name) {
-            return 'pug_' + name;
-          })
-        )
-      );
-    }
-    if (this.debug) {
-      if (this.options.includeSources) {
-        js =
-          'var pug_debug_sources = ' +
-          stringify(this.options.includeSources) +
-          ';\n' +
-          js;
-      }
-      js =
-        'var pug_debug_filename, pug_debug_line;' +
-        'try {' +
-        js +
-        '} catch (err) {' +
-        (this.inlineRuntimeFunctions ? 'pug_rethrow' : 'pug.rethrow') +
-        '(err, pug_debug_filename, pug_debug_line' +
-        (this.options.includeSources
-          ? ', pug_debug_sources[pug_debug_filename]'
-          : '') +
-        ');' +
-        '}';
-    }
-    return (
-      buildRuntime(this.runtimeFunctionsUsed) +
-      'function ' +
-      (this.options.templateName || 'template') +
-      '(locals) {var pug_html = "", pug_mixins = {}, pug_interp;' +
-      js +
-      ';return pug_html;}'
-    );
+
+    return this.buf.join('');
   },
-
-
 
   /**
    * Buffer the given `str` exactly as is or with interpolation

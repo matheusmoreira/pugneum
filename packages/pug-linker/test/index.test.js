@@ -1,12 +1,24 @@
-var assert = require('assert');
-var fs = require('fs');
-var link = require('../');
+const assert = require('assert');
+const fs = require('fs');
+const lex = require('pugneum-lexer');
+const parse = require('pugneum-parser');
+const load = require('pugneum-loader').load;
+const link = require('../');
+
+const basedir = __dirname + '/cases';
 
 function testDir(dir) {
   fs.readdirSync(dir).forEach(function(name) {
-    if (!/\.input\.json$/.test(name)) return;
+    if (!/\.pg$/.test(name)) return;
     test(name, function() {
-      var actual = link(JSON.parse(fs.readFileSync(dir + '/' + name, 'utf8')));
+      let filename = dir + '/' + name;
+      let src = fs.readFileSync(filename, 'utf8');
+      let options = {filename, src, lex, parse, basedir};
+      let tokens = lex(src, options);
+      let ast = parse(tokens, options);
+      let loaded = load(ast, options);
+      var actual = link(loaded);
+
       expect(actual).toMatchSnapshot();
     });
   });
@@ -33,14 +45,6 @@ function testDirError(dir) {
   });
 }
 
-describe('cases from pug', function() {
+describe('cases from pugneum sources', function() {
   testDir(__dirname + '/cases');
-});
-
-describe('special cases', function() {
-  testDir(__dirname + '/special-cases');
-});
-
-describe('error handling', function() {
-  testDirError(__dirname + '/errors');
 });

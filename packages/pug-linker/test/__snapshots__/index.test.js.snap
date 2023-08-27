@@ -832,7 +832,7 @@ Object {
       "declaredBlocks": Object {
         "content": Array [
           Object {
-            "filename": "../cases-src/auxiliary/extends-relative.pug",
+            "filename": "../cases/auxiliary/extends-relative.pug",
             "line": 3,
             "mode": "replace",
             "name": "content",
@@ -844,7 +844,7 @@ Object {
             ],
             "parents": Array [
               Object {
-                "filename": "../cases-src/auxiliary/layout.pug",
+                "filename": "../cases/auxiliary/layout.pug",
                 "line": 6,
                 "mode": "replace",
                 "name": "content",
@@ -862,7 +862,7 @@ Object {
         ],
         "head": Array [
           Object {
-            "filename": "../cases-src/auxiliary/layout.pug",
+            "filename": "../cases/auxiliary/layout.pug",
             "line": 4,
             "mode": "replace",
             "name": "head",
@@ -871,7 +871,7 @@ Object {
           },
         ],
       },
-      "filename": "../cases-src/auxiliary/layout.pug",
+      "filename": "../cases/auxiliary/layout.pug",
       "hasExtends": true,
       "line": 0,
       "nodes": Array [
@@ -879,25 +879,25 @@ Object {
           "attributeBlocks": Array [],
           "attrs": Array [],
           "block": Object {
-            "filename": "../cases-src/auxiliary/layout.pug",
+            "filename": "../cases/auxiliary/layout.pug",
             "line": 1,
             "nodes": Array [
               Object {
                 "attributeBlocks": Array [],
                 "attrs": Array [],
                 "block": Object {
-                  "filename": "../cases-src/auxiliary/layout.pug",
+                  "filename": "../cases/auxiliary/layout.pug",
                   "line": 2,
                   "nodes": Array [
                     Object {
                       "attributeBlocks": Array [],
                       "attrs": Array [],
                       "block": Object {
-                        "filename": "../cases-src/auxiliary/layout.pug",
+                        "filename": "../cases/auxiliary/layout.pug",
                         "line": 3,
                         "nodes": Array [
                           Object {
-                            "filename": "../cases-src/auxiliary/layout.pug",
+                            "filename": "../cases/auxiliary/layout.pug",
                             "line": 3,
                             "type": "Text",
                             "val": "My Application",
@@ -905,7 +905,7 @@ Object {
                         ],
                         "type": "Block",
                       },
-                      "filename": "../cases-src/auxiliary/layout.pug",
+                      "filename": "../cases/auxiliary/layout.pug",
                       "isInline": false,
                       "line": 3,
                       "name": "title",
@@ -919,7 +919,7 @@ Object {
                   ],
                   "type": "Block",
                 },
-                "filename": "../cases-src/auxiliary/layout.pug",
+                "filename": "../cases/auxiliary/layout.pug",
                 "isInline": false,
                 "line": 2,
                 "name": "head",
@@ -930,7 +930,7 @@ Object {
                 "attributeBlocks": Array [],
                 "attrs": Array [],
                 "block": Object {
-                  "filename": "../cases-src/auxiliary/layout.pug",
+                  "filename": "../cases/auxiliary/layout.pug",
                   "line": 5,
                   "nodes": Array [
                     Object {
@@ -945,7 +945,7 @@ Object {
                   ],
                   "type": "Block",
                 },
-                "filename": "../cases-src/auxiliary/layout.pug",
+                "filename": "../cases/auxiliary/layout.pug",
                 "isInline": false,
                 "line": 5,
                 "name": "body",
@@ -955,7 +955,7 @@ Object {
             ],
             "type": "Block",
           },
-          "filename": "../cases-src/auxiliary/layout.pug",
+          "filename": "../cases/auxiliary/layout.pug",
           "isInline": false,
           "line": 1,
           "name": "html",

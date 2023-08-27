@@ -128,13 +128,4 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-function getMinifyTransformerName(outputFormat) {
-  switch (outputFormat) {
-    case 'js':
-      return 'uglify-js';
-    case 'css':
-      return 'clean-css';
-  }
-}
-
 exports.handleFilters = handleFilters;

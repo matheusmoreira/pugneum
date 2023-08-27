@@ -1,13 +1,14 @@
 'use strict';
 
 var assert = require('assert');
-var walk = require('pug-walk');
+var walk = require('pugneum-walk');
 
 function error() {
-  throw require('pug-error').apply(null, arguments);
+  throw require('pugneum-error').apply(null, arguments);
 }
 
 module.exports = link;
+
 function link(ast) {
   assert(
     ast.type === 'Block',

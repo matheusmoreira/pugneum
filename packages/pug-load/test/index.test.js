@@ -1,19 +1,21 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var assert = require('assert');
-var walk = require('pug-walk');
-var lex = require('pug-lexer');
-var parse = require('pug-parser');
-var load = require('../');
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert');
+const walk = require('pugneum-walk');
+const lex = require('pugneum-lexer');
+const parse = require('pugneum-parser');
+const loader = require('../');
 
-test('pug-load', () => {
-  var filename = __dirname + '/foo.pug';
-  var ast = load.file(filename, {
-    lex: lex,
-    parse: parse,
-  });
+test('pugneum-loader', () => {
+  let filename = __dirname + '/foo.pg';
+  let source = loader.read(filename);
+console.log(source);
+  let tokens = lex(source, {filename});
+  let ast = parse(tokens, {filename});
+
+  ast = loader.load(ast, {lex, parse});
 
   ast = walk(
     ast,

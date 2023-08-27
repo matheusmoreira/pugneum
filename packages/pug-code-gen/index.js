@@ -1,11 +1,6 @@
 'use strict';
 
-var makeError = require('pug-error');
-var buildRuntime = require('pug-runtime/build');
-var runtime = require('pug-runtime');
-var compileAttrs = require('pug-attrs');
-var stringify = require('js-stringify');
-var addWith = require('with');
+var makeError = require('pugneum-error');
 
 // This is used to prevent pretty printing inside certain tags
 var WHITE_SPACE_SENSITIVE_TAGS = {

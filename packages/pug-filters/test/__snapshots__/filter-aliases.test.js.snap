@@ -276,9 +276,9 @@ Object {
 
 exports[`we do not support chains of aliases 1`] = `
 Object {
-  "code": "PUG:FILTER_ALISE_CHAIN",
+  "code": "PUGNEUM:FILTER_ALIAS_CHAIN",
   "message": "filter-aliases.test.js:3:9
 
-The filter \\"minify-js\\" is an alias for \\"minify\\", which is an alias for \\"uglify-js\\".  Pug does not support chains of filter aliases.",
+The filter \\"minify-js\\" is an alias for \\"minify\\", which is an alias for \\"uglify-js\\".  pugneum does not support chains of filter aliases.",
 }
 `;

@@ -13,7 +13,6 @@ const selfClosing =
   }, {});
 
 module.exports = compileToHTML;
-module.exports.CodeGenerator = Compiler;
 
 function compileToHTML(ast, options) {
   return new Compiler(ast, options).compile();

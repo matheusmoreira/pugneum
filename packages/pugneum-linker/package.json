@@ -1,0 +1,31 @@
+{
+  "name": "pugneum-linker",
+  "version": "0.1.0",
+  "description": "Link together multiple pugneum abstract syntax trees",
+  "keywords": [
+    "pugneum",
+    "linker",
+    "pug"
+  ],
+  "dependencies": {
+    "pugneum-error": "^0.1.0",
+    "pugneum-walk": "^0.1.0"
+  },
+  "devDependencies": {
+    "pugneum-lexer": "^0.1.0",
+    "pugneum-loader": "^0.1.0",
+    "pugneum-parser": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-linker"
+  },
+  "author": "Forbes Lindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "license": "MIT"
+}

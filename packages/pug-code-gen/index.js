@@ -159,6 +159,7 @@ Compiler.prototype = {
   visitNamedBlock: function(block) {
     return this.visitBlock(block);
   },
+
   /**
    * Visit all nodes in `block`.
    *
@@ -167,31 +168,7 @@ Compiler.prototype = {
    */
 
   visitBlock: function(block) {
-    var escapePrettyMode = this.escapePrettyMode;
-    var pp = this.pp;
-
-    // Pretty print multi-line text
-    if (
-      pp &&
-      block.nodes.length > 1 &&
-      !escapePrettyMode &&
-      block.nodes[0].type === 'Text' &&
-      block.nodes[1].type === 'Text'
-    ) {
-      this.prettyIndent(1, true);
-    }
     for (var i = 0; i < block.nodes.length; ++i) {
-      // Pretty print text
-      if (
-        pp &&
-        i > 0 &&
-        !escapePrettyMode &&
-        block.nodes[i].type === 'Text' &&
-        block.nodes[i - 1].type === 'Text' &&
-        /\n$/.test(block.nodes[i - 1].val)
-      ) {
-        this.prettyIndent(1, false);
-      }
       this.visit(block.nodes[i], block);
     }
   },
@@ -204,14 +181,7 @@ Compiler.prototype = {
    */
 
   visitMixinBlock: function(block) {
-    if (this.pp)
-      this.buf.push(
-        'pug_indent.push(' +
-          stringify(Array(this.indents + 1).join(this.pp)) +
-          ');'
-      );
     this.buf.push('block && block();');
-    if (this.pp) this.buf.push('pug_indent.pop();');
   },
 
   /**

@@ -12,9 +12,10 @@ const selfClosing =
     return voidElements;
   }, {});
 
-module.exports = generateCode;
+module.exports = compileToHTML;
 module.exports.CodeGenerator = Compiler;
-function generateCode(ast, options) {
+
+function compileToHTML(ast, options) {
   return new Compiler(ast, options).compile();
 }
 

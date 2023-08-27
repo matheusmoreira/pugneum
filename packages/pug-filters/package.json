@@ -6,7 +6,6 @@
     "pug"
   ],
   "dependencies": {
-    "jstransformer": "1.0.0",
     "pugneum-error": "^0.1.0",
     "pugneum-walk": "^0.1.0"
   },

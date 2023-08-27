@@ -21,22 +21,6 @@ var filters = require('pug-filters');
 
 Renders all `Filter` nodes in a Pug AST (`ast`), using user-specified filters (`filters`) or a JSTransformer.
 
-### `filters.runFilter(name, str[, options[, currentDirectory]])`
-
-Invokes filter through `jstransformer`.
-
-This is internally used in `filters.handleFilters`, and is a lower-level interface exclusively for invoking JSTransformer-based filters.
-
-`name` represents the name of the JSTransformer.
-
-`str` represents the string to render.
-
-`currentDirectory` is used when attempting to `require` the transformer module.
-
-`options` may contain the following properties:
-
-- `minify` (boolean): whether or not to attempt minifying the result from the transformer. If minification fails, the original result is returned.
-
 ## License
 
   MIT

@@ -3,7 +3,6 @@
 var dirname = require('path').dirname;
 var walk = require('pugneum-walk');
 var error = require('pugneum-error');
-var jstransformer = require('jstransformer');
 
 function handleFilters(ast, filters, options, filterAliases) {
   options = options || {};
@@ -138,31 +137,4 @@ function getMinifyTransformerName(outputFormat) {
   }
 }
 
-function runFilter(name, str, options, currentDirectory, funcName) {
-  funcName = funcName || 'render';
-  var trPath;
-  try {
-    trPath = require.resolve('jstransformer-' + name);
-  } catch (ex) {
-    var err = new Error('unknown filter ":' + name + '"');
-    err.code = 'UNKNOWN_FILTER';
-    throw err;
-  }
-  var tr = jstransformer(require(trPath));
-  // TODO: we may want to add a way for people to separately specify "locals"
-  var result = tr[funcName](str, options, options).body;
-  if (options && options.minify) {
-    var minifyTranformer = getMinifyTransformerName(tr.outputFormat);
-    if (minifyTranformer) {
-      try {
-        result = filter(minifyTranformer, result, null, currentDirectory);
-      } catch (ex) {
-        // better to fail to minify than output nothing
-      }
-    }
-  }
-  return result;
-}
-
-exports.runFilter = runFilter;
 exports.handleFilters = handleFilters;

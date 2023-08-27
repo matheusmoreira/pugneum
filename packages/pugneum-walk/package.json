@@ -1,0 +1,27 @@
+{
+  "name": "pugneum-walk",
+  "version": "0.1.0",
+  "description": "Walk and transform a pugneum abstract syntax tree",
+  "keywords": [
+    "pugneum",
+    "ast",
+    "walk",
+    "pug"
+  ],
+  "devDependencies": {
+    "pugneum-lexer": "^0.1.0",
+    "pugneum-parser": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-walk"
+  },
+  "author": "ForbesLindesay",
+  "contributors": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
+  ],
+  "license": "MIT"
+}

@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = walkAST;
+
 function walkAST(ast, before, after, options) {
   if (after && typeof after === 'object' && typeof options === 'undefined') {
     options = after;

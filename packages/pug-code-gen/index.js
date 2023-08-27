@@ -55,6 +55,10 @@ Compiler.prototype = {
   compile: function() {
     this.buf = [];
     this.lastBufferedIdx = -1;
+
+    // all pugneum documents will compile to HTML5
+    this.buffer('<!DOCTYPE html>');
+
     this.visit(this.node);
 
     return this.buf.join('');

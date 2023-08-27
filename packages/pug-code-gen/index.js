@@ -43,15 +43,6 @@ function Compiler(node, options) {
 }
 
 Compiler.prototype = {
-  runtime: function(name) {
-    if (this.inlineRuntimeFunctions) {
-      this.runtimeFunctionsUsed.push(name);
-      return 'pug_' + name;
-    } else {
-      return 'pug.' + name;
-    }
-  },
-
   error: function(message, code, node) {
     var err = makeError(code, message, {
       line: node.line,

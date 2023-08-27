@@ -52,12 +52,6 @@ Compiler.prototype = {
     throw err;
   },
 
-  /**
-   * Compile parse tree to JavaScript.
-   *
-   * @api public
-   */
-
   compile: function() {
     this.buf = [];
     if (this.pp) this.buf.push('var pug_indent = [];');

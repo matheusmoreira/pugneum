@@ -123,23 +123,7 @@ Compiler.prototype = {
     );
   },
 
-  /**
-   * Sets the doctype to HTML 5 regardless of input.
-   *
-   *  - Self-closing void elements end with ">" rather than "/>"
-   *  - Boolean attributes are not mirrored
-   *
-   * https://html.spec.whatwg.org/multipage/syntax.html#the-doctype
-   *
-   * @param {string} name
-   * @api public
-   */
 
-  setDoctype: function(name) {
-    this.doctype = '<!DOCTYPE html>';
-    this.terse = true;
-    this.xml = false;
-  },
 
   /**
    * Buffer the given `str` exactly as is or with interpolation

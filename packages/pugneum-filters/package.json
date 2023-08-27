@@ -13,7 +13,6 @@
   },
   "devDependencies": {
     "pugneum-lexer": "^0.1.0",
-    "pugneum-load": "^0.1.0",
     "pugneum-parser": "^0.1.0"
   },
   "repository": {

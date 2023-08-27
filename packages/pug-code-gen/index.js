@@ -91,14 +91,13 @@ Compiler.prototype = {
           'A child of ' +
           parent.type +
           ' (' +
-          (parent.filename || 'Pug') +
-          ':' +
+          (parent.filename? parent.filename + ':' : '') +
           parent.line +
           ')';
       } else {
         msg = 'A top-level node';
       }
-      msg += ' is ' + node + ', expected a Pug AST Node.';
+      msg += ' is ' + node + ', expected a pugneum abstract syntax tree node';
       throw new TypeError(msg);
     }
 
@@ -111,23 +110,22 @@ Compiler.prototype = {
       }
       msg +=
         ' (' +
-        (node.filename || 'Pug') +
-        ':' +
+        (node.filename? node.filename + ':' : '') +
         node.line +
         ')' +
         ' is of type ' +
         node.type +
         ',' +
-        ' which is not supported by pug-code-gen.';
+        ' which is not supported by the pugneum compiler';
       switch (node.type) {
         case 'Filter':
-          msg += ' Please use pug-filters to preprocess this AST.';
+          msg += '; use pugneum-filters';
           break;
         case 'Extends':
         case 'Include':
         case 'NamedBlock':
         case 'FileReference': // unlikely but for the sake of completeness
-          msg += ' Please use pug-linker to preprocess this AST.';
+          msg += '; use pugneum-linker';
           break;
       }
       throw new TypeError(msg);

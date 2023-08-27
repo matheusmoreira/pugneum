@@ -2,16 +2,6 @@
 
 var makeError = require('pugneum-error');
 
-var INTERNAL_VARIABLES = [
-  'pug',
-  'pug_mixins',
-  'pug_interp',
-  'pug_debug_filename',
-  'pug_debug_line',
-  'pug_debug_sources',
-  'pug_html',
-];
-
 // Map of self-closing void elements literally copied from the standard.
 // https://html.spec.whatwg.org/multipage/syntax.html#void-elements
 const selfClosing =

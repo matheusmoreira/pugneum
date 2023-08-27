@@ -73,34 +73,7 @@ Compiler.prototype = {
    */
 
   buffer: function(str) {
-    var self = this;
-
-    str = stringify(str);
-    str = str.substr(1, str.length - 2);
-
-    if (
-      this.lastBufferedIdx == this.buf.length &&
-      this.bufferedConcatenationCount < 100
-    ) {
-      if (this.lastBufferedType === 'code') {
-        this.lastBuffered += ' + "';
-        this.bufferedConcatenationCount++;
-      }
-      this.lastBufferedType = 'text';
-      this.lastBuffered += str;
-      this.buf[this.lastBufferedIdx - 1] =
-        'pug_html = pug_html + ' +
-        this.bufferStartChar +
-        this.lastBuffered +
-        '";';
-    } else {
-      this.bufferedConcatenationCount = 0;
-      this.buf.push('pug_html = pug_html + "' + str + '";');
-      this.lastBufferedType = 'text';
-      this.bufferStartChar = '"';
-      this.lastBuffered = str;
-      this.lastBufferedIdx = this.buf.length;
-    }
+    this.buf.push(str);
   },
 
   /**

@@ -4,7 +4,7 @@ var dirname = require('path').dirname;
 var walk = require('pugneum-walk');
 var error = require('pugneum-error');
 
-function handleFilters(ast, filters, options, filterAliases) {
+function applyFilters(ast, filters, options, filterAliases) {
   options = options || {};
   walk(
     ast,
@@ -96,7 +96,7 @@ function handleFilters(ast, filters, options, filterAliases) {
 
 function handleNestedFilters(node, filters, options, filterAliases) {
   if (node.block.nodes[0] && node.block.nodes[0].type === 'Filter') {
-    node.block.nodes[0] = handleFilters(
+    node.block.nodes[0] = applyFilters(
       node.block,
       filters,
       options,
@@ -128,4 +128,4 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-exports.handleFilters = handleFilters;
+exports.apply = applyFilters;

@@ -17,7 +17,7 @@ Code for processing filters in pug templates
 var filters = require('pug-filters');
 ```
 
-### `filters.handleFilters(ast, filters)`
+### `filters.apply(ast, filters)`
 
 Renders all `Filter` nodes in a Pug AST (`ast`), using user-specified filters (`filters`) or a JSTransformer.
 

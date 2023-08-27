@@ -1,4 +1,4 @@
 
-include auxiliary/yield-nested.pug
+include auxiliary/yield-nested.pg
   p some content
   p and some more

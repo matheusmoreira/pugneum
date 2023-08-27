@@ -4,4 +4,4 @@ html
     block head
   body
     block content
-    include window.pug
+    include window.pg

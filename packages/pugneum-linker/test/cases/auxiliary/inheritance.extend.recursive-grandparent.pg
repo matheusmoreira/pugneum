@@ -1,4 +1,4 @@
-extends inheritance.extend.recursive-grand-grandparent.pug
+extends inheritance.extend.recursive-grand-grandparent.pg
 
 block grand-grandparent
     h2 grandparent

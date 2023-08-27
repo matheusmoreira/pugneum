@@ -1,5 +1,5 @@
 
-extends ../fixtures/append-without-block/app-layout.pug
+extends ../fixtures/append-without-block/app-layout.pg
 
 append head
   script(src='foo.js')

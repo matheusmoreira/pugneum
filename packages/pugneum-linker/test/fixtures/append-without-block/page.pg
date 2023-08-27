@@ -1,6 +1,6 @@
 
-extends app-layout.pug
+extends app-layout.pg
 
-prepend head
+append head
   script(src='foo.js')
   script(src='bar.js')

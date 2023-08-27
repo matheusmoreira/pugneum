@@ -1,4 +1,4 @@
-extends empty-block.pug
+extends empty-block.pg
 
 block test
     div test2

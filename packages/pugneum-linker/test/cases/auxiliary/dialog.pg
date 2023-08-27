@@ -1,5 +1,5 @@
 
-extends window.pug
+extends window.pg
 
 block window-content
   .dialog

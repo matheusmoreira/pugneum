@@ -1,8 +1,8 @@
 'use strict';
 
 var assert = require('assert');
-var lex = require('pug-lexer');
-var parse = require('pug-parser');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
 var walk = require('../');
 
 test('simple', function() {

@@ -478,17 +478,3 @@ exports.compileFileClient = function(path, options) {
   if (options.cache) exports.cache[key] = out;
   return out;
 };
-
-/**
- * Express support.
- */
-
-exports.__express = function(path, options, fn) {
-  if (
-    options.compileDebug == undefined &&
-    process.env.NODE_ENV === 'production'
-  ) {
-    options.compileDebug = false;
-  }
-  exports.renderFile(path, options, fn);
-};

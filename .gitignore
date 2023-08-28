@@ -17,4 +17,3 @@ cov-pt*
 **/test/output*
 **/test/temp
 .release.json
-package-lock.json

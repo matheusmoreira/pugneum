@@ -197,7 +197,6 @@ Compiler.prototype = {
     var args = mixin.args || '';
     var block = mixin.block;
     var attrs = mixin.attrs;
-    var attrsBlocks = this.attributeBlocks(mixin.attributeBlocks);
     var dynamic = mixin.name[0] === '#';
     var key = mixin.name;
     if (dynamic) this.dynamicMixins = true;

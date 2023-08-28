@@ -18,14 +18,6 @@ function compileToHTML(ast, options) {
   return new Compiler(ast, options).compile();
 }
 
-/**
- * Initialize `Compiler` with the given `node`.
- *
- * @param {Node} node
- * @param {Object} options
- * @api public
- */
-
 function Compiler(node, options) {
   this.options = options = options || {};
   this.node = node;
@@ -53,24 +45,9 @@ Compiler.prototype = {
     return this.buf.join('');
   },
 
-  /**
-   * Buffer the given `str` exactly as is or with interpolation
-   *
-   * @param {String} str
-   * @param {Boolean} interpolate
-   * @api public
-   */
-
   buffer: function(str) {
     this.buf.push(str);
   },
-
-  /**
-   * Visit `node`.
-   *
-   * @param {Node} node
-   * @api public
-   */
 
   visit: function(node, parent) {
     if (!node) {
@@ -123,23 +100,9 @@ Compiler.prototype = {
     this.visitNode(node);
   },
 
-  /**
-   * Visit `node`.
-   *
-   * @param {Node} node
-   * @api public
-   */
-
   visitNode: function(node) {
     return this['visit' + node.type](node);
   },
-
-  /**
-   * Visit literal `node`.
-   *
-   * @param {Literal} node
-   * @api public
-   */
 
   visitLiteral: function(node) {
     this.buffer(node.str);
@@ -149,37 +112,15 @@ Compiler.prototype = {
     return this.visitBlock(block);
   },
 
-  /**
-   * Visit all nodes in `block`.
-   *
-   * @param {Block} block
-   * @api public
-   */
-
   visitBlock: function(block) {
     for (var i = 0; i < block.nodes.length; ++i) {
       this.visit(block.nodes[i], block);
     }
   },
 
-  /**
-   * Visit a mixin's `block` keyword.
-   *
-   * @param {MixinBlock} block
-   * @api public
-   */
-
   visitMixinBlock: function(block) {
     this.buf.push('block && block();');
   },
-
-  /**
-   * Visit `mixin`, generating a function that
-   * may be called within the template.
-   *
-   * @param {Mixin} mixin
-   * @api public
-   */
 
   visitMixin: function(mixin) {
     var name = 'pug_mixins[';
@@ -274,15 +215,6 @@ Compiler.prototype = {
     }
   },
 
-  /**
-   * Visit `tag` buffering tag markup, generating
-   * attributes, visiting the `tag`'s code and block.
-   *
-   * @param {Tag} tag
-   * @param {boolean} interpolated
-   * @api public
-   */
-
   visitTag: function(tag, interpolated) {
     this.buffer('<');
     this.buffer(tag.name);
@@ -318,23 +250,9 @@ Compiler.prototype = {
     }
   },
 
-  /**
-   * Visit `text` node.
-   *
-   * @param {Text} text
-   * @api public
-   */
-
   visitText: function(text) {
     this.buffer(text.val);
   },
-
-  /**
-   * Visit a `comment`, only buffering when the buffer flag is set.
-   *
-   * @param {Comment} comment
-   * @api public
-   */
 
   visitComment: function(comment) {
     if (!comment.buffer) return;
@@ -352,26 +270,12 @@ Compiler.prototype = {
 
   visitYieldBlock: function(block) {},
 
-  /**
-   * Visit a `BlockComment`.
-   *
-   * @param {Comment} comment
-   * @api public
-   */
-
   visitBlockComment: function(comment) {
     if (!comment.buffer) return;
     this.buffer('<!--' + (comment.val || ''));
     this.visit(comment.block, comment);
     this.buffer('-->');
   },
-
-  /**
-   * Visit `attrs` and compile attributes.
-   *
-   * @param {Array} attrs
-   * @api public
-   */
 
   visitAttributes: function(attrs) {
     for (let len = attrs.length, i = 0; i < len; ++i) {

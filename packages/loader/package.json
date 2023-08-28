@@ -1,24 +1,23 @@
 {
-  "name": "pugneum-linker",
+  "name": "pugneum-loader",
   "version": "0.1.0",
-  "description": "Link together multiple pugneum abstract syntax trees",
+  "description": "Loads the dependencies of pugneum templates",
   "keywords": [
     "pugneum",
-    "linker",
+    "loader",
+    "resolver",
     "pug"
   ],
   "dependencies": {
-    "pugneum-error": "^0.1.0",
     "pugneum-walk": "^0.1.0"
   },
   "devDependencies": {
     "pugneum-lexer": "^0.1.0",
-    "pugneum-loader": "^0.1.0",
     "pugneum-parser": "^0.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-linker"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/loader"
   },
   "author": "Forbes Lindesay",
   "contributors": [

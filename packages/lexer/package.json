@@ -1,25 +1,24 @@
 {
-  "name": "pugneum-loader",
+  "name": "pugneum-lexer",
   "version": "0.1.0",
-  "description": "Loads the dependencies of pugneum templates",
+  "description": "Lexes pugneum templates and transforms them into arrays of tokens",
   "keywords": [
     "pugneum",
-    "loader",
-    "resolver",
-    "pug"
+    "pug",
+    "lexer"
   ],
   "dependencies": {
-    "pugneum-walk": "^0.1.0"
+    "character-parser": "^4.0.0",
+    "pugneum-error": "^0.1.0"
   },
-  "devDependencies": {
-    "pugneum-lexer": "^0.1.0",
-    "pugneum-parser": "^0.1.0"
-  },
+  "files": [
+    "index.js"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-loader"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/lexer"
   },
-  "author": "Forbes Lindesay",
+  "author": "ForbesLindesay",
   "contributors": [
     "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
   ],

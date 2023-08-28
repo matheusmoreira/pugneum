@@ -1,24 +1,20 @@
 {
-  "name": "pugneum-lexer",
+  "name": "pugneum-error",
   "version": "0.1.0",
-  "description": "Lexes pugneum templates and transforms them into arrays of tokens",
+  "description": "Standard error objects for pugneum",
   "keywords": [
     "pugneum",
     "pug",
-    "lexer"
+    "error"
   ],
-  "dependencies": {
-    "character-parser": "^4.0.0",
-    "pugneum-error": "^0.1.0"
-  },
   "files": [
     "index.js"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-lexer"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/error"
   },
-  "author": "ForbesLindesay",
+  "author": "Forbes Lindesay",
   "contributors": [
     "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
   ],

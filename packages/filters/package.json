@@ -1,18 +1,23 @@
 {
-  "name": "pugneum-error",
+  "name": "pugneum-filters",
   "version": "0.1.0",
-  "description": "Standard error objects for pugneum",
+  "description": "Applies filters to pugneum templates",
   "keywords": [
     "pugneum",
-    "pug",
-    "error"
+    "filter",
+    "pug"
   ],
-  "files": [
-    "index.js"
-  ],
+  "dependencies": {
+    "pugneum-error": "^0.1.0",
+    "pugneum-walk": "^0.1.0"
+  },
+  "devDependencies": {
+    "pugneum-lexer": "^0.1.0",
+    "pugneum-parser": "^0.1.0"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-error"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/filters"
   },
   "author": "Forbes Lindesay",
   "contributors": [

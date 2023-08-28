@@ -1,10 +1,10 @@
 {
-  "name": "pugneum-filters",
+  "name": "pugneum-linker",
   "version": "0.1.0",
-  "description": "Applies filters to pugneum templates",
+  "description": "Link together multiple pugneum abstract syntax trees",
   "keywords": [
     "pugneum",
-    "filter",
+    "linker",
     "pug"
   ],
   "dependencies": {
@@ -13,11 +13,12 @@
   },
   "devDependencies": {
     "pugneum-lexer": "^0.1.0",
+    "pugneum-loader": "^0.1.0",
     "pugneum-parser": "^0.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum-filters"
+    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/linker"
   },
   "author": "Forbes Lindesay",
   "contributors": [

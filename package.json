@@ -1,5 +1,5 @@
 {
-  "name": "pug-monorepo",
+  "name": "pugneum-repository",
   "private": true,
   "@rollingversions/ignore": true,
   "workspaces": [
@@ -12,28 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pugjs/pug.git"
+    "url": "https://github.com/matheusmoreira/pugneum"
   },
   "scripts": {
     "prettier:check": "prettier --ignore-path .gitignore --list-different './**/*.js'",
     "format": "prettier --ignore-path .gitignore --write './**/*.js'",
-    "build": "wsrun --stages --exclude-missing --fast-exit --collect-logs build",
-    "pretest": "yarn build",
-    "test": "jest",
-    "coverage": "jest --coverage",
-    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls",
-    "watch": "jest --watch"
+    "test": "jest"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "snapshotSerializers": [
-      "./scripts/filename-serializer.js",
-      "./scripts/prettier-javascript-serializer.js",
-      "./scripts/buffer-serializer.js"
-    ]
-  },
-  "license": "MIT",
-  "dependencies": {
-    "wsrun": "^5.2.0"
-  }
+  "license": "MIT"
 }

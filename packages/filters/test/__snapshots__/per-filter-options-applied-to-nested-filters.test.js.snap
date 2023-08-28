@@ -1,30 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`per filter options are applied, even to nested filters 1`] = `
-Object {
+{
   "filename": "per-filter-options-applied-to-nested-filters.test.js",
   "line": 0,
-  "nodes": Array [
-    Object {
-      "attributeBlocks": Array [],
-      "attrs": Array [],
-      "block": Object {
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
         "filename": "per-filter-options-applied-to-nested-filters.test.js",
         "line": 2,
-        "nodes": Array [
-          Object {
-            "attrs": Array [],
-            "block": Object {
+        "nodes": [
+          {
+            "attrs": [],
+            "block": {
               "filename": "per-filter-options-applied-to-nested-filters.test.js",
               "line": 3,
-              "nodes": Array [
-                Object {
-                  "attrs": Array [],
-                  "block": Object {
+              "nodes": [
+                {
+                  "attrs": [],
+                  "block": {
                     "filename": "per-filter-options-applied-to-nested-filters.test.js",
                     "line": 3,
-                    "nodes": Array [
-                      Object {
+                    "nodes": [
+                      {
                         "column": 5,
                         "filename": "per-filter-options-applied-to-nested-filters.test.js",
                         "line": 4,

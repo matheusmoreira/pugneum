@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`filters can be aliased 1`] = `
-Object {
+{
   "filename": "filter-aliases.test.js",
   "line": 0,
-  "nodes": Array [
-    Object {
-      "attributeBlocks": Array [],
-      "attrs": Array [],
-      "block": Object {
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
         "filename": "filter-aliases.test.js",
         "line": 2,
-        "nodes": Array [
-          Object {
-            "attrs": Array [],
-            "block": Object {
+        "nodes": [
+          {
+            "attrs": [],
+            "block": {
               "filename": "filter-aliases.test.js",
               "line": 3,
-              "nodes": Array [
-                Object {
+              "nodes": [
+                {
                   "column": 5,
                   "filename": "filter-aliases.test.js",
                   "line": 4,
@@ -54,24 +54,24 @@ END ALIASED",
 `;
 
 exports[`options are applied before aliases 1`] = `
-Object {
+{
   "filename": "filter-aliases.test.js",
   "line": 0,
-  "nodes": Array [
-    Object {
-      "attributeBlocks": Array [],
-      "attrs": Array [],
-      "block": Object {
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
         "filename": "filter-aliases.test.js",
         "line": 2,
-        "nodes": Array [
-          Object {
-            "attrs": Array [],
-            "block": Object {
+        "nodes": [
+          {
+            "attrs": [],
+            "block": {
               "filename": "filter-aliases.test.js",
               "line": 3,
-              "nodes": Array [
-                Object {
+              "nodes": [
+                {
                   "column": 5,
                   "filename": "filter-aliases.test.js",
                   "line": 4,
@@ -90,13 +90,13 @@ Object {
 Will be wrapped.
 END CHECKED",
           },
-          Object {
-            "attrs": Array [],
-            "block": Object {
+          {
+            "attrs": [],
+            "block": {
               "filename": "filter-aliases.test.js",
               "line": 5,
-              "nodes": Array [
-                Object {
+              "nodes": [
+                {
                   "column": 5,
                   "filename": "filter-aliases.test.js",
                   "line": 6,
@@ -130,10 +130,10 @@ END CHECKED",
 `;
 
 exports[`we do not support chains of aliases 1`] = `
-Object {
+{
   "code": "PUGNEUM:FILTER_ALIAS_CHAIN",
   "message": "filter-aliases.test.js:3:3
 
-The filter \\"aliased-again\\" is an alias for \\"aliased\\", which is an alias for \\"alias\\".  pugneum does not support chains of filter aliases.",
+The filter "aliased-again" is an alias for "aliased", which is an alias for "alias".  pugneum does not support chains of filter aliases.",
 }
 `;

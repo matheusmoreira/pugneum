@@ -873,7 +873,7 @@ Parser.prototype = {
           }
           tag.attrs.push({
             name: tok.type,
-            val: "'" + tok.val + "'",
+            val: tok.val,
             line: tok.loc.start.line,
             column: tok.loc.start.column,
             filename: this.filename,

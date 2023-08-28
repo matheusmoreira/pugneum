@@ -379,72 +379,21 @@ Compiler.prototype = {
   },
 
   /**
-   * Visit `attrs`.
+   * Visit `attrs` and compile attributes.
    *
    * @param {Array} attrs
    * @api public
    */
 
-  visitAttributes: function(attrs, attributeBlocks) {
-    if (attributeBlocks.length) {
-      if (attrs.length) {
-        var val = this.attrs(attrs);
-        attributeBlocks.unshift(val);
-      }
-      if (attributeBlocks.length > 1) {
-        this.bufferExpression(
-          this.runtime('attrs') +
-            '(' +
-            this.runtime('merge') +
-            '([' +
-            attributeBlocks.join(',') +
-            ']), ' +
-            stringify(this.terse) +
-            ')'
-        );
-      } else {
-        this.bufferExpression(
-          this.runtime('attrs') +
-            '(' +
-            attributeBlocks[0] +
-            ', ' +
-            stringify(this.terse) +
-            ')'
-        );
-      }
-    } else if (attrs.length) {
-      this.attrs(attrs, true);
+  visitAttributes: function(attrs) {
+    for (let len = attrs.length, i = 0; i < len; ++i) {
+      let attr = attrs[i];
+      this.buffer(attr.name);
+      this.buffer('="');
+      this.buffer(attr.val);
+      this.buffer('"');
     }
-  },
-
-  /**
-   * Compile attributes.
-   */
-
-  attrs: function(attrs, buffer) {
-    var res = compileAttrs(attrs, {
-      terse: this.terse,
-      format: buffer ? 'html' : 'object',
-      runtime: this.runtime.bind(this),
-    });
-    if (buffer) {
-      this.bufferExpression(res);
-    }
-    return res;
-  },
-
-  /**
-   * Compile attribute blocks.
-   */
-
-  attributeBlocks: function(attributeBlocks) {
-    return (
-      attributeBlocks &&
-      attributeBlocks.slice().map(function(attrBlock) {
-        return attrBlock.val;
-      })
-    );
-  },
+  }
 };
 
 function tagCanInline(tag) {

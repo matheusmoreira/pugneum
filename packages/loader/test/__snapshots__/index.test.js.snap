@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`pugneum-loader 1`] = `
-Object {
+{
   "filename": "foo.pg",
   "line": 0,
-  "nodes": Array [
-    Object {
+  "nodes": [
+    {
       "column": 1,
-      "file": Object {
-        "ast": Object {
+      "file": {
+        "ast": {
           "filename": "bar.pg",
           "line": 0,
-          "nodes": Array [
-            Object {
+          "nodes": [
+            {
               "column": 1,
               "filename": "bar.pg",
               "line": 1,
               "mode": "replace",
               "name": "bing",
-              "nodes": Array [],
+              "nodes": [],
               "type": "NamedBlock",
             },
           ],
@@ -39,30 +39,30 @@ Object {
       "line": 1,
       "type": "Extends",
     },
-    Object {
+    {
       "column": 1,
       "filename": "foo.pg",
       "line": 3,
       "mode": "replace",
       "name": "bing",
-      "nodes": Array [
-        Object {
-          "block": Object {
+      "nodes": [
+        {
+          "block": {
             "filename": "foo.pg",
             "line": 4,
-            "nodes": Array [],
+            "nodes": [],
             "type": "Block",
           },
           "column": 3,
-          "file": Object {
-            "ast": Object {
+          "file": {
+            "ast": {
               "filename": "bing.pg",
               "line": 0,
-              "nodes": Array [
-                Object {
-                  "attributeBlocks": Array [],
-                  "attrs": Array [
-                    Object {
+              "nodes": [
+                {
+                  "attributeBlocks": [],
+                  "attrs": [
+                    {
                       "column": 1,
                       "filename": "bing.pg",
                       "line": 1,
@@ -71,11 +71,11 @@ Object {
                       "val": "'bing'",
                     },
                   ],
-                  "block": Object {
+                  "block": {
                     "filename": "bing.pg",
                     "line": 1,
-                    "nodes": Array [
-                      Object {
+                    "nodes": [
+                      {
                         "column": 7,
                         "filename": "bing.pg",
                         "line": 1,
@@ -111,16 +111,16 @@ Object {
           "line": 4,
           "type": "Include",
         },
-        Object {
-          "attributeBlocks": Array [],
-          "attrs": Array [],
-          "block": Object {
+        {
+          "attributeBlocks": [],
+          "attrs": [],
+          "block": {
             "filename": "foo.pg",
             "line": 5,
-            "nodes": Array [
-              Object {
+            "nodes": [
+              {
                 "column": 5,
-                "file": Object {
+                "file": {
                   "column": 13,
                   "filename": "foo.pg",
                   "fullPath": "script.js",
@@ -133,7 +133,7 @@ Object {
                   "type": "FileReference",
                 },
                 "filename": "foo.pg",
-                "filters": Array [],
+                "filters": [],
                 "line": 6,
                 "type": "RawInclude",
               },

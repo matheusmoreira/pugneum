@@ -125,7 +125,7 @@ Compiler.prototype = {
     this.visitAttributes(tag.attrs);
 
     if (tag.selfClosing || selfClosing[tag.name]) {
-      this.buffer('/>');
+      this.buffer('>');
 
       // if it is non-empty throw an error
       if (
@@ -139,7 +139,7 @@ Compiler.prototype = {
           tag.name +
             ' is a self closing element: <' +
             tag.name +
-            '/> but contains nested content',
+            '> but contains nested content',
           'VOID_ELEMENT_WITH_CONTENT',
           tag
         );

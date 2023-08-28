@@ -29,17 +29,7 @@ function compileToHTML(ast, options) {
 function Compiler(node, options) {
   this.options = options = options || {};
   this.node = node;
-  this.bufferedConcatenationCount = 0;
-  this.hasCompiledTag = false;
-  this.terse = true;
   this.mixins = {};
-  this.dynamicMixins = false;
-  this.eachCount = 0;
-  this.runtimeFunctionsUsed = [];
-  this.inlineRuntimeFunctions = options.inlineRuntimeFunctions || false;
-  if (this.debug && this.inlineRuntimeFunctions) {
-    this.runtimeFunctionsUsed.push('rethrow');
-  }
 }
 
 Compiler.prototype = {
@@ -54,7 +44,6 @@ Compiler.prototype = {
 
   compile: function() {
     this.buf = [];
-    this.lastBufferedIdx = -1;
 
     // all pugneum documents will compile to HTML5
     this.buffer('<!DOCTYPE html>');
@@ -199,7 +188,6 @@ Compiler.prototype = {
     var attrs = mixin.attrs;
     var dynamic = mixin.name[0] === '#';
     var key = mixin.name;
-    if (dynamic) this.dynamicMixins = true;
     name +=
       (dynamic
         ? mixin.name.substr(2, mixin.name.length - 3)

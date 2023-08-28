@@ -328,15 +328,6 @@ Compiler.prototype = {
       this.buffer(tag.name);
       this.buffer('>');
     }
-  /**
-   * Visit InterpolatedTag.
-   *
-   * @param {InterpolatedTag} tag
-   * @api public
-   */
-
-  visitInterpolatedTag: function(tag) {
-    return this.visitTag(tag, true);
   },
 
   /**

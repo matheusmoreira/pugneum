@@ -57,29 +57,14 @@ modified to be fully static.
 All dynamic features have been removed.
 Only the clean language remains.
 
-## API
-
-For full API, see [pugjs.org/api/reference.html](https://pugjs.org/api/reference.html)
+## Usage
 
 ```js
-var pug = require('pug');
+const pg = require('pugneum');
 
-// compile
-var fn = pug.compile('string of pug', options);
-var html = fn(locals);
-
-// render
-var html = pug.render('string of pug', merge(options, locals));
-
-// renderFile
-var html = pug.renderFile('filename.pug', merge(options, locals));
+let html = pg.render('h1 Hello, world!');
+let html = pg.renderFile('page.pg');
 ```
-
-### Options
-
- - `filename`  Used in exceptions, and required when using includes
- - `compileDebug`  When `false` no debug instrumentation is compiled
- - `pretty`    Add pretty-indentation whitespace to output _(`false` by default)_
 
 ## License
 

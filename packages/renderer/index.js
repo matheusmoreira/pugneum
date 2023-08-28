@@ -121,7 +121,6 @@ Compiler.prototype = {
   visitTag: function(tag, interpolated) {
     this.buffer('<');
     this.buffer(tag.name);
-    if (tag.attrs.length > 0) { this.buffer(' '); }
     this.visitAttributes(tag.attrs);
 
     if (tag.selfClosing || selfClosing[tag.name]) {
@@ -183,6 +182,7 @@ Compiler.prototype = {
   visitAttributes: function(attrs) {
     for (let len = attrs.length, i = 0; i < len; ++i) {
       let attr = attrs[i];
+      this.buffer(' ');
       this.buffer(attr.name);
       this.buffer('="');
       this.buffer(attr.val);

@@ -1,12 +1,10 @@
 {
   "name": "pugneum-repository",
   "private": true,
-  "@rollingversions/ignore": true,
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "coveralls": "3.0.9",
     "jest": "^26.0.1",
     "prettier": "1.19.1"
   },

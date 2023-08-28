@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`no uncessessary blocks should be added 1`] = `
-Object {
+{
   "line": 0,
-  "nodes": Array [
-    Object {
-      "attributeBlocks": Array [],
-      "attrs": Array [],
-      "block": Object {
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
         "line": 2,
-        "nodes": Array [
-          Object {
+        "nodes": [
+          {
             "column": 5,
             "line": 3,
             "type": "Text",
             "val": "Hello",
           },
-          Object {
+          {
             "column": 1,
             "line": 4,
             "type": "Text",
             "val": "
 ",
           },
-          Object {
+          {
             "column": 5,
             "line": 4,
             "type": "Text",

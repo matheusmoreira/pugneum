@@ -14,7 +14,7 @@ var filters = require('pugneum-filters');
 
 ### `filters.apply(ast, filters)`
 
-Renders all `Filter` nodes in a Pug AST (`ast`), using user-specified filters (`filters`).
+Renders all `Filter` nodes in a pugneum abstract syntax tree using user-specified filters.
 
 ## License
 

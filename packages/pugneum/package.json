@@ -17,6 +17,9 @@
     "pugneum-renderer": "^0.1.0",
     "pugneum-filters": "^0.1.0"
   },
+  "bin": {
+    "pugneum": "cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "github:matheusmoreira/pugneum",

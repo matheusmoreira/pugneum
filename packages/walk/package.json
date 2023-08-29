@@ -14,7 +14,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/walk"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/walk"
   },
   "author": "Forbes Lindesay",
   "contributors": [

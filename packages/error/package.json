@@ -12,7 +12,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/error"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/error"
   },
   "author": "Forbes Lindesay",
   "contributors": [

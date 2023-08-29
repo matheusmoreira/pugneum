@@ -13,7 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/parser"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/parser"
   },
   "author": "Forbes Lindesay",
   "contributors": [

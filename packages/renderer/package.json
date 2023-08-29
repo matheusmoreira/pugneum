@@ -12,7 +12,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/renderer"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/renderer"
   },
   "author": "Forbes Lindesay",
   "contributors": [

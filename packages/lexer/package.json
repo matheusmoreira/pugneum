@@ -16,7 +16,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/lexer"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/lexer"
   },
   "author": "Forbes Lindesay",
   "contributors": [

@@ -19,7 +19,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matheusmoreira/pugneum/tree/master/packages/pugneum"
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/pugneum"
   },
   "author": "TJ Holowaychuk <tj@vision-media.ca>",
   "contributors": [

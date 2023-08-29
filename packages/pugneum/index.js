@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const resolve = path.resolve;
 
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
@@ -26,7 +27,7 @@ function renderPugneum(string, options) {
 };
 
 function renderPugneumFile(path, options) {
-  path = path.resolve(path);
+  path = resolve(path);
   let src = fs.readFileSync(path, 'utf8');
   options ||= {};
   options.filename = path;

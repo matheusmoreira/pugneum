@@ -6,16 +6,16 @@ const assert = require('assert');
 const walk = require('pugneum-walk');
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const loader = require('../');
+const load = require('../');
 
 test('pugneum-loader', () => {
   let filename = __dirname + '/foo.pg';
-  let source = loader.read(filename);
+  let source = fs.readFileSync(filename, 'utf8');
 console.log(source);
   let tokens = lex(source, {filename});
   let ast = parse(tokens, {filename});
 
-  ast = loader.load(ast, {lex, parse});
+  ast = load(ast, {lex, parse});
 
   ast = walk(
     ast,

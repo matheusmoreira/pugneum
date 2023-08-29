@@ -5,7 +5,7 @@ const path = require('path');
 const walk = require('pugneum-walk');
 const assign = Object.assign;
 
-module.exports = { load, resolve, read, validateOptions };
+module.exports = load;
 
 function load(ast, options) {
   options = getOptions(options);

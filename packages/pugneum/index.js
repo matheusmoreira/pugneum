@@ -6,7 +6,7 @@ const resolve = path.resolve;
 
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const loader = require('pugneum-loader');
+const load = require('pugneum-loader');
 const link = require('pugneum-linker');
 const render = require('pugneum-renderer');
 const filters = require('pugneum-filters');
@@ -19,7 +19,7 @@ function renderPugneum(string, options) {
 
   let tokens = lex(string, options);
   let ast = parse(tokens, options);
-  let loaded = loader.load(ast, options);
+  let loaded = load(ast, options);
   let linked = link(loaded, options);
   let rendered = render(linked, options);
 

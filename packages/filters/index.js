@@ -41,31 +41,15 @@ function applyFilters(ast, filters, options, filterAliases) {
       }
 
       function filterWithFallback(filter, text, attrs) {
-        try {
-          var filterName = getFilterName(filter, filterAliases);
-          if (filters && filters[filterName]) {
-            return filters[filterName](text, attrs);
-          } else {
-            return runFilter(filterName, text, attrs, dir, funcName);
-          }
-        } catch (ex) {
-          if (ex.code === 'UNKNOWN_FILTER') {
-            throw error(ex.code, ex.message, filter);
-          }
-          throw ex;
-        }
+        return resolveFilter(filter, filters, filterAliases)(text, attrs);
       }
 
       function filterFileWithFallback(filter, filename, file, attrs) {
-        var filterName = getFilterName(filter, filterAliases);
-        if (filters && filters[filterName]) {
-          if (filters[filterName].renderBuffer) {
-            return filters[filterName].renderBuffer(file.raw, attrs);
-          } else {
-            return filters[filterName](file.str, attrs);
-          }
+        let resolvedFilter = resolveFilter(filter, filters, filterAliases);
+        if (resolvedFilter.renderBuffer) {
+          return resolvedFilter.renderBuffer(file.raw, attrs);
         } else {
-          return filterWithFallback(filter, filename, attrs);
+          return resolvedFilter(file.str, attrs);
         }
       }
     },
@@ -127,6 +111,15 @@ function getFilterName(filter, aliases) {
     }
   }
   return filterName;
+}
+
+function resolveFilter(filter, filters, aliases) {
+  let filterName = getFilterName(filter, aliases);
+  if (filters && filters[filterName]) {
+    return filters[filterName];
+  } else {
+    throw error('UNKNOWN_FILTER', `Unknown filter '${filter.name}'`, filter);
+  }
 }
 
 module.exports = applyFilters;

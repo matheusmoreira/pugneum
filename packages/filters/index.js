@@ -42,7 +42,7 @@ function applyFilters(ast, filters, options, filterAliases) {
 
       function filterWithFallback(filter, text, attrs, funcName) {
         try {
-          var filterName = getFilterName(filter);
+          var filterName = getFilterName(filter, filterAliases);
           if (filters && filters[filterName]) {
             return filters[filterName](text, attrs);
           } else {
@@ -57,7 +57,7 @@ function applyFilters(ast, filters, options, filterAliases) {
       }
 
       function filterFileWithFallback(filter, filename, file, attrs) {
-        var filterName = getFilterName(filter);
+        var filterName = getFilterName(filter, filterAliases);
         if (filters && filters[filterName]) {
           if (filters[filterName].renderBuffer) {
             return filters[filterName].renderBuffer(file.raw, attrs);
@@ -71,26 +71,6 @@ function applyFilters(ast, filters, options, filterAliases) {
     },
     {includeDependencies: true}
   );
-  function getFilterName(filter) {
-    var filterName = filter.name;
-    if (filterAliases && filterAliases[filterName]) {
-      filterName = filterAliases[filterName];
-      if (filterAliases[filterName]) {
-        throw error(
-          'FILTER_ALIAS_CHAIN',
-          'The filter "' +
-            filter.name +
-            '" is an alias for "' +
-            filterName +
-            '", which is an alias for "' +
-            filterAliases[filterName] +
-            '".  pugneum does not support chains of filter aliases.',
-          filter
-        );
-      }
-    }
-    return filterName;
-  }
   return ast;
 }
 
@@ -126,6 +106,27 @@ function getAttributes(node, options) {
     }
   });
   return attrs;
+}
+
+function getFilterName(filter, aliases) {
+  var filterName = filter.name;
+  if (aliases && aliases[filterName]) {
+    filterName = aliases[filterName];
+    if (aliases[filterName]) {
+      throw error(
+        'FILTER_ALIAS_CHAIN',
+        'The filter "' +
+          filter.name +
+          '" is an alias for "' +
+          filterName +
+          '", which is an alias for "' +
+          aliases[filterName] +
+          '".  pugneum does not support chains of filter aliases.',
+        filter
+      );
+    }
+  }
+  return filterName;
 }
 
 module.exports = applyFilters;

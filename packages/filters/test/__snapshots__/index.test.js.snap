@@ -1,2 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`filters can be used 1`] = `
+{
+  "filename": "index.test.js",
+  "line": 0,
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
+        "filename": "index.test.js",
+        "line": 2,
+        "nodes": [
+          {
+            "attrs": [],
+            "block": {
+              "filename": "index.test.js",
+              "line": 3,
+              "nodes": [
+                {
+                  "column": 5,
+                  "filename": "index.test.js",
+                  "line": 4,
+                  "type": "Text",
+                  "val": "Filters can be used.",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "index.test.js",
+            "line": 3,
+            "name": "custom",
+            "type": "Text",
+            "val": "BEGINFilters can be used.END",
+          },
+        ],
+        "type": "Block",
+      },
+      "column": 1,
+      "filename": "index.test.js",
+      "isInline": false,
+      "line": 2,
+      "name": "p",
+      "selfClosing": false,
+      "type": "Tag",
+    },
+  ],
+  "type": "Block",
+}
+`;

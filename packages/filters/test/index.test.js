@@ -1,8 +1,14 @@
 'use strict';
 
-var fs = require('fs');
-var assert = require('assert');
-var filter = require('../');
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert');
+
+const lex = require('pugneum-lexer');
+const parse = require('pugneum-parser');
+const filter = require('../');
+
+const filename = path.basename(__filename);
 
 var customFilters = {
   custom: function(str, options) {
@@ -14,6 +20,22 @@ var customFilters = {
     return 'BEGIN OPTIONS' + str + 'END OPTIONS';
   }
 };
+
+test('filters can be used', () => {
+  const source = `
+p
+  :custom
+    Filters can be used.
+`;
+
+  const ast = parse(lex(source, {filename}), {
+    filename,
+    src: source,
+  });
+
+  const output = filter(ast, customFilters);
+  expect(output).toMatchSnapshot();
+});
 
 process.chdir(__dirname + '/../');
 

@@ -11,13 +11,17 @@ const filter = require('../');
 const filename = path.basename(__filename);
 
 var customFilters = {
-  custom: function(str, options) {
-    return 'BEGIN' + str + 'END';
+  custom: {
+    filter: function(str, options) {
+      return 'BEGIN' + str + 'END';
+    }
   },
-  'custom-with-options': function(str, options) {
-    expect(options.option).toBe('value');
-    expect(options.number).toBe('2'); // no automatic parsing of option values
-    return 'BEGIN OPTIONS' + str + 'END OPTIONS';
+  'custom-with-options': {
+    filter: function(str, options) {
+      expect(options.option).toBe('value');
+      expect(options.number).toBe('2'); // no automatic parsing of option values
+      return 'BEGIN OPTIONS' + str + 'END OPTIONS';
+    }
   }
 };
 

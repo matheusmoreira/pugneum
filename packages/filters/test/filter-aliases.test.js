@@ -5,11 +5,15 @@ const filter = require('../');
 const filename = require('path').basename(__filename);
 
 const customFilters = {
-  alias: function(str, options) {
-    return 'BEGIN ALIASED\n' + str + '\nEND ALIASED';
+  alias: {
+    filter: function(str, options) {
+      return 'BEGIN ALIASED\n' + str + '\nEND ALIASED';
+    }
   },
-  'check-options': function(str, options) {
-    return options.wrap? 'CHECKED\n' + str + '\nEND CHECKED' : str;
+  'check-options': {
+    filter: function(str, options) {
+      return options.wrap? 'CHECKED\n' + str + '\nEND CHECKED' : str;
+    }
   }
 };
 

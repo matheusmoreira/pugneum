@@ -41,13 +41,14 @@ function applyFilters(ast, filters, options, filterAliases) {
       }
 
       function filterText(filter, text, attrs) {
-        return resolveFilter(filter, filters, filterAliases)(text, attrs);
+        let resolved = resolveFilter(filter, filters, filterAliases);
+        return resolved.filter(text, attrs);
       }
 
       function filterFile(filter, filename, file, attrs) {
-        let resolvedFilter = resolveFilter(filter, filters, filterAliases);
-        let input = resolvedFilter.raw? file.raw : file.str;
-        return resolvedFilter(inout, attrs);
+        let resolved = resolveFilter(filter, filters, filterAliases);
+        let input = resolved.raw? file.raw : file.str;
+        return resolved.filter(input, attrs);
       }
     },
     {includeDependencies: true}

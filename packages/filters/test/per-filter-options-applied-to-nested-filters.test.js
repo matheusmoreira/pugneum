@@ -5,11 +5,15 @@ const filter = require('../');
 const filename = require('path').basename(__filename);
 
 const customFilters = {
-  first: function(str, options) {
-    return options.wrap? 'FIRST\n' + str + '\nEND FIRST' : str;
+  first: {
+    filter: function(str, options) {
+      return options.wrap? 'FIRST\n' + str + '\nEND FIRST' : str;
+    }
   },
-  second: function(str, options) {
-    return options.wrap? 'SECOND\n' + str + '\nEND SECOND' : str;
+  second: {
+    filter: function(str, options) {
+      return options.wrap? 'SECOND\n' + str + '\nEND SECOND' : str;
+    }
   }
 };
 

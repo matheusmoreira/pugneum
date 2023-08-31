@@ -37,6 +37,23 @@ p
   expect(output).toMatchSnapshot();
 });
 
+test('filters can be used with options', () => {
+  const source = `
+p
+  :custom-with-options(option=value number=2)
+    Filters can be used with options.
+    The values aren't parsed though.
+    They're just strings.
+`;
+
+  const ast = parse(lex(source, {filename}), {
+    filename,
+    src: source,
+  });
+
+  const output = filter(ast, customFilters);
+  expect(output).toMatchSnapshot();
+});
 process.chdir(__dirname + '/../');
 
 var testCases;

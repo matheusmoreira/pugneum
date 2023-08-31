@@ -40,7 +40,7 @@ function applyFilters(ast, filters, options, filterAliases) {
         node.file = undefined;
       }
 
-      function filterWithFallback(filter, text, attrs, funcName) {
+      function filterWithFallback(filter, text, attrs) {
         try {
           var filterName = getFilterName(filter, filterAliases);
           if (filters && filters[filterName]) {
@@ -65,7 +65,7 @@ function applyFilters(ast, filters, options, filterAliases) {
             return filters[filterName](file.str, attrs);
           }
         } else {
-          return filterWithFallback(filter, filename, attrs, 'renderFile');
+          return filterWithFallback(filter, filename, attrs);
         }
       }
     },

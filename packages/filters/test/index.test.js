@@ -6,9 +6,12 @@ var filter = require('../');
 
 var customFilters = {
   custom: function(str, options) {
-    expect(options.opt).toBe('val');
-    expect(options.num).toBe(2);
     return 'BEGIN' + str + 'END';
+  },
+  'custom-with-options': function(str, options) {
+    expect(options.option).toBe('value');
+    expect(options.number).toBe('2'); // no automatic parsing of option values
+    return 'BEGIN OPTIONS' + str + 'END OPTIONS';
   }
 };
 

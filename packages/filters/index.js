@@ -22,7 +22,7 @@ function applyFilters(ast, filters, options, filterAliases) {
         var attrs = getAttributes(firstFilter, options);
         var filename = (attrs.filename = node.file.fullPath);
         node.type = 'Text';
-        node.val = filterFileWithFallback(
+        node.val = filterFile(
           firstFilter,
           filename,
           node.file,
@@ -44,7 +44,7 @@ function applyFilters(ast, filters, options, filterAliases) {
         return resolveFilter(filter, filters, filterAliases)(text, attrs);
       }
 
-      function filterFileWithFallback(filter, filename, file, attrs) {
+      function filterFile(filter, filename, file, attrs) {
         let resolvedFilter = resolveFilter(filter, filters, filterAliases);
         if (resolvedFilter.renderBuffer) {
           return resolvedFilter.renderBuffer(file.raw, attrs);

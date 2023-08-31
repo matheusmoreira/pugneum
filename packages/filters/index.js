@@ -16,7 +16,7 @@ function applyFilters(ast, filters, options, filterAliases) {
         var attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
-        node.val = filterWithFallback(node, text, attrs);
+        node.val = filterText(node, text, attrs);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         var firstFilter = node.filters.pop();
         var attrs = getAttributes(firstFilter, options);
@@ -34,13 +34,13 @@ function applyFilters(ast, filters, options, filterAliases) {
           .forEach(function(filter) {
             var attrs = getAttributes(filter, options);
             attrs.filename = filename;
-            node.val = filterWithFallback(filter, node.val, attrs);
+            node.val = filterText(filter, node.val, attrs);
           });
         node.filters = undefined;
         node.file = undefined;
       }
 
-      function filterWithFallback(filter, text, attrs) {
+      function filterText(filter, text, attrs) {
         return resolveFilter(filter, filters, filterAliases)(text, attrs);
       }
 

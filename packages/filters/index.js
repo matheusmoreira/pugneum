@@ -128,4 +128,4 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-exports.apply = applyFilters;
+module.exports = applyFilters;

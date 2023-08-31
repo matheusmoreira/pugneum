@@ -1,6 +1,6 @@
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const apply = require('../').apply;
+const filter = require('../');
 
 const filename = require('path').basename(__filename);
 
@@ -29,6 +29,6 @@ p
       second: {wrap: true},
   };
 
-  const output = apply(ast, customFilters, options);
+  const output = filter(ast, customFilters, options);
   expect(output).toMatchSnapshot();
 });

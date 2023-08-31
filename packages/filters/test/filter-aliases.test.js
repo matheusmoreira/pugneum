@@ -1,6 +1,6 @@
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const apply = require('../').apply;
+const filter = require('../');
 
 const filename = require('path').basename(__filename);
 
@@ -30,7 +30,7 @@ p
     aliased: 'alias',
   };
 
-  const output = apply(ast, customFilters, options, aliases);
+  const output = filter(ast, customFilters, options, aliases);
   expect(output).toMatchSnapshot();
 });
 
@@ -53,7 +53,7 @@ p
   };
 
   try {
-    const output = apply(ast, customFilters, options, aliases);
+    const output = filter(ast, customFilters, options, aliases);
   } catch (ex) {
     expect({
       code: ex.code,
@@ -85,6 +85,6 @@ script
     aliased: 'check-options',
   };
 
-  const output = apply(ast, customFilters, options, aliases);
+  const output = filter(ast, customFilters, options, aliases);
   expect(output).toMatchSnapshot();
 });

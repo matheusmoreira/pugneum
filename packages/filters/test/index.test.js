@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var assert = require('assert');
-var apply = require('../').apply;
+var filter = require('../');
 
 var customFilters = {
   custom: function(str, options) {
@@ -27,7 +27,7 @@ testCases.forEach(function(filename) {
 
   test('cases/' + filename, function() {
     var actualAst = JSON.stringify(
-      apply(JSON.parse(read(filename)), customFilters),
+      filter(JSON.parse(read(filename)), customFilters),
       null,
       '  '
     );
@@ -43,7 +43,7 @@ testCases.forEach(function(filename) {
   test('errors/' + filename, function() {
     var actual;
     try {
-      apply(JSON.parse(read(filename)), customFilters);
+      filter(JSON.parse(read(filename)), customFilters);
       throw new Error('Expected ' + filename + ' to throw an exception.');
     } catch (ex) {
       if (!ex || !ex.code || ex.code.indexOf('PUGNEUM:') !== 0) throw ex;

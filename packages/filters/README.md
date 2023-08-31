@@ -9,10 +9,10 @@ Code for processing filters in pugneum templates
 ## Usage
 
 ```
-var filters = require('pugneum-filters');
+var filter = require('pugneum-filters');
 ```
 
-### `filters.apply(ast, filters)`
+### `filter(ast, filters)`
 
 Renders all `Filter` nodes in a pugneum abstract syntax tree using user-specified filters.
 

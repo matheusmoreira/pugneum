@@ -46,11 +46,8 @@ function applyFilters(ast, filters, options, filterAliases) {
 
       function filterFile(filter, filename, file, attrs) {
         let resolvedFilter = resolveFilter(filter, filters, filterAliases);
-        if (resolvedFilter.renderBuffer) {
-          return resolvedFilter.renderBuffer(file.raw, attrs);
-        } else {
-          return resolvedFilter(file.str, attrs);
-        }
+        let input = resolvedFilter.raw? file.raw : file.str;
+        return resolvedFilter(inout, attrs);
       }
     },
     {includeDependencies: true}

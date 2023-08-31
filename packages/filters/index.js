@@ -47,7 +47,7 @@ function applyFilters(ast, filters, options, filterAliases) {
 
       function filterFile(filter, filename, file, attrs) {
         let resolved = resolveFilter(filter, filters, filterAliases);
-        let input = resolved.raw? file.raw : file.str;
+        let input = resolved.binary? file.raw : file.str;
         return resolved.filter(input, attrs);
       }
     },

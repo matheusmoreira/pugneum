@@ -19,7 +19,7 @@ var testCases;
 testCases = fs.readdirSync(__dirname + '/cases').filter(function(name) {
   return /\.input\.json$/.test(name);
 });
-//
+
 testCases.forEach(function(filename) {
   function read(path) {
     return fs.readFileSync(__dirname + '/cases/' + path, 'utf8');
@@ -33,10 +33,6 @@ testCases.forEach(function(filename) {
     );
     expect(actualAst).toMatchSnapshot();
   });
-});
-
-testCases = fs.readdirSync(__dirname + '/errors').filter(function(name) {
-  return /\.input\.json$/.test(name);
 });
 
 testCases.forEach(function(filename) {

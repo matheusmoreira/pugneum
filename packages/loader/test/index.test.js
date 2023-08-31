@@ -11,7 +11,6 @@ const load = require('../');
 test('pugneum-loader', () => {
   let filename = __dirname + '/foo.pg';
   let source = fs.readFileSync(filename, 'utf8');
-console.log(source);
   let tokens = lex(source, {filename});
   let ast = parse(tokens, {filename});
 

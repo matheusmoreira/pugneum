@@ -23,7 +23,8 @@
     "packages/filters",
     "packages/renderer",
     "packages/pugneum",
-    "packages/walk"
+    "packages/walk",
+    "packages/filter/highlight.js"
   ],
   "license": "MIT"
 }

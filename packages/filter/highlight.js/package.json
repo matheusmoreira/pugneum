@@ -1,0 +1,25 @@
+{
+  "name": "pugneum-filter-highlight.js",
+  "version": "0.1.0",
+  "description": "Pugneum highlight.js filter",
+  "keywords": [
+    "pugneum",
+    "filter",
+    "syntax",
+    "highlight",
+    "highlight.js"
+  ],
+  "author": "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "highlight.js": "^11.8.0"
+  },
+  "peerDependencies": {
+    "pugneum-filters": "^0.1.1"
+  },
+  "devDependencies": {
+    "pugneum-lexer": "^0.1.0",
+    "pugneum-parser": "^0.1.0",
+    "pugneum-filters": "^0.1.1"
+  }
+}

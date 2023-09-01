@@ -1,6 +1,6 @@
 {
   "name": "pugneum-error",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Standard error objects for pugneum",
   "keywords": [
     "pugneum",

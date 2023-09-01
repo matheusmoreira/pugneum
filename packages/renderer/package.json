@@ -1,6 +1,6 @@
 {
   "name": "pugneum-renderer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Renders pugneum abstract syntax trees into HTML",
   "keywords": [
     "pugneum",

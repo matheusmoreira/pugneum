@@ -1,6 +1,6 @@
 {
   "name": "pugneum-loader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Loads the dependencies of pugneum templates",
   "keywords": [
     "pugneum",

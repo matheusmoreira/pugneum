@@ -5,6 +5,7 @@
   "keywords": [
     "pugneum",
     "ast",
+    "traversal",
     "walk",
     "pug"
   ],

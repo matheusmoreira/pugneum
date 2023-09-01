@@ -1,0 +1,12 @@
+html
+  body
+    pre
+      code
+        :highlight(language=scheme)
+          (define (double x)
+            (* 2 x))
+          (define (square x)
+            (* x x))
+          (define (double-square x)
+            (double (square x)))
+          (display (double-square 10))

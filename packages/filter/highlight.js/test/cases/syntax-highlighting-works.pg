@@ -1,0 +1,8 @@
+html
+  body
+    pre
+      code
+        :highlight
+          function thisShouldBeHighlighted(syntax) {
+            return with('highlight', { extension: 'js' });
+          }

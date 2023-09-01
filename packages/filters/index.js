@@ -1,8 +1,9 @@
 'use strict';
 
 var dirname = require('path').dirname;
-var walk = require('pugneum-walk');
-var error = require('pugneum-error');
+
+const error = require('pugneum-error');
+const walk = require('pugneum-walker');
 
 function applyFilters(ast, filters, options, filterAliases) {
   options = options || {};

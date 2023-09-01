@@ -1,7 +1,8 @@
 'use strict';
 
 var assert = require('assert');
-var walk = require('pugneum-walk');
+
+const walk = require('pugneum-walker');
 
 function error() {
   throw require('pugneum-error').apply(null, arguments);

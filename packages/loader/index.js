@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const walk = require('pugneum-walk');
+const walk = require('pugneum-walker');
 const assign = Object.assign;
 
 module.exports = load;

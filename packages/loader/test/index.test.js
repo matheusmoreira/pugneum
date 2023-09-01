@@ -3,7 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
-const walk = require('pugneum-walk');
+
+const walk = require('pugneum-walker');
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
 const load = require('../');

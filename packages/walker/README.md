@@ -1,15 +1,15 @@
-# pugneum-walk
+# pugneum-walker
 
 Walk and transform a pugneum abstract syntax tree
 
 ## Installation
 
-    npm install pugneum-walk
+    npm install pugneum-walker
 
 ## Usage
 
 ```js
-var walk = require('pugneum-walk');
+const walk = require('pugneum-walker');
 ```
 
 ### `walk(ast, before, after, options)`

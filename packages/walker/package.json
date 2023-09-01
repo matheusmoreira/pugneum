@@ -1,5 +1,5 @@
 {
-  "name": "pugneum-walk",
+  "name": "pugneum-walker",
   "version": "0.1.0",
   "description": "Walk and transform a pugneum abstract syntax tree",
   "keywords": [
@@ -16,7 +16,7 @@
   "repository": {
     "type": "git",
     "url": "github:matheusmoreira/pugneum",
-    "directory": "packages/walk"
+    "directory": "packages/walker"
   },
   "author": "Forbes Lindesay",
   "contributors": [

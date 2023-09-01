@@ -22,8 +22,8 @@
     "packages/linker",
     "packages/filters",
     "packages/renderer",
+    "packages/walker",
     "packages/pugneum",
-    "packages/walk",
     "packages/filter/highlight.js"
   ],
   "license": "MIT"

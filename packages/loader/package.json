@@ -9,7 +9,7 @@
     "pug"
   ],
   "dependencies": {
-    "pugneum-walk": "^0.1.0"
+    "pugneum-walker": "^0.1.0"
   },
   "devDependencies": {
     "pugneum-lexer": "^0.1.0",

@@ -15,11 +15,11 @@
     "highlight.js": "^11.8.0"
   },
   "peerDependencies": {
-    "pugneum-filters": "^0.1.1"
+    "pugneum-filterer": "^0.1.1"
   },
   "devDependencies": {
     "pugneum-lexer": "^0.1.0",
     "pugneum-parser": "^0.1.0",
-    "pugneum-filters": "^0.1.1"
+    "pugneum-filterer": "^0.1.1"
   }
 }

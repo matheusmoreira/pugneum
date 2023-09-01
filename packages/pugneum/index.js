@@ -9,7 +9,7 @@ const parse = require('pugneum-parser');
 const load = require('pugneum-loader');
 const link = require('pugneum-linker');
 const render = require('pugneum-renderer');
-const filters = require('pugneum-filters');
+const filter = require('pugneum-filterer');
 
 function renderPugneum(string, options) {
   options ||= {};

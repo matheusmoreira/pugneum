@@ -15,7 +15,7 @@
     "pugneum-loader": "^0.1.0",
     "pugneum-linker": "^0.1.0",
     "pugneum-renderer": "^0.1.0",
-    "pugneum-filters": "^0.1.0"
+    "pugneum-filterer": "^0.1.0"
   },
   "bin": {
     "pugneum": "cli.js"

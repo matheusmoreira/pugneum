@@ -1,15 +1,15 @@
-# pugneum-filters
+# pugneum-filterer
 
 Code for processing filters in pugneum templates
 
 ## Installation
 
-    npm install pugneum-filters
+    npm install pugneum-filterer
 
 ## Usage
 
 ```
-var filter = require('pugneum-filters');
+var filter = require('pugneum-filterer');
 ```
 
 ### `filter(ast, filters)`

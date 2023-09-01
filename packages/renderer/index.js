@@ -85,7 +85,7 @@ Compiler.prototype = {
         ' which is not supported by the pugneum compiler';
       switch (node.type) {
         case 'Filter':
-          msg += '; use pugneum-filters';
+          msg += '; use pugneum-filterer';
           break;
         case 'Extends':
         case 'Include':

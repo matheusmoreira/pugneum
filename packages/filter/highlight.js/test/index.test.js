@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const filter = require('pugneum-filters');
+const filter = require('pugneum-filterer');
 
 const hljs = require('../');
 const customFilters = { 'highlight': hljs };

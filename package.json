@@ -20,7 +20,7 @@
     "packages/parser",
     "packages/loader",
     "packages/linker",
-    "packages/filters",
+    "packages/filterer",
     "packages/renderer",
     "packages/walker",
     "packages/pugneum",

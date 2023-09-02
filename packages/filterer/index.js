@@ -17,7 +17,7 @@ function applyFilters(ast, filters, options, filterAliases) {
         var attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
-        node.val = filterText(node, text, attrs);
+        node.val = filterText(node, text, attrs, filters, filterAliases);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         var firstFilter = node.filters.pop();
         var attrs = getAttributes(firstFilter, options);
@@ -27,7 +27,9 @@ function applyFilters(ast, filters, options, filterAliases) {
           firstFilter,
           filename,
           node.file,
-          attrs
+          attrs,
+          filters,
+          filterAliases
         );
         node.filters
           .slice()
@@ -39,17 +41,6 @@ function applyFilters(ast, filters, options, filterAliases) {
           });
         node.filters = undefined;
         node.file = undefined;
-      }
-
-      function filterText(filter, text, attrs) {
-        let resolved = resolveFilter(filter, filters, filterAliases);
-        return resolved.filter(text, attrs);
-      }
-
-      function filterFile(filter, filename, file, attrs) {
-        let resolved = resolveFilter(filter, filters, filterAliases);
-        let input = resolved.binary? file.raw : file.str;
-        return resolved.filter(input, attrs);
       }
     },
     {includeDependencies: true}
@@ -66,6 +57,17 @@ function handleNestedFilters(node, filters, options, filterAliases) {
       filterAliases
     ).nodes[0];
   }
+}
+
+function filterText(filter, text, attrs, filters, aliases) {
+  const resolved = resolveFilter(filter, filters, aliases);
+  return resolved.filter(text, attrs);
+}
+
+function filterFile(filter, filename, file, attrs, filters, aliases) {
+  const resolved = resolveFilter(filter, filters, aliases);
+  const input = resolved.binary? file.raw : file.str;
+  return resolved.filter(input, attrs);
 }
 
 function getBodyAsText(node) {

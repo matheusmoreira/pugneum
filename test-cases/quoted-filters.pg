@@ -1,0 +1,8 @@
+html
+  body
+    :'filter name with spaces'
+      Totally supported.
+    :"filter.name,with|special&characters$of@all#shapes%and^sizes!"
+      Not even npm wants to deal with that.
+    :'highlight.js'
+      Now the lexer won't ignore the dot anymore.

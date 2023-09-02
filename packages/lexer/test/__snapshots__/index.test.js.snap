@@ -21050,6 +21050,315 @@ exports[`pre.pg 1`] = `
 ]
 `;
 
+exports[`quoted-filters.pg 1`] = `
+[
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 1,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "tag",
+    "val": "html",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 2,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "indent",
+    "val": 2,
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 7,
+        "line": 2,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 3,
+        "line": 2,
+      },
+    },
+    "type": "tag",
+    "val": "body",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 3,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 1,
+        "line": 3,
+      },
+    },
+    "type": "indent",
+    "val": 4,
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 31,
+        "line": 3,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 5,
+        "line": 3,
+      },
+    },
+    "type": "filter",
+    "val": "filter name with spaces",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 31,
+        "line": 3,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 31,
+        "line": 3,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 25,
+        "line": 4,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 7,
+        "line": 4,
+      },
+    },
+    "type": "text",
+    "val": "Totally supported.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 25,
+        "line": 4,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 25,
+        "line": 4,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 5,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 68,
+        "line": 5,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 5,
+        "line": 5,
+      },
+    },
+    "type": "filter",
+    "val": "filter.name,with|special&characters$of@all#shapes%and^sizes!",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 68,
+        "line": 5,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 68,
+        "line": 5,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 44,
+        "line": 6,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 7,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "Not even npm wants to deal with that.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 44,
+        "line": 6,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 44,
+        "line": 6,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 7,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 1,
+        "line": 7,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 20,
+        "line": 7,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 5,
+        "line": 7,
+      },
+    },
+    "type": "filter",
+    "val": "highlight.js",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 20,
+        "line": 7,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 20,
+        "line": 7,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 8,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 7,
+        "line": 8,
+      },
+    },
+    "type": "text",
+    "val": "Now the lexer won't ignore the dot anymore.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 8,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 50,
+        "line": 8,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 8,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 50,
+        "line": 8,
+      },
+    },
+    "type": "outdent",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 8,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 50,
+        "line": 8,
+      },
+    },
+    "type": "outdent",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 8,
+      },
+      "filename": "quoted-filters.pg",
+      "start": {
+        "column": 50,
+        "line": 8,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
 exports[`quotes.pg 1`] = `
 [
   {

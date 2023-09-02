@@ -392,7 +392,10 @@ Lexer.prototype = {
    */
 
   filter: function(opts) {
-    var tok = this.scan(/^:([\w\-]+)/, 'filter');
+    let tok = this.scan(/^:([\w\-]+)/, 'filter') ||
+        this.scan(/^:'(.+)'/, 'filter') ||
+        this.scan(/^:"(.+)"/, 'filter');
+
     var inInclude = opts && opts.inInclude;
     if (tok) {
       this.tokens.push(tok);

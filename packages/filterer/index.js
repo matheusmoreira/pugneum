@@ -91,29 +91,8 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-function getFilterName(filter, aliases) {
-  var filterName = filter.name;
-  if (aliases && aliases[filterName]) {
-    filterName = aliases[filterName];
-    if (aliases[filterName]) {
-      throw error(
-        'FILTER_ALIAS_CHAIN',
-        'The filter "' +
-          filter.name +
-          '" is an alias for "' +
-          filterName +
-          '", which is an alias for "' +
-          aliases[filterName] +
-          '".  pugneum does not support chains of filter aliases.',
-        filter
-      );
-    }
-  }
-  return filterName;
-}
-
 function resolveFilter(filter, filters, aliases) {
-  let filterName = getFilterName(filter, aliases);
+  let filterName = filter.name;
   if (filters && filters[filterName]) {
     return filters[filterName];
   } else {

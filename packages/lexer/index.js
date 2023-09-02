@@ -411,18 +411,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Doctype.
-   */
-
-  doctype: function() {
-    var node = this.scanEndOfLine(/^doctype *([^\n]*)/, 'doctype');
-    if (node) {
-      this.tokens.push(this.tokEnd(node));
-      return true;
-    }
-  },
-
-  /**
    * Id.
    */
 

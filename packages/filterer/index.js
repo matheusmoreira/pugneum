@@ -1,6 +1,8 @@
 const error = require('pugneum-error');
 const walk = require('pugneum-walker');
 
+const packagePrefix = 'pugneum-filter-';
+
 function applyFilters(ast, filters, options) {
   options = options || {};
   walk(
@@ -82,8 +84,10 @@ function resolveFilter(filter, filters) {
   if (filters && filters[filter]) {
     return filters[filter];
   } else {
-    throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, filter);
+    return require(packagePrefix + filter);
   }
+
+  throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, filter);
 }
 
 module.exports = applyFilters;

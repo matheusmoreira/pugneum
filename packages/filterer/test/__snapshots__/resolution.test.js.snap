@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`installed filter packages can be used implicitly 1`] = `
+{
+  "filename": "resolution.test.js",
+  "line": 0,
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
+        "filename": "resolution.test.js",
+        "line": 2,
+        "nodes": [
+          {
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": {
+              "filename": "resolution.test.js",
+              "line": 3,
+              "nodes": [
+                {
+                  "attrs": [
+                    {
+                      "column": 21,
+                      "filename": "resolution.test.js",
+                      "line": 4,
+                      "mustEscape": true,
+                      "name": "language",
+                      "val": "ruby",
+                    },
+                  ],
+                  "block": {
+                    "filename": "resolution.test.js",
+                    "line": 4,
+                    "nodes": [
+                      {
+                        "column": 7,
+                        "filename": "resolution.test.js",
+                        "line": 5,
+                        "type": "Text",
+                        "val": "puts 'This should be', :syntax_highlighted",
+                      },
+                    ],
+                    "type": "Block",
+                  },
+                  "column": 5,
+                  "filename": "resolution.test.js",
+                  "line": 4,
+                  "name": "highlight.js",
+                  "type": "Text",
+                  "val": "puts <span class="hljs-string">&#x27;This should be&#x27;</span>, <span class="hljs-symbol">:syntax_highlighted</span>",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "resolution.test.js",
+            "isInline": true,
+            "line": 3,
+            "name": "code",
+            "selfClosing": false,
+            "type": "Tag",
+          },
+        ],
+        "type": "Block",
+      },
+      "column": 1,
+      "filename": "resolution.test.js",
+      "isInline": false,
+      "line": 2,
+      "name": "pre",
+      "selfClosing": false,
+      "type": "Tag",
+    },
+  ],
+  "type": "Block",
+}
+`;

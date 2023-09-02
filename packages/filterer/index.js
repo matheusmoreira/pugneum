@@ -77,11 +77,7 @@ function getAttributes(node, options) {
         attr.val === true ? true : attr.val;
   });
   var opts = options[node.name] || {};
-  Object.keys(opts).forEach(function(opt) {
-    if (!attrs.hasOwnProperty(opt)) {
-      attrs[opt] = opts[opt];
-    }
-  });
+  Object.assign(attrs, opts);
   return attrs;
 }
 

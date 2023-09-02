@@ -22,7 +22,6 @@ function applyFilters(ast, filters, options) {
         node.type = 'Text';
         node.val = filterFile(
           firstFilter.name,
-          filename,
           node.file,
           attrs,
           filters
@@ -59,7 +58,7 @@ function filterText(filter, text, attrs, filters) {
   return resolved.filter(text, attrs);
 }
 
-function filterFile(filter, filename, file, attrs, filters) {
+function filterFile(filter, file, attrs, filters) {
   const resolved = resolveFilter(filter, filters);
   const input = resolved.binary? file.raw : file.str;
   return resolved.filter(input, attrs);

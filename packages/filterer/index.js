@@ -3,19 +3,19 @@ var dirname = require('path').dirname;
 const error = require('pugneum-error');
 const walk = require('pugneum-walker');
 
-function applyFilters(ast, filters, options, filterAliases) {
+function applyFilters(ast, filters, options) {
   options = options || {};
   walk(
     ast,
     function(node) {
       var dir = node.filename ? dirname(node.filename) : null;
       if (node.type === 'Filter') {
-        handleNestedFilters(node, filters, options, filterAliases);
+        handleNestedFilters(node, filters, options);
         var text = getBodyAsText(node);
         var attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
-        node.val = filterText(node.name, text, attrs, filters, filterAliases);
+        node.val = filterText(node.name, text, attrs, filters);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         var firstFilter = node.filters.pop();
         var attrs = getAttributes(firstFilter, options);
@@ -26,8 +26,7 @@ function applyFilters(ast, filters, options, filterAliases) {
           filename,
           node.file,
           attrs,
-          filters,
-          filterAliases
+          filters
         );
         node.filters
           .slice()
@@ -46,24 +45,23 @@ function applyFilters(ast, filters, options, filterAliases) {
   return ast;
 }
 
-function handleNestedFilters(node, filters, options, filterAliases) {
+function handleNestedFilters(node, filters, options) {
   if (node.block.nodes[0] && node.block.nodes[0].type === 'Filter') {
     node.block.nodes[0] = applyFilters(
       node.block,
       filters,
-      options,
-      filterAliases
+      options
     ).nodes[0];
   }
 }
 
-function filterText(filter, text, attrs, filters, aliases) {
-  const resolved = resolveFilter(filter, filters, aliases);
+function filterText(filter, text, attrs, filters) {
+  const resolved = resolveFilter(filter, filters);
   return resolved.filter(text, attrs);
 }
 
-function filterFile(filter, filename, file, attrs, filters, aliases) {
-  const resolved = resolveFilter(filter, filters, aliases);
+function filterFile(filter, filename, file, attrs, filters) {
+  const resolved = resolveFilter(filter, filters);
   const input = resolved.binary? file.raw : file.str;
   return resolved.filter(input, attrs);
 }
@@ -87,7 +85,7 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-function resolveFilter(filter, filters, aliases) {
+function resolveFilter(filter, filters) {
   if (filters && filters[filter]) {
     return filters[filter];
   } else {

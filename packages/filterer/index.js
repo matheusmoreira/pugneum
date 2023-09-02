@@ -15,14 +15,14 @@ function applyFilters(ast, filters, options, filterAliases) {
         var attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
-        node.val = filterText(node, text, attrs, filters, filterAliases);
+        node.val = filterText(node.name, text, attrs, filters, filterAliases);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         var firstFilter = node.filters.pop();
         var attrs = getAttributes(firstFilter, options);
         var filename = (attrs.filename = node.file.fullPath);
         node.type = 'Text';
         node.val = filterFile(
-          firstFilter,
+          firstFilter.name,
           filename,
           node.file,
           attrs,
@@ -35,7 +35,7 @@ function applyFilters(ast, filters, options, filterAliases) {
           .forEach(function(filter) {
             var attrs = getAttributes(filter, options);
             attrs.filename = filename;
-            node.val = filterText(filter, node.val, attrs);
+            node.val = filterText(filter.name, node.val, attrs);
           });
         node.filters = undefined;
         node.file = undefined;
@@ -92,11 +92,10 @@ function getAttributes(node, options) {
 }
 
 function resolveFilter(filter, filters, aliases) {
-  let filterName = filter.name;
-  if (filters && filters[filterName]) {
-    return filters[filterName];
+  if (filters && filters[filter]) {
+    return filters[filter];
   } else {
-    throw error('UNKNOWN_FILTER', `Unknown filter '${filter.name}'`, filter);
+    throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, filter);
   }
 }
 

@@ -1,5 +1,3 @@
-var dirname = require('path').dirname;
-
 const error = require('pugneum-error');
 const walk = require('pugneum-walker');
 
@@ -8,7 +6,6 @@ function applyFilters(ast, filters, options) {
   walk(
     ast,
     function(node) {
-      var dir = node.filename ? dirname(node.filename) : null;
       if (node.type === 'Filter') {
         handleNestedFilters(node, filters, options);
         var text = getBodyAsText(node);

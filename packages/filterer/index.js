@@ -1,5 +1,3 @@
-'use strict';
-
 var dirname = require('path').dirname;
 
 const error = require('pugneum-error');

@@ -69,11 +69,7 @@ function filterFile(filter, filename, file, attrs, filters, aliases) {
 }
 
 function getBodyAsText(node) {
-  return node.block.nodes
-    .map(function(node) {
-      return node.val;
-    })
-    .join('');
+  return node.block.nodes.map((node) => node.val).join('');
 }
 
 function getAttributes(node, options) {

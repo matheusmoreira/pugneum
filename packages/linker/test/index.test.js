@@ -2,7 +2,7 @@ const assert = require('assert');
 const fs = require('fs');
 const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
-const load = require('pugneum-loader').load;
+const load = require('pugneum-loader');
 const link = require('../');
 
 const basedir = __dirname + '/cases';

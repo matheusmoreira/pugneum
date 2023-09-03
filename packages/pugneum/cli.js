@@ -57,6 +57,7 @@ const {baseDirectory, inputDirectory, outputDirectory} = readAndValidateInput(pr
 
 const pg = require('pugneum');
 const pgExtension = /\.pg$/;
+const pgOptions = { basedir: baseDirectory };
 
 function isPugneum(file) {
     return pgExtension.test(file);
@@ -82,7 +83,7 @@ function compilePugneumAndSave(input) {
     const relative = path.relative(inputDirectory, input);
     const outputPath = path.join(outputDirectory, relative).replace(pgExtension, '.html');
     const directory = path.dirname(outputPath);
-    const output = pg.renderFile(input);
+    const output = pg.renderFile(input, pgOptions);
     fs.mkdirSync(directory, { recursive: true });
     fs.writeFileSync(outputPath, output, { encoding: 'utf8' });
 }

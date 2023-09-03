@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`syntax-highlighting-works.pg 1`] = `
+{
+  "filename": "syntax-highlighting-works.pg",
+  "line": 0,
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
+        "filename": "syntax-highlighting-works.pg",
+        "line": 1,
+        "nodes": [
+          {
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": {
+              "filename": "syntax-highlighting-works.pg",
+              "line": 2,
+              "nodes": [
+                {
+                  "attributeBlocks": [],
+                  "attrs": [],
+                  "block": {
+                    "filename": "syntax-highlighting-works.pg",
+                    "line": 3,
+                    "nodes": [
+                      {
+                        "attributeBlocks": [],
+                        "attrs": [],
+                        "block": {
+                          "filename": "syntax-highlighting-works.pg",
+                          "line": 4,
+                          "nodes": [
+                            {
+                              "attrs": [
+                                {
+                                  "column": 20,
+                                  "filename": "syntax-highlighting-works.pg",
+                                  "line": 5,
+                                  "mustEscape": true,
+                                  "name": "language",
+                                  "val": "javascript",
+                                },
+                              ],
+                              "block": {
+                                "filename": "syntax-highlighting-works.pg",
+                                "line": 5,
+                                "nodes": [
+                                  {
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "line": 6,
+                                    "type": "Text",
+                                    "val": "function thisShouldBeHighlighted(syntax) {",
+                                  },
+                                  {
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "line": 7,
+                                    "type": "Text",
+                                    "val": "
+",
+                                  },
+                                  {
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "line": 7,
+                                    "type": "Text",
+                                    "val": "  return with('prism', { extension: 'js' });",
+                                  },
+                                  {
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "line": 8,
+                                    "type": "Text",
+                                    "val": "
+",
+                                  },
+                                  {
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "line": 8,
+                                    "type": "Text",
+                                    "val": "}",
+                                  },
+                                ],
+                                "type": "Block",
+                              },
+                              "column": 9,
+                              "filename": "syntax-highlighting-works.pg",
+                              "line": 5,
+                              "name": "highlight",
+                              "type": "Text",
+                              "val": "<span class="token keyword">function</span> <span class="token function">thisShouldBeHighlighted</span><span class="token punctuation">(</span><span class="token parameter">syntax</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword control-flow">return</span> <span class="token keyword">with</span><span class="token punctuation">(</span><span class="token string">'prism'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token literal-property property">extension</span><span class="token operator">:</span> <span class="token string">'js'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>",
+                            },
+                          ],
+                          "type": "Block",
+                        },
+                        "column": 7,
+                        "filename": "syntax-highlighting-works.pg",
+                        "isInline": true,
+                        "line": 4,
+                        "name": "code",
+                        "selfClosing": false,
+                        "type": "Tag",
+                      },
+                    ],
+                    "type": "Block",
+                  },
+                  "column": 5,
+                  "filename": "syntax-highlighting-works.pg",
+                  "isInline": false,
+                  "line": 3,
+                  "name": "pre",
+                  "selfClosing": false,
+                  "type": "Tag",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "syntax-highlighting-works.pg",
+            "isInline": false,
+            "line": 2,
+            "name": "body",
+            "selfClosing": false,
+            "type": "Tag",
+          },
+        ],
+        "type": "Block",
+      },
+      "column": 1,
+      "filename": "syntax-highlighting-works.pg",
+      "isInline": false,
+      "line": 1,
+      "name": "html",
+      "selfClosing": false,
+      "type": "Tag",
+    },
+  ],
+  "type": "Block",
+}
+`;

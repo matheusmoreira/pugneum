@@ -24,7 +24,8 @@
     "packages/renderer",
     "packages/walker",
     "packages/pugneum",
-    "packages/filter/highlight.js"
+    "packages/filter/highlight.js",
+    "packages/filter/prismjs"
   ],
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"

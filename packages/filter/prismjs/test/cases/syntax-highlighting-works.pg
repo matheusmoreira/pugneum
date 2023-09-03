@@ -1,0 +1,8 @@
+html
+  body
+    pre
+      code
+        :highlight(language=javascript)
+          function thisShouldBeHighlighted(syntax) {
+            return with('prism', { extension: 'js' });
+          }

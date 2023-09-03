@@ -1,0 +1,27 @@
+{
+  "name": "pugneum-filter-prismjs",
+  "version": "0.1.0",
+  "description": "Pugneum prismjs filter",
+  "keywords": [
+    "pugneum",
+    "filter",
+    "syntax",
+    "highlight",
+    "prismjs",
+    "prism"
+  ],
+  "author": "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "prism-minmaxed": "^1.0.0"
+  },
+  "peerDependencies": {
+    "pugneum-filterer": "^0.2.0"
+  },
+  "devDependencies": {
+    "pugneum-filterer": "^0.2.0",
+    "pugneum-lexer": "^0.2.0",
+    "pugneum-parser": "^0.2.0"
+  },
+  "funding": "https://github.com/sponsors/matheusmoreira"
+}

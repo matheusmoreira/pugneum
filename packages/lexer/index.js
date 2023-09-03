@@ -1186,7 +1186,6 @@ Lexer.prototype = {
       this.callLexerFunction('eos') ||
       this.callLexerFunction('endInterpolation') ||
       this.callLexerFunction('yield') ||
-      this.callLexerFunction('doctype') ||
       this.callLexerFunction('default') ||
       this.callLexerFunction('extends') ||
       this.callLexerFunction('append') ||

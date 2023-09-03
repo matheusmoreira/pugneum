@@ -5794,240 +5794,6 @@ exports[`default-with-expression.pg 1`] = `
 }
 `;
 
-exports[`doctype.custom.pg 1`] = `
-[
-  {
-    "loc": {
-      "end": {
-        "column": 21,
-        "line": 1,
-      },
-      "filename": "doctype.custom.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "custom stuff",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 21,
-        "line": 1,
-      },
-      "filename": "doctype.custom.pg",
-      "start": {
-        "column": 21,
-        "line": 1,
-      },
-    },
-    "type": "eos",
-  },
-]
-`;
-
-exports[`doctype.default.pg 1`] = `
-[
-  {
-    "loc": {
-      "end": {
-        "column": 8,
-        "line": 1,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 1,
-        "line": 2,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "newline",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 5,
-        "line": 2,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "tag",
-    "val": "html",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 3,
-        "line": 3,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "indent",
-    "val": 2,
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 7,
-        "line": 3,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 3,
-        "line": 3,
-      },
-    },
-    "type": "tag",
-    "val": "body",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 5,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 1,
-        "line": 4,
-      },
-    },
-    "type": "indent",
-    "val": 4,
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 7,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 5,
-        "line": 4,
-      },
-    },
-    "type": "tag",
-    "val": "h1",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 8,
-        "line": 4,
-      },
-    },
-    "type": "text",
-    "val": "Title",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 13,
-        "line": 4,
-      },
-    },
-    "type": "outdent",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 13,
-        "line": 4,
-      },
-    },
-    "type": "outdent",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 4,
-      },
-      "filename": "doctype.default.pg",
-      "start": {
-        "column": 13,
-        "line": 4,
-      },
-    },
-    "type": "eos",
-  },
-]
-`;
-
-exports[`doctype.keyword.pg 1`] = `
-[
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 1,
-      },
-      "filename": "doctype.keyword.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "html",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 13,
-        "line": 1,
-      },
-      "filename": "doctype.keyword.pg",
-      "start": {
-        "column": 13,
-        "line": 1,
-      },
-    },
-    "type": "eos",
-  },
-]
-`;
-
 exports[`escape-chars.pg 1`] = `
 [
   {
@@ -9829,42 +9595,13 @@ exports[`html5.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 13,
-        "line": 1,
-      },
-      "filename": "html5.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "html",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 1,
-        "line": 2,
-      },
-      "filename": "html5.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "newline",
-  },
-  {
-    "loc": {
-      "end": {
         "column": 6,
-        "line": 2,
+        "line": 1,
       },
       "filename": "html5.pg",
       "start": {
         "column": 1,
-        "line": 2,
+        "line": 1,
       },
     },
     "type": "tag",
@@ -9874,12 +9611,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 7,
-        "line": 2,
+        "line": 1,
       },
       "filename": "html5.pg",
       "start": {
         "column": 6,
-        "line": 2,
+        "line": 1,
       },
     },
     "type": "start-attributes",
@@ -9888,12 +9625,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 21,
-        "line": 2,
+        "line": 1,
       },
       "filename": "html5.pg",
       "start": {
         "column": 7,
-        "line": 2,
+        "line": 1,
       },
     },
     "name": "type",
@@ -9904,12 +9641,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 29,
-        "line": 2,
+        "line": 1,
       },
       "filename": "html5.pg",
       "start": {
         "column": 22,
-        "line": 2,
+        "line": 1,
       },
     },
     "name": "checked",
@@ -9920,12 +9657,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 30,
-        "line": 2,
+        "line": 1,
       },
       "filename": "html5.pg",
       "start": {
         "column": 29,
-        "line": 2,
+        "line": 1,
       },
     },
     "type": "end-attributes",
@@ -9934,12 +9671,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
       "filename": "html5.pg",
       "start": {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "newline",
@@ -9948,12 +9685,12 @@ exports[`html5.pg 1`] = `
     "loc": {
       "end": {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
       "filename": "html5.pg",
       "start": {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "eos",
@@ -22494,42 +22231,13 @@ exports[`self-closing-html.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 13,
-        "line": 1,
-      },
-      "filename": "self-closing-html.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "html",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 1,
-        "line": 2,
-      },
-      "filename": "self-closing-html.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "newline",
-  },
-  {
-    "loc": {
-      "end": {
         "column": 5,
-        "line": 2,
+        "line": 1,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 2,
+        "line": 1,
       },
     },
     "type": "tag",
@@ -22539,12 +22247,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 3,
-        "line": 3,
+        "line": 2,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "indent",
@@ -22554,12 +22262,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 7,
-        "line": 3,
+        "line": 2,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 3,
-        "line": 3,
+        "line": 2,
       },
     },
     "type": "tag",
@@ -22569,12 +22277,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 5,
-        "line": 4,
+        "line": 3,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 4,
+        "line": 3,
       },
     },
     "type": "indent",
@@ -22584,12 +22292,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 7,
-        "line": 4,
+        "line": 3,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 5,
-        "line": 4,
+        "line": 3,
       },
     },
     "type": "tag",
@@ -22599,12 +22307,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 8,
-        "line": 4,
+        "line": 3,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 7,
-        "line": 4,
+        "line": 3,
       },
     },
     "type": "slash",
@@ -22613,12 +22321,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
     },
     "type": "outdent",
@@ -22627,12 +22335,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
     },
     "type": "outdent",
@@ -22641,12 +22349,12 @@ exports[`self-closing-html.pg 1`] = `
     "loc": {
       "end": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
       "filename": "self-closing-html.pg",
       "start": {
         "column": 1,
-        "line": 5,
+        "line": 4,
       },
     },
     "type": "eos",
@@ -25670,171 +25378,6 @@ exports[`utf8bom.pg 1`] = `
       "start": {
         "column": 1,
         "line": 2,
-      },
-    },
-    "type": "eos",
-  },
-]
-`;
-
-exports[`xml.pg 1`] = `
-[
-  {
-    "loc": {
-      "end": {
-        "column": 12,
-        "line": 1,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 1,
-        "line": 1,
-      },
-    },
-    "type": "doctype",
-    "val": "xml",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 1,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "newline",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 9,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 1,
-        "line": 2,
-      },
-    },
-    "type": "tag",
-    "val": "category",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 10,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 9,
-        "line": 2,
-      },
-    },
-    "type": "start-attributes",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 25,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 10,
-        "line": 2,
-      },
-    },
-    "name": "term",
-    "type": "attribute",
-    "val": "some term",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 26,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 25,
-        "line": 2,
-      },
-    },
-    "type": "end-attributes",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 27,
-        "line": 2,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 26,
-        "line": 2,
-      },
-    },
-    "type": "slash",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 1,
-        "line": 3,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "newline",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 5,
-        "line": 3,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 1,
-        "line": 3,
-      },
-    },
-    "type": "tag",
-    "val": "link",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 23,
-        "line": 3,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 6,
-        "line": 3,
-      },
-    },
-    "type": "text",
-    "val": "http://google.com",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 23,
-        "line": 3,
-      },
-      "filename": "xml.pg",
-      "start": {
-        "column": 23,
-        "line": 3,
       },
     },
     "type": "eos",

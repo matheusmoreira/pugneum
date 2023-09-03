@@ -68,7 +68,7 @@ exports[`pugneum-loader 1`] = `
                       "line": 1,
                       "mustEscape": false,
                       "name": "class",
-                      "val": "'bing'",
+                      "val": "bing",
                     },
                   ],
                   "block": {

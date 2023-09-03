@@ -56,7 +56,7 @@ exports[`attrs.pg 1`] = `
           "line": 2,
           "mustEscape": false,
           "name": "class",
-          "val": "'button'",
+          "val": "button",
         },
       ],
       "block": {
@@ -438,7 +438,7 @@ exports[`attrs.pg 1`] = `
           "line": 14,
           "mustEscape": false,
           "name": "class",
-          "val": "'button'",
+          "val": "button",
         },
       ],
       "block": {
@@ -1565,7 +1565,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                 "line": 2,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'list-item'",
+                "val": "list-item",
               },
             ],
             "block": {
@@ -1581,7 +1581,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                       "line": 2,
                       "mustEscape": false,
                       "name": "class",
-                      "val": "'foo'",
+                      "val": "foo",
                     },
                   ],
                   "block": {
@@ -1597,7 +1597,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                             "line": 2,
                             "mustEscape": false,
                             "name": "id",
-                            "val": "'bar'",
+                            "val": "bar",
                           },
                         ],
                         "block": {
@@ -1836,7 +1836,7 @@ exports[`classes.pg 1`] = `
           "line": 2,
           "mustEscape": false,
           "name": "class",
-          "val": "'foo'",
+          "val": "foo",
         },
         {
           "column": 7,
@@ -1852,7 +1852,7 @@ exports[`classes.pg 1`] = `
           "line": 2,
           "mustEscape": false,
           "name": "class",
-          "val": "'baz'",
+          "val": "baz",
         },
       ],
       "block": {
@@ -1878,7 +1878,7 @@ exports[`classes.pg 1`] = `
           "line": 3,
           "mustEscape": false,
           "name": "class",
-          "val": "'foo-bar_baz'",
+          "val": "foo-bar_baz",
         },
       ],
       "block": {
@@ -1904,7 +1904,7 @@ exports[`classes.pg 1`] = `
           "line": 4,
           "mustEscape": false,
           "name": "class",
-          "val": "'-foo'",
+          "val": "-foo",
         },
       ],
       "block": {
@@ -1930,7 +1930,7 @@ exports[`classes.pg 1`] = `
           "line": 5,
           "mustEscape": false,
           "name": "class",
-          "val": "'3foo'",
+          "val": "3foo",
         },
       ],
       "block": {
@@ -2357,7 +2357,7 @@ exports[`comments.pg 1`] = `
           "line": 29,
           "mustEscape": false,
           "name": "class",
-          "val": "'foo'",
+          "val": "foo",
         },
       ],
       "block": {
@@ -2488,118 +2488,6 @@ exports[`comments.source.pg 1`] = `
       "line": 6,
       "type": "BlockComment",
       "val": "",
-    },
-  ],
-  "type": "Block",
-}
-`;
-
-exports[`doctype.custom.pg 1`] = `
-{
-  "filename": "doctype.custom.pg",
-  "line": 0,
-  "nodes": [
-    {
-      "column": 1,
-      "filename": "doctype.custom.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "custom stuff",
-    },
-  ],
-  "type": "Block",
-}
-`;
-
-exports[`doctype.default.pg 1`] = `
-{
-  "filename": "doctype.default.pg",
-  "line": 0,
-  "nodes": [
-    {
-      "column": 1,
-      "filename": "doctype.default.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "",
-    },
-    {
-      "attributeBlocks": [],
-      "attrs": [],
-      "block": {
-        "filename": "doctype.default.pg",
-        "line": 2,
-        "nodes": [
-          {
-            "attributeBlocks": [],
-            "attrs": [],
-            "block": {
-              "filename": "doctype.default.pg",
-              "line": 3,
-              "nodes": [
-                {
-                  "attributeBlocks": [],
-                  "attrs": [],
-                  "block": {
-                    "filename": "doctype.default.pg",
-                    "line": 4,
-                    "nodes": [
-                      {
-                        "column": 8,
-                        "filename": "doctype.default.pg",
-                        "line": 4,
-                        "type": "Text",
-                        "val": "Title",
-                      },
-                    ],
-                    "type": "Block",
-                  },
-                  "column": 5,
-                  "filename": "doctype.default.pg",
-                  "isInline": false,
-                  "line": 4,
-                  "name": "h1",
-                  "selfClosing": false,
-                  "type": "Tag",
-                },
-              ],
-              "type": "Block",
-            },
-            "column": 3,
-            "filename": "doctype.default.pg",
-            "isInline": false,
-            "line": 3,
-            "name": "body",
-            "selfClosing": false,
-            "type": "Tag",
-          },
-        ],
-        "type": "Block",
-      },
-      "column": 1,
-      "filename": "doctype.default.pg",
-      "isInline": false,
-      "line": 2,
-      "name": "html",
-      "selfClosing": false,
-      "type": "Tag",
-    },
-  ],
-  "type": "Block",
-}
-`;
-
-exports[`doctype.keyword.pg 1`] = `
-{
-  "filename": "doctype.keyword.pg",
-  "line": 0,
-  "nodes": [
-    {
-      "column": 1,
-      "filename": "doctype.keyword.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "html",
     },
   ],
   "type": "Block",
@@ -4126,19 +4014,12 @@ exports[`html5.pg 1`] = `
   "line": 0,
   "nodes": [
     {
-      "column": 1,
-      "filename": "html5.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "html",
-    },
-    {
       "attributeBlocks": [],
       "attrs": [
         {
           "column": 7,
           "filename": "html5.pg",
-          "line": 2,
+          "line": 1,
           "mustEscape": true,
           "name": "type",
           "val": "checkbox",
@@ -4146,7 +4027,7 @@ exports[`html5.pg 1`] = `
         {
           "column": 22,
           "filename": "html5.pg",
-          "line": 2,
+          "line": 1,
           "mustEscape": true,
           "name": "checked",
           "val": true,
@@ -4154,14 +4035,14 @@ exports[`html5.pg 1`] = `
       ],
       "block": {
         "filename": "html5.pg",
-        "line": 2,
+        "line": 1,
         "nodes": [],
         "type": "Block",
       },
       "column": 1,
       "filename": "html5.pg",
       "isInline": false,
-      "line": 2,
+      "line": 1,
       "name": "input",
       "selfClosing": false,
       "type": "Tag",
@@ -4185,7 +4066,7 @@ exports[`include.script.pg 1`] = `
           "line": 1,
           "mustEscape": false,
           "name": "id",
-          "val": "'pet-template'",
+          "val": "pet-template",
         },
         {
           "column": 21,
@@ -6208,7 +6089,7 @@ exports[`intepolated-elements.pg 1`] = `
                 "line": 1,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'rho'",
+                "val": "rho",
               },
               {
                 "column": 11,
@@ -6290,7 +6171,7 @@ exports[`intepolated-elements.pg 1`] = `
                 "line": 2,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'rho'",
+                "val": "rho",
               },
               {
                 "column": 21,
@@ -6364,7 +6245,7 @@ exports[`intepolated-elements.pg 1`] = `
                 "line": 3,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'rho'",
+                "val": "rho",
               },
               {
                 "column": 21,
@@ -6697,7 +6578,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 4,
               "mustEscape": false,
               "name": "class",
-              "val": "'first'",
+              "val": "first",
             },
             {
               "column": 9,
@@ -6705,7 +6586,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 4,
               "mustEscape": false,
               "name": "class",
-              "val": "'append'",
+              "val": "append",
             },
           ],
           "block": {
@@ -6749,7 +6630,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 7,
               "mustEscape": false,
               "name": "class",
-              "val": "'first'",
+              "val": "first",
             },
             {
               "column": 9,
@@ -6757,7 +6638,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 7,
               "mustEscape": false,
               "name": "class",
-              "val": "'prepend'",
+              "val": "prepend",
             },
           ],
           "block": {
@@ -6801,7 +6682,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 10,
               "mustEscape": false,
               "name": "class",
-              "val": "'last'",
+              "val": "last",
             },
             {
               "column": 8,
@@ -6809,7 +6690,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 10,
               "mustEscape": false,
               "name": "class",
-              "val": "'append'",
+              "val": "append",
             },
           ],
           "block": {
@@ -6853,7 +6734,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 13,
               "mustEscape": false,
               "name": "class",
-              "val": "'last'",
+              "val": "last",
             },
             {
               "column": 8,
@@ -6861,7 +6742,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "line": 13,
               "mustEscape": false,
               "name": "class",
-              "val": "'prepend'",
+              "val": "prepend",
             },
           ],
           "block": {
@@ -7156,7 +7037,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                 "line": 3,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'article'",
+                "val": "article",
               },
             ],
             "block": {
@@ -7284,7 +7165,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                 "line": 11,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'article'",
+                "val": "article",
               },
             ],
             "block": {
@@ -7483,7 +7364,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "line": 2,
                 "mustEscape": false,
                 "name": "id",
-                "val": "'bar'",
+                "val": "bar",
               },
             ],
             "block": {
@@ -7532,7 +7413,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "line": 6,
                 "mustEscape": false,
                 "name": "id",
-                "val": "'foo'",
+                "val": "foo",
               },
             ],
             "block": {
@@ -7692,7 +7573,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "line": 17,
                 "mustEscape": false,
                 "name": "id",
-                "val": "'baz'",
+                "val": "baz",
               },
             ],
             "block": {
@@ -8225,7 +8106,7 @@ exports[`mixins-unused.pg 1`] = `
                 "line": 2,
                 "mustEscape": false,
                 "name": "class",
-                "val": "'wtf'",
+                "val": "wtf",
               },
             ],
             "block": {
@@ -8876,6 +8757,118 @@ exports[`pre.pg 1`] = `
 }
 `;
 
+exports[`quoted-filters.pg 1`] = `
+{
+  "filename": "quoted-filters.pg",
+  "line": 0,
+  "nodes": [
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
+        "filename": "quoted-filters.pg",
+        "line": 1,
+        "nodes": [
+          {
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": {
+              "filename": "quoted-filters.pg",
+              "line": 2,
+              "nodes": [
+                {
+                  "attrs": [],
+                  "block": {
+                    "filename": "quoted-filters.pg",
+                    "line": 3,
+                    "nodes": [
+                      {
+                        "column": 7,
+                        "filename": "quoted-filters.pg",
+                        "line": 4,
+                        "type": "Text",
+                        "val": "Totally supported.",
+                      },
+                    ],
+                    "type": "Block",
+                  },
+                  "column": 5,
+                  "filename": "quoted-filters.pg",
+                  "line": 3,
+                  "name": "filter name with spaces",
+                  "type": "Filter",
+                },
+                {
+                  "attrs": [],
+                  "block": {
+                    "filename": "quoted-filters.pg",
+                    "line": 5,
+                    "nodes": [
+                      {
+                        "column": 7,
+                        "filename": "quoted-filters.pg",
+                        "line": 6,
+                        "type": "Text",
+                        "val": "Not even npm wants to deal with that.",
+                      },
+                    ],
+                    "type": "Block",
+                  },
+                  "column": 5,
+                  "filename": "quoted-filters.pg",
+                  "line": 5,
+                  "name": "filter.name,with|special&characters$of@all#shapes%and^sizes!",
+                  "type": "Filter",
+                },
+                {
+                  "attrs": [],
+                  "block": {
+                    "filename": "quoted-filters.pg",
+                    "line": 7,
+                    "nodes": [
+                      {
+                        "column": 7,
+                        "filename": "quoted-filters.pg",
+                        "line": 8,
+                        "type": "Text",
+                        "val": "Now the lexer won't ignore the dot anymore.",
+                      },
+                    ],
+                    "type": "Block",
+                  },
+                  "column": 5,
+                  "filename": "quoted-filters.pg",
+                  "line": 7,
+                  "name": "highlight.js",
+                  "type": "Filter",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "quoted-filters.pg",
+            "isInline": false,
+            "line": 2,
+            "name": "body",
+            "selfClosing": false,
+            "type": "Tag",
+          },
+        ],
+        "type": "Block",
+      },
+      "column": 1,
+      "filename": "quoted-filters.pg",
+      "isInline": false,
+      "line": 1,
+      "name": "html",
+      "selfClosing": false,
+      "type": "Tag",
+    },
+  ],
+  "type": "Block",
+}
+`;
+
 exports[`quotes.pg 1`] = `
 {
   "filename": "quotes.pg",
@@ -9098,7 +9091,7 @@ exports[`scripts.non-js.pg 1`] = `
           "line": 1,
           "mustEscape": false,
           "name": "id",
-          "val": "'user-template'",
+          "val": "user-template",
         },
         {
           "column": 22,
@@ -9122,7 +9115,7 @@ exports[`scripts.non-js.pg 1`] = `
                 "line": 2,
                 "mustEscape": false,
                 "name": "id",
-                "val": "'user'",
+                "val": "user",
               },
             ],
             "block": {
@@ -9210,7 +9203,7 @@ exports[`scripts.non-js.pg 1`] = `
           "line": 6,
           "mustEscape": false,
           "name": "id",
-          "val": "'user-template'",
+          "val": "user-template",
         },
         {
           "column": 22,
@@ -9410,39 +9403,32 @@ exports[`self-closing-html.pg 1`] = `
   "line": 0,
   "nodes": [
     {
-      "column": 1,
-      "filename": "self-closing-html.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "html",
-    },
-    {
       "attributeBlocks": [],
       "attrs": [],
       "block": {
         "filename": "self-closing-html.pg",
-        "line": 2,
+        "line": 1,
         "nodes": [
           {
             "attributeBlocks": [],
             "attrs": [],
             "block": {
               "filename": "self-closing-html.pg",
-              "line": 3,
+              "line": 2,
               "nodes": [
                 {
                   "attributeBlocks": [],
                   "attrs": [],
                   "block": {
                     "filename": "self-closing-html.pg",
-                    "line": 4,
+                    "line": 3,
                     "nodes": [],
                     "type": "Block",
                   },
                   "column": 5,
                   "filename": "self-closing-html.pg",
                   "isInline": true,
-                  "line": 4,
+                  "line": 3,
                   "name": "br",
                   "selfClosing": true,
                   "type": "Tag",
@@ -9453,7 +9439,7 @@ exports[`self-closing-html.pg 1`] = `
             "column": 3,
             "filename": "self-closing-html.pg",
             "isInline": false,
-            "line": 3,
+            "line": 2,
             "name": "body",
             "selfClosing": false,
             "type": "Tag",
@@ -9464,7 +9450,7 @@ exports[`self-closing-html.pg 1`] = `
       "column": 1,
       "filename": "self-closing-html.pg",
       "isInline": false,
-      "line": 2,
+      "line": 1,
       "name": "html",
       "selfClosing": false,
       "type": "Tag",
@@ -10751,74 +10737,6 @@ exports[`utf8bom.pg 1`] = `
       "isInline": false,
       "line": 1,
       "name": "p",
-      "selfClosing": false,
-      "type": "Tag",
-    },
-  ],
-  "type": "Block",
-}
-`;
-
-exports[`xml.pg 1`] = `
-{
-  "filename": "xml.pg",
-  "line": 0,
-  "nodes": [
-    {
-      "column": 1,
-      "filename": "xml.pg",
-      "line": 1,
-      "type": "Doctype",
-      "val": "xml",
-    },
-    {
-      "attributeBlocks": [],
-      "attrs": [
-        {
-          "column": 10,
-          "filename": "xml.pg",
-          "line": 2,
-          "mustEscape": true,
-          "name": "term",
-          "val": "some term",
-        },
-      ],
-      "block": {
-        "filename": "xml.pg",
-        "line": 2,
-        "nodes": [],
-        "type": "Block",
-      },
-      "column": 1,
-      "filename": "xml.pg",
-      "isInline": false,
-      "line": 2,
-      "name": "category",
-      "selfClosing": true,
-      "type": "Tag",
-    },
-    {
-      "attributeBlocks": [],
-      "attrs": [],
-      "block": {
-        "filename": "xml.pg",
-        "line": 3,
-        "nodes": [
-          {
-            "column": 6,
-            "filename": "xml.pg",
-            "line": 3,
-            "type": "Text",
-            "val": "http://google.com",
-          },
-        ],
-        "type": "Block",
-      },
-      "column": 1,
-      "filename": "xml.pg",
-      "isInline": false,
-      "line": 3,
-      "name": "link",
       "selfClosing": false,
       "type": "Tag",
     },

@@ -10,11 +10,11 @@
     "template"
   ],
   "dependencies": {
-    "pugneum-lexer": "^0.2.0",
-    "pugneum-parser": "^0.2.0",
-    "pugneum-loader": "^0.2.0",
-    "pugneum-linker": "^0.2.0",
     "pugneum-filterer": "^0.2.0",
+    "pugneum-lexer": "^0.2.0",
+    "pugneum-linker": "^0.2.0",
+    "pugneum-loader": "^0.2.0",
+    "pugneum-parser": "^0.2.0",
     "pugneum-renderer": "^0.2.0"
   },
   "bin": {
@@ -40,5 +40,6 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/matheusmoreira"
 }

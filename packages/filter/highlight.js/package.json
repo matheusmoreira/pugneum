@@ -18,8 +18,9 @@
     "pugneum-filterer": "^0.2.0"
   },
   "devDependencies": {
+    "pugneum-filterer": "^0.2.0",
     "pugneum-lexer": "^0.2.0",
-    "pugneum-parser": "^0.2.0",
-    "pugneum-filterer": "^0.2.0"
-  }
+    "pugneum-parser": "^0.2.0"
+  },
+  "funding": "https://github.com/sponsors/matheusmoreira"
 }

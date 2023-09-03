@@ -12,9 +12,9 @@
     "pugneum-walker": "^0.2.0"
   },
   "devDependencies": {
+    "pugneum-filter-highlight.js": "^0.2.0",
     "pugneum-lexer": "^0.2.0",
-    "pugneum-parser": "^0.2.0",
-    "pugneum-filter-highlight.js": "^0.2.0"
+    "pugneum-parser": "^0.2.0"
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,6 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/matheusmoreira"
 }

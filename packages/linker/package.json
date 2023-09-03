@@ -1,6 +1,6 @@
 {
   "name": "pugneum-linker",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Link together multiple pugneum abstract syntax trees",
   "keywords": [
     "pugneum",
@@ -8,13 +8,13 @@
     "pug"
   ],
   "dependencies": {
-    "pugneum-error": "^0.1.0",
-    "pugneum-walker": "^0.1.0"
+    "pugneum-error": "^0.2.0",
+    "pugneum-walker": "^0.2.0"
   },
   "devDependencies": {
-    "pugneum-lexer": "^0.1.0",
-    "pugneum-loader": "^0.1.0",
-    "pugneum-parser": "^0.1.0"
+    "pugneum-lexer": "^0.2.0",
+    "pugneum-loader": "^0.2.0",
+    "pugneum-parser": "^0.2.0"
   },
   "repository": {
     "type": "git",

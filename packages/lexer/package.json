@@ -1,6 +1,6 @@
 {
   "name": "pugneum-lexer",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Lexes pugneum templates and transforms them into arrays of tokens",
   "keywords": [
     "pugneum",
@@ -9,7 +9,7 @@
   ],
   "dependencies": {
     "character-parser": "^4.0.0",
-    "pugneum-error": "^0.1.0"
+    "pugneum-error": "^0.2.0"
   },
   "files": [
     "index.js"

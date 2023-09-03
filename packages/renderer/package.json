@@ -1,6 +1,6 @@
 {
   "name": "pugneum-renderer",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Renders pugneum abstract syntax trees into HTML",
   "keywords": [
     "pugneum",
@@ -8,7 +8,7 @@
     "compiler"
   ],
   "dependencies": {
-    "pugneum-error": "^0.1.0"
+    "pugneum-error": "^0.2.0"
   },
   "repository": {
     "type": "git",

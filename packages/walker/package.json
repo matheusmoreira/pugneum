@@ -1,6 +1,6 @@
 {
   "name": "pugneum-walker",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Walk and transform a pugneum abstract syntax tree",
   "keywords": [
     "pugneum",
@@ -10,8 +10,8 @@
     "pug"
   ],
   "devDependencies": {
-    "pugneum-lexer": "^0.1.0",
-    "pugneum-parser": "^0.1.0"
+    "pugneum-lexer": "^0.2.0",
+    "pugneum-parser": "^0.2.0"
   },
   "repository": {
     "type": "git",

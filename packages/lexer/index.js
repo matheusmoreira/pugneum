@@ -1179,18 +1179,6 @@ Lexer.prototype = {
   },
 
   /**
-   * Slash.
-   */
-
-  slash: function() {
-    var tok = this.scan(/^\//, 'slash');
-    if (tok) {
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-  },
-
-  /**
    * ':'
    */
 
@@ -1256,7 +1244,6 @@ Lexer.prototype = {
       this.callLexerFunction('text') ||
       this.callLexerFunction('textHtml') ||
       this.callLexerFunction('comment') ||
-      this.callLexerFunction('slash') ||
       this.callLexerFunction('colon') ||
       this.fail()
     );

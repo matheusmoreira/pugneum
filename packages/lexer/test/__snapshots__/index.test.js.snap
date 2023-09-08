@@ -22308,20 +22308,6 @@ exports[`self-closing-html.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 8,
-        "line": 3,
-      },
-      "filename": "self-closing-html.pg",
-      "start": {
-        "column": 7,
-        "line": 3,
-      },
-    },
-    "type": "slash",
-  },
-  {
-    "loc": {
-      "end": {
         "column": 1,
         "line": 4,
       },
@@ -22894,20 +22880,6 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 7,
-        "line": 5,
-      },
-      "filename": "tags.self-closing.pg",
-      "start": {
-        "column": 6,
-        "line": 5,
-      },
-    },
-    "type": "slash",
-  },
-  {
-    "loc": {
-      "end": {
         "column": 3,
         "line": 6,
       },
@@ -22981,20 +22953,6 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
-        "line": 6,
-      },
-      "filename": "tags.self-closing.pg",
-      "start": {
-        "column": 16,
-        "line": 6,
-      },
-    },
-    "type": "slash",
-  },
-  {
-    "loc": {
-      "end": {
         "column": 3,
         "line": 7,
       },
@@ -23020,21 +22978,6 @@ exports[`tags.self-closing.pg 1`] = `
     },
     "type": "tag",
     "val": "foo",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 8,
-        "line": 7,
-      },
-      "filename": "tags.self-closing.pg",
-      "start": {
-        "column": 7,
-        "line": 7,
-      },
-    },
-    "type": "text",
-    "val": "/",
   },
   {
     "loc": {
@@ -23108,21 +23051,6 @@ exports[`tags.self-closing.pg 1`] = `
       },
     },
     "type": "end-attributes",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 18,
-        "line": 8,
-      },
-      "filename": "tags.self-closing.pg",
-      "start": {
-        "column": 17,
-        "line": 8,
-      },
-    },
-    "type": "text",
-    "val": "/",
   },
   {
     "loc": {

@@ -4629,12 +4629,12 @@ exports[`includes.pg 1`] = `
       "type": "Include",
     },
     {
-      "args": null,
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": null,
       "call": true,
-      "column": 1,
+      "column": 5,
       "filename": "includes.pg",
       "line": 4,
       "name": "foo",
@@ -7086,7 +7086,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
               "line": 7,
               "nodes": [
                 {
-                  "args": null,
+                  "args": [],
                   "attributeBlocks": [],
                   "attrs": [],
                   "block": {
@@ -7122,7 +7122,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                     "type": "Block",
                   },
                   "call": true,
-                  "column": 5,
+                  "column": 13,
                   "filename": "mixin.block-tag-behaviour.pg",
                   "line": 8,
                   "name": "article",
@@ -7232,7 +7232,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
               "line": 16,
               "nodes": [
                 {
-                  "args": null,
+                  "args": [],
                   "attributeBlocks": [],
                   "attrs": [],
                   "block": {
@@ -7310,7 +7310,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                     "type": "Block",
                   },
                   "call": true,
-                  "column": 5,
+                  "column": 13,
                   "filename": "mixin.block-tag-behaviour.pg",
                   "line": 17,
                   "name": "article",
@@ -7421,7 +7421,7 @@ exports[`mixin.blocks.pg 1`] = `
               "line": 6,
               "nodes": [
                 {
-                  "args": null,
+                  "args": [],
                   "attributeBlocks": [],
                   "attrs": [],
                   "block": {
@@ -7438,7 +7438,7 @@ exports[`mixin.blocks.pg 1`] = `
                     "type": "Block",
                   },
                   "call": true,
-                  "column": 5,
+                  "column": 9,
                   "filename": "mixin.blocks.pg",
                   "line": 7,
                   "name": "bar",
@@ -7466,7 +7466,7 @@ exports[`mixin.blocks.pg 1`] = `
       "type": "Mixin",
     },
     {
-      "args": null,
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": {
@@ -7552,7 +7552,7 @@ exports[`mixin.blocks.pg 1`] = `
         "type": "Block",
       },
       "call": true,
-      "column": 1,
+      "column": 5,
       "filename": "mixin.blocks.pg",
       "line": 10,
       "name": "foo",
@@ -7608,7 +7608,7 @@ exports[`mixin.blocks.pg 1`] = `
       "type": "Mixin",
     },
     {
-      "args": null,
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": {
@@ -7626,7 +7626,7 @@ exports[`mixin.blocks.pg 1`] = `
         "type": "Block",
       },
       "call": true,
-      "column": 1,
+      "column": 5,
       "filename": "mixin.blocks.pg",
       "line": 20,
       "name": "baz",
@@ -7663,7 +7663,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
       "type": "Include",
     },
     {
-      "args": "",
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": {
@@ -7699,7 +7699,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
         "type": "Block",
       },
       "call": true,
-      "column": 1,
+      "column": 7,
       "filename": "mixin-at-end-of-file.pg",
       "line": 3,
       "name": "slide",
@@ -7756,7 +7756,7 @@ exports[`mixin-block-with-space.pg 1`] = `
       "type": "Mixin",
     },
     {
-      "args": "",
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": {
@@ -7774,7 +7774,7 @@ exports[`mixin-block-with-space.pg 1`] = `
         "type": "Block",
       },
       "call": true,
-      "column": 1,
+      "column": 3,
       "filename": "mixin-block-with-space.pg",
       "line": 5,
       "name": "m",
@@ -7838,12 +7838,12 @@ exports[`mixin-hoist.pg 1`] = `
               "line": 6,
               "nodes": [
                 {
-                  "args": null,
+                  "args": [],
                   "attributeBlocks": [],
                   "attrs": [],
                   "block": null,
                   "call": true,
-                  "column": 5,
+                  "column": 9,
                   "filename": "mixin-hoist.pg",
                   "line": 7,
                   "name": "foo",
@@ -7909,12 +7909,12 @@ exports[`mixin-via-include.pg 1`] = `
       "type": "Include",
     },
     {
-      "args": null,
+      "args": [],
       "attributeBlocks": [],
       "attrs": [],
       "block": null,
       "call": true,
-      "column": 1,
+      "column": 6,
       "filename": "mixin-via-include.pg",
       "line": 5,
       "name": "bang",
@@ -8047,24 +8047,24 @@ exports[`mixins.pg 1`] = `
         "line": 7,
         "nodes": [
           {
-            "args": "",
+            "args": [],
             "attributeBlocks": [],
             "attrs": [],
             "block": null,
             "call": true,
-            "column": 3,
+            "column": 8,
             "filename": "mixins.pg",
             "line": 8,
             "name": "list",
             "type": "Mixin",
           },
           {
-            "args": "",
+            "args": [],
             "attributeBlocks": [],
             "attrs": [],
             "block": null,
             "call": true,
-            "column": 3,
+            "column": 9,
             "filename": "mixins.pg",
             "line": 9,
             "name": "list",

@@ -219,7 +219,6 @@ Parser.prototype = {
 
   /**
    *   tag
-   * | doctype
    * | mixin
    * | include
    * | filter
@@ -227,8 +226,6 @@ Parser.prototype = {
    * | text
    * | text-html
    * | dot
-   * | each
-   * | code
    * | yield
    * | id
    * | class
@@ -245,38 +242,21 @@ Parser.prototype = {
         return this.parseBlock();
       case 'mixin-block':
         return this.parseMixinBlock();
-      case 'case':
-        return this.parseCase();
       case 'extends':
         return this.parseExtends();
       case 'include':
         return this.parseInclude();
-      case 'doctype':
-        return this.parseDoctype();
       case 'filter':
         return this.parseFilter();
       case 'comment':
         return this.parseComment();
       case 'text':
-      case 'interpolated-code':
       case 'start-interpolation':
         return this.parseText({block: true});
       case 'text-html':
         return this.initBlock(this.peek().loc.start.line, this.parseTextHtml());
       case 'dot':
         return this.parseDot();
-      case 'each':
-        return this.parseEach();
-      case 'eachOf':
-        return this.parseEachOf();
-      case 'code':
-        return this.parseCode();
-      case 'blockcode':
-        return this.parseBlockCode();
-      case 'if':
-        return this.parseConditional();
-      case 'while':
-        return this.parseWhile();
       case 'call':
         return this.parseCall();
       case 'interpolation':
@@ -329,24 +309,11 @@ Parser.prototype = {
             filename: this.filename,
           });
           break;
-        case 'interpolated-code':
-          var tok = this.advance();
-          tags.push({
-            type: 'Code',
-            val: tok.val,
-            buffer: tok.buffer,
-            mustEscape: tok.mustEscape !== false,
-            isInline: true,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
-            filename: this.filename,
-          });
-          break;
         case 'newline':
           if (!options || !options.block) break loop;
           var tok = this.advance();
           var nextType = this.peek().type;
-          if (nextType === 'text' || nextType === 'interpolated-code') {
+          if (nextType === 'text') {
             tags.push({
               type: 'Text',
               val: '\n',
@@ -409,10 +376,6 @@ Parser.prototype = {
             }
           });
           break;
-        case 'code':
-          currentNode = null;
-          nodes.push(this.parseCode(true));
-          break;
         case 'newline':
           this.advance();
           break;
@@ -467,21 +430,6 @@ Parser.prototype = {
         filename: this.filename,
       };
     }
-  },
-
-  /**
-   * doctype
-   */
-
-  parseDoctype: function() {
-    var tok = this.expect('doctype');
-    return {
-      type: 'Doctype',
-      val: tok.val,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
   },
 
   parseIncludeFilter: function() {
@@ -752,18 +700,6 @@ Parser.prototype = {
           block.nodes.push(this.parseExpr());
           this.expect('end-interpolation');
           break;
-        case 'interpolated-code':
-          block.nodes.push({
-            type: 'Code',
-            val: tok.val,
-            buffer: tok.buffer,
-            mustEscape: tok.mustEscape !== false,
-            isInline: true,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
-            filename: this.filename,
-          });
-          break;
         default:
           var pluginResult = this.runPlugin('textBlockTokens', tok, block, tok);
           if (pluginResult) break;
@@ -804,7 +740,7 @@ Parser.prototype = {
   },
 
   /**
-   * interpolation (attrs | class | id)* (text | code | ':')? newline* block?
+   * interpolation (attrs | class | id)* (text | ':')? newline* block?
    */
 
   parseInterpolation: function() {
@@ -826,7 +762,7 @@ Parser.prototype = {
   },
 
   /**
-   * tag (attrs | class | id)* (text | code | ':')? newline* block?
+   * tag (attrs | class | id)* (text | ':')? newline* block?
    */
 
   parseTag: function() {
@@ -910,10 +846,9 @@ Parser.prototype = {
       this.advance();
     }
 
-    // (text | code | ':')?
+    // (text | ':')?
     switch (this.peek().type) {
       case 'text':
-      case 'interpolated-code':
         var text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);
@@ -952,7 +887,7 @@ Parser.prototype = {
           'INVALID_TOKEN',
           'Unexpected token `' +
             this.peek().type +
-            '` expected `text`, `interpolated-code`, `code`, `:`' +
+            '` expected `text`, `:`' +
             (selfClosingAllowed ? ', `slash`' : '') +
             ', `newline` or `eos`',
           this.peek()

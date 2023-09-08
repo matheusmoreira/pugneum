@@ -797,7 +797,7 @@ Lexer.prototype = {
         if (argsList.length > 0) {
           for (let i = 0, len = argsList.length; i < len; ++i) {
             if ((captures = /'(.*)'/.exec(argsList[i])) || (captures = /"(.*)"/.exec(argsList[i]))) {
-              tok.args.push(captures[0]);
+              tok.args.push(captures[1]);
             } else {
               tok.args.push(argsList[i]);
             }

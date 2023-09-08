@@ -921,9 +921,6 @@ Parser.prototype = {
           tag.block.nodes.push(text);
         }
         break;
-      case 'code':
-        tag.block.nodes.push(this.parseCode(true));
-        break;
       case ':':
         this.advance();
         var expr = this.parseExpr();

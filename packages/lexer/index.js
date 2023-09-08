@@ -1,5 +1,3 @@
-'use strict';
-
 var assert = require('assert');
 var characterParser = require('character-parser');
 var error = require('pugneum-error');

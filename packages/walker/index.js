@@ -40,37 +40,12 @@ function walkAST(ast, before, after, options) {
     case 'Block':
       ast.nodes = walkAndMergeNodes(ast.nodes);
       break;
-    case 'Case':
     case 'Filter':
     case 'Mixin':
     case 'Tag':
     case 'InterpolatedTag':
-    case 'When':
-    case 'Code':
-    case 'While':
       if (ast.block) {
         ast.block = walkAST(ast.block, before, after, options);
-      }
-      break;
-    case 'Each':
-      if (ast.block) {
-        ast.block = walkAST(ast.block, before, after, options);
-      }
-      if (ast.alternate) {
-        ast.alternate = walkAST(ast.alternate, before, after, options);
-      }
-      break;
-    case 'EachOf':
-      if (ast.block) {
-        ast.block = walkAST(ast.block, before, after, options);
-      }
-      break;
-    case 'Conditional':
-      if (ast.consequent) {
-        ast.consequent = walkAST(ast.consequent, before, after, options);
-      }
-      if (ast.alternate) {
-        ast.alternate = walkAST(ast.alternate, before, after, options);
       }
       break;
     case 'Include':
@@ -87,7 +62,6 @@ function walkAST(ast, before, after, options) {
     case 'Attrs':
     case 'BlockComment':
     case 'Comment':
-    case 'Doctype':
     case 'IncludeFilter':
     case 'MixinBlock':
     case 'YieldBlock':

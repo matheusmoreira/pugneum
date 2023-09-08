@@ -66,6 +66,7 @@ function walkAST(ast, before, after, options) {
     case 'MixinBlock':
     case 'YieldBlock':
     case 'Text':
+    case 'Variable':
       break;
     case 'FileReference':
       if (options.includeDependencies && ast.ast) {

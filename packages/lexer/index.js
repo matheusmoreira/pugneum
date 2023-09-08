@@ -476,6 +476,8 @@ Lexer.prototype = {
     var indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
     var indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
     var indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
+    let matchOfVarRef = /(\\)?#{(\w+)}/.exec(value)
+    let indexOfVarRef = matchOfVarRef? matchOfVarRef.index : Infinity;
 
     if (indexOfEnd === -1) indexOfEnd = Infinity;
     if (indexOfStart === -1) indexOfStart = Infinity;
@@ -484,7 +486,8 @@ Lexer.prototype = {
     if (
       indexOfEscaped !== Infinity &&
       indexOfEscaped < indexOfEnd &&
-      indexOfEscaped < indexOfStart
+      indexOfEscaped < indexOfStart &&
+      indexOfEscaped < indexOfVarRef
     ) {
       prefix = prefix + value.substring(0, indexOfEscaped) + '#[';
       return this.addText(
@@ -497,7 +500,8 @@ Lexer.prototype = {
     if (
       indexOfStart !== Infinity &&
       indexOfStart < indexOfEnd &&
-      indexOfStart < indexOfEscaped
+      indexOfStart < indexOfEscaped &&
+      indexOfStart < indexOfVarRef
     ) {
       tok = this.tok(type, prefix + value.substring(0, indexOfStart));
       this.incrementColumn(prefix.length + indexOfStart + escaped);
@@ -533,7 +537,8 @@ Lexer.prototype = {
     if (
       indexOfEnd !== Infinity &&
       indexOfEnd < indexOfStart &&
-      indexOfEnd < indexOfEscaped
+      indexOfEnd < indexOfEscaped &&
+      indexOfEnd < indexOfVarRef
     ) {
       if (prefix + value.substring(0, indexOfEnd)) {
         this.addText(type, value.substring(0, indexOfEnd), prefix);
@@ -541,6 +546,40 @@ Lexer.prototype = {
       this.ended = true;
       this.input = value.substr(value.indexOf(']') + 1) + this.input;
       return;
+    }
+
+    if (indexOfVarRef !== Infinity) {
+      if (matchOfVarRef[1]) {
+        // escaped: \#{
+        prefix = prefix + value.substring(0, indexOfVarRef) + '#{';
+        return this.addText(
+          type,
+          value.substring(indexOfVarRef + 3),
+          prefix,
+          escaped + 1
+        );
+      }
+      let before = value.substr(0, indexOfVarRef);
+      if (prefix || before) {
+        before = prefix + before;
+        tok = this.tok(type, before);
+        this.incrementColumn(before.length + escaped);
+        this.tokens.push(this.tokEnd(tok));
+      }
+
+      tok = this.tok('start-interpolation');
+      this.incrementColumn(2);
+      this.tokens.push(this.tokEnd(tok));
+
+      tok = this.tok('variable', matchOfVarRef[2]);
+      this.tokens.push(tok);
+      this.incrementColumn(matchOfVarRef[2].length);
+
+      tok = this.tok('end-interpolation');
+      this.incrementColumn(1);
+      this.tokens.push(this.tokEnd(tok));
+
+      value = value.substr(value.indexOf('}') + 1);
     }
 
     value = prefix + value;

@@ -1,5 +1,3 @@
-'use strict';
-
 var makeError = require('pugneum-error');
 
 // Map of self-closing void elements literally copied from the standard.

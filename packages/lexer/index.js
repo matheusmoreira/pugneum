@@ -771,6 +771,18 @@ Lexer.prototype = {
     }
   },
 
+  variable: function() {
+    let captures;
+    if (captures = /^\s*#{(\w+)}/.exec(this.input)) {
+      var tok = this.tok('variable', captures[1]);
+      this.tokens.push(tok);
+      this.incrementColumn(captures[0].length);
+      this.consume(captures[0].length);
+      this.tokEnd(tok);
+      return true;
+    }
+  },
+
   /**
    * Call mixin.
    */
@@ -1184,6 +1196,7 @@ Lexer.prototype = {
       this.callLexerFunction('blank') ||
       this.callLexerFunction('eos') ||
       this.callLexerFunction('endInterpolation') ||
+      this.callLexerFunction('variable') ||
       this.callLexerFunction('yield') ||
       this.callLexerFunction('default') ||
       this.callLexerFunction('extends') ||

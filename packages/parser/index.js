@@ -220,6 +220,7 @@ Parser.prototype = {
   /**
    *   tag
    * | mixin
+   * | variable
    * | include
    * | filter
    * | comment
@@ -242,6 +243,8 @@ Parser.prototype = {
         return this.parseBlock();
       case 'mixin-block':
         return this.parseMixinBlock();
+      case 'variable':
+        return this.parseVariable();
       case 'extends':
         return this.parseExtends();
       case 'include':
@@ -544,6 +547,24 @@ Parser.prototype = {
     }
     return {
       type: 'MixinBlock',
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  },
+
+  parseVariable: function() {
+    var tok = this.expect('variable');
+    if (!this.inMixin) {
+      this.error(
+        'VARIABLE_OUTSIDE_MIXIN',
+        'Variables cannot be used outside mixins',
+        tok
+      );
+    }
+    return {
+      type: 'Variable',
+      name: tok.val,
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,
@@ -858,6 +879,10 @@ Parser.prototype = {
         var expr = this.parseExpr();
         tag.block =
           expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
+        break;
+      case 'variable':
+        let variable = this.parseVariable();
+        tag.block.nodes.push(variable);
         break;
       case 'newline':
       case 'indent':

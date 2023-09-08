@@ -11115,7 +11115,7 @@ exports[`includes.pg 1`] = `
     "type": "newline",
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 5,
@@ -11123,7 +11123,7 @@ exports[`includes.pg 1`] = `
       },
       "filename": "includes.pg",
       "start": {
-        "column": 1,
+        "column": 5,
         "line": 4,
       },
     },
@@ -17288,7 +17288,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "val": 4,
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 13,
@@ -17296,7 +17296,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "start": {
-        "column": 5,
+        "column": 13,
         "line": 8,
       },
     },
@@ -17598,7 +17598,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "val": 4,
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 13,
@@ -17606,7 +17606,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "start": {
-        "column": 5,
+        "column": 13,
         "line": 17,
       },
     },
@@ -17998,7 +17998,7 @@ exports[`mixin.blocks.pg 1`] = `
     "val": 4,
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 9,
@@ -18006,7 +18006,7 @@ exports[`mixin.blocks.pg 1`] = `
       },
       "filename": "mixin.blocks.pg",
       "start": {
-        "column": 5,
+        "column": 9,
         "line": 7,
       },
     },
@@ -18085,7 +18085,7 @@ exports[`mixin.blocks.pg 1`] = `
     "type": "outdent",
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 5,
@@ -18093,7 +18093,7 @@ exports[`mixin.blocks.pg 1`] = `
       },
       "filename": "mixin.blocks.pg",
       "start": {
-        "column": 1,
+        "column": 5,
         "line": 10,
       },
     },
@@ -18351,7 +18351,7 @@ exports[`mixin.blocks.pg 1`] = `
     "type": "outdent",
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 5,
@@ -18359,7 +18359,7 @@ exports[`mixin.blocks.pg 1`] = `
       },
       "filename": "mixin.blocks.pg",
       "start": {
-        "column": 1,
+        "column": 5,
         "line": 20,
       },
     },
@@ -18486,7 +18486,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
     "type": "newline",
   },
   {
-    "args": "",
+    "args": [],
     "loc": {
       "end": {
         "column": 9,
@@ -18494,7 +18494,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
       },
       "filename": "mixin-at-end-of-file.pg",
       "start": {
-        "column": 1,
+        "column": 7,
         "line": 3,
       },
     },
@@ -18683,7 +18683,7 @@ exports[`mixin-block-with-space.pg 1`] = `
     "type": "outdent",
   },
   {
-    "args": "",
+    "args": [],
     "loc": {
       "end": {
         "column": 5,
@@ -18691,7 +18691,7 @@ exports[`mixin-block-with-space.pg 1`] = `
       },
       "filename": "mixin-block-with-space.pg",
       "start": {
-        "column": 1,
+        "column": 3,
         "line": 5,
       },
     },
@@ -18896,7 +18896,7 @@ exports[`mixin-hoist.pg 1`] = `
     "val": 4,
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 9,
@@ -18904,7 +18904,7 @@ exports[`mixin-hoist.pg 1`] = `
       },
       "filename": "mixin-hoist.pg",
       "start": {
-        "column": 5,
+        "column": 9,
         "line": 7,
       },
     },
@@ -19032,7 +19032,7 @@ exports[`mixin-via-include.pg 1`] = `
     "type": "newline",
   },
   {
-    "args": null,
+    "args": [],
     "loc": {
       "end": {
         "column": 6,
@@ -19040,7 +19040,7 @@ exports[`mixin-via-include.pg 1`] = `
       },
       "filename": "mixin-via-include.pg",
       "start": {
-        "column": 1,
+        "column": 6,
         "line": 5,
       },
     },
@@ -19304,7 +19304,7 @@ exports[`mixins.pg 1`] = `
     "val": 2,
   },
   {
-    "args": "",
+    "args": [],
     "loc": {
       "end": {
         "column": 10,
@@ -19312,7 +19312,7 @@ exports[`mixins.pg 1`] = `
       },
       "filename": "mixins.pg",
       "start": {
-        "column": 3,
+        "column": 8,
         "line": 8,
       },
     },
@@ -19334,7 +19334,7 @@ exports[`mixins.pg 1`] = `
     "type": "newline",
   },
   {
-    "args": "",
+    "args": [],
     "loc": {
       "end": {
         "column": 11,
@@ -19342,7 +19342,7 @@ exports[`mixins.pg 1`] = `
       },
       "filename": "mixins.pg",
       "start": {
-        "column": 3,
+        "column": 9,
         "line": 9,
       },
     },

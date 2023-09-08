@@ -779,28 +779,29 @@ Lexer.prototype = {
 
   call: function() {
     var tok, captures, increment;
-    if ((captures = /^\+(\s*)([-\w]+)/.exec(this.input))) {
-      // consume simple call
+    if ((captures = /^\+\s*([a-zA-Z][-\w]*)/.exec(this.input))) {
+      // found mixin call syntax: +name
       increment = captures[0].length;
       this.consume(increment);
-      tok = this.tok('call', captures[2]);
-
       this.incrementColumn(increment);
+      tok = this.tok('call', captures[1]);
 
-      tok.args = null;
+      tok.args = [];
       // Check for args (not attributes)
-      if ((captures = /^ *\(/.exec(this.input))) {
-        var range = this.bracketExpression(captures[0].length - 1);
-        if (!/^\s*[-\w]+ *=/.test(range.src)) {
-          // not attributes
-          this.incrementColumn(1);
-          this.consume(range.end + 1);
-          tok.args = range.src;
-          for (var i = 0; i <= tok.args.length; i++) {
-            if (tok.args[i] === '\n') {
-              this.incrementLine(1);
+      // just a space separated list of strings
+      // no nested parentheses allowed
+      if ((captures = /^ *\((.*)\)/.exec(this.input))) {
+        let increment = captures[0].length;
+        this.consume(increment);
+        this.incrementColumn(increment);
+
+        let argsList = captures[1].split(/ +/).filter(Boolean);
+        if (argsList.length > 0) {
+          for (let i = 0, len = argsList.length; i < len; ++i) {
+            if ((captures = /'(.*)'/.exec(argsList[i])) || (captures = /"(.*)"/.exec(argsList[i]))) {
+              tok.args.push(captures[0]);
             } else {
-              this.incrementColumn(1);
+              tok.args.push(argsList[i]);
             }
           }
         }

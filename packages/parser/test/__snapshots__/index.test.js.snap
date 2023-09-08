@@ -7689,6 +7689,219 @@ exports[`mixin-hoist.pg 1`] = `
 }
 `;
 
+exports[`mixin-variables.pg 1`] = `
+{
+  "filename": "mixin-variables.pg",
+  "line": 0,
+  "nodes": [
+    {
+      "args": [
+        "contents",
+      ],
+      "block": {
+        "filename": "mixin-variables.pg",
+        "line": 2,
+        "nodes": [
+          {
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": {
+              "filename": "mixin-variables.pg",
+              "line": 2,
+              "nodes": [
+                {
+                  "column": 5,
+                  "filename": "mixin-variables.pg",
+                  "line": 2,
+                  "name": "contents",
+                  "type": "Variable",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "mixin-variables.pg",
+            "isInline": false,
+            "line": 2,
+            "name": "li",
+            "type": "Tag",
+          },
+        ],
+        "type": "Block",
+      },
+      "call": false,
+      "column": 1,
+      "filename": "mixin-variables.pg",
+      "line": 1,
+      "name": "li",
+      "type": "Mixin",
+    },
+    {
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": {
+        "filename": "mixin-variables.pg",
+        "line": 4,
+        "nodes": [
+          {
+            "args": [
+              "foo",
+            ],
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": null,
+            "call": true,
+            "column": 6,
+            "filename": "mixin-variables.pg",
+            "line": 5,
+            "name": "li",
+            "type": "Mixin",
+          },
+          {
+            "args": [
+              "bar",
+            ],
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": null,
+            "call": true,
+            "column": 7,
+            "filename": "mixin-variables.pg",
+            "line": 6,
+            "name": "li",
+            "type": "Mixin",
+          },
+          {
+            "args": [
+              "baz",
+              "quux",
+            ],
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": null,
+            "call": true,
+            "column": 8,
+            "filename": "mixin-variables.pg",
+            "line": 7,
+            "name": "li",
+            "type": "Mixin",
+          },
+        ],
+        "type": "Block",
+      },
+      "column": 1,
+      "filename": "mixin-variables.pg",
+      "isInline": false,
+      "line": 4,
+      "name": "ul",
+      "type": "Tag",
+    },
+    {
+      "args": [
+        "name",
+      ],
+      "block": {
+        "filename": "mixin-variables.pg",
+        "line": 10,
+        "nodes": [
+          {
+            "attributeBlocks": [],
+            "attrs": [],
+            "block": {
+              "filename": "mixin-variables.pg",
+              "line": 10,
+              "nodes": [
+                {
+                  "column": 5,
+                  "filename": "mixin-variables.pg",
+                  "line": 11,
+                  "type": "Text",
+                  "val": "Hello from ",
+                },
+                {
+                  "column": 18,
+                  "filename": "mixin-variables.pg",
+                  "line": 11,
+                  "name": "name",
+                  "type": "Variable",
+                },
+                {
+                  "column": 23,
+                  "filename": "mixin-variables.pg",
+                  "line": 11,
+                  "type": "Text",
+                  "val": " and welcome.",
+                },
+                {
+                  "column": 1,
+                  "filename": "mixin-variables.pg",
+                  "line": 12,
+                  "type": "Text",
+                  "val": "
+",
+                },
+                {
+                  "column": 5,
+                  "filename": "mixin-variables.pg",
+                  "line": 12,
+                  "type": "Text",
+                  "val": "This #{reference} should be escaped.",
+                },
+                {
+                  "column": 1,
+                  "filename": "mixin-variables.pg",
+                  "line": 13,
+                  "type": "Text",
+                  "val": "
+",
+                },
+                {
+                  "column": 1,
+                  "filename": "mixin-variables.pg",
+                  "line": 13,
+                  "type": "Text",
+                  "val": "",
+                },
+              ],
+              "type": "Block",
+            },
+            "column": 3,
+            "filename": "mixin-variables.pg",
+            "isInline": false,
+            "line": 10,
+            "name": "p",
+            "textOnly": true,
+            "type": "Tag",
+          },
+        ],
+        "type": "Block",
+      },
+      "call": false,
+      "column": 1,
+      "filename": "mixin-variables.pg",
+      "line": 9,
+      "name": "paragraph",
+      "type": "Mixin",
+    },
+    {
+      "args": [
+        "pugneum",
+      ],
+      "attributeBlocks": [],
+      "attrs": [],
+      "block": null,
+      "call": true,
+      "column": 11,
+      "filename": "mixin-variables.pg",
+      "line": 14,
+      "name": "paragraph",
+      "type": "Mixin",
+    },
+  ],
+  "type": "Block",
+}
+`;
+
 exports[`mixin-via-include.pg 1`] = `
 {
   "filename": "mixin-via-include.pg",

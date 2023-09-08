@@ -1,0 +1,14 @@
+mixin li(contents)
+  li #{contents}
+
+ul
+  +li(foo)
+  + li('bar')
+  +  li("baz" quux)
+
+mixin paragraph(name)
+  p.
+    Hello from #{name} and welcome.
+    This \#{reference} should be escaped.
+
++paragraph(pugneum)

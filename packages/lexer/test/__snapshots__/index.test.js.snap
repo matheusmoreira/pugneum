@@ -18958,6 +18958,492 @@ exports[`mixin-hoist.pg 1`] = `
 ]
 `;
 
+exports[`mixin-variables.pg 1`] = `
+[
+  {
+    "args": [
+      "contents",
+    ],
+    "loc": {
+      "end": {
+        "column": 19,
+        "line": 1,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "mixin",
+    "val": "li",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 2,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "indent",
+    "val": 2,
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 2,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 3,
+        "line": 2,
+      },
+    },
+    "type": "tag",
+    "val": "li",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 17,
+        "line": 2,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 5,
+        "line": 2,
+      },
+    },
+    "type": "variable",
+    "val": "contents",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 4,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "outdent",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 4,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 4,
+      },
+    },
+    "type": "tag",
+    "val": "ul",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 5,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "indent",
+    "val": 2,
+  },
+  {
+    "args": [
+      "foo",
+    ],
+    "loc": {
+      "end": {
+        "column": 11,
+        "line": 5,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 6,
+        "line": 5,
+      },
+    },
+    "type": "call",
+    "val": "li",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 6,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 6,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "args": [
+      "bar",
+    ],
+    "loc": {
+      "end": {
+        "column": 14,
+        "line": 6,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 7,
+        "line": 6,
+      },
+    },
+    "type": "call",
+    "val": "li",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 7,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 7,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "args": [
+      "baz",
+      "quux",
+    ],
+    "loc": {
+      "end": {
+        "column": 20,
+        "line": 7,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 8,
+        "line": 7,
+      },
+    },
+    "type": "call",
+    "val": "li",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 9,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "outdent",
+  },
+  {
+    "args": [
+      "name",
+    ],
+    "loc": {
+      "end": {
+        "column": 22,
+        "line": 9,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "mixin",
+    "val": "paragraph",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 10,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 10,
+      },
+    },
+    "type": "indent",
+    "val": 2,
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 4,
+        "line": 10,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 3,
+        "line": 10,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 10,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 4,
+        "line": 10,
+      },
+    },
+    "type": "dot",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 10,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 5,
+        "line": 10,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 16,
+        "line": 11,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 5,
+        "line": 11,
+      },
+    },
+    "type": "text",
+    "val": "Hello from ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 18,
+        "line": 11,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 16,
+        "line": 11,
+      },
+    },
+    "type": "start-interpolation",
+  },
+  {
+    "loc": {
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 18,
+        "line": 11,
+      },
+    },
+    "type": "variable",
+    "val": "name",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 23,
+        "line": 11,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 22,
+        "line": 11,
+      },
+    },
+    "type": "end-interpolation",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 36,
+        "line": 11,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 23,
+        "line": 11,
+      },
+    },
+    "type": "text",
+    "val": " and welcome.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 12,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 12,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 42,
+        "line": 12,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 5,
+        "line": 12,
+      },
+    },
+    "type": "text",
+    "val": "This #{reference} should be escaped.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 13,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 13,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 13,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 13,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 13,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 13,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 14,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 14,
+      },
+    },
+    "type": "outdent",
+  },
+  {
+    "args": [
+      "pugneum",
+    ],
+    "loc": {
+      "end": {
+        "column": 20,
+        "line": 14,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 11,
+        "line": 14,
+      },
+    },
+    "type": "call",
+    "val": "paragraph",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 15,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 15,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 15,
+      },
+      "filename": "mixin-variables.pg",
+      "start": {
+        "column": 1,
+        "line": 15,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
 exports[`mixin-via-include.pg 1`] = `
 [
   {

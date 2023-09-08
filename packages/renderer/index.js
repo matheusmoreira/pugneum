@@ -226,6 +226,21 @@ Compiler.prototype = {
     }
   },
 
+  visitVariable: function(variable) {
+    if (this.callStack.length === 0) {
+      this.error(`Variable '${variable.name}' used outside mixin`, 'CALL_STACK_UNDERFLOW', variable);
+    }
+
+    let frame = this.callStack.at(-1);
+    let value = frame[variable.name];
+
+    if (!value) {
+      this.error(`Variable '${variable.name}' is undefined`, 'UNDEFINED_VARIABLE', variable);
+    }
+
+    this.buffer(value);
+  },
+
 };
 
 function tagCanInline(tag) {

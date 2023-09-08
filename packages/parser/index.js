@@ -748,7 +748,6 @@ Parser.prototype = {
     var tag = {
       type: 'InterpolatedTag',
       expr: tok.val,
-      selfClosing: false,
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
@@ -758,7 +757,7 @@ Parser.prototype = {
       filename: this.filename,
     };
 
-    return this.tag(tag, {selfClosingAllowed: true});
+    return this.tag(tag);
   },
 
   /**
@@ -770,7 +769,6 @@ Parser.prototype = {
     var tag = {
       type: 'Tag',
       name: tok.val,
-      selfClosing: false,
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
@@ -780,7 +778,7 @@ Parser.prototype = {
       filename: this.filename,
     };
 
-    return this.tag(tag, {selfClosingAllowed: true});
+    return this.tag(tag);
   },
 
   /**
@@ -790,7 +788,6 @@ Parser.prototype = {
   tag: function(tag, options) {
     var seenAttrs = false;
     var attributeNames = [];
-    var selfClosingAllowed = options && options.selfClosingAllowed;
     // (attrs | class | id)*
     out: while (true) {
       switch (this.peek().type) {
@@ -869,12 +866,6 @@ Parser.prototype = {
       case 'start-pipeless-text':
       case 'end-interpolation':
         break;
-      case 'slash':
-        if (selfClosingAllowed) {
-          this.advance();
-          tag.selfClosing = true;
-          break;
-        }
       default:
         var pluginResult = this.runPlugin(
           'tagTokens',
@@ -887,9 +878,7 @@ Parser.prototype = {
           'INVALID_TOKEN',
           'Unexpected token `' +
             this.peek().type +
-            '` expected `text`, `:`' +
-            (selfClosingAllowed ? ', `slash`' : '') +
-            ', `newline` or `eos`',
+            '` expected `text`, `:`, `newline` or `eos`',
           this.peek()
         );
     }

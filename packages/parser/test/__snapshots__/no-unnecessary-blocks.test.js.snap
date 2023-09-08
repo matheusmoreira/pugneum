@@ -36,7 +36,6 @@ exports[`no uncessessary blocks should be added 1`] = `
       "isInline": false,
       "line": 2,
       "name": "div",
-      "selfClosing": false,
       "type": "Tag",
     },
   ],

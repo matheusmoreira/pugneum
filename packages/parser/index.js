@@ -892,16 +892,6 @@ Parser.prototype = {
           seenAttrs = true;
           tag.attrs = tag.attrs.concat(this.attrs(attributeNames));
           continue;
-        case '&attributes':
-          var tok = this.advance();
-          tag.attributeBlocks.push({
-            type: 'AttributeBlock',
-            val: tok.val,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
-            filename: this.filename,
-          });
-          break;
         default:
           var pluginResult = this.runPlugin(
             'tagAttributeTokens',

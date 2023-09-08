@@ -830,7 +830,7 @@ Lexer.prototype = {
     if ((captures = /^mixin +([-\w]+)(?: *\((.*)\))? */.exec(this.input))) {
       this.consume(captures[0].length);
       var tok = this.tok('mixin', captures[1]);
-      tok.args = captures[2] || null;
+      tok.args = (captures[2] || '').split(/ +/).filter(Boolean);
       this.incrementColumn(captures[0].length);
       this.tokens.push(this.tokEnd(tok));
       return true;

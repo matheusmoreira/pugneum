@@ -20,6 +20,7 @@ function Compiler(node, options) {
   this.options = options = options || {};
   this.node = node;
   this.mixins = {};
+  this.callStack = [];
 }
 
 Compiler.prototype = {
@@ -186,7 +187,45 @@ Compiler.prototype = {
       this.buffer(attr.val);
       this.buffer('"');
     }
-  }
+  },
+
+  visitMixin: function(mixin) {
+    if (mixin.call) {
+      // find defined mixin of same name
+      let declared = this.mixins[mixin.name];
+      if (!declared) {
+        this.error(`Undefined mixin '${mixin.name}'`, 'UNDEFINED_MIXIN', mixin);
+      }
+
+      // check arguments
+      let args = mixin.args, len = declared.args.length;
+
+      if (args.length !== declared.args.length) {
+        this.error(
+            `Arguments mismatch: mixin '${mixin.name}' declared ${len} called ${args.length}`,
+            'MIXIN_ARGUMENT_COUNT_MISMATCH',
+            mixin
+        );
+      }
+
+      // bind arguments
+      let parentEnvironment = this.callStack.at(-1) || null;
+      let environment = Object.create(parentEnvironment);
+
+      for (let i = 0; i <len; ++i) {
+        environment[declared.args[i]] = args[i];
+      }
+
+      // evaluate mixin block which may contain variable nodes
+      this.callStack.push(environment);
+      this.visit(declared.block);
+      this.callStack.pop();
+    } else {
+      // mixin declaration, save mixin
+      this.mixins[mixin.name] = mixin;
+    }
+  },
+
 };
 
 function tagCanInline(tag) {

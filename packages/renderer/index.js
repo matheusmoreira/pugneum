@@ -209,7 +209,8 @@ Compiler.prototype = {
       }
 
       // bind arguments
-      let parentEnvironment = this.callStack.at(-1) || null;
+      let frame = this.callStack.at(-1);
+      let parentEnvironment = (frame && frame.environment) || null;
       let environment = Object.create(parentEnvironment);
 
       for (let i = 0; i <len; ++i) {
@@ -217,7 +218,7 @@ Compiler.prototype = {
       }
 
       // evaluate mixin block which may contain variable nodes
-      this.callStack.push(environment);
+      this.callStack.push({environment});
       this.visit(declared.block);
       this.callStack.pop();
     } else {
@@ -232,7 +233,7 @@ Compiler.prototype = {
     }
 
     let frame = this.callStack.at(-1);
-    let value = frame[variable.name];
+    let value = frame.environment[variable.name];
 
     if (!value) {
       this.error(`Variable '${variable.name}' is undefined`, 'UNDEFINED_VARIABLE', variable);

@@ -217,8 +217,11 @@ Compiler.prototype = {
         environment[declared.args[i]] = args[i];
       }
 
+      // bind caller's block
+      let block = mixin.block;
+
       // evaluate mixin block which may contain variable nodes
-      this.callStack.push({environment});
+      this.callStack.push({environment, block});
       this.visit(declared.block);
       this.callStack.pop();
     } else {

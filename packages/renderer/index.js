@@ -245,6 +245,10 @@ Compiler.prototype = {
     this.buffer(value);
   },
 
+  visitMixinBlock: function(mixinBlock) {
+    let current = this.callStack.at(-1);
+    this.visit(current.block);
+  },
 };
 
 function tagCanInline(tag) {

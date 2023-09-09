@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = makeError;
 
 function makeError(code, message, options) {

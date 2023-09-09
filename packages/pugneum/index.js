@@ -6,8 +6,8 @@ const lex = require('pugneum-lexer');
 const parse = require('pugneum-parser');
 const load = require('pugneum-loader');
 const link = require('pugneum-linker');
-const render = require('pugneum-renderer');
 const filter = require('pugneum-filterer');
+const render = require('pugneum-renderer');
 
 function renderPugneum(string, options) {
   options ||= {};

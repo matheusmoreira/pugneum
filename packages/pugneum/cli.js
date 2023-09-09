@@ -40,8 +40,8 @@ const EXIT_CODES = {
     NOT_FILE: 5
 };
 
-function readAndValidateInput(stream) {
-    const input = fs.readFileSync(stream.fd, 'utf8');
+function readAndValidateInput(path) {
+    const input = fs.readFileSync(path, 'utf8');
     const json = JSON.parse(input);
     const {inputDirectory, outputDirectory, baseDirectory} = json;
 
@@ -53,7 +53,7 @@ function readAndValidateInput(stream) {
     return {inputDirectory, outputDirectory, baseDirectory};
 }
 
-const {baseDirectory, inputDirectory, outputDirectory} = readAndValidateInput(process.stdin);
+const {baseDirectory, inputDirectory, outputDirectory} = readAndValidateInput('pugneum.json');
 
 const pg = require('pugneum');
 const pgExtension = /\.pg$/;

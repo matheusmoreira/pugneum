@@ -1,5 +1,3 @@
-'use strict';
-
 var assert = require('assert');
 
 const walk = require('pugneum-walker');

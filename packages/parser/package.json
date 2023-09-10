@@ -1,6 +1,6 @@
 {
   "name": "pugneum-parser",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Parses an array of pugneum tokens into an abstract syntax tree",
   "keywords": [
     "pugneum",

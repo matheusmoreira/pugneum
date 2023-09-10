@@ -7,9 +7,6 @@
     "pug",
     "error"
   ],
-  "files": [
-    "index.js"
-  ],
   "repository": {
     "type": "git",
     "url": "github:matheusmoreira/pugneum",

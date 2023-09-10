@@ -9,11 +9,11 @@
     "pug"
   ],
   "dependencies": {
-    "pugneum-walker": "^0.2.0"
+    "pugneum-walker": "^0.3.0"
   },
   "devDependencies": {
-    "pugneum-lexer": "^0.2.0",
-    "pugneum-parser": "^0.2.0"
+    "pugneum-lexer": "^0.3.0",
+    "pugneum-parser": "^0.3.0"
   },
   "repository": {
     "type": "git",

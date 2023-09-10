@@ -10,12 +10,12 @@
     "template"
   ],
   "dependencies": {
-    "pugneum-filterer": "^0.2.0",
-    "pugneum-lexer": "^0.2.0",
-    "pugneum-linker": "^0.2.0",
-    "pugneum-loader": "^0.2.0",
-    "pugneum-parser": "^0.2.0",
-    "pugneum-renderer": "^0.2.0"
+    "pugneum-filterer": "^0.3.0",
+    "pugneum-lexer": "^0.3.0",
+    "pugneum-linker": "^0.3.0",
+    "pugneum-loader": "^0.3.0",
+    "pugneum-parser": "^0.3.1",
+    "pugneum-renderer": "^0.3.0"
   },
   "bin": {
     "pugneum": "cli.js"

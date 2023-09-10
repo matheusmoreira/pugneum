@@ -1,7 +1,8 @@
 # pugneum-error
 
 Standard pugneum error object factory function.
-This module is intended for use by the lexer, parser, loader, linker, code generator and any plugins.
+This module is intended for useby the lexer, parser,
+loader, linker, renderer and any plugins.
 
 ## Installation
 

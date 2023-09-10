@@ -11,7 +11,7 @@ const render = require('pugneum-renderer');
 
 function renderPugneum(string, options) {
   options ||= {};
-  options.src = string;
+  options.source = string;
   options.lex = lex;
   options.parse = parse;
 
@@ -27,10 +27,10 @@ function renderPugneum(string, options) {
 
 function renderPugneumFile(path, options) {
   path = resolve(path);
-  let src = fs.readFileSync(path, 'utf8');
+  let source = fs.readFileSync(path, 'utf8');
   options ||= {};
   options.filename = path;
-  return renderPugneum(src, options);
+  return renderPugneum(source, options);
 };
 
 exports.render = renderPugneum;

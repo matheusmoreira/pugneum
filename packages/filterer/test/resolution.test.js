@@ -7,15 +7,15 @@ const filter = require('../');
 
 test('installed filter packages can be used implicitly', () => {
 
-  const src = `
+  const source = `
 pre
   code
     :'highlight.js'(language=ruby)
       puts 'This should be', :syntax_highlighted
 `;
 
-  const tokens = lex(src, {filename});
-  const ast = parse(tokens, {filename, src});
+  const tokens = lex(source, {filename});
+  const ast = parse(tokens, {filename, source});
   const filtered = filter(ast);
 
   expect(filtered).toMatchSnapshot();

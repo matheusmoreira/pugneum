@@ -20,16 +20,16 @@ Convert pugneum tokens into an abstract syntax tree (AST).
 
  - `filename` (string): pugneum file name; included in AST nodes and used in error handling
  - `plugins` (array): array of plugins in the order they should be applied
- - `src` (string): pugneum source code before tokenization; used in error handling
+ - `source` (string): pugneum source code before tokenization; used in error handling
 
 ```js
 const lex = require('pugneum-lexer');
 
 let filename = 'my-file.pg';
-let src = 'div(data-foo="bar")';
-let tokens = lex(src, {filename});
+let source = 'div(data-foo="bar")';
+let tokens = lex(source, {filename});
 
-let ast = parse(tokens, {filename, src});
+let ast = parse(tokens, {filename, source});
 
 console.log(JSON.stringify(ast, null, '  '))
 ```

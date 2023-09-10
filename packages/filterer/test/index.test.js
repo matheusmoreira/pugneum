@@ -32,10 +32,7 @@ p
     Filters can be used.
 `;
 
-  const ast = parse(lex(source, {filename}), {
-    filename,
-    src: source,
-  });
+  const ast = parse(lex(source, {filename}), {filename, source});
 
   const output = filter(ast, customFilters);
   expect(output).toMatchSnapshot();
@@ -50,10 +47,7 @@ p
     They're just strings.
 `;
 
-  const ast = parse(lex(source, {filename}), {
-    filename,
-    src: source,
-  });
+  const ast = parse(lex(source, {filename}), {filename, source});
 
   const output = filter(ast, customFilters);
   expect(output).toMatchSnapshot();

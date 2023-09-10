@@ -24,10 +24,7 @@ p
     Will be wrapped in second.
 `;
 
-  const ast = parse(lex(source, {filename}), {
-    filename,
-    src: source,
-  });
+  const ast = parse(lex(source, {filename}), {filename, source});
 
   const options = {
       second: {wrap: true},

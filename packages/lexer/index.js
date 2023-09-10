@@ -92,7 +92,7 @@ Lexer.prototype = {
       line: this.lineno,
       column: this.colno,
       filename: this.filename,
-      src: this.originalInput,
+      source: this.originalInput,
     });
     throw err;
   },

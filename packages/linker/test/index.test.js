@@ -12,9 +12,9 @@ function testDir(dir) {
     if (!/\.pg$/.test(name)) return;
     test(name, function() {
       let filename = dir + '/' + name;
-      let src = fs.readFileSync(filename, 'utf8');
-      let options = {filename, src, lex, parse, basedir};
-      let tokens = lex(src, options);
+      let source = fs.readFileSync(filename, 'utf8');
+      let options = {filename, source, lex, parse, basedir};
+      let tokens = lex(source, options);
       let ast = parse(tokens, options);
       let loaded = load(ast, options);
       var actual = link(loaded);

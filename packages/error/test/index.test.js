@@ -8,7 +8,7 @@ describe('with a source', function() {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       filename: 'myfile',
-      src: 'foo\nbar\nbaz\nbash\nbing',
+      source: 'foo\nbar\nbaz\nbash\nbing',
     });
     expect(err.message).toBe(
       'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
@@ -17,12 +17,12 @@ describe('with a source', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
-    expect(err.src).toBe('foo\nbar\nbaz\nbash\nbing');
+    expect(err.source).toBe('foo\nbar\nbaz\nbash\nbing');
   });
   test('and no filename', function() {
     var err = error('MY_CODE', 'My message', {
       line: 3,
-      src: 'foo\nbar\nbaz\nbash\nbing',
+      source: 'foo\nbar\nbaz\nbash\nbing',
     });
     expect(err.message).toBe(
       '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
@@ -31,7 +31,7 @@ describe('with a source', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
-    expect(err.src).toBe('foo\nbar\nbaz\nbash\nbing');
+    expect(err.source).toBe('foo\nbar\nbaz\nbash\nbing');
   });
 });
 
@@ -43,7 +43,7 @@ describe('without source', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
-    expect(err.src).toBe(undefined);
+    expect(err.source).toBe(undefined);
   });
   test('and with no filename', function() {
     var err = error('MY_CODE', 'My message', {line: 3});
@@ -52,7 +52,7 @@ describe('without source', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
-    expect(err.src).toBe(undefined);
+    expect(err.source).toBe(undefined);
   });
 });
 
@@ -62,7 +62,7 @@ describe('with column', function() {
       line: 3,
       column: 2,
       filename: 'myfile',
-      src: 'foo\nbar\nbaz\nbash\nbing',
+      source: 'foo\nbar\nbaz\nbash\nbing',
     });
     expect(err.message).toBe(
       'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message'
@@ -71,7 +71,7 @@ describe('with column', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe('myfile');
-    expect(err.src).toBe('foo\nbar\nbaz\nbash\nbing');
+    expect(err.source).toBe('foo\nbar\nbaz\nbash\nbing');
   });
   test('and with no filename', function() {
     var err = error('MY_CODE', 'My message', {line: 3, column: 1});
@@ -80,7 +80,7 @@ describe('with column', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
-    expect(err.src).toBe(undefined);
+    expect(err.source).toBe(undefined);
   });
 });
 
@@ -89,7 +89,7 @@ describe('invalid information', function() {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       column: -1,
-      src: 'foo\nbar\nbaz\nbash\nbing',
+      source: 'foo\nbar\nbaz\nbash\nbing',
     });
     expect(err.message).toBe(
       '3:-1\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
@@ -98,7 +98,7 @@ describe('invalid information', function() {
     expect(err.msg).toBe('My message');
     expect(err.line).toBe(3);
     expect(err.filename).toBe(undefined);
-    expect(err.src).toBe('foo\nbar\nbaz\nbash\nbing');
+    expect(err.source).toBe('foo\nbar\nbaz\nbash\nbing');
   });
   test('out of range line', function() {
     check(0);
@@ -107,14 +107,14 @@ describe('invalid information', function() {
     function check(line) {
       var err = error('MY_CODE', 'My message', {
         line: line,
-        src: 'foo\nbar\nbaz\nbash\nbing',
+        source: 'foo\nbar\nbaz\nbash\nbing',
       });
       expect(err.message).toBe(line + '\n\nMy message');
       expect(err.code).toBe('PUGNEUM:MY_CODE');
       expect(err.msg).toBe('My message');
       expect(err.line).toBe(line);
       expect(err.filename).toBe(undefined);
-      expect(err.src).toBe('foo\nbar\nbaz\nbash\nbing');
+      expect(err.source).toBe('foo\nbar\nbaz\nbash\nbing');
     }
   });
 });

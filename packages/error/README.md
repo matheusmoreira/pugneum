@@ -26,7 +26,7 @@ Create a pugneum error object.
  - `filename`: the name of the file causing the error
  - `line`: the offending line
  - `column`: the offending column
- - `src`: the pugneum source, if available, for pretty-printing the error context
+ - `source`: the pugneum source, if available, for pretty-printing the error context
 
 The resulting error object is a simple Error object with additional properties given in the arguments.
 
@@ -35,13 +35,13 @@ The resulting error object is a simple Error object with additional properties g
 ```js
 var error = require('pugneum-error');
 
-var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile', src: 'foo\nbar\nbaz\nbash\nbing'});
+var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile', source: 'foo\nbar\nbaz\nbash\nbing'});
 // { code: 'PUGNEUM:MY_CODE',
 //   msg: 'My message',
 //   line: 3,
 //   column: undefined,
 //   filename: 'myfile',
-//   src: 'foo\nbar\nbaz\nbash\nbing',
+//   source: 'foo\nbar\nbaz\nbash\nbing',
 //   message: 'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message' }
 
 throw err;

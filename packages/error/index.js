@@ -4,7 +4,7 @@ function makeError(code, message, options) {
   var line = options.line;
   var column = options.column;
   var filename = options.filename;
-  var src = options.src;
+  var src = options.source;
   var fullMessage;
   var location = line + (column ? ':' + column : '');
   if (src && line >= 1 && line <= src.split('\n').length) {
@@ -36,7 +36,7 @@ function makeError(code, message, options) {
   err.line = line;
   err.column = column;
   err.filename = filename;
-  err.src = src;
+  err.source = src;
   err.toJSON = function() {
     return {
       code: this.code,

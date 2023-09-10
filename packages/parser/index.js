@@ -55,7 +55,7 @@ function Parser(tokens, options) {
   }
   this.tokens = new TokenStream(tokens);
   this.filename = options.filename;
-  this.src = options.src;
+  this.source = options.source;
   this.inMixin = 0;
   this.plugins = options.plugins || [];
 }
@@ -76,7 +76,7 @@ Parser.prototype = {
       line: token.loc.start.line,
       column: token.loc.start.column,
       filename: this.filename,
-      src: this.src,
+      source: this.source,
     });
     throw err;
   },

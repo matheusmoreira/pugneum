@@ -59,6 +59,27 @@ Only the clean language remains.
 
 ## Usage
 
+The command line utility requires a `pugneum.json` file to work:
+
+```json
+{
+    "inputDirectory": "pg/files",
+    "outputDirectory": "example.com",
+    "baseDirectory": "pg"
+}
+```
+
+Committing this file to version control is recommended.
+
+Once it exists, the pugneum templates can be compiled to HTML
+with a command line tool:
+
+```shell
+pugneum
+```
+
+## Programming interface
+
 ```js
 const pg = require('pugneum');
 

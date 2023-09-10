@@ -1,7 +1,7 @@
 {
   "name": "pugneum-error",
   "version": "1.0.0",
-  "description": "Standard error objects for pugneum",
+  "description": "Pugneum error object factory",
   "keywords": [
     "pugneum",
     "pug",

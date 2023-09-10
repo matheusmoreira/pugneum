@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = walkAST;
 
 function walkAST(ast, before, after, options) {

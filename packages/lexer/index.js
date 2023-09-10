@@ -954,6 +954,7 @@ Lexer.prototype = {
     i = this.skipWhitespace(str, i);
 
     if (str[i] === '=') {
+      this.incrementColumn(1);
       ++i;
 
       // consume all whitespace after the =

@@ -11,6 +11,9 @@
     "pugneum-error": "^1.0.0",
     "token-stream": "1.0.0"
   },
+  "devDependencies": {
+    "pugneum-lexer": "^0.3.0"
+  },
   "repository": {
     "type": "git",
     "url": "github:matheusmoreira/pugneum",

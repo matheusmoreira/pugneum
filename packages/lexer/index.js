@@ -40,6 +40,8 @@ const noncharacter  =
 const attributeNamePunctuation = ' \'">/=';
 const attributeName = new RegExp('[^' + control + attributeNamePunctuation + noncharacter + ']', 'g');
 
+const whitespaceRe = /[ \n\t]/;
+
 /**
  * Initialize `Lexer` with the given `str`.
  *
@@ -73,7 +75,6 @@ function Lexer(str, options) {
   this.indentRe = null;
   // If #{}, !{} or #[] syntax is allowed when adding text
   this.interpolationAllowed = true;
-  this.whitespaceRe = /[ \n\t]/;
 
   this.tokens = [];
   this.ended = false;
@@ -659,7 +660,7 @@ Lexer.prototype = {
       if (!name) return;
       var tok = this.tok('block', name);
       var len = captures[0].length - comment.length;
-      while (this.whitespaceRe.test(this.input.charAt(len - 1))) len--;
+      while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'prepend';
       this.tokens.push(this.tokEnd(tok));
@@ -690,7 +691,7 @@ Lexer.prototype = {
       if (!name) return;
       var tok = this.tok('block', name);
       var len = captures[0].length - comment.length;
-      while (this.whitespaceRe.test(this.input.charAt(len - 1))) len--;
+      while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'append';
       this.tokens.push(this.tokEnd(tok));
@@ -721,7 +722,7 @@ Lexer.prototype = {
       if (!name) return;
       var tok = this.tok('block', name);
       var len = captures[0].length - comment.length;
-      while (this.whitespaceRe.test(this.input.charAt(len - 1))) len--;
+      while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'replace';
       this.tokens.push(this.tokEnd(tok));
@@ -878,7 +879,7 @@ Lexer.prototype = {
 
   skipWhitespace: function (str, i) {
     for (; i < str.length; i++) {
-      if (!this.whitespaceRe.test(str[i])) break;
+      if (!whitespaceRe.test(str[i])) break;
       if (str[i] === '\n') {
         this.incrementLine(1);
       } else {
@@ -923,7 +924,7 @@ Lexer.prototype = {
         }
       } else {
         if (
-          this.whitespaceRe.test(str[i]) ||
+          whitespaceRe.test(str[i]) ||
           str[i] === '='
         ) {
           break;
@@ -995,7 +996,7 @@ Lexer.prototype = {
             ++i;
           }
         } else {
-          if (this.whitespaceRe.test(str[i])) {
+          if (whitespaceRe.test(str[i])) {
             break;
           }
         }
@@ -1017,7 +1018,7 @@ Lexer.prototype = {
 
     this.tokens.push(this.tokEnd(tok));
 
-    if (quote && str[i] && !this.whitespaceRe.test(str[i])) {
+    if (quote && str[i] && !whitespaceRe.test(str[i])) {
       this.error(
         'MALFORMED_ATTRIBUTE',
         'Invalid code point after attribute value: `' + str[i] + '`'

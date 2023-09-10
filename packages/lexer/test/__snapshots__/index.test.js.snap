@@ -9194,7 +9194,7 @@ exports[`filters.verbatim.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.verbatim.pg",
@@ -9209,12 +9209,12 @@ exports[`filters.verbatim.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.verbatim.pg",
       "start": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
     },
@@ -9223,12 +9223,12 @@ exports[`filters.verbatim.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.verbatim.pg",
       "start": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
     },
@@ -9237,12 +9237,12 @@ exports[`filters.verbatim.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.verbatim.pg",
       "start": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
     },
@@ -9251,12 +9251,12 @@ exports[`filters.verbatim.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.verbatim.pg",
       "start": {
-        "column": 42,
+        "column": 41,
         "line": 5,
       },
     },

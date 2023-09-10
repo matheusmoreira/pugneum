@@ -476,7 +476,7 @@ Lexer.prototype = {
     var indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
     var indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
     var indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
-    let matchOfVarRef = /(\\)?#{(\w+)}/.exec(value)
+    let matchOfVarRef = this.interpolationAllowed? /(\\)?#{(\w+)}/.exec(value) : null;
     let indexOfVarRef = matchOfVarRef? matchOfVarRef.index : Infinity;
 
     if (indexOfEnd === -1) indexOfEnd = Infinity;

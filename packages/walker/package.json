@@ -10,8 +10,8 @@
     "pug"
   ],
   "devDependencies": {
-    "pugneum-lexer": "^0.2.0",
-    "pugneum-parser": "^0.2.0"
+    "pugneum-lexer": "^0.3.0",
+    "pugneum-parser": "^0.3.0"
   },
   "repository": {
     "type": "git",

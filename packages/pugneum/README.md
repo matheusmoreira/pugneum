@@ -1,6 +1,6 @@
 # Pugneum
 
-Clean HTML templating language geared for static sites.
+Clean HTML templates for static sites.
 
 ## Installation
 

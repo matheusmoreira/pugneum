@@ -1,6 +1,6 @@
 {
   "name": "pugneum-lexer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lexes pugneum templates and transforms them into arrays of tokens",
   "keywords": [
     "pugneum",

@@ -1,7 +1,11 @@
 const walk = require('pugneum-walker');
 
-function error() {
-  throw require('pugneum-error').apply(null, arguments);
+function error(code, message, node) {
+  throw require('pugneum-error')(code, message, {
+    line: node.line,
+    column: node.column,
+    filename: node.filename,
+  });
 }
 
 module.exports = link;
@@ -10,9 +14,9 @@ function link(ast) {
   if (ast.type !== 'Block') {
     throw new Error('The top level element should always be a block');
   }
-  var extendsNode = null;
+  let extendsNode = null;
   if (ast.nodes.length) {
-    var hasExtends = ast.nodes[0].type === 'Extends';
+    const hasExtends = ast.nodes[0].type === 'Extends';
     checkExtendPosition(ast, hasExtends);
     if (hasExtends) {
       extendsNode = ast.nodes.shift();
@@ -21,8 +25,8 @@ function link(ast) {
   ast = applyIncludes(ast);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
-    var mixins = [];
-    var expectedBlocks = [];
+    const mixins = [];
+    const expectedBlocks = [];
     ast.nodes.forEach(function addNode(node) {
       if (node.type === 'NamedBlock') {
         expectedBlocks.push(node);
@@ -38,9 +42,9 @@ function link(ast) {
         );
       }
     });
-    var parent = link(extendsNode.file.ast);
+    const parent = link(extendsNode.file.ast);
     extend(parent.declaredBlocks, ast);
-    var foundBlockNames = [];
+    const foundBlockNames = [];
     walk(parent, function(node) {
       if (node.type === 'NamedBlock') {
         foundBlockNames.push(node.name);
@@ -66,7 +70,7 @@ function link(ast) {
 }
 
 function findDeclaredBlocks(ast) /*: {[name: string]: Array<BlockNode>}*/ {
-  var definitions = {};
+  const definitions = {};
   walk(ast, function before(node) {
     if (node.type === 'NamedBlock' && node.mode === 'replace') {
       definitions[node.name] = definitions[node.name] || [];
@@ -88,7 +92,7 @@ function flattenParentBlocks(parentBlocks, accumulator) {
 }
 
 function extend(parentBlocks, ast) {
-  var stack = {};
+  const stack = {};
   walk(
     ast,
     function before(node) {
@@ -97,7 +101,7 @@ function extend(parentBlocks, ast) {
           return (node.ignore = true);
         }
         stack[node.name] = node.name;
-        var parentBlockList = parentBlocks[node.name]
+        const parentBlockList = parentBlocks[node.name]
           ? flattenParentBlocks(parentBlocks[node.name])
           : [];
         if (parentBlockList.length) {
@@ -136,7 +140,7 @@ function applyIncludes(ast, child) {
     },
     function after(node, replace) {
       if (node.type === 'Include') {
-        var childAST = link(node.file.ast);
+        let childAST = link(node.file.ast);
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }
@@ -158,7 +162,7 @@ function removeBlocks(ast) {
 
 function applyYield(ast, block) {
   if (!block || !block.nodes.length) return ast;
-  var replaced = false;
+  let replaced = false;
   ast = walk(ast, null, function(node, replace) {
     if (node.type === 'YieldBlock') {
       replaced = true;
@@ -167,8 +171,8 @@ function applyYield(ast, block) {
     }
   });
   function defaultYieldLocation(node) {
-    var res = node;
-    for (var i = 0; i < node.nodes.length; i++) {
+    let res = node;
+    for (let i = 0; i < node.nodes.length; i++) {
       if (node.nodes[i].textOnly) continue;
       if (node.nodes[i].type === 'Block') {
         res = defaultYieldLocation(node.nodes[i]);
@@ -186,7 +190,7 @@ function applyYield(ast, block) {
 }
 
 function checkExtendPosition(ast, hasExtends) {
-  var legitExtendsReached = false;
+  let legitExtendsReached = false;
   walk(ast, function(node) {
     if (node.type === 'Extends') {
       if (hasExtends && !legitExtendsReached) {

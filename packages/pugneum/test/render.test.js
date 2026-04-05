@@ -66,13 +66,12 @@ describe('render()', () => {
 });
 
 describe('renderFile()', () => {
+  const filePath = path.join(testCasesDir, 'basic.pg');
+
   it('should render a file from disk', () => {
-    const filePath = path.join(testCasesDir, 'basic.pg');
-    if (fs.existsSync(filePath)) {
-      const result = pg.renderFile(filePath);
-      expect(typeof result).toBe('string');
-      expect(result).toContain('<!DOCTYPE html>');
-    }
+    const result = pg.renderFile(filePath);
+    expect(typeof result).toBe('string');
+    expect(result).toContain('<!DOCTYPE html>');
   });
 });
 

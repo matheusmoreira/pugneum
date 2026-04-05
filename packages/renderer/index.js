@@ -16,24 +16,24 @@ function compileToHTML(ast, options) {
   return new Compiler(ast, options).compile();
 }
 
-function Compiler(node, options) {
-  this.options = options = options || {};
-  this.node = node;
-  this.mixins = {};
-  this.callStack = [];
-}
+class Compiler {
+  constructor(node, options) {
+    this.options = options = options || {};
+    this.node = node;
+    this.mixins = {};
+    this.callStack = [];
+  }
 
-Compiler.prototype = {
-  error: function(message, code, node) {
+  error(message, code, node) {
     var err = makeError(code, message, {
       line: node.line,
       column: node.column,
       filename: node.filename,
     });
     throw err;
-  },
+  }
 
-  compile: function() {
+  compile() {
     this.buf = [];
 
     // all pugneum documents will compile to HTML5
@@ -42,13 +42,13 @@ Compiler.prototype = {
     this.visit(this.node);
 
     return this.buf.join('');
-  },
+  }
 
-  buffer: function(str) {
+  buffer(str) {
     this.buf.push(str);
-  },
+  }
 
-  visit: function(node, parent) {
+  visit(node, parent) {
     if (!node) {
       var msg;
       if (parent) {
@@ -97,27 +97,27 @@ Compiler.prototype = {
     }
 
     this.visitNode(node);
-  },
+  }
 
-  visitNode: function(node) {
+  visitNode(node) {
     return this['visit' + node.type](node);
-  },
+  }
 
-  visitLiteral: function(node) {
+  visitLiteral(node) {
     this.buffer(node.str);
-  },
+  }
 
-  visitNamedBlock: function(block) {
+  visitNamedBlock(block) {
     return this.visitBlock(block);
-  },
+  }
 
-  visitBlock: function(block) {
+  visitBlock(block) {
     for (var i = 0; i < block.nodes.length; ++i) {
       this.visit(block.nodes[i], block);
     }
-  },
+  }
 
-  visitTag: function(tag, interpolated) {
+  visitTag(tag, interpolated) {
     this.buffer('<');
     this.buffer(tag.name);
     this.visitAttributes(tag.attrs);
@@ -149,16 +149,16 @@ Compiler.prototype = {
       this.buffer(tag.name);
       this.buffer('>');
     }
-  },
+  }
 
-  visitText: function(text) {
+  visitText(text) {
     this.buffer(text.val);
-  },
+  }
 
-  visitComment: function(comment) {
+  visitComment(comment) {
     if (!comment.buffer) return;
     this.buffer('<!--' + comment.val + '-->');
-  },
+  }
 
   /**
    * Visit a `YieldBlock`.
@@ -169,16 +169,16 @@ Compiler.prototype = {
    * @api public
    */
 
-  visitYieldBlock: function(block) {},
+  visitYieldBlock(block) {}
 
-  visitBlockComment: function(comment) {
+  visitBlockComment(comment) {
     if (!comment.buffer) return;
     this.buffer('<!--' + (comment.val || ''));
     this.visit(comment.block, comment);
     this.buffer('-->');
-  },
+  }
 
-  visitAttributes: function(attrs) {
+  visitAttributes(attrs) {
     for (let len = attrs.length, i = 0; i < len; ++i) {
       let attr = attrs[i];
       this.buffer(' ');
@@ -187,9 +187,9 @@ Compiler.prototype = {
       this.buffer(attr.val);
       this.buffer('"');
     }
-  },
+  }
 
-  visitMixin: function(mixin) {
+  visitMixin(mixin) {
     if (mixin.call) {
       // find defined mixin of same name
       let declared = this.mixins[mixin.name];
@@ -228,9 +228,9 @@ Compiler.prototype = {
       // mixin declaration, save mixin
       this.mixins[mixin.name] = mixin;
     }
-  },
+  }
 
-  visitVariable: function(variable) {
+  visitVariable(variable) {
     if (this.callStack.length === 0) {
       this.error(`Variable '${variable.name}' used outside mixin`, 'CALL_STACK_UNDERFLOW', variable);
     }
@@ -243,10 +243,10 @@ Compiler.prototype = {
     }
 
     this.buffer(value);
-  },
+  }
 
-  visitMixinBlock: function(mixinBlock) {
+  visitMixinBlock(mixinBlock) {
     let current = this.callStack.at(-1);
     this.visit(current.block);
-  },
-};
+  }
+}

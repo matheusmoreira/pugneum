@@ -1,4 +1,4 @@
-var makeError = require('pugneum-error');
+const makeError = require('pugneum-error');
 
 // Map of self-closing void elements literally copied from the standard.
 // https://html.spec.whatwg.org/multipage/syntax.html#void-elements
@@ -25,7 +25,7 @@ class Compiler {
   }
 
   error(message, code, node) {
-    var err = makeError(code, message, {
+    const err = makeError(code, message, {
       line: node.line,
       column: node.column,
       filename: node.filename,
@@ -50,7 +50,7 @@ class Compiler {
 
   visit(node, parent) {
     if (!node) {
-      var msg;
+      let msg;
       if (parent) {
         msg =
           'A child of ' +
@@ -67,7 +67,7 @@ class Compiler {
     }
 
     if (!this['visit' + node.type]) {
-      var msg;
+      let msg;
       if (parent) {
         msg = 'A child of ' + parent.type;
       } else {
@@ -112,7 +112,7 @@ class Compiler {
   }
 
   visitBlock(block) {
-    for (var i = 0; i < block.nodes.length; ++i) {
+    for (let i = 0; i < block.nodes.length; ++i) {
       this.visit(block.nodes[i], block);
     }
   }

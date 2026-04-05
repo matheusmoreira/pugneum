@@ -1,8 +1,34 @@
 'use strict';
 
 var assert = require('assert');
-var TokenStream = require('token-stream');
 var error = require('pugneum-error');
+
+class TokenStream {
+  constructor(tokens) {
+    this.tokens = tokens;
+    this.index = 0;
+    this.deferred = [];
+  }
+  peek() {
+    if (this.deferred.length) {
+      return this.deferred[0];
+    }
+    return this.tokens[this.index];
+  }
+  advance() {
+    if (this.deferred.length) {
+      return this.deferred.shift();
+    }
+    return this.tokens[this.index++];
+  }
+  lookahead(n) {
+    var index = this.index + n - this.deferred.length;
+    return this.tokens[index];
+  }
+  defer(token) {
+    this.deferred.push(token);
+  }
+}
 
 module.exports = parse;
 

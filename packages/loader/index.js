@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const walk = require('pugneum-walker');
-const assign = Object.assign;
 
 module.exports = load;
 
@@ -16,15 +15,15 @@ function load(ast, options) {
         node.type === 'RawInclude' ||
         node.type === 'Extends'
       ) {
-        var file = node.file;
+        const file = node.file;
         if (file.type !== 'FileReference') {
           throw new Error('Expected file.type to be "FileReference"');
         }
-        var path, str, raw;
+        let filePath, str, raw;
         try {
-          path = options.resolve(file.path, file.filename, options);
-          file.fullPath = path;
-          raw = options.read(path, options);
+          filePath = options.resolve(file.path, file.filename, options);
+          file.fullPath = filePath;
+          raw = options.read(filePath, options);
           str = raw.toString('utf8');
         } catch (ex) {
           ex.message += '\n    at ' + node.filename + ' line ' + node.line;
@@ -33,10 +32,10 @@ function load(ast, options) {
         file.str = str;
         file.raw = raw;
         if (node.type === 'Extends' || node.type === 'Include') {
-          let opts = assign({}, options, {filename: path, source: str});
-          let tokens = options.lex(str, opts);
-          let ast = options.parse(tokens, opts);
-          file.ast = load(ast, opts);
+          const opts = Object.assign({}, options, {filename: filePath, source: str});
+          const tokens = options.lex(str, opts);
+          const fileAst = options.parse(tokens, opts);
+          file.ast = load(fileAst, opts);
         }
       }
     }
@@ -92,7 +91,7 @@ function validateOptions(options) {
 
 function getOptions(options) {
   validateOptions(options);
-  return assign(
+  return Object.assign(
     {
       resolve: resolve,
       read: read,

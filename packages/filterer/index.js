@@ -84,9 +84,19 @@ function getAttributes(node, options) {
 function resolveFilter(filter, filters) {
   if (filters && filters[filter]) {
     return filters[filter];
-  } else {
-    return require(packagePrefix + filter);
   }
 
-  throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, filter);
+  try {
+    return require(packagePrefix + filter);
+  } catch (ex) {
+    if (ex.code === 'MODULE_NOT_FOUND') {
+      throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, {
+        line: 0,
+        column: 0,
+        filename: '',
+        source: '',
+      });
+    }
+    throw ex;
+  }
 }

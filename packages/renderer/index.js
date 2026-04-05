@@ -238,7 +238,7 @@ Compiler.prototype = {
     let frame = this.callStack.at(-1);
     let value = frame.environment[variable.name];
 
-    if (!value) {
+    if (value === undefined) {
       this.error(`Variable '${variable.name}' is undefined`, 'UNDEFINED_VARIABLE', variable);
     }
 

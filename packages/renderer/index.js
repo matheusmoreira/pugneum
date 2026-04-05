@@ -250,17 +250,3 @@ Compiler.prototype = {
     this.visit(current.block);
   },
 };
-
-function tagCanInline(tag) {
-  function isInline(node) {
-    // Recurse if the node is a block
-    if (node.type === 'Block') return node.nodes.every(isInline);
-    // When there is a YieldBlock here, it is an indication that the file is
-    // expected to be included but is not. If this is the case, the block
-    // must be empty.
-    if (node.type === 'YieldBlock') return true;
-    return (node.type === 'Text' && !/\n/.test(node.val)) || node.isInline;
-  }
-
-  return tag.block.nodes.every(isInline);
-}

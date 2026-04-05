@@ -1,5 +1,3 @@
-var assert = require('assert');
-
 const walk = require('pugneum-walker');
 
 function error() {
@@ -9,10 +7,9 @@ function error() {
 module.exports = link;
 
 function link(ast) {
-  assert(
-    ast.type === 'Block',
-    'The top level element should always be a block'
-  );
+  if (ast.type !== 'Block') {
+    throw new Error('The top level element should always be a block');
+  }
   var extendsNode = null;
   if (ast.nodes.length) {
     var hasExtends = ast.nodes[0].type === 'Extends';

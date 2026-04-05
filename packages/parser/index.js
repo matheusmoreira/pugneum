@@ -268,7 +268,6 @@ Parser.prototype = {
         return this.parseYield();
       case 'id':
       case 'class':
-        if (!this.peek().loc.start) debugger;
         this.tokens.defer({
           type: 'tag',
           val: 'div',

@@ -1,9 +1,9 @@
-var error = require('pugneum-error');
+const error = require('pugneum-error');
 
 module.exports = lex;
 
 function lex(str, options) {
-  var lexer = new Lexer(str, options);
+  const lexer = new Lexer(str, options);
   return structuredClone(lexer.getTokens());
 }
 
@@ -51,12 +51,12 @@ const whitespaceRe = /[ \n\t]/;
  * @returns {{end: number, src: string}}
  */
 function parseUntil(str, end, start) {
-  var depth = 1;
-  var i = start;
-  var quote = null;
+  let depth = 1;
+  let i = start;
+  let quote = null;
 
   for (; i < str.length; i++) {
-    var c = str[i];
+    let c = str[i];
 
     if (quote) {
       if (c === '\\') {
@@ -74,7 +74,7 @@ function parseUntil(str, end, start) {
       continue;
     }
 
-    var open = {')': '(', '}': '{', ']': '['}[end];
+    let open = {')': '(', '}': '{', ']': '['}[end];
 
     if (c === open) {
       depth++;
@@ -87,7 +87,7 @@ function parseUntil(str, end, start) {
   }
 
   // Reached end of string without finding the closing bracket
-  var err = new Error(
+  let err = new Error(
     'The end of the string reached with no closing bracket ' + end + ' found.'
   );
   err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
@@ -103,12 +103,12 @@ function parseUntil(str, end, start) {
  * @returns {boolean}
  */
 function isNesting(str) {
-  var stack = [];
-  var quote = null;
-  var pairs = {'(': ')', '{': '}', '[': ']'};
+  let stack = [];
+  let quote = null;
+  let pairs = {'(': ')', '{': '}', '[': ']'};
 
-  for (var i = 0; i < str.length; i++) {
-    var c = str[i];
+  for (let i = 0; i < str.length; i++) {
+    let c = str[i];
 
     if (quote) {
       if (c === '\\') {
@@ -169,7 +169,7 @@ class Lexer {
   }
 
   error(code, message) {
-    var err = error(code, message, {
+    let err = error(code, message, {
       line: this.lineno,
       column: this.colno,
       filename: this.filename,
@@ -201,7 +201,7 @@ class Lexer {
    */
 
   tok(type, val) {
-    var res = {
+    let res = {
       type: type,
       loc: {
         start: {
@@ -277,28 +277,28 @@ class Lexer {
    */
 
   scan(regexp, type) {
-    var captures;
+    let captures;
     if ((captures = regexp.exec(this.input))) {
-      var len = captures[0].length;
-      var val = captures[1];
-      var diff = len - (val ? val.length : 0);
-      var tok = this.tok(type, val);
+      let len =captures[0].length;
+      let val = captures[1];
+      let diff = len - (val ? val.length : 0);
+      let tok =this.tok(type, val);
       this.consume(len);
       this.incrementColumn(diff);
       return tok;
     }
   }
   scanEndOfLine(regexp, type) {
-    var captures;
+    let captures;
     if ((captures = regexp.exec(this.input))) {
-      var whitespaceLength = 0;
-      var whitespace;
-      var tok;
+      let whitespaceLength = 0;
+      let whitespace;
+      let tok;
       if ((whitespace = /^([ ]+)([^ ]*)/.exec(captures[0]))) {
         whitespaceLength = whitespace[1].length;
         this.incrementColumn(whitespaceLength);
       }
-      var newInput = this.input.substr(captures[0].length);
+      let newInput =this.input.substr(captures[0].length);
       if (newInput[0] === ':') {
         this.input = newInput;
         tok = this.tok(type, captures[1]);
@@ -326,22 +326,22 @@ class Lexer {
 
   bracketExpression(skip) {
     skip = skip || 0;
-    var start = this.input[skip];
+    let start = this.input[skip];
     if (start !== '(' && start !== '{' && start !== '[') {
       throw new Error('The start character should be "(", "{" or "["');
     }
-    var end = {'(': ')', '{': '}', '[': ']'}[start];
-    var range;
+    let end = {'(': ')', '{': '}', '[': ']'}[start];
+    let range;
     try {
       range = parseUntil(this.input, end, skip + 1);
     } catch (ex) {
       if (ex.index !== undefined) {
-        var idx = ex.index;
+        let idx = ex.index;
         // starting from this.input[skip]
-        var tmp = this.input.substr(skip).indexOf('\n');
+        let tmp = this.input.substr(skip).indexOf('\n');
         // starting from this.input[0]
-        var nextNewline = tmp + skip;
-        var ptr = 0;
+        let nextNewline = tmp + skip;
+        let ptr = 0;
         while (idx > nextNewline && tmp !== -1) {
           this.incrementLine(1);
           idx -= nextNewline + 1;
@@ -367,7 +367,7 @@ class Lexer {
   }
 
   scanIndentation() {
-    var captures, re;
+    let captures, re;
 
     // established regexp
     if (this.indentRe) {
@@ -403,7 +403,7 @@ class Lexer {
         'End of line was reached with no closing bracket for interpolation.'
       );
     }
-    for (var i = 0; this.indentStack[i]; i++) {
+    for (let i = 0; this.indentStack[i]; i++) {
       this.tokens.push(this.tokEnd(this.tok('outdent')));
     }
     this.tokens.push(this.tokEnd(this.tok('eos')));
@@ -416,7 +416,7 @@ class Lexer {
    */
 
   blank() {
-    var captures;
+    let captures;
     if ((captures = /^\n[ \t]*\n/.exec(this.input))) {
       this.consume(captures[0].length - 1);
       this.incrementLine(1);
@@ -429,10 +429,10 @@ class Lexer {
    */
 
   comment() {
-    var captures;
+    let captures;
     if ((captures = /^\/\/(-)?([^\n]*)/.exec(this.input))) {
       this.consume(captures[0].length);
-      var tok = this.tok('comment', captures[2]);
+      let tok =this.tok('comment', captures[2]);
       tok.buffer = '-' != captures[1];
       this.interpolationAllowed = tok.buffer;
       this.tokens.push(tok);
@@ -448,10 +448,10 @@ class Lexer {
    */
 
   tag() {
-    var captures;
+    let captures;
 
     if ((captures = /^(\w(?:[-:\w]*\w)?)/.exec(this.input))) {
-      var tok,
+      let tok,
         name = captures[1],
         len = captures[0].length;
       this.consume(len);
@@ -468,11 +468,11 @@ class Lexer {
    */
 
   filter(opts) {
-    let tok = this.scan(/^:([\w\-]+)/, 'filter') ||
+    let tok =this.scan(/^:([\w\-]+)/, 'filter') ||
         this.scan(/^:'(.+)'/, 'filter') ||
         this.scan(/^:"(.+)"/, 'filter');
 
-    var inInclude = opts && opts.inInclude;
+    let inInclude = opts && opts.inInclude;
     if (tok) {
       this.tokens.push(tok);
       this.incrementColumn(tok.val.length);
@@ -491,7 +491,7 @@ class Lexer {
    */
 
   id() {
-    var tok = this.scan(/^#([\w-]+)/, 'id');
+    let tok =this.scan(/^#([\w-]+)/, 'id');
     if (tok) {
       this.tokens.push(tok);
       this.incrementColumn(tok.val.length);
@@ -513,7 +513,7 @@ class Lexer {
    */
 
   className() {
-    var tok = this.scan(/^\.([_a-z0-9\-]*[_a-z][_a-z0-9\-]*)/i, 'class');
+    let tok =this.scan(/^\.([_a-z0-9\-]*[_a-z][_a-z0-9\-]*)/i, 'class');
     if (tok) {
       this.tokens.push(tok);
       this.incrementColumn(tok.val.length);
@@ -547,13 +547,13 @@ class Lexer {
     }
   }
   addText(type, value, prefix, escaped) {
-    var tok;
+    let tok;
     if (value + prefix === '') return;
     prefix = prefix || '';
     escaped = escaped || 0;
-    var indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
-    var indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
-    var indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
+    let indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
+    let indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
+    let indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
     let matchOfVarRef = this.interpolationAllowed? /(\\)?#{(\w+)}/.exec(value) : null;
     let indexOfVarRef = matchOfVarRef? matchOfVarRef.index : Infinity;
 
@@ -587,13 +587,13 @@ class Lexer {
       tok = this.tok('start-interpolation');
       this.incrementColumn(2);
       this.tokens.push(this.tokEnd(tok));
-      var child = new this.constructor(value.substr(indexOfStart + 2), {
+      let child = new this.constructor(value.substr(indexOfStart + 2), {
         filename: this.filename,
         interpolated: true,
         startingLine: this.lineno,
         startingColumn: this.colno,
       });
-      var interpolated;
+      let interpolated;
       try {
         interpolated = child.getTokens();
       } catch (ex) {
@@ -666,8 +666,7 @@ class Lexer {
   }
 
   text() {
-    var tok =
-      this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
+    let tok =this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
       this.scan(/^( )/, 'text') ||
       this.scan(/^\|( ?)/, 'text');
     if (tok) {
@@ -677,7 +676,7 @@ class Lexer {
   }
 
   textHtml() {
-    var tok = this.scan(/^(<[^\n]*)/, 'text-html');
+    let tok =this.scan(/^(<[^\n]*)/, 'text-html');
     if (tok) {
       this.addText('text-html', tok.val);
       return true;
@@ -689,7 +688,7 @@ class Lexer {
    */
 
   dot() {
-    var tok;
+    let tok;
     if ((tok = this.scanEndOfLine(/^\./, 'dot'))) {
       this.tokens.push(this.tokEnd(tok));
       this.pipelessText();
@@ -702,7 +701,7 @@ class Lexer {
    */
 
   ['extends']() {
-    var tok = this.scan(/^extends?(?= |$|\n)/, 'extends');
+    let tok =this.scan(/^extends?(?= |$|\n)/, 'extends');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       if (!this.path()) {
@@ -720,10 +719,10 @@ class Lexer {
    */
 
   prepend() {
-    var captures;
+    let captures;
     if ((captures = /^(?:block +)?prepend +([^\n]+)/.exec(this.input))) {
-      var name = captures[1].trim();
-      var comment = '';
+      let name =captures[1].trim();
+      let comment = '';
       if (name.indexOf('//') !== -1) {
         comment =
           '//' +
@@ -734,8 +733,8 @@ class Lexer {
         name = name.split('//')[0].trim();
       }
       if (!name) return;
-      var tok = this.tok('block', name);
-      var len = captures[0].length - comment.length;
+      let tok =this.tok('block', name);
+      let len =captures[0].length - comment.length;
       while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'prepend';
@@ -751,10 +750,10 @@ class Lexer {
    */
 
   append() {
-    var captures;
+    let captures;
     if ((captures = /^(?:block +)?append +([^\n]+)/.exec(this.input))) {
-      var name = captures[1].trim();
-      var comment = '';
+      let name =captures[1].trim();
+      let comment = '';
       if (name.indexOf('//') !== -1) {
         comment =
           '//' +
@@ -765,8 +764,8 @@ class Lexer {
         name = name.split('//')[0].trim();
       }
       if (!name) return;
-      var tok = this.tok('block', name);
-      var len = captures[0].length - comment.length;
+      let tok =this.tok('block', name);
+      let len =captures[0].length - comment.length;
       while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'append';
@@ -782,10 +781,10 @@ class Lexer {
    */
 
   block() {
-    var captures;
+    let captures;
     if ((captures = /^block +([^\n]+)/.exec(this.input))) {
-      var name = captures[1].trim();
-      var comment = '';
+      let name =captures[1].trim();
+      let comment = '';
       if (name.indexOf('//') !== -1) {
         comment =
           '//' +
@@ -796,8 +795,8 @@ class Lexer {
         name = name.split('//')[0].trim();
       }
       if (!name) return;
-      var tok = this.tok('block', name);
-      var len = captures[0].length - comment.length;
+      let tok =this.tok('block', name);
+      let len =captures[0].length - comment.length;
       while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
       tok.mode = 'replace';
@@ -813,7 +812,7 @@ class Lexer {
    */
 
   mixinBlock() {
-    var tok;
+    let tok;
     if ((tok = this.scanEndOfLine(/^block/, 'mixin-block'))) {
       this.tokens.push(this.tokEnd(tok));
       return true;
@@ -825,7 +824,7 @@ class Lexer {
    */
 
   yield() {
-    var tok = this.scanEndOfLine(/^yield/, 'yield');
+    let tok =this.scanEndOfLine(/^yield/, 'yield');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       return true;
@@ -837,7 +836,7 @@ class Lexer {
    */
 
   include() {
-    var tok = this.scan(/^include(?=:| |$|\n)/, 'include');
+    let tok =this.scan(/^include(?=:| |$|\n)/, 'include');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       while (this.filter({inInclude: true}));
@@ -862,7 +861,7 @@ class Lexer {
    */
 
   path() {
-    var tok = this.scanEndOfLine(/^ ([^\n]+)/, 'path');
+    let tok =this.scanEndOfLine(/^ ([^\n]+)/, 'path');
     if (tok && (tok.val = tok.val.trim())) {
       this.tokens.push(this.tokEnd(tok));
       return true;
@@ -872,7 +871,7 @@ class Lexer {
   variable() {
     let captures;
     if (captures = /^\s*#{(\w+)}/.exec(this.input)) {
-      var tok = this.tok('variable', captures[1]);
+      let tok =this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
       this.consume(captures[0].length);
@@ -886,7 +885,7 @@ class Lexer {
    */
 
   call() {
-    var tok, captures, increment;
+    let tok, captures, increment;
     if ((captures = /^\+\s*([a-zA-Z][-\w]*)/.exec(this.input))) {
       // found mixin call syntax: +name
       increment = captures[0].length;
@@ -924,10 +923,10 @@ class Lexer {
    */
 
   mixin() {
-    var captures;
+    let captures;
     if ((captures = /^mixin +([-\w]+)(?: *\((.*)\))? */.exec(this.input))) {
       this.consume(captures[0].length);
-      var tok = this.tok('mixin', captures[1]);
+      let tok =this.tok('mixin', captures[1]);
       tok.args = (captures[2] || '').split(/ +/).filter(Boolean);
       this.incrementColumn(captures[0].length);
       this.tokens.push(this.tokEnd(tok));
@@ -951,10 +950,10 @@ class Lexer {
    * Attribute name and value.
    */
   attribute(str) {
-    var quote = '';
-    var quoteRe = /['"]/;
-    var key = '', value = '';
-    var i;
+    let quote = '';
+    let quoteRe = /['"]/;
+    let key = '', value = '';
+    let i;
 
     // consume all whitespace before the key
     i = this.skipWhitespace(str, 0);
@@ -963,7 +962,7 @@ class Lexer {
       return '';
     }
 
-    var tok = this.tok('attribute');
+    let tok =this.tok('attribute');
 
     // quote?
     if (quoteRe.test(str[i])) {
@@ -1094,12 +1093,12 @@ class Lexer {
    */
 
   attrs() {
-    var tok;
+    let tok;
 
     if ('(' == this.input.charAt(0)) {
       tok = this.tok('start-attributes');
-      var index = this.bracketExpression().end;
-      var str = this.input.substr(1, index - 1);
+      let index = this.bracketExpression().end;
+      let str = this.input.substr(1, index - 1);
 
       this.incrementColumn(1);
       this.tokens.push(this.tokEnd(tok));
@@ -1122,11 +1121,11 @@ class Lexer {
    */
 
   indent() {
-    var captures = this.scanIndentation();
-    var tok;
+    let captures = this.scanIndentation();
+    let tok;
 
     if (captures) {
-      var indents = captures[1].length;
+      let indents = captures[1].length;
 
       this.incrementLine(1);
       this.consume(indents + 1);
@@ -1146,7 +1145,7 @@ class Lexer {
 
       // outdent
       if (indents < this.indentStack[0]) {
-        var outdent_count = 0;
+        let outdent_count = 0;
         while (this.indentStack[0] > indents) {
           if (this.indentStack[1] < indents) {
             this.error(
@@ -1188,24 +1187,24 @@ class Lexer {
   pipelessText(indents) {
     while (this.blank());
 
-    var captures = this.scanIndentation();
+    let captures = this.scanIndentation();
 
     indents = indents || (captures && captures[1].length);
     if (indents > this.indentStack[0]) {
       this.tokens.push(this.tokEnd(this.tok('start-pipeless-text')));
-      var tokens = [];
-      var token_indent = [];
-      var isMatch;
+      let tokens = [];
+      let token_indent = [];
+      let isMatch;
       // Index in this.input. Can't use this.consume because we might need to
       // retry lexing the block.
-      var stringPtr = 0;
+      let stringPtr = 0;
       do {
         // text has `\n` as a prefix
-        var i = this.input.substr(stringPtr + 1).indexOf('\n');
+        let i = this.input.substr(stringPtr + 1).indexOf('\n');
         if (-1 == i) i = this.input.length - stringPtr - 1;
-        var str = this.input.substr(stringPtr + 1, i);
-        var lineCaptures = this.indentRe.exec('\n' + str);
-        var lineIndents = lineCaptures && lineCaptures[1].length;
+        let str = this.input.substr(stringPtr + 1, i);
+        let lineCaptures = this.indentRe.exec('\n' + str);
+        let lineIndents = lineCaptures && lineCaptures[1].length;
         isMatch = lineIndents >= indents;
         token_indent.push(isMatch);
         isMatch = isMatch || !str.trim();
@@ -1225,7 +1224,7 @@ class Lexer {
         tokens.pop();
       tokens.forEach(
         function(token, i) {
-          var tok;
+          let tok;
           this.incrementLine(1);
           if (i !== 0) tok = this.tok('newline');
           if (token_indent[i]) this.incrementColumn(indents);
@@ -1243,7 +1242,7 @@ class Lexer {
    */
 
   colon() {
-    var tok = this.scan(/^: +/, ':');
+    let tok =this.scan(/^: +/, ':');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       return true;

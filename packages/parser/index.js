@@ -539,7 +539,7 @@ Parser.prototype = {
     var tok = this.expect('mixin-block');
     if (!this.inMixin) {
       this.error(
-        'BLOCK_OUTISDE_MIXIN',
+        'BLOCK_OUTSIDE_MIXIN',
         'Anonymous blocks are not allowed unless they are part of a mixin.',
         tok
       );

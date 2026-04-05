@@ -12,15 +12,15 @@ function applyFilters(ast, filters, options) {
     function(node) {
       if (node.type === 'Filter') {
         handleNestedFilters(node, filters, options);
-        var text = getBodyAsText(node);
-        var attrs = getAttributes(node, options);
+        const text = getBodyAsText(node);
+        const attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
         node.val = filterText(node.name, text, attrs, filters);
       } else if (node.type === 'RawInclude' && node.filters.length) {
-        var firstFilter = node.filters.pop();
-        var attrs = getAttributes(firstFilter, options);
-        var filename = (attrs.filename = node.file.fullPath);
+        const firstFilter = node.filters.pop();
+        const attrs = getAttributes(firstFilter, options);
+        const filename = (attrs.filename = node.file.fullPath);
         node.type = 'Text';
         node.val = filterFile(
           firstFilter.name,
@@ -32,9 +32,9 @@ function applyFilters(ast, filters, options) {
           .slice()
           .reverse()
           .forEach(function(filter) {
-            var attrs = getAttributes(filter, options);
-            attrs.filename = filename;
-            node.val = filterText(filter.name, node.val, attrs);
+            const filterAttrs = getAttributes(filter, options);
+            filterAttrs.filename = filename;
+            node.val = filterText(filter.name, node.val, filterAttrs);
           });
         node.filters = undefined;
         node.file = undefined;
@@ -71,12 +71,12 @@ function getBodyAsText(node) {
 }
 
 function getAttributes(node, options) {
-  var attrs = {};
+  const attrs = {};
   node.attrs.forEach(function(attr) {
       attrs[attr.name] =
         attr.val === true ? true : attr.val;
   });
-  var opts = options[node.name] || {};
+  const opts = options[node.name] || {};
   Object.assign(attrs, opts);
   return attrs;
 }

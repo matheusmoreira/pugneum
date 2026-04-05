@@ -1,23 +1,23 @@
 module.exports = makeError;
 
 function makeError(code, message, options) {
-  var line = options.line;
-  var column = options.column;
-  var filename = options.filename;
-  var src = options.source;
-  var fullMessage;
-  var location = line + (column ? ':' + column : '');
+  const line = options.line;
+  const column = options.column;
+  const filename = options.filename;
+  const src = options.source;
+  let fullMessage;
+  const location = line + (column ? ':' + column : '');
   if (src && line >= 1 && line <= src.split('\n').length) {
-    var lines = src.split('\n');
-    var start = Math.max(line - 3, 0);
-    var end = Math.min(lines.length, line + 3);
+    const lines = src.split('\n');
+    const start = Math.max(line - 3, 0);
+    const end = Math.min(lines.length, line + 3);
     // Error context
-    var context = lines
+    const context = lines
       .slice(start, end)
       .map(function(text, i) {
-        var curr = i + start + 1;
-        var preamble = (curr == line ? '  > ' : '    ') + curr + '| ';
-        var out = preamble + text;
+        const curr = i + start + 1;
+        const preamble = (curr == line ? '  > ' : '    ') + curr + '| ';
+        let out = preamble + text;
         if (curr === line && column > 0) {
           out += '\n';
           out += Array(preamble.length + column).join('-') + '^';
@@ -30,7 +30,7 @@ function makeError(code, message, options) {
   } else {
     fullMessage = (filename? filename + ':' : '') + location + '\n\n' + message;
   }
-  var err = new Error(fullMessage);
+  const err = new Error(fullMessage);
   err.code = 'PUGNEUM:' + code;
   err.msg = message;
   err.line = line;

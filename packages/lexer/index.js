@@ -1,5 +1,4 @@
 var assert = require('assert');
-var characterParser = require('character-parser');
 var error = require('pugneum-error');
 
 module.exports = lex;
@@ -41,6 +40,104 @@ const attributeNamePunctuation = ' \'">/=';
 const attributeName = new RegExp('[^' + control + attributeNamePunctuation + noncharacter + ']', 'g');
 
 const whitespaceRe = /[ \n\t]/;
+
+/**
+ * Find the index of the closing bracket that matches the opening bracket
+ * at position `start` in `str`. Respects quoted strings (single and double)
+ * and escaped characters. Returns an object with an `end` property.
+ *
+ * @param {string} str - The string to search
+ * @param {string} end - The closing bracket character to find
+ * @param {number} start - The index to start searching from (after the opening bracket)
+ * @returns {{end: number, src: string}}
+ */
+function parseUntil(str, end, start) {
+  var depth = 1;
+  var i = start;
+  var quote = null;
+
+  for (; i < str.length; i++) {
+    var c = str[i];
+
+    if (quote) {
+      if (c === '\\') {
+        i++; // skip escaped character
+        continue;
+      }
+      if (c === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (c === '\'' || c === '"' || c === '`') {
+      quote = c;
+      continue;
+    }
+
+    var open = {')': '(', '}': '{', ']': '['}[end];
+
+    if (c === open) {
+      depth++;
+    } else if (c === end) {
+      depth--;
+      if (depth === 0) {
+        return {end: i, src: str.substring(start, i)};
+      }
+    }
+  }
+
+  // Reached end of string without finding the closing bracket
+  var err = new Error(
+    'The end of the string reached with no closing bracket ' + end + ' found.'
+  );
+  err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
+  err.index = i;
+  throw err;
+}
+
+/**
+ * Check if brackets are properly nested in the given expression string.
+ * Returns true if nesting is incorrect (unbalanced brackets).
+ *
+ * @param {string} str - The expression to check
+ * @returns {boolean}
+ */
+function isNesting(str) {
+  var stack = [];
+  var quote = null;
+  var pairs = {'(': ')', '{': '}', '[': ']'};
+
+  for (var i = 0; i < str.length; i++) {
+    var c = str[i];
+
+    if (quote) {
+      if (c === '\\') {
+        i++;
+        continue;
+      }
+      if (c === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (c === '\'' || c === '"' || c === '`') {
+      quote = c;
+      continue;
+    }
+
+    if (pairs[c]) {
+      stack.push(pairs[c]);
+    } else if (c === ')' || c === '}' || c === ']') {
+      if (stack.length === 0 || stack.pop() !== c) {
+        return true; // mismatched
+      }
+    }
+  }
+
+  return stack.length !== 0 || quote !== null;
+}
 
 /**
  * Initialize `Lexer` with the given `str`.
@@ -102,10 +199,7 @@ Lexer.prototype = {
   },
 
   assertNestingCorrect: function(exp) {
-    //this verifies that code is properly nested, but allows
-    //invalid JavaScript such as the contents of `attributes`
-    var res = characterParser.default(exp);
-    if (res.isNesting()) {
+    if (isNesting(exp)) {
       this.error(
         'INCORRECT_NESTING',
         'Nesting must match on expression `' + exp + '`'
@@ -256,7 +350,7 @@ Lexer.prototype = {
     var end = {'(': ')', '{': '}', '[': ']'}[start];
     var range;
     try {
-      range = characterParser.parseUntil(this.input, end, {start: skip + 1});
+      range = parseUntil(this.input, end, skip + 1);
     } catch (ex) {
       if (ex.index !== undefined) {
         var idx = ex.index;

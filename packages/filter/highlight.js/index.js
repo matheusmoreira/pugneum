@@ -1,6 +1,6 @@
 // https://github.com/highlightjs/highlight.js/blob/main/src/highlight.js
 
-hljs = require('highlight.js');
+const hljs = require('highlight.js');
 
 exports.filter = function pugneum_filter_highlightjs(text, attributes) {
   const { language, languageSubset, ignoreIllegals } = attributes;

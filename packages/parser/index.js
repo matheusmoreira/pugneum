@@ -1,6 +1,6 @@
 'use strict';
 
-var error = require('pugneum-error');
+const error = require('pugneum-error');
 
 class TokenStream {
   constructor(tokens) {
@@ -16,7 +16,7 @@ class TokenStream {
   }
   advance() {
     if (this.deferred) {
-      var tok = this.deferred;
+      let tok = this.deferred;
       this.deferred = null;
       return tok;
     }
@@ -33,14 +33,14 @@ class TokenStream {
 module.exports = parse;
 
 function parse(tokens, options) {
-  var parser = new Parser(tokens, options);
-  var ast = parser.parse();
+  let parser = new Parser(tokens, options);
+  let ast = parser.parse();
   return structuredClone(ast);
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
-var inlineTags = [
+const inlineTags = [
   'a', 'abbr', 'acronym', 'address', 'audio',
   'b', 'bdi', 'bdo', 'br',
   'cite', 'code',
@@ -54,7 +54,7 @@ var inlineTags = [
   's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
   'time',
   'u',
-  'var', 'video',
+  'let', 'video',
   'wbr',
 ];
 
@@ -78,7 +78,7 @@ class Parser {
   }
 
   error(code, message, token) {
-    var err = error(code, message, {
+    let err = error(code, message, {
       line: token.loc.start.line,
       column: token.loc.start.column,
       filename: this.filename,
@@ -117,7 +117,7 @@ class Parser {
    */
 
   parse() {
-    var block = this.emptyBlock(0);
+    let block = this.emptyBlock(0);
 
     while ('eos' != this.peek().type) {
       if ('newline' == this.peek().type) {
@@ -125,7 +125,7 @@ class Parser {
       } else if ('text-html' == this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
-        var expr = this.parseExpr();
+        let expr = this.parseExpr();
         if (expr) {
           if (expr.type === 'Block') {
             block.nodes = block.nodes.concat(expr.nodes);
@@ -265,13 +265,13 @@ class Parser {
    */
 
   parseText(options) {
-    var tags = [];
-    var lineno = this.peek().loc.start.line;
-    var nextTok = this.peek();
+    let tags = [];
+    let lineno = this.peek().loc.start.line;
+    let nextTok = this.peek();
     loop: while (true) {
       switch (nextTok.type) {
-        case 'text':
-          var tok = this.advance();
+        case 'text': {
+          const tok = this.advance();
           tags.push({
             type: 'Text',
             val: tok.val,
@@ -280,10 +280,11 @@ class Parser {
             filename: this.filename,
           });
           break;
-        case 'newline':
+        }
+        case 'newline': {
           if (!options || !options.block) break loop;
-          var tok = this.advance();
-          var nextType = this.peek().type;
+          const tok = this.advance();
+          const nextType = this.peek().type;
           if (nextType === 'text') {
             tags.push({
               type: 'Text',
@@ -294,6 +295,7 @@ class Parser {
             });
           }
           break;
+        }
         case 'start-interpolation':
           this.advance();
           tags.push(this.parseExpr());
@@ -309,12 +311,12 @@ class Parser {
   }
 
   parseTextHtml() {
-    var nodes = [];
-    var currentNode = null;
+    let nodes = [];
+    let currentNode = null;
     loop: while (true) {
       switch (this.peek().type) {
         case 'text-html':
-          var text = this.advance();
+          let text = this.advance();
           if (!currentNode) {
             currentNode = {
               type: 'Text',
@@ -330,7 +332,7 @@ class Parser {
           }
           break;
         case 'indent':
-          var block = this.block();
+          let block = this.block();
           block.nodes.forEach(function(node) {
             if (node.isHtml) {
               if (!currentNode) {
@@ -361,9 +363,9 @@ class Parser {
    */
 
   parseBlockExpansion() {
-    var tok = this.accept(':');
+    let tok = this.accept(':');
     if (tok) {
-      var expr = this.parseExpr();
+      let expr = this.parseExpr();
       return expr.type === 'Block'
         ? expr
         : this.initBlock(tok.loc.start.line, [expr]);
@@ -377,8 +379,8 @@ class Parser {
    */
 
   parseComment() {
-    var tok = this.expect('comment');
-    var block;
+    let tok = this.expect('comment');
+    let block;
     if ((block = this.parseTextBlock())) {
       return {
         type: 'BlockComment',
@@ -402,8 +404,8 @@ class Parser {
   }
 
   parseIncludeFilter() {
-    var tok = this.expect('filter');
-    var attrs = [];
+    let tok = this.expect('filter');
+    let attrs = [];
 
     if (this.peek().type === 'start-attributes') {
       attrs = this.attrs();
@@ -424,8 +426,8 @@ class Parser {
    */
 
   parseFilter() {
-    var tok = this.expect('filter');
-    var block,
+    let tok = this.expect('filter');
+    let block,
       attrs = [];
 
     if (this.peek().type === 'start-attributes') {
@@ -433,7 +435,7 @@ class Parser {
     }
 
     if (this.peek().type === 'text') {
-      var textToken = this.advance();
+      let textToken = this.advance();
       block = this.initBlock(textToken.loc.start.line, [
         {
           type: 'Text',
@@ -465,8 +467,8 @@ class Parser {
    */
 
   parseExtends() {
-    var tok = this.expect('extends');
-    var path = this.expect('path');
+    let tok = this.expect('extends');
+    let path = this.expect('path');
     return {
       type: 'Extends',
       file: {
@@ -487,9 +489,9 @@ class Parser {
    */
 
   parseBlock() {
-    var tok = this.expect('block');
+    let tok = this.expect('block');
 
-    var node =
+    let node =
       'indent' == this.peek().type
         ? this.block()
         : this.emptyBlock(tok.loc.start.line);
@@ -503,7 +505,7 @@ class Parser {
   }
 
   parseMixinBlock() {
-    var tok = this.expect('mixin-block');
+    let tok = this.expect('mixin-block');
     if (!this.inMixin) {
       this.error(
         'BLOCK_OUTSIDE_MIXIN',
@@ -520,7 +522,7 @@ class Parser {
   }
 
   parseVariable() {
-    var tok = this.expect('variable');
+    let tok = this.expect('variable');
     if (!this.inMixin) {
       this.error(
         'VARIABLE_OUTSIDE_MIXIN',
@@ -538,7 +540,7 @@ class Parser {
   }
 
   parseYield() {
-    var tok = this.expect('yield');
+    let tok = this.expect('yield');
     return {
       type: 'YieldBlock',
       line: tok.loc.start.line,
@@ -552,8 +554,8 @@ class Parser {
    */
 
   parseInclude() {
-    var tok = this.expect('include');
-    var node = {
+    let tok = this.expect('include');
+    let node = {
       type: 'Include',
       file: {
         type: 'FileReference',
@@ -563,11 +565,11 @@ class Parser {
       column: tok.loc.start.column,
       filename: this.filename,
     };
-    var filters = [];
+    let filters = [];
     while (this.peek().type === 'filter') {
       filters.push(this.parseIncludeFilter());
     }
-    var path = this.expect('path');
+    let path = this.expect('path');
 
     node.file.path = path.val.trim();
     node.file.line = path.loc.start.line;
@@ -597,10 +599,10 @@ class Parser {
    */
 
   parseCall() {
-    var tok = this.expect('call');
-    var name = tok.val;
-    var args = tok.args;
-    var mixin = {
+    let tok = this.expect('call');
+    let name = tok.val;
+    let args = tok.args;
+    let mixin = {
       type: 'Mixin',
       name: name,
       args: args,
@@ -627,13 +629,13 @@ class Parser {
    */
 
   parseMixin() {
-    var tok = this.expect('mixin');
-    var name = tok.val;
-    var args = tok.args;
+    let tok = this.expect('mixin');
+    let name = tok.val;
+    let args = tok.args;
 
     if ('indent' == this.peek().type) {
       this.inMixin++;
-      var mixin = {
+      let mixin = {
         type: 'Mixin',
         name: name,
         args: args,
@@ -659,11 +661,11 @@ class Parser {
    */
 
   parseTextBlock() {
-    var tok = this.accept('start-pipeless-text');
+    let tok = this.accept('start-pipeless-text');
     if (!tok) return;
-    var block = this.emptyBlock(tok.loc.start.line);
+    let block = this.emptyBlock(tok.loc.start.line);
     while (this.peek().type !== 'end-pipeless-text') {
-      var tok = this.advance();
+      let tok = this.advance();
       switch (tok.type) {
         case 'text':
           block.nodes.push({
@@ -704,15 +706,15 @@ class Parser {
    */
 
   block() {
-    var tok = this.expect('indent');
-    var block = this.emptyBlock(tok.loc.start.line);
+    let tok = this.expect('indent');
+    let block = this.emptyBlock(tok.loc.start.line);
     while ('outdent' != this.peek().type) {
       if ('newline' == this.peek().type) {
         this.advance();
       } else if ('text-html' == this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
-        var expr = this.parseExpr();
+        let expr = this.parseExpr();
         if (expr.type === 'Block') {
           block.nodes = block.nodes.concat(expr.nodes);
         } else {
@@ -729,8 +731,8 @@ class Parser {
    */
 
   parseInterpolation() {
-    var tok = this.advance();
-    var tag = {
+    let tok = this.advance();
+    let tag = {
       type: 'InterpolatedTag',
       expr: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
@@ -750,8 +752,8 @@ class Parser {
    */
 
   parseTag() {
-    var tok = this.advance();
-    var tag = {
+    let tok = this.advance();
+    let tag = {
       type: 'Tag',
       name: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
@@ -771,14 +773,14 @@ class Parser {
    */
 
   tag(tag, options) {
-    var seenAttrs = false;
-    var attributeNames = [];
+    let seenAttrs = false;
+    let attributeNames = [];
     // (attrs | class | id)*
     out: while (true) {
       switch (this.peek().type) {
         case 'id':
         case 'class':
-          var tok = this.advance();
+          let tok = this.advance();
           if (tok.type === 'id') {
             if (attributeNames.indexOf('id') !== -1) {
               this.error(
@@ -824,7 +826,7 @@ class Parser {
     // (text | ':')?
     switch (this.peek().type) {
       case 'text':
-        var text = this.parseText();
+        let text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);
         } else {
@@ -833,7 +835,7 @@ class Parser {
         break;
       case ':':
         this.advance();
-        var expr = this.parseExpr();
+        let expr = this.parseExpr();
         tag.block =
           expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
         break;
@@ -865,8 +867,8 @@ class Parser {
     if (tag.textOnly) {
       tag.block = this.parseTextBlock() || this.emptyBlock(tag.line);
     } else if ('indent' == this.peek().type) {
-      var block = this.block();
-      for (var i = 0, len = block.nodes.length; i < len; ++i) {
+      let block = this.block();
+      for (let i = 0, len = block.nodes.length; i < len; ++i) {
         tag.block.nodes.push(block.nodes[i]);
       }
     }
@@ -877,8 +879,8 @@ class Parser {
   attrs(attributeNames) {
     this.expect('start-attributes');
 
-    var attrs = [];
-    var tok = this.advance();
+    let attrs = [];
+    let tok = this.advance();
     while (tok.type === 'attribute') {
       if (tok.name !== 'class' && attributeNames) {
         if (attributeNames.indexOf(tok.name) !== -1) {

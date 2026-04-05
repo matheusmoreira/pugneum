@@ -1,6 +1,5 @@
 'use strict';
 
-var assert = require('assert');
 var error = require('pugneum-error');
 
 class TokenStream {
@@ -24,7 +23,9 @@ class TokenStream {
     return this.tokens[this.index++];
   }
   defer(token) {
-    assert(!this.deferred, 'Cannot defer more than one token');
+    if (this.deferred) {
+      throw new Error('Cannot defer more than one token');
+    }
     this.deferred = token;
   }
 }

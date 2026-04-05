@@ -8,7 +8,7 @@ module.exports = load;
 function load(ast, options) {
   options = getOptions(options);
   // clone the ast
-  ast = JSON.parse(JSON.stringify(ast));
+  ast = structuredClone(ast);
   return walk(ast, function(node) {
     if (node.str === undefined) {
       if (

@@ -35,7 +35,7 @@ module.exports = parse;
 function parse(tokens, options) {
   var parser = new Parser(tokens, options);
   var ast = parser.parse();
-  return JSON.parse(JSON.stringify(ast));
+  return structuredClone(ast);
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics

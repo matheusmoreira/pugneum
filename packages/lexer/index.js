@@ -4,7 +4,7 @@ module.exports = lex;
 
 function lex(str, options) {
   var lexer = new Lexer(str, options);
-  return JSON.parse(JSON.stringify(lexer.getTokens()));
+  return structuredClone(lexer.getTokens());
 }
 
 // https://infra.spec.whatwg.org/#c0-control

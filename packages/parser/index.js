@@ -7,26 +7,25 @@ class TokenStream {
   constructor(tokens) {
     this.tokens = tokens;
     this.index = 0;
-    this.deferred = [];
+    this.deferred = null;
   }
   peek() {
-    if (this.deferred.length) {
-      return this.deferred[0];
+    if (this.deferred) {
+      return this.deferred;
     }
     return this.tokens[this.index];
   }
   advance() {
-    if (this.deferred.length) {
-      return this.deferred.shift();
+    if (this.deferred) {
+      var tok = this.deferred;
+      this.deferred = null;
+      return tok;
     }
     return this.tokens[this.index++];
   }
-  lookahead(n) {
-    var index = this.index + n - this.deferred.length;
-    return this.tokens[index];
-  }
   defer(token) {
-    this.deferred.push(token);
+    assert(!this.deferred, 'Cannot defer more than one token');
+    this.deferred = token;
   }
 }
 
@@ -127,18 +126,6 @@ Parser.prototype = {
 
   peek: function() {
     return this.tokens.peek();
-  },
-
-  /**
-   * `n` token lookahead.
-   *
-   * @param {Number} n
-   * @return {Object}
-   * @api private
-   */
-
-  lookahead: function(n) {
-    return this.tokens.lookahead(n);
   },
 
   /**

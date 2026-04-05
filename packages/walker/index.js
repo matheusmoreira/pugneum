@@ -57,7 +57,6 @@ function walkAST(ast, before, after, options) {
       ast.filters = walkAndMergeNodes(ast.filters);
       walkAST(ast.file, before, after, options);
       break;
-    case 'Attrs':
     case 'BlockComment':
     case 'Comment':
     case 'IncludeFilter':

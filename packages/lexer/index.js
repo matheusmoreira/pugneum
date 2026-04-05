@@ -1,4 +1,3 @@
-var assert = require('assert');
 var error = require('pugneum-error');
 
 module.exports = lex;
@@ -342,10 +341,9 @@ Lexer.prototype = {
   bracketExpression: function(skip) {
     skip = skip || 0;
     var start = this.input[skip];
-    assert(
-      start === '(' || start === '{' || start === '[',
-      'The start character should be "(", "{" or "["'
-    );
+    if (start !== '(' && start !== '{' && start !== '[') {
+      throw new Error('The start character should be "(", "{" or "["');
+    }
     var end = {'(': ')', '{': '}', '[': ']'}[start];
     var range;
     try {

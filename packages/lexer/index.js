@@ -885,24 +885,6 @@ Lexer.prototype = {
     }
   },
 
-  /**
-   * Default.
-   */
-
-  default: function() {
-    var tok = this.scanEndOfLine(/^default/, 'default');
-    if (tok) {
-      this.tokens.push(this.tokEnd(tok));
-      return true;
-    }
-    if (this.scan(/^default\b/)) {
-      this.error(
-        'DEFAULT_WITH_EXPRESSION',
-        'default should not have an expression'
-      );
-    }
-  },
-
   variable: function() {
     let captures;
     if (captures = /^\s*#{(\w+)}/.exec(this.input)) {
@@ -1304,7 +1286,6 @@ Lexer.prototype = {
       this.endInterpolation() ||
       this.variable() ||
       this.yield() ||
-      this.default() ||
       this['extends']() ||
       this.append() ||
       this.prepend() ||

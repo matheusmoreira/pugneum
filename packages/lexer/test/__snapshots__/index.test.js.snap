@@ -34,7 +34,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 1,
       },
       "filename": "attrs.pg",
@@ -50,12 +50,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 1,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 17,
+        "column": 18,
         "line": 1,
       },
     },
@@ -64,12 +64,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 1,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 19,
+        "column": 20,
         "line": 1,
       },
     },
@@ -122,7 +122,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 14,
+        "column": 15,
         "line": 2,
       },
       "filename": "attrs.pg",
@@ -138,12 +138,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 14,
+        "column": 15,
         "line": 2,
       },
     },
@@ -152,12 +152,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 2,
       },
     },
@@ -167,12 +167,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 28,
         "line": 2,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 23,
+        "column": 24,
         "line": 2,
       },
     },
@@ -435,7 +435,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
       "filename": "attrs.pg",
@@ -451,12 +451,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 28,
         "line": 5,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 5,
       },
     },
@@ -467,12 +467,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 29,
         "line": 5,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 26,
+        "column": 28,
         "line": 5,
       },
     },
@@ -524,7 +524,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 6,
       },
       "filename": "attrs.pg",
@@ -540,12 +540,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 34,
         "line": 6,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 6,
       },
     },
@@ -556,12 +556,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 36,
         "line": 6,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 33,
+        "column": 35,
         "line": 6,
       },
     },
@@ -643,7 +643,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 21,
         "line": 8,
       },
       "filename": "attrs.pg",
@@ -659,12 +659,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 8,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 8,
       },
     },
@@ -675,12 +675,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 8,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 8,
       },
     },
@@ -689,12 +689,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 35,
         "line": 8,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 8,
       },
     },
@@ -763,7 +763,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 9,
       },
       "filename": "attrs.pg",
@@ -779,12 +779,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 9,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 9,
       },
     },
@@ -793,12 +793,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 35,
         "line": 9,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 9,
       },
     },
@@ -851,7 +851,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 14,
+        "column": 15,
         "line": 10,
       },
       "filename": "attrs.pg",
@@ -867,12 +867,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 10,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 14,
+        "column": 15,
         "line": 10,
       },
     },
@@ -924,7 +924,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 11,
       },
       "filename": "attrs.pg",
@@ -940,12 +940,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 11,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 11,
       },
     },
@@ -997,7 +997,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 13,
       },
       "filename": "attrs.pg",
@@ -1013,12 +1013,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 13,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 17,
+        "column": 18,
         "line": 13,
       },
     },
@@ -1027,12 +1027,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 13,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 19,
+        "column": 20,
         "line": 13,
       },
     },
@@ -1085,7 +1085,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 14,
+        "column": 15,
         "line": 14,
       },
       "filename": "attrs.pg",
@@ -1101,12 +1101,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 14,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 14,
+        "column": 15,
         "line": 14,
       },
     },
@@ -1115,12 +1115,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 14,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 14,
       },
     },
@@ -1130,12 +1130,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 28,
         "line": 14,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 23,
+        "column": 24,
         "line": 14,
       },
     },
@@ -1293,7 +1293,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 16,
       },
       "filename": "attrs.pg",
@@ -1309,12 +1309,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 28,
         "line": 16,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 16,
       },
     },
@@ -1325,12 +1325,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 29,
         "line": 16,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 26,
+        "column": 28,
         "line": 16,
       },
     },
@@ -1382,7 +1382,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 17,
       },
       "filename": "attrs.pg",
@@ -1398,12 +1398,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 34,
         "line": 17,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 17,
       },
     },
@@ -1414,12 +1414,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 36,
         "line": 17,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 33,
+        "column": 35,
         "line": 17,
       },
     },
@@ -1501,7 +1501,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 21,
         "line": 19,
       },
       "filename": "attrs.pg",
@@ -1517,12 +1517,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 19,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 19,
       },
     },
@@ -1533,12 +1533,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 19,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 19,
       },
     },
@@ -1547,12 +1547,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 35,
         "line": 19,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 19,
       },
     },
@@ -1621,7 +1621,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 20,
       },
       "filename": "attrs.pg",
@@ -1637,12 +1637,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 20,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 20,
       },
     },
@@ -1651,12 +1651,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 34,
+        "column": 35,
         "line": 20,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 20,
       },
     },
@@ -1709,7 +1709,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 14,
+        "column": 15,
         "line": 21,
       },
       "filename": "attrs.pg",
@@ -1725,12 +1725,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 21,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 14,
+        "column": 15,
         "line": 21,
       },
     },
@@ -1782,7 +1782,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 22,
       },
       "filename": "attrs.pg",
@@ -1798,12 +1798,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 22,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 22,
       },
     },
@@ -1855,7 +1855,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 23,
       },
       "filename": "attrs.pg",
@@ -1871,12 +1871,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 23,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 23,
       },
     },
@@ -1928,7 +1928,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 24,
       },
       "filename": "attrs.pg",
@@ -1944,12 +1944,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 24,
         "line": 24,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 24,
       },
     },
@@ -2624,7 +2624,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 11,
+        "column": 12,
         "line": 41,
       },
       "filename": "attrs.pg",
@@ -2640,12 +2640,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 24,
         "line": 41,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 12,
+        "column": 13,
         "line": 41,
       },
     },
@@ -2656,12 +2656,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 25,
         "line": 41,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 24,
         "line": 41,
       },
     },
@@ -2713,7 +2713,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 11,
+        "column": 12,
         "line": 43,
       },
       "filename": "attrs.pg",
@@ -2729,12 +2729,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 24,
         "line": 43,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 12,
+        "column": 13,
         "line": 43,
       },
     },
@@ -2745,12 +2745,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 25,
         "line": 43,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 24,
         "line": 43,
       },
     },
@@ -2802,7 +2802,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 11,
+        "column": 12,
         "line": 44,
       },
       "filename": "attrs.pg",
@@ -2818,12 +2818,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 24,
         "line": 44,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 12,
+        "column": 13,
         "line": 44,
       },
     },
@@ -2834,12 +2834,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 25,
         "line": 44,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 22,
+        "column": 24,
         "line": 44,
       },
     },
@@ -2910,7 +2910,7 @@ exports[`attrs.unescaped.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
       "filename": "attrs.unescaped.pg",
@@ -2926,12 +2926,12 @@ exports[`attrs.unescaped.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 1,
       },
       "filename": "attrs.unescaped.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
     },
@@ -2984,7 +2984,7 @@ exports[`attrs.unescaped.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 2,
       },
       "filename": "attrs.unescaped.pg",
@@ -3000,12 +3000,12 @@ exports[`attrs.unescaped.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 2,
       },
       "filename": "attrs.unescaped.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 2,
       },
     },
@@ -3526,7 +3526,7 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
       "filename": "block-expansion.pg",
@@ -3542,12 +3542,12 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 2,
       },
       "filename": "block-expansion.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
     },
@@ -3556,12 +3556,12 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 2,
       },
       "filename": "block-expansion.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 2,
       },
     },
@@ -3643,7 +3643,7 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 3,
       },
       "filename": "block-expansion.pg",
@@ -3659,12 +3659,12 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 3,
       },
       "filename": "block-expansion.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 3,
       },
     },
@@ -3673,12 +3673,12 @@ exports[`block-expansion.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 3,
       },
       "filename": "block-expansion.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 3,
       },
     },
@@ -4235,7 +4235,7 @@ exports[`classes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 1,
       },
       "filename": "classes.pg",
@@ -4251,12 +4251,12 @@ exports[`classes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 1,
       },
       "filename": "classes.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 1,
       },
     },
@@ -4323,7 +4323,7 @@ exports[`classes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 2,
       },
       "filename": "classes.pg",
@@ -4339,12 +4339,12 @@ exports[`classes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
       "filename": "classes.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 2,
       },
     },
@@ -4353,12 +4353,12 @@ exports[`classes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 21,
         "line": 2,
       },
       "filename": "classes.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
     },
@@ -4562,7 +4562,7 @@ exports[`classes-empty.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 10,
+        "column": 11,
         "line": 1,
       },
       "filename": "classes-empty.pg",
@@ -4578,12 +4578,12 @@ exports[`classes-empty.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 11,
+        "column": 12,
         "line": 1,
       },
       "filename": "classes-empty.pg",
       "start": {
-        "column": 10,
+        "column": 11,
         "line": 1,
       },
     },
@@ -5785,15 +5785,6 @@ exports[`comments.source.pg 1`] = `
 ]
 `;
 
-exports[`default-with-expression.pg 1`] = `
-{
-  "code": "PUGNEUM:DEFAULT_WITH_EXPRESSION",
-  "column": 8,
-  "line": 1,
-  "msg": "default should not have an expression",
-}
-`;
-
 exports[`escape-chars.pg 1`] = `
 [
   {
@@ -5919,7 +5910,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 1,
       },
       "filename": "escaping-class-attribute.pg",
@@ -5935,12 +5926,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 1,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 1,
       },
     },
@@ -5992,7 +5983,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 2,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6008,12 +5999,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 24,
         "line": 2,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 2,
       },
     },
@@ -6065,7 +6056,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6081,12 +6072,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 24,
         "line": 3,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 3,
       },
     },
@@ -6138,7 +6129,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 24,
         "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6154,12 +6145,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 4,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 23,
+        "column": 24,
         "line": 4,
       },
     },
@@ -6211,7 +6202,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6227,12 +6218,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 33,
+        "column": 34,
         "line": 5,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 32,
+        "column": 33,
         "line": 5,
       },
     },
@@ -6284,7 +6275,7 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 44,
+        "column": 45,
         "line": 6,
       },
       "filename": "escaping-class-attribute.pg",
@@ -6300,12 +6291,12 @@ exports[`escaping-class-attribute.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 45,
+        "column": 46,
         "line": 6,
       },
       "filename": "escaping-class-attribute.pg",
       "start": {
-        "column": 44,
+        "column": 45,
         "line": 6,
       },
     },
@@ -6447,7 +6438,7 @@ exports[`filters.coffeescript.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
       "filename": "filters.coffeescript.pg",
@@ -6463,12 +6454,12 @@ exports[`filters.coffeescript.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 1,
       },
       "filename": "filters.coffeescript.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
     },
@@ -6593,7 +6584,7 @@ exports[`filters.coffeescript.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
@@ -6609,12 +6600,12 @@ exports[`filters.coffeescript.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
       "start": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
     },
@@ -6623,12 +6614,12 @@ exports[`filters.coffeescript.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 4,
       },
       "filename": "filters.coffeescript.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 4,
       },
     },
@@ -6817,7 +6808,7 @@ exports[`filters.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 3,
       },
       "filename": "filters.custom.pg",
@@ -6833,12 +6824,12 @@ exports[`filters.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 28,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 3,
       },
     },
@@ -6849,12 +6840,12 @@ exports[`filters.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 29,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": {
-        "column": 26,
+        "column": 28,
         "line": 3,
       },
     },
@@ -6863,12 +6854,12 @@ exports[`filters.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 29,
         "line": 3,
       },
       "filename": "filters.custom.pg",
       "start": {
-        "column": 27,
+        "column": 29,
         "line": 3,
       },
     },
@@ -7173,7 +7164,7 @@ exports[`filters.include.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
@@ -7189,12 +7180,12 @@ exports[`filters.include.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 35,
+        "column": 37,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 4,
       },
     },
@@ -7205,12 +7196,12 @@ exports[`filters.include.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 36,
+        "column": 38,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": {
-        "column": 35,
+        "column": 37,
         "line": 4,
       },
     },
@@ -7219,12 +7210,12 @@ exports[`filters.include.custom.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 62,
+        "column": 64,
         "line": 4,
       },
       "filename": "filters.include.custom.pg",
       "start": {
-        "column": 37,
+        "column": 39,
         "line": 4,
       },
     },
@@ -7486,7 +7477,7 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 39,
+        "column": 40,
         "line": 5,
       },
       "filename": "filters.include.pg",
@@ -7502,12 +7493,12 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 40,
+        "column": 41,
         "line": 5,
       },
       "filename": "filters.include.pg",
       "start": {
-        "column": 39,
+        "column": 40,
         "line": 5,
       },
     },
@@ -7516,12 +7507,12 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 69,
+        "column": 70,
         "line": 5,
       },
       "filename": "filters.include.pg",
       "start": {
-        "column": 41,
+        "column": 42,
         "line": 5,
       },
     },
@@ -7633,7 +7624,7 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 46,
+        "column": 47,
         "line": 7,
       },
       "filename": "filters.include.pg",
@@ -7649,12 +7640,12 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 47,
+        "column": 48,
         "line": 7,
       },
       "filename": "filters.include.pg",
       "start": {
-        "column": 46,
+        "column": 47,
         "line": 7,
       },
     },
@@ -7663,12 +7654,12 @@ exports[`filters.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 76,
+        "column": 77,
         "line": 7,
       },
       "filename": "filters.include.pg",
       "start": {
-        "column": 48,
+        "column": 49,
         "line": 7,
       },
     },
@@ -7950,7 +7941,7 @@ exports[`filters.less.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 3,
       },
       "filename": "filters.less.pg",
@@ -7966,12 +7957,12 @@ exports[`filters.less.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 3,
       },
       "filename": "filters.less.pg",
       "start": {
-        "column": 25,
+        "column": 26,
         "line": 3,
       },
     },
@@ -8868,7 +8859,7 @@ exports[`filters.stylus.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 3,
       },
       "filename": "filters.stylus.pg",
@@ -8884,12 +8875,12 @@ exports[`filters.stylus.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 3,
       },
       "filename": "filters.stylus.pg",
       "start": {
-        "column": 25,
+        "column": 26,
         "line": 3,
       },
     },
@@ -9624,7 +9615,7 @@ exports[`html5.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 1,
       },
       "filename": "html5.pg",
@@ -9640,12 +9631,12 @@ exports[`html5.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
       "filename": "html5.pg",
       "start": {
-        "column": 22,
+        "column": 23,
         "line": 1,
       },
     },
@@ -9656,12 +9647,12 @@ exports[`html5.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 1,
       },
       "filename": "html5.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
     },
@@ -9747,7 +9738,7 @@ exports[`include.script.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 43,
         "line": 1,
       },
       "filename": "include.script.pg",
@@ -9763,12 +9754,12 @@ exports[`include.script.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 43,
+        "column": 44,
         "line": 1,
       },
       "filename": "include.script.pg",
       "start": {
-        "column": 42,
+        "column": 43,
         "line": 1,
       },
     },
@@ -10731,7 +10722,7 @@ exports[`include-with-text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 3,
       },
       "filename": "include-with-text.pg",
@@ -10747,12 +10738,12 @@ exports[`include-with-text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 3,
       },
       "filename": "include-with-text.pg",
       "start": {
-        "column": 28,
+        "column": 29,
         "line": 3,
       },
     },
@@ -10804,7 +10795,7 @@ exports[`include-with-text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 4,
       },
       "filename": "include-with-text.pg",
@@ -10820,12 +10811,12 @@ exports[`include-with-text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 4,
       },
       "filename": "include-with-text.pg",
       "start": {
-        "column": 24,
+        "column": 25,
         "line": 4,
       },
     },
@@ -10940,7 +10931,7 @@ exports[`include-with-text-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
@@ -10956,12 +10947,12 @@ exports[`include-with-text-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 2,
       },
     },
@@ -10970,12 +10961,12 @@ exports[`include-with-text-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 33,
+        "column": 34,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
       "start": {
-        "column": 32,
+        "column": 33,
         "line": 2,
       },
     },
@@ -10984,12 +10975,12 @@ exports[`include-with-text-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 33,
+        "column": 34,
         "line": 2,
       },
       "filename": "include-with-text-head.pg",
       "start": {
-        "column": 33,
+        "column": 34,
         "line": 2,
       },
     },
@@ -11292,7 +11283,7 @@ exports[`includes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 9,
       },
       "filename": "includes.pg",
@@ -11308,12 +11299,12 @@ exports[`includes.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 9,
       },
       "filename": "includes.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 9,
       },
     },
@@ -11888,7 +11879,7 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
       "filename": "inheritance.defaults.pg",
@@ -11904,12 +11895,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 4,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
     },
@@ -11961,7 +11952,7 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 5,
       },
       "filename": "inheritance.defaults.pg",
@@ -11977,12 +11968,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 5,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 5,
       },
     },
@@ -12034,7 +12025,7 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
@@ -12050,12 +12041,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 6,
       },
     },
@@ -12064,12 +12055,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
     },
@@ -12078,12 +12069,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
     },
@@ -12092,12 +12083,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
     },
@@ -12106,12 +12097,12 @@ exports[`inheritance.defaults.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "inheritance.defaults.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
     },
@@ -12242,7 +12233,7 @@ exports[`inheritance.extend.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.extend.include.pg",
@@ -12258,12 +12249,12 @@ exports[`inheritance.extend.include.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 5,
       },
       "filename": "inheritance.extend.include.pg",
       "start": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
     },
@@ -12797,7 +12788,7 @@ exports[`inheritance.extend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.extend.pg",
@@ -12813,12 +12804,12 @@ exports[`inheritance.extend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 5,
       },
       "filename": "inheritance.extend.pg",
       "start": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
     },
@@ -13233,7 +13224,7 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 6,
       },
       "filename": "inheritance.extend.whitespace.pg",
@@ -13249,12 +13240,12 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 6,
       },
       "filename": "inheritance.extend.whitespace.pg",
       "start": {
-        "column": 24,
+        "column": 25,
         "line": 6,
       },
     },
@@ -13532,7 +13523,7 @@ exports[`inheritance.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
       "filename": "inheritance.pg",
@@ -13548,12 +13539,12 @@ exports[`inheritance.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 5,
       },
       "filename": "inheritance.pg",
       "start": {
-        "column": 24,
+        "column": 25,
         "line": 5,
       },
     },
@@ -14705,7 +14696,7 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
@@ -14721,12 +14712,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 39,
+        "column": 41,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 19,
+        "column": 20,
         "line": 1,
       },
     },
@@ -14737,21 +14728,7 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 40,
-        "line": 1,
-      },
-      "filename": "intepolated-elements.pg",
-      "start": {
-        "column": 39,
-        "line": 1,
-      },
-    },
-    "type": "end-attributes",
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 57,
+        "column": 42,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
@@ -14760,18 +14737,32 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
       },
     },
+    "type": "end-attributes",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 59,
+        "line": 1,
+      },
+      "filename": "intepolated-elements.pg",
+      "start": {
+        "column": 43,
+        "line": 1,
+      },
+    },
     "type": "text",
     "val": "with inline link",
   },
   {
     "loc": {
       "end": {
-        "column": 58,
+        "column": 60,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 57,
+        "column": 59,
         "line": 1,
       },
     },
@@ -14780,12 +14771,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 58,
+        "column": 60,
         "line": 1,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 58,
+        "column": 60,
         "line": 1,
       },
     },
@@ -14897,7 +14888,7 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
@@ -14913,12 +14904,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 49,
+        "column": 51,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 2,
       },
     },
@@ -14929,12 +14920,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 50,
+        "column": 52,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 49,
+        "column": 51,
         "line": 2,
       },
     },
@@ -14943,12 +14934,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 51,
+        "column": 53,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 50,
+        "column": 52,
         "line": 2,
       },
     },
@@ -14957,12 +14948,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 51,
+        "column": 53,
         "line": 2,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 51,
+        "column": 53,
         "line": 2,
       },
     },
@@ -15074,7 +15065,7 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
@@ -15090,12 +15081,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 49,
+        "column": 51,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 3,
       },
     },
@@ -15106,12 +15097,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 50,
+        "column": 52,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 49,
+        "column": 51,
         "line": 3,
       },
     },
@@ -15120,12 +15111,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 67,
+        "column": 69,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 51,
+        "column": 53,
         "line": 3,
       },
     },
@@ -15135,12 +15126,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 68,
+        "column": 70,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 67,
+        "column": 69,
         "line": 3,
       },
     },
@@ -15149,12 +15140,12 @@ exports[`intepolated-elements.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 68,
+        "column": 70,
         "line": 3,
       },
       "filename": "intepolated-elements.pg",
       "start": {
-        "column": 68,
+        "column": 70,
         "line": 3,
       },
     },
@@ -15486,7 +15477,7 @@ exports[`layout.append.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.append.pg",
@@ -15502,12 +15493,12 @@ exports[`layout.append.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 5,
       },
       "filename": "layout.append.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
     },
@@ -15559,7 +15550,7 @@ exports[`layout.append.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.append.pg",
@@ -15575,12 +15566,12 @@ exports[`layout.append.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 6,
       },
       "filename": "layout.append.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
     },
@@ -15739,7 +15730,7 @@ exports[`layout.append.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.append.without-block.pg",
@@ -15755,12 +15746,12 @@ exports[`layout.append.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 5,
       },
       "filename": "layout.append.without-block.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
     },
@@ -15812,7 +15803,7 @@ exports[`layout.append.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.append.without-block.pg",
@@ -15828,12 +15819,12 @@ exports[`layout.append.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 6,
       },
       "filename": "layout.append.without-block.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
     },
@@ -16398,7 +16389,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 23,
+        "column": 24,
         "line": 16,
       },
       "filename": "layout.multi.append.prepend.block.pg",
@@ -16414,12 +16405,12 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 24,
+        "column": 25,
         "line": 16,
       },
       "filename": "layout.multi.append.prepend.block.pg",
       "start": {
-        "column": 23,
+        "column": 24,
         "line": 16,
       },
     },
@@ -16502,7 +16493,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 21,
         "line": 19,
       },
       "filename": "layout.multi.append.prepend.block.pg",
@@ -16518,12 +16509,12 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 19,
       },
       "filename": "layout.multi.append.prepend.block.pg",
       "start": {
-        "column": 20,
+        "column": 21,
         "line": 19,
       },
     },
@@ -16682,7 +16673,7 @@ exports[`layout.prepend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.prepend.pg",
@@ -16698,12 +16689,12 @@ exports[`layout.prepend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 5,
       },
       "filename": "layout.prepend.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
     },
@@ -16755,7 +16746,7 @@ exports[`layout.prepend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.prepend.pg",
@@ -16771,12 +16762,12 @@ exports[`layout.prepend.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 6,
       },
       "filename": "layout.prepend.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
     },
@@ -16935,7 +16926,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
       "filename": "layout.prepend.without-block.pg",
@@ -16951,12 +16942,12 @@ exports[`layout.prepend.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 5,
       },
       "filename": "layout.prepend.without-block.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 5,
       },
     },
@@ -17008,7 +16999,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
       "filename": "layout.prepend.without-block.pg",
@@ -17024,12 +17015,12 @@ exports[`layout.prepend.without-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 22,
+        "column": 23,
         "line": 6,
       },
       "filename": "layout.prepend.without-block.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 6,
       },
     },
@@ -20064,7 +20055,7 @@ exports[`namespaces.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
       "filename": "namespaces.pg",
@@ -20080,12 +20071,12 @@ exports[`namespaces.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 2,
       },
       "filename": "namespaces.pg",
       "start": {
-        "column": 16,
+        "column": 17,
         "line": 2,
       },
     },
@@ -20094,12 +20085,12 @@ exports[`namespaces.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 17,
+        "column": 18,
         "line": 2,
       },
       "filename": "namespaces.pg",
       "start": {
-        "column": 17,
+        "column": 18,
         "line": 2,
       },
     },
@@ -22069,7 +22060,7 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 41,
+        "column": 42,
         "line": 1,
       },
       "filename": "scripts.non-js.pg",
@@ -22085,12 +22076,12 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 43,
         "line": 1,
       },
       "filename": "scripts.non-js.pg",
       "start": {
-        "column": 41,
+        "column": 42,
         "line": 1,
       },
     },
@@ -22290,7 +22281,7 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 41,
+        "column": 42,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
@@ -22306,12 +22297,12 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 42,
+        "column": 43,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
       "start": {
-        "column": 41,
+        "column": 42,
         "line": 6,
       },
     },
@@ -22320,12 +22311,12 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 43,
+        "column": 44,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
       "start": {
-        "column": 42,
+        "column": 43,
         "line": 6,
       },
     },
@@ -22334,12 +22325,12 @@ exports[`scripts.non-js.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 43,
+        "column": 44,
         "line": 6,
       },
       "filename": "scripts.non-js.pg",
       "start": {
-        "column": 43,
+        "column": 44,
         "line": 6,
       },
     },
@@ -22949,7 +22940,7 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 21,
         "line": 2,
       },
       "filename": "source.pg",
@@ -22965,32 +22956,16 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 32,
+        "column": 33,
         "line": 2,
       },
       "filename": "source.pg",
       "start": {
-        "column": 21,
+        "column": 22,
         "line": 2,
       },
     },
     "name": "autobuffer",
-    "type": "attribute",
-    "val": true,
-  },
-  {
-    "loc": {
-      "end": {
-        "column": 40,
-        "line": 2,
-      },
-      "filename": "source.pg",
-      "start": {
-        "column": 32,
-        "line": 2,
-      },
-    },
-    "name": "controls",
     "type": "attribute",
     "val": true,
   },
@@ -23002,7 +22977,23 @@ exports[`source.pg 1`] = `
       },
       "filename": "source.pg",
       "start": {
-        "column": 40,
+        "column": 33,
+        "line": 2,
+      },
+    },
+    "name": "controls",
+    "type": "attribute",
+    "val": true,
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 42,
+        "line": 2,
+      },
+      "filename": "source.pg",
+      "start": {
+        "column": 41,
         "line": 2,
       },
     },
@@ -23055,7 +23046,7 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 3,
       },
       "filename": "source.pg",
@@ -23071,12 +23062,12 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 3,
       },
       "filename": "source.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 3,
       },
     },
@@ -23128,7 +23119,7 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 18,
+        "column": 19,
         "line": 4,
       },
       "filename": "source.pg",
@@ -23144,12 +23135,12 @@ exports[`source.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 4,
       },
       "filename": "source.pg",
       "start": {
-        "column": 18,
+        "column": 19,
         "line": 4,
       },
     },
@@ -23307,7 +23298,7 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 4,
       },
       "filename": "tags.self-closing.pg",
@@ -23323,12 +23314,12 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 4,
       },
       "filename": "tags.self-closing.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 4,
       },
     },
@@ -23409,7 +23400,7 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 6,
       },
       "filename": "tags.self-closing.pg",
@@ -23425,12 +23416,12 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 6,
       },
       "filename": "tags.self-closing.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 6,
       },
     },
@@ -23511,7 +23502,7 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 8,
       },
       "filename": "tags.self-closing.pg",
@@ -23527,12 +23518,12 @@ exports[`tags.self-closing.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 8,
       },
       "filename": "tags.self-closing.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 8,
       },
     },
@@ -23751,7 +23742,7 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
       "filename": "template.pg",
@@ -23767,12 +23758,12 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 1,
       },
       "filename": "template.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 1,
       },
     },
@@ -23957,7 +23948,7 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 6,
       },
       "filename": "template.pg",
@@ -23973,12 +23964,12 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
       "filename": "template.pg",
       "start": {
-        "column": 29,
+        "column": 30,
         "line": 6,
       },
     },
@@ -23987,12 +23978,12 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 6,
       },
       "filename": "template.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 6,
       },
     },
@@ -24001,12 +23992,12 @@ exports[`template.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 6,
       },
       "filename": "template.pg",
       "start": {
-        "column": 31,
+        "column": 32,
         "line": 6,
       },
     },
@@ -24150,7 +24141,7 @@ exports[`text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 15,
+        "column": 16,
         "line": 1,
       },
       "filename": "text.pg",
@@ -24166,12 +24157,12 @@ exports[`text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 16,
+        "column": 17,
         "line": 1,
       },
       "filename": "text.pg",
       "start": {
-        "column": 15,
+        "column": 16,
         "line": 1,
       },
     },
@@ -24180,12 +24171,12 @@ exports[`text.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 33,
+        "column": 34,
         "line": 1,
       },
       "filename": "text.pg",
       "start": {
-        "column": 17,
+        "column": 18,
         "line": 1,
       },
     },
@@ -25530,7 +25521,7 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 3,
       },
       "filename": "text-block.pg",
@@ -25546,12 +25537,12 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 36,
+        "column": 38,
         "line": 3,
       },
       "filename": "text-block.pg",
       "start": {
-        "column": 20,
+        "column": 21,
         "line": 3,
       },
     },
@@ -25562,12 +25553,12 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 37,
+        "column": 39,
         "line": 3,
       },
       "filename": "text-block.pg",
       "start": {
-        "column": 36,
+        "column": 38,
         "line": 3,
       },
     },
@@ -25664,7 +25655,7 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 20,
         "line": 6,
       },
       "filename": "text-block.pg",
@@ -25680,12 +25671,12 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 36,
+        "column": 38,
         "line": 6,
       },
       "filename": "text-block.pg",
       "start": {
-        "column": 20,
+        "column": 21,
         "line": 6,
       },
     },
@@ -25696,12 +25687,12 @@ exports[`text-block.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 37,
+        "column": 39,
         "line": 6,
       },
       "filename": "text-block.pg",
       "start": {
-        "column": 36,
+        "column": 38,
         "line": 6,
       },
     },
@@ -25939,7 +25930,7 @@ exports[`yield.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 30,
+        "column": 31,
         "line": 4,
       },
       "filename": "yield.pg",
@@ -25955,12 +25946,12 @@ exports[`yield.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 31,
+        "column": 32,
         "line": 4,
       },
       "filename": "yield.pg",
       "start": {
-        "column": 30,
+        "column": 31,
         "line": 4,
       },
     },
@@ -26012,7 +26003,7 @@ exports[`yield.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 5,
       },
       "filename": "yield.pg",
@@ -26028,12 +26019,12 @@ exports[`yield.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 27,
+        "column": 28,
         "line": 5,
       },
       "filename": "yield.pg",
       "start": {
-        "column": 26,
+        "column": 27,
         "line": 5,
       },
     },
@@ -26162,7 +26153,7 @@ exports[`yield-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 2,
       },
       "filename": "yield-head.pg",
@@ -26178,12 +26169,12 @@ exports[`yield-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 2,
       },
       "filename": "yield-head.pg",
       "start": {
-        "column": 25,
+        "column": 26,
         "line": 2,
       },
     },
@@ -26263,7 +26254,7 @@ exports[`yield-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
       "filename": "yield-head.pg",
@@ -26279,12 +26270,12 @@ exports[`yield-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 4,
       },
       "filename": "yield-head.pg",
       "start": {
-        "column": 28,
+        "column": 29,
         "line": 4,
       },
     },
@@ -26623,7 +26614,7 @@ exports[`yield-title-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 25,
+        "column": 26,
         "line": 4,
       },
       "filename": "yield-title-head.pg",
@@ -26639,12 +26630,12 @@ exports[`yield-title-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 26,
+        "column": 27,
         "line": 4,
       },
       "filename": "yield-title-head.pg",
       "start": {
-        "column": 25,
+        "column": 26,
         "line": 4,
       },
     },
@@ -26696,7 +26687,7 @@ exports[`yield-title-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 28,
+        "column": 29,
         "line": 5,
       },
       "filename": "yield-title-head.pg",
@@ -26712,12 +26703,12 @@ exports[`yield-title-head.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 29,
+        "column": 30,
         "line": 5,
       },
       "filename": "yield-title-head.pg",
       "start": {
-        "column": 28,
+        "column": 29,
         "line": 5,
       },
     },

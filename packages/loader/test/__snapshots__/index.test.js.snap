@@ -64,7 +64,7 @@ exports[`pugneum-loader 1`] = `
                   "attrs": [
                     {
                       "column": 1,
-                      "filename": "bing.pg",
+                      "filename": "/home/dev/pugneum/packages/loader/test/bing.pg",
                       "line": 1,
                       "mustEscape": false,
                       "name": "class",
@@ -90,7 +90,6 @@ exports[`pugneum-loader 1`] = `
                   "isInline": false,
                   "line": 1,
                   "name": "div",
-                  "selfClosing": false,
                   "type": "Tag",
                 },
               ],
@@ -145,7 +144,6 @@ exports[`pugneum-loader 1`] = `
           "isInline": false,
           "line": 5,
           "name": "script",
-          "selfClosing": false,
           "type": "Tag",
         },
       ],

@@ -33,8 +33,8 @@ class TokenStream {
 module.exports = parse;
 
 function parse(tokens, options) {
-  let parser = new Parser(tokens, options);
-  let ast = parser.parse();
+  const parser = new Parser(tokens, options);
+  const ast = parser.parse();
   return structuredClone(ast);
 }
 
@@ -54,7 +54,7 @@ const inlineTags = [
   's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
   'time',
   'u',
-  'let', 'video',
+  'var', 'video',
   'wbr',
 ];
 

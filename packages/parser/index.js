@@ -87,34 +87,13 @@ class Parser {
     throw err;
   }
 
-  /**
-   * Return the next token object.
-   *
-   * @return {Object}
-   * @api private
-   */
-
   advance() {
     return this.tokens.advance();
   }
 
-  /**
-   * Single token lookahead.
-   *
-   * @return {Object}
-   * @api private
-   */
-
   peek() {
     return this.tokens.peek();
   }
-
-  /**
-   * Parse input returning a string of js for evaluation.
-   *
-   * @return {String}
-   * @api public
-   */
 
   parse() {
     let block = this.emptyBlock(0);
@@ -139,13 +118,6 @@ class Parser {
     return block;
   }
 
-  /**
-   * Expect the given type, or throw an exception.
-   *
-   * @param {String} type
-   * @api private
-   */
-
   expect(type) {
     if (this.peek().type === type) {
       return this.advance();
@@ -157,13 +129,6 @@ class Parser {
       );
     }
   }
-
-  /**
-   * Accept the given `type`.
-   *
-   * @param {String} type
-   * @api private
-   */
 
   accept(type) {
     if (this.peek().type === type) {

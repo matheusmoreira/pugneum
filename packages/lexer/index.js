@@ -191,15 +191,6 @@ class Lexer {
     }
   }
 
-  /**
-   * Construct a token with the given `type` and `val`.
-   *
-   * @param {String} type
-   * @param {String} val
-   * @return {Object}
-   * @api private
-   */
-
   tok(type, val) {
     let res = {
       type: type,
@@ -217,14 +208,6 @@ class Lexer {
     return res;
   }
 
-  /**
-   * Set the token's `loc.end` value.
-   *
-   * @param {Object} tok
-   * @returns {Object}
-   * @api private
-   */
-
   tokEnd(tok) {
     tok.loc.end = {
       line: this.lineno,
@@ -233,48 +216,18 @@ class Lexer {
     return tok;
   }
 
-  /**
-   * Increment `this.lineno` and reset `this.colno`.
-   *
-   * @param {Number} increment
-   * @api private
-   */
-
   incrementLine(increment) {
     this.lineno += increment;
     if (increment) this.colno = 1;
   }
 
-  /**
-   * Increment `this.colno`.
-   *
-   * @param {Number} increment
-   * @api private
-   */
-
   incrementColumn(increment) {
     this.colno += increment;
   }
 
-  /**
-   * Consume the given `len` of input.
-   *
-   * @param {Number} len
-   * @api private
-   */
-
   consume(len) {
     this.input = this.input.substr(len);
   }
-
-  /**
-   * Scan for `type` with the given `regexp`.
-   *
-   * @param {String} type
-   * @param {RegExp} regexp
-   * @return {Object}
-   * @api private
-   */
 
   scan(regexp, type) {
     let captures;
@@ -313,16 +266,6 @@ class Lexer {
       }
     }
   }
-
-  /**
-   * Return the indexOf `(` or `{` or `[` / `)` or `}` or `]` delimiters.
-   *
-   * Make sure that when calling this function, colno is at the character
-   * immediately before the beginning.
-   *
-   * @return {Number}
-   * @api private
-   */
 
   bracketExpression(skip) {
     skip = skip || 0;
@@ -1256,12 +1199,6 @@ class Lexer {
     );
   }
 
-  /**
-   * Move to the next token
-   *
-   * @api private
-   */
-
   advance() {
     return (
       this.blank() ||
@@ -1292,12 +1229,6 @@ class Lexer {
     );
   }
 
-  /**
-   * Return an array of tokens for the current file
-   *
-   * @returns {Array.<Token>}
-   * @api public
-   */
   getTokens() {
     while (!this.ended) {
       this.advance();

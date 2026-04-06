@@ -6,7 +6,7 @@ function walkAST(ast, before, after, options) {
     after = null;
   }
   options = options || {includeDependencies: false};
-  let parents = (options.parents = options.parents || []);
+  const parents = (options.parents = options.parents || []);
 
   const replace = function replace(replacement) {
     if (Array.isArray(replacement) && !replace.arrayAllowed) {

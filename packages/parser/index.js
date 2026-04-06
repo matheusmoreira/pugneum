@@ -16,7 +16,7 @@ class TokenStream {
   }
   advance() {
     if (this.deferred) {
-      let tok = this.deferred;
+      const tok = this.deferred;
       this.deferred = null;
       return tok;
     }
@@ -78,7 +78,7 @@ class Parser {
   }
 
   error(code, message, token) {
-    let err = error(code, message, {
+    const err = error(code, message, {
       line: token.loc.start.line,
       column: token.loc.start.column,
       filename: this.filename,
@@ -96,7 +96,7 @@ class Parser {
   }
 
   parse() {
-    let block = this.emptyBlock(0);
+    const block = this.emptyBlock(0);
 
     while ('eos' != this.peek().type) {
       if ('newline' == this.peek().type) {
@@ -104,7 +104,7 @@ class Parser {
       } else if ('text-html' == this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
-        let expr = this.parseExpr();
+        const expr = this.parseExpr();
         if (expr) {
           if (expr.type === 'Block') {
             block.nodes = block.nodes.concat(expr.nodes);
@@ -230,8 +230,8 @@ class Parser {
    */
 
   parseText(options) {
-    let tags = [];
-    let lineno = this.peek().loc.start.line;
+    const tags = [];
+    const lineno = this.peek().loc.start.line;
     let nextTok = this.peek();
     loop: while (true) {
       switch (nextTok.type) {
@@ -276,12 +276,12 @@ class Parser {
   }
 
   parseTextHtml() {
-    let nodes = [];
+    const nodes = [];
     let currentNode = null;
     loop: while (true) {
       switch (this.peek().type) {
         case 'text-html':
-          let text = this.advance();
+          const text = this.advance();
           if (!currentNode) {
             currentNode = {
               type: 'Text',
@@ -297,7 +297,7 @@ class Parser {
           }
           break;
         case 'indent':
-          let block = this.block();
+          const block = this.block();
           block.nodes.forEach(function(node) {
             if (node.isHtml) {
               if (!currentNode) {
@@ -328,9 +328,9 @@ class Parser {
    */
 
   parseBlockExpansion() {
-    let tok = this.accept(':');
+    const tok = this.accept(':');
     if (tok) {
-      let expr = this.parseExpr();
+      const expr = this.parseExpr();
       return expr.type === 'Block'
         ? expr
         : this.initBlock(tok.loc.start.line, [expr]);
@@ -344,7 +344,7 @@ class Parser {
    */
 
   parseComment() {
-    let tok = this.expect('comment');
+    const tok = this.expect('comment');
     let block;
     if ((block = this.parseTextBlock())) {
       return {
@@ -369,7 +369,7 @@ class Parser {
   }
 
   parseIncludeFilter() {
-    let tok = this.expect('filter');
+    const tok = this.expect('filter');
     let attrs = [];
 
     if (this.peek().type === 'start-attributes') {
@@ -391,7 +391,7 @@ class Parser {
    */
 
   parseFilter() {
-    let tok = this.expect('filter');
+    const tok = this.expect('filter');
     let block,
       attrs = [];
 
@@ -400,7 +400,7 @@ class Parser {
     }
 
     if (this.peek().type === 'text') {
-      let textToken = this.advance();
+      const textToken = this.advance();
       block = this.initBlock(textToken.loc.start.line, [
         {
           type: 'Text',
@@ -432,8 +432,8 @@ class Parser {
    */
 
   parseExtends() {
-    let tok = this.expect('extends');
-    let path = this.expect('path');
+    const tok = this.expect('extends');
+    const path = this.expect('path');
     return {
       type: 'Extends',
       file: {
@@ -454,9 +454,9 @@ class Parser {
    */
 
   parseBlock() {
-    let tok = this.expect('block');
+    const tok = this.expect('block');
 
-    let node =
+    const node =
       'indent' == this.peek().type
         ? this.block()
         : this.emptyBlock(tok.loc.start.line);
@@ -470,7 +470,7 @@ class Parser {
   }
 
   parseMixinBlock() {
-    let tok = this.expect('mixin-block');
+    const tok = this.expect('mixin-block');
     if (!this.inMixin) {
       this.error(
         'BLOCK_OUTSIDE_MIXIN',
@@ -487,7 +487,7 @@ class Parser {
   }
 
   parseVariable() {
-    let tok = this.expect('variable');
+    const tok = this.expect('variable');
     if (!this.inMixin) {
       this.error(
         'VARIABLE_OUTSIDE_MIXIN',
@@ -505,7 +505,7 @@ class Parser {
   }
 
   parseYield() {
-    let tok = this.expect('yield');
+    const tok = this.expect('yield');
     return {
       type: 'YieldBlock',
       line: tok.loc.start.line,
@@ -519,8 +519,8 @@ class Parser {
    */
 
   parseInclude() {
-    let tok = this.expect('include');
-    let node = {
+    const tok = this.expect('include');
+    const node = {
       type: 'Include',
       file: {
         type: 'FileReference',
@@ -530,11 +530,11 @@ class Parser {
       column: tok.loc.start.column,
       filename: this.filename,
     };
-    let filters = [];
+    const filters = [];
     while (this.peek().type === 'filter') {
       filters.push(this.parseIncludeFilter());
     }
-    let path = this.expect('path');
+    const path = this.expect('path');
 
     node.file.path = path.val.trim();
     node.file.line = path.loc.start.line;
@@ -564,10 +564,10 @@ class Parser {
    */
 
   parseCall() {
-    let tok = this.expect('call');
-    let name = tok.val;
-    let args = tok.args;
-    let mixin = {
+    const tok = this.expect('call');
+    const name = tok.val;
+    const args = tok.args;
+    const mixin = {
       type: 'Mixin',
       name: name,
       args: args,
@@ -594,13 +594,13 @@ class Parser {
    */
 
   parseMixin() {
-    let tok = this.expect('mixin');
-    let name = tok.val;
-    let args = tok.args;
+    const tok = this.expect('mixin');
+    const name = tok.val;
+    const args = tok.args;
 
     if ('indent' == this.peek().type) {
       this.inMixin++;
-      let mixin = {
+      const mixin = {
         type: 'Mixin',
         name: name,
         args: args,
@@ -626,11 +626,11 @@ class Parser {
    */
 
   parseTextBlock() {
-    let tok = this.accept('start-pipeless-text');
+    const tok = this.accept('start-pipeless-text');
     if (!tok) return;
-    let block = this.emptyBlock(tok.loc.start.line);
+    const block = this.emptyBlock(tok.loc.start.line);
     while (this.peek().type !== 'end-pipeless-text') {
-      let tok = this.advance();
+      const tok = this.advance();
       switch (tok.type) {
         case 'text':
           block.nodes.push({
@@ -671,15 +671,15 @@ class Parser {
    */
 
   block() {
-    let tok = this.expect('indent');
-    let block = this.emptyBlock(tok.loc.start.line);
+    const tok = this.expect('indent');
+    const block = this.emptyBlock(tok.loc.start.line);
     while ('outdent' != this.peek().type) {
       if ('newline' == this.peek().type) {
         this.advance();
       } else if ('text-html' == this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
-        let expr = this.parseExpr();
+        const expr = this.parseExpr();
         if (expr.type === 'Block') {
           block.nodes = block.nodes.concat(expr.nodes);
         } else {
@@ -696,8 +696,8 @@ class Parser {
    */
 
   parseInterpolation() {
-    let tok = this.advance();
-    let tag = {
+    const tok = this.advance();
+    const tag = {
       type: 'InterpolatedTag',
       expr: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
@@ -717,8 +717,8 @@ class Parser {
    */
 
   parseTag() {
-    let tok = this.advance();
-    let tag = {
+    const tok = this.advance();
+    const tag = {
       type: 'Tag',
       name: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
@@ -739,13 +739,13 @@ class Parser {
 
   tag(tag, options) {
     let seenAttrs = false;
-    let attributeNames = [];
+    const attributeNames = [];
     // (attrs | class | id)*
     out: while (true) {
       switch (this.peek().type) {
         case 'id':
         case 'class':
-          let tok = this.advance();
+          const tok = this.advance();
           if (tok.type === 'id') {
             if (attributeNames.indexOf('id') !== -1) {
               this.error(
@@ -791,7 +791,7 @@ class Parser {
     // (text | ':')?
     switch (this.peek().type) {
       case 'text':
-        let text = this.parseText();
+        const text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);
         } else {
@@ -800,12 +800,12 @@ class Parser {
         break;
       case ':':
         this.advance();
-        let expr = this.parseExpr();
+        const expr = this.parseExpr();
         tag.block =
           expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
         break;
       case 'variable':
-        let variable = this.parseVariable();
+        const variable = this.parseVariable();
         tag.block.nodes.push(variable);
         break;
       case 'newline':
@@ -832,7 +832,7 @@ class Parser {
     if (tag.textOnly) {
       tag.block = this.parseTextBlock() || this.emptyBlock(tag.line);
     } else if ('indent' == this.peek().type) {
-      let block = this.block();
+      const block = this.block();
       for (let i = 0, len = block.nodes.length; i < len; ++i) {
         tag.block.nodes.push(block.nodes[i]);
       }
@@ -844,7 +844,7 @@ class Parser {
   attrs(attributeNames) {
     this.expect('start-attributes');
 
-    let attrs = [];
+    const attrs = [];
     let tok = this.advance();
     while (tok.type === 'attribute') {
       if (tok.name !== 'class' && attributeNames) {

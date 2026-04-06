@@ -180,7 +180,7 @@ class Compiler {
 
   visitAttributes(attrs) {
     for (let len = attrs.length, i = 0; i < len; ++i) {
-      let attr = attrs[i];
+      const attr = attrs[i];
       this.buffer(' ');
       this.buffer(attr.name);
       this.buffer('="');
@@ -192,13 +192,13 @@ class Compiler {
   visitMixin(mixin) {
     if (mixin.call) {
       // find defined mixin of same name
-      let declared = this.mixins[mixin.name];
+      const declared = this.mixins[mixin.name];
       if (!declared) {
         this.error(`Undefined mixin '${mixin.name}'`, 'UNDEFINED_MIXIN', mixin);
       }
 
       // check arguments
-      let args = mixin.args, len = declared.args.length;
+      const args = mixin.args, len = declared.args.length;
 
       if (args.length !== declared.args.length) {
         this.error(
@@ -209,16 +209,16 @@ class Compiler {
       }
 
       // bind arguments
-      let frame = this.callStack.at(-1);
-      let parentEnvironment = (frame && frame.environment) || null;
-      let environment = Object.create(parentEnvironment);
+      const frame = this.callStack.at(-1);
+      const parentEnvironment = (frame && frame.environment) || null;
+      const environment = Object.create(parentEnvironment);
 
       for (let i = 0; i <len; ++i) {
         environment[declared.args[i]] = args[i];
       }
 
       // bind caller's block
-      let block = mixin.block;
+      const block = mixin.block;
 
       // evaluate mixin block which may contain variable nodes
       this.callStack.push({environment, block});
@@ -235,8 +235,8 @@ class Compiler {
       this.error(`Variable '${variable.name}' used outside mixin`, 'CALL_STACK_UNDERFLOW', variable);
     }
 
-    let frame = this.callStack.at(-1);
-    let value = frame.environment[variable.name];
+    const frame = this.callStack.at(-1);
+    const value = frame.environment[variable.name];
 
     if (value === undefined) {
       this.error(`Variable '${variable.name}' is undefined`, 'UNDEFINED_VARIABLE', variable);
@@ -246,7 +246,7 @@ class Compiler {
   }
 
   visitMixinBlock(mixinBlock) {
-    let current = this.callStack.at(-1);
+    const current = this.callStack.at(-1);
     this.visit(current.block);
   }
 }

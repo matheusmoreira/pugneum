@@ -1075,7 +1075,8 @@ class Lexer {
               value += str[i];
               break;
             }
-            ++i;
+            this.incrementColumn(2);
+            continue;
           }
         } else {
           if (whitespaceRe.test(str[i])) {

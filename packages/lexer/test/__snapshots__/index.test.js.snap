@@ -924,7 +924,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 21,
         "line": 11,
       },
       "filename": "attrs.pg",
@@ -940,12 +940,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 22,
         "line": 11,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 19,
+        "column": 21,
         "line": 11,
       },
     },
@@ -1782,7 +1782,7 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 19,
+        "column": 21,
         "line": 22,
       },
       "filename": "attrs.pg",
@@ -1798,12 +1798,12 @@ exports[`attrs.pg 1`] = `
   {
     "loc": {
       "end": {
-        "column": 20,
+        "column": 22,
         "line": 22,
       },
       "filename": "attrs.pg",
       "start": {
-        "column": 19,
+        "column": 21,
         "line": 22,
       },
     },

@@ -72,7 +72,6 @@ function walkAST(ast, before, after, options) {
       break;
     default:
       throw new Error('Unexpected node type ' + ast.type);
-      break;
   }
 
   parents.shift();

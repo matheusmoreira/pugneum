@@ -1,0 +1,12 @@
+p.
+    #[strong This strong text is really really long. This strong
+    text is really really long. This strong text is really really
+    long.]
+
+p.
+  Before #[a(href='https://example.com/very/long/path')
+  link text here] after.
+
+p.
+  Multi-line @(https://example.com/path
+  link text) in text block.

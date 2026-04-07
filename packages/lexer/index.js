@@ -494,118 +494,199 @@ class Lexer {
     if (value + prefix === '') return;
     prefix = prefix || '';
     escaped = escaped || 0;
-    let indexOfEnd = this.interpolated ? value.indexOf(']') : -1;
-    let indexOfStart = this.interpolationAllowed ? value.indexOf('#[') : -1;
-    let indexOfEscaped = this.interpolationAllowed ? value.indexOf('\\#[') : -1;
-    const matchOfVarRef = this.interpolationAllowed? /(\\)?#{(\w+)}/.exec(value) : null;
-    const indexOfVarRef = matchOfVarRef? matchOfVarRef.index : Infinity;
 
-    if (indexOfEnd === -1) indexOfEnd = Infinity;
-    if (indexOfStart === -1) indexOfStart = Infinity;
-    if (indexOfEscaped === -1) indexOfEscaped = Infinity;
+    const candidates = [];
 
-    if (
-      indexOfEscaped !== Infinity &&
-      indexOfEscaped < indexOfEnd &&
-      indexOfEscaped < indexOfStart &&
-      indexOfEscaped < indexOfVarRef
-    ) {
-      prefix = prefix + value.substring(0, indexOfEscaped) + '#[';
+    if (this.interpolated) {
+      const i = value.indexOf(']');
+      if (i !== -1) candidates.push({ pos: i, kind: 'end' });
+    }
+
+    if (this.interpolationAllowed) {
+      let i;
+
+      i = value.indexOf('\\#[');
+      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '#[' });
+
+      i = value.indexOf('\\@(');
+      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@(' });
+
+      i = value.indexOf('#[');
+      if (i !== -1) candidates.push({ pos: i, kind: 'interpolation' });
+
+      i = value.indexOf('@(');
+      if (i !== -1) candidates.push({ pos: i, kind: 'link' });
+
+      const m = /(\\)?#{(\w+)}/.exec(value);
+      if (m) {
+        if (m[1]) {
+          candidates.push({ pos: m.index, kind: 'escaped', literal: '#{' });
+        } else {
+          candidates.push({ pos: m.index, kind: 'variable', match: m });
+        }
+      }
+    }
+
+    if (candidates.length === 0) {
+      value = prefix + value;
+      tok = this.tok(type, value);
+      this.incrementColumn(value.length + escaped);
+      this.tokens.push(this.tokEnd(tok));
+      return;
+    }
+
+    candidates.sort((a, b) => a.pos - b.pos);
+    const earliest = candidates[0];
+
+    switch (earliest.kind) {
+
+    case 'escaped':
+      prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
       return this.addText(
         type,
-        value.substring(indexOfEscaped + 3),
+        value.substring(earliest.pos + 3),
         prefix,
         escaped + 1
       );
-    }
-    if (
-      indexOfStart !== Infinity &&
-      indexOfStart < indexOfEnd &&
-      indexOfStart < indexOfEscaped &&
-      indexOfStart < indexOfVarRef
-    ) {
-      tok = this.tok(type, prefix + value.substring(0, indexOfStart));
-      this.incrementColumn(prefix.length + indexOfStart + escaped);
-      this.tokens.push(this.tokEnd(tok));
-      tok = this.tok('start-interpolation');
-      this.incrementColumn(2);
-      this.tokens.push(this.tokEnd(tok));
-      const child = new this.constructor(value.substr(indexOfStart + 2), {
-        filename: this.filename,
-        interpolated: true,
-        startingLine: this.lineno,
-        startingColumn: this.colno,
-      });
-      let interpolated;
-      try {
-        interpolated = child.getTokens();
-      } catch (ex) {
-        if (ex.code && /^PUGNEUM:/.test(ex.code)) {
-          this.colno = ex.column;
-          this.error(ex.code.substr(8), ex.msg);
-        }
-        throw ex;
-      }
-      this.colno = child.colno;
-      this.tokens = this.tokens.concat(interpolated);
-      tok = this.tok('end-interpolation');
-      this.incrementColumn(1);
-      this.tokens.push(this.tokEnd(tok));
-      this.addText(type, child.input);
-      return;
-    }
-    if (
-      indexOfEnd !== Infinity &&
-      indexOfEnd < indexOfStart &&
-      indexOfEnd < indexOfEscaped &&
-      indexOfEnd < indexOfVarRef
-    ) {
-      if (prefix + value.substring(0, indexOfEnd)) {
-        this.addText(type, value.substring(0, indexOfEnd), prefix);
+
+    case 'interpolation':
+      return this.handleInterpolation(type, value, prefix, escaped, earliest.pos);
+
+    case 'link':
+      return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
+
+    case 'end':
+      if (prefix + value.substring(0, earliest.pos)) {
+        this.addText(type, value.substring(0, earliest.pos), prefix);
       }
       this.ended = true;
-      this.input = value.substr(value.indexOf(']') + 1) + this.input;
+      this.input = value.substr(earliest.pos + 1) + this.input;
       return;
-    }
 
-    if (indexOfVarRef !== Infinity) {
-      if (matchOfVarRef[1]) {
-        // escaped: \#{
-        prefix = prefix + value.substring(0, indexOfVarRef) + '#{';
-        return this.addText(
-          type,
-          value.substring(indexOfVarRef + 3),
-          prefix,
-          escaped + 1
+    case 'variable':
+      return this.handleVariableRef(type, value, prefix, escaped, earliest.match);
+
+    }
+  }
+
+  spawnChildLexer(input) {
+    const child = new this.constructor(input, {
+      filename: this.filename,
+      interpolated: true,
+      startingLine: this.lineno,
+      startingColumn: this.colno,
+    });
+    try {
+      child.getTokens();
+    } catch (ex) {
+      if (ex.code && /^PUGNEUM:/.test(ex.code)) {
+        this.colno = ex.column;
+        this.error(ex.code.substr(8), ex.msg);
+      }
+      throw ex;
+    }
+    return child;
+  }
+
+  handleInterpolation(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+    tok = this.tok('start-interpolation');
+    this.incrementColumn(2);
+    this.tokens.push(this.tokEnd(tok));
+    const child = this.spawnChildLexer(value.substr(pos + 2));
+    this.colno = child.colno;
+    this.tokens = this.tokens.concat(child.tokens);
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+    this.addText(type, child.input);
+  }
+
+  handleLinkShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const linkRest = value.substring(pos + 1); // from ( onwards
+    let range;
+    try {
+      range = parseUntil(linkRest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for @() link shorthand.'
         );
       }
-      let before = value.substr(0, indexOfVarRef);
-      if (prefix || before) {
-        before = prefix + before;
-        tok = this.tok(type, before);
-        this.incrementColumn(before.length + escaped);
-        this.tokens.push(this.tokEnd(tok));
+      throw ex;
+    }
+    const content = range.src;
+    const afterLink = linkRest.substring(range.end + 1);
+
+    let url, linkText;
+    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
+      const quote = content[0];
+      const endQuote = content.indexOf(quote, 1);
+      if (endQuote === -1) {
+        this.error('INVALID_LINK', 'Unclosed quote in @() link URL.');
       }
-
-      tok = this.tok('start-interpolation');
-      this.incrementColumn(2);
-      this.tokens.push(this.tokEnd(tok));
-
-      tok = this.tok('variable', matchOfVarRef[2]);
-      this.tokens.push(tok);
-      this.incrementColumn(matchOfVarRef[2].length);
-
-      tok = this.tok('end-interpolation');
-      this.incrementColumn(1);
-      this.tokens.push(this.tokEnd(tok));
-
-      value = value.substr(value.indexOf('}') + 1);
+      url = content.substring(1, endQuote);
+      const after = content.substring(endQuote + 1).trimStart();
+      linkText = after || url;
+    } else {
+      const spaceIdx = content.indexOf(' ');
+      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
+        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
+        linkText = url;
+      } else {
+        url = content.substring(0, spaceIdx);
+        linkText = content.substring(spaceIdx + 1);
+      }
     }
 
-    value = prefix + value;
-    tok = this.tok(type, value);
-    this.incrementColumn(value.length + escaped);
+    // Desugar @(url text) to equivalent #[a(href='url') text] and use child lexer
+    const quote = url.includes("'") ? '"' : "'";
+    const escapedUrl = url.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${linkText}]${afterLink}`;
+
+    tok = this.tok('start-interpolation');
+    this.incrementColumn(2); // @(
     this.tokens.push(this.tokEnd(tok));
+    const child = this.spawnChildLexer(childInput);
+    // Correct column to actual source position (synthesized input has different length)
+    this.incrementColumn(content.length);
+    this.tokens = this.tokens.concat(child.tokens);
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1); // )
+    this.tokens.push(this.tokEnd(tok));
+    this.addText(type, child.input);
+  }
+
+  handleVariableRef(type, value, prefix, escaped, match) {
+    let tok;
+    let before = value.substr(0, match.index);
+    if (prefix || before) {
+      before = prefix + before;
+      tok = this.tok(type, before);
+      this.incrementColumn(before.length + escaped);
+      this.tokens.push(this.tokEnd(tok));
+    }
+
+    tok = this.tok('start-interpolation');
+    this.incrementColumn(2);
+    this.tokens.push(this.tokEnd(tok));
+
+    tok = this.tok('variable', match[2]);
+    this.tokens.push(tok);
+    this.incrementColumn(match[2].length);
+
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+
+    this.addText(type, value.substr(match.index + match[0].length));
   }
 
   text() {
@@ -1165,14 +1246,72 @@ class Lexer {
       this.consume(stringPtr);
       while (this.input.length === 0 && tokens[tokens.length - 1] === '')
         tokens.pop();
-      tokens.forEach(
+
+      // Merge lines with unclosed #[...] or @(...) constructs so that
+      // inline elements can span multiple lines in text blocks.
+      const mergedTokens = [];
+      const mergedIndent = [];
+      const mergedLines = [];
+      let pendingMerge = null;
+      let pendingMergeLines = 0;
+      let pendingMergeIndent = 0;
+      const ms = { interp: 0, link: 0, paren: 0, sq: false, dq: false };
+
+      for (let j = 0; j < tokens.length; j++) {
+        if (pendingMerge !== null) {
+          pendingMerge += ' ' + tokens[j].trimStart();
+        } else {
+          pendingMerge = tokens[j];
+          pendingMergeIndent = j;
+        }
+        pendingMergeLines++;
+
+        // Scan line to track interpolation/link depth
+        for (let k = 0; k < tokens[j].length; k++) {
+          const ch = tokens[j][k];
+          if (ch === '\\') { k++; continue; }
+          if (ch === "'" && !ms.dq) { ms.sq = !ms.sq; continue; }
+          if (ch === '"' && !ms.sq) { ms.dq = !ms.dq; continue; }
+          if (ms.sq || ms.dq) continue;
+          if (ch === '#' && tokens[j][k + 1] === '[') { ms.interp++; k++; continue; }
+          if (ch === ']' && ms.interp > 0) { ms.interp--; continue; }
+          if (ch === '@' && tokens[j][k + 1] === '(') { ms.link++; k++; continue; }
+          if (ms.link > 0) {
+            if (ch === '(') { ms.paren++; continue; }
+            if (ch === ')') {
+              if (ms.paren > 0) ms.paren--;
+              else ms.link--;
+              continue;
+            }
+          }
+        }
+
+        if (ms.interp <= 0 && ms.link <= 0) {
+          mergedTokens.push(pendingMerge);
+          mergedIndent.push(token_indent[pendingMergeIndent]);
+          mergedLines.push(pendingMergeLines);
+          pendingMerge = null;
+          pendingMergeLines = 0;
+          ms.interp = 0; ms.link = 0; ms.paren = 0; ms.sq = false; ms.dq = false;
+        }
+      }
+      if (pendingMerge !== null) {
+        mergedTokens.push(pendingMerge);
+        mergedIndent.push(token_indent[pendingMergeIndent]);
+        mergedLines.push(pendingMergeLines);
+      }
+
+      mergedTokens.forEach(
         function(token, i) {
           let tok;
           this.incrementLine(1);
           if (i !== 0) tok = this.tok('newline');
-          if (token_indent[i]) this.incrementColumn(indents);
+          if (mergedIndent[i]) this.incrementColumn(indents);
           if (tok) this.tokens.push(this.tokEnd(tok));
           this.addText('text', token);
+          if (mergedLines[i] > 1) {
+            this.incrementLine(mergedLines[i] - 1);
+          }
         }.bind(this)
       );
       this.tokens.push(this.tokEnd(this.tok('end-pipeless-text')));

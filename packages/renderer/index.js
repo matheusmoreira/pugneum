@@ -179,13 +179,28 @@ class Compiler {
   }
 
   visitAttributes(attrs) {
-    for (let len = attrs.length, i = 0; i < len; ++i) {
-      const attr = attrs[i];
+    const classes = [];
+    const others = [];
+    for (const attr of attrs) {
+      if (attr.name === 'class') {
+        classes.push(attr.val);
+      } else {
+        others.push(attr);
+      }
+    }
+    if (classes.length > 0) {
+      this.buffer(' class="');
+      this.buffer(classes.join(' ').replace(/"/g, '&quot;'));
+      this.buffer('"');
+    }
+    for (const attr of others) {
       this.buffer(' ');
       this.buffer(attr.name);
-      this.buffer('="');
-      this.buffer(attr.val);
-      this.buffer('"');
+      if (attr.val !== true) {
+        this.buffer('="');
+        this.buffer(String(attr.val).replace(/"/g, '&quot;'));
+        this.buffer('"');
+      }
     }
   }
 

@@ -1,0 +1,9 @@
+p @(/contact contact us)
+p @(https://example.com)
+p Visit @(https://example.com our site) today.
+p @(mailto:hi@example.com Email us)
+p @(/save).button save
+p.
+  Text with @(/about the about page) inside.
+p \@(not a link)
+p #[em check @(/docs the docs) out]

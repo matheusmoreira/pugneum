@@ -57,7 +57,7 @@ describe('render()', () => {
   });
 
   it('should render multiple classes', () => {
-    expect(pg.render('.a.b.c')).toBe('<!DOCTYPE html><div class="a" class="b" class="c"></div>');
+    expect(pg.render('.a.b.c')).toBe('<!DOCTYPE html><div class="a b c"></div>');
   });
 
   it('should render boolean attributes', () => {

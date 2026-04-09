@@ -742,10 +742,10 @@ class Lexer {
    * Block prepend.
    */
 
-  prepend() {
+  blockDirective(regexp, mode) {
     let captures;
-    if ((captures = /^(?:block +)?prepend +([^\n]+)/.exec(this.input))) {
-      let name =captures[1].trim();
+    if ((captures = regexp.exec(this.input))) {
+      let name = captures[1].trim();
       let comment = '';
       if (name.indexOf('//') !== -1) {
         comment =
@@ -757,11 +757,11 @@ class Lexer {
         name = name.split('//')[0].trim();
       }
       if (!name) return;
-      const tok =this.tok('block', name);
-      let len =captures[0].length - comment.length;
+      const tok = this.tok('block', name);
+      let len = captures[0].length - comment.length;
       while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
       this.incrementColumn(len);
-      tok.mode = 'prepend';
+      tok.mode = mode;
       this.tokens.push(this.tokEnd(tok));
       this.consume(captures[0].length - comment.length);
       this.incrementColumn(captures[0].length - comment.length - len);
@@ -769,66 +769,16 @@ class Lexer {
     }
   }
 
-  /**
-   * Block append.
-   */
+  prepend() {
+    return this.blockDirective(/^(?:block +)?prepend +([^\n]+)/, 'prepend');
+  }
 
   append() {
-    let captures;
-    if ((captures = /^(?:block +)?append +([^\n]+)/.exec(this.input))) {
-      let name =captures[1].trim();
-      let comment = '';
-      if (name.indexOf('//') !== -1) {
-        comment =
-          '//' +
-          name
-            .split('//')
-            .slice(1)
-            .join('//');
-        name = name.split('//')[0].trim();
-      }
-      if (!name) return;
-      const tok =this.tok('block', name);
-      let len =captures[0].length - comment.length;
-      while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
-      this.incrementColumn(len);
-      tok.mode = 'append';
-      this.tokens.push(this.tokEnd(tok));
-      this.consume(captures[0].length - comment.length);
-      this.incrementColumn(captures[0].length - comment.length - len);
-      return true;
-    }
+    return this.blockDirective(/^(?:block +)?append +([^\n]+)/, 'append');
   }
 
-  /**
-   * Block.
-   */
-
   block() {
-    let captures;
-    if ((captures = /^block +([^\n]+)/.exec(this.input))) {
-      let name =captures[1].trim();
-      let comment = '';
-      if (name.indexOf('//') !== -1) {
-        comment =
-          '//' +
-          name
-            .split('//')
-            .slice(1)
-            .join('//');
-        name = name.split('//')[0].trim();
-      }
-      if (!name) return;
-      const tok =this.tok('block', name);
-      let len =captures[0].length - comment.length;
-      while (whitespaceRe.test(this.input.charAt(len - 1))) len--;
-      this.incrementColumn(len);
-      tok.mode = 'replace';
-      this.tokens.push(this.tokEnd(tok));
-      this.consume(captures[0].length - comment.length);
-      this.incrementColumn(captures[0].length - comment.length - len);
-      return true;
-    }
+    return this.blockDirective(/^block +([^\n]+)/, 'replace');
   }
 
   /**

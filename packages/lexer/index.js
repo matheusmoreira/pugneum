@@ -40,10 +40,37 @@ const attributeName = new RegExp('[^' + control + attributeNamePunctuation + non
 
 const whitespaceRe = /[ \n\t]/;
 
+const bracketPairs = {'(': ')', '{': '}', '[': ']'};
+const closingBrackets = {')': '(', '}': '{', ']': '['};
+
 /**
- * Find the index of the closing bracket that matches the opening bracket
- * at position `start` in `str`. Respects quoted strings (single and double)
- * and escaped characters. Returns an object with an `end` property.
+ * Advance past one character inside a quote-aware bracket scan.
+ * Handles escape sequences and quote toggling.
+ *
+ * @param {string} str - The string being scanned
+ * @param {number} i - Current index
+ * @param {string|null} quote - Current quote character, or null if not in a quote
+ * @returns {{i: number, quote: string|null}} Updated index and quote state
+ */
+function scanChar(str, i, quote) {
+  const c = str[i];
+
+  if (quote) {
+    if (c === '\\') return {i: i + 2, quote};
+    if (c === quote) return {i: i + 1, quote: null};
+    return {i: i + 1, quote};
+  }
+
+  if (c === '\'' || c === '"' || c === '`') {
+    return {i: i + 1, quote: c};
+  }
+
+  return {i: i + 1, quote: null};
+}
+
+/**
+ * Find the closing bracket matching the opener at position `start - 1`.
+ * Respects quoted strings and escaped characters.
  *
  * @param {string} str - The string to search
  * @param {string} end - The closing bracket character to find
@@ -54,27 +81,15 @@ function parseUntil(str, end, start) {
   let depth = 1;
   let i = start;
   let quote = null;
+  const open = closingBrackets[end];
 
-  for (; i < str.length; i++) {
+  while (i < str.length) {
     const c = str[i];
 
-    if (quote) {
-      if (c === '\\') {
-        i++; // skip escaped character
-        continue;
-      }
-      if (c === quote) {
-        quote = null;
-      }
+    if (quote || c === '\'' || c === '"' || c === '`') {
+      ({i, quote} = scanChar(str, i, quote));
       continue;
     }
-
-    if (c === '\'' || c === '"' || c === '`') {
-      quote = c;
-      continue;
-    }
-
-    const open = {')': '(', '}': '{', ']': '['}[end];
 
     if (c === open) {
       depth++;
@@ -84,9 +99,9 @@ function parseUntil(str, end, start) {
         return {end: i, src: str.substring(start, i)};
       }
     }
+    i++;
   }
 
-  // Reached end of string without finding the closing bracket
   const err = new Error(
     'The end of the string reached with no closing bracket ' + end + ' found.'
   );
@@ -105,34 +120,24 @@ function parseUntil(str, end, start) {
 function isNesting(str) {
   const stack = [];
   let quote = null;
-  const pairs = {'(': ')', '{': '}', '[': ']'};
+  let i = 0;
 
-  for (let i = 0; i < str.length; i++) {
+  while (i < str.length) {
     const c = str[i];
 
-    if (quote) {
-      if (c === '\\') {
-        i++;
-        continue;
-      }
-      if (c === quote) {
-        quote = null;
-      }
+    if (quote || c === '\'' || c === '"' || c === '`') {
+      ({i, quote} = scanChar(str, i, quote));
       continue;
     }
 
-    if (c === '\'' || c === '"' || c === '`') {
-      quote = c;
-      continue;
-    }
-
-    if (pairs[c]) {
-      stack.push(pairs[c]);
-    } else if (c === ')' || c === '}' || c === ']') {
+    if (bracketPairs[c]) {
+      stack.push(bracketPairs[c]);
+    } else if (closingBrackets[c]) {
       if (stack.length === 0 || stack.pop() !== c) {
-        return true; // mismatched
+        return true;
       }
     }
+    i++;
   }
 
   return stack.length !== 0 || quote !== null;

@@ -143,6 +143,76 @@ function isNesting(str) {
   return stack.length !== 0 || quote !== null;
 }
 
+/**
+ * Check whether a line has unclosed #[...] or @(...) interpolation constructs.
+ * Returns true if all interpolations are closed (line is complete).
+ */
+function interpolationsAreClosed(str, state) {
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (ch === '\\') { i++; continue; }
+    if (ch === "'" && !state.dq) { state.sq = !state.sq; continue; }
+    if (ch === '"' && !state.sq) { state.dq = !state.dq; continue; }
+    if (state.sq || state.dq) continue;
+    if (ch === '#' && str[i + 1] === '[') { state.interp++; i++; continue; }
+    if (ch === ']' && state.interp > 0) { state.interp--; continue; }
+    if (ch === '@' && str[i + 1] === '(') { state.link++; i++; continue; }
+    if (state.link > 0) {
+      if (ch === '(') { state.paren++; continue; }
+      if (ch === ')') {
+        if (state.paren > 0) state.paren--;
+        else state.link--;
+        continue;
+      }
+    }
+  }
+  return state.interp <= 0 && state.link <= 0;
+}
+
+/**
+ * Merge consecutive lines that have unclosed #[...] or @(...) constructs
+ * into single entries so multi-line inline elements are handled as one unit.
+ *
+ * Returns an array of {text, indented, lines} objects.
+ */
+function mergeMultiLineInterpolations(tokens, token_indent) {
+  const result = [];
+  let pendingText = null;
+  let pendingLines = 0;
+  let pendingIndentIdx = 0;
+  const state = { interp: 0, link: 0, paren: 0, sq: false, dq: false };
+
+  for (let j = 0; j < tokens.length; j++) {
+    if (pendingText !== null) {
+      pendingText += ' ' + tokens[j].trimStart();
+    } else {
+      pendingText = tokens[j];
+      pendingIndentIdx = j;
+    }
+    pendingLines++;
+
+    if (interpolationsAreClosed(tokens[j], state)) {
+      result.push({
+        text: pendingText,
+        indented: token_indent[pendingIndentIdx],
+        lines: pendingLines,
+      });
+      pendingText = null;
+      pendingLines = 0;
+      state.interp = 0; state.link = 0; state.paren = 0;
+      state.sq = false; state.dq = false;
+    }
+  }
+  if (pendingText !== null) {
+    result.push({
+      text: pendingText,
+      indented: token_indent[pendingIndentIdx],
+      lines: pendingLines,
+    });
+  }
+  return result;
+}
+
 class Lexer {
   constructor(str, options) {
     options = options || {};
@@ -1205,71 +1275,19 @@ class Lexer {
 
       // Merge lines with unclosed #[...] or @(...) constructs so that
       // inline elements can span multiple lines in text blocks.
-      const mergedTokens = [];
-      const mergedIndent = [];
-      const mergedLines = [];
-      let pendingMerge = null;
-      let pendingMergeLines = 0;
-      let pendingMergeIndent = 0;
-      const ms = { interp: 0, link: 0, paren: 0, sq: false, dq: false };
+      const merged = mergeMultiLineInterpolations(tokens, token_indent);
 
-      for (let j = 0; j < tokens.length; j++) {
-        if (pendingMerge !== null) {
-          pendingMerge += ' ' + tokens[j].trimStart();
-        } else {
-          pendingMerge = tokens[j];
-          pendingMergeIndent = j;
-        }
-        pendingMergeLines++;
-
-        // Scan line to track interpolation/link depth
-        for (let k = 0; k < tokens[j].length; k++) {
-          const ch = tokens[j][k];
-          if (ch === '\\') { k++; continue; }
-          if (ch === "'" && !ms.dq) { ms.sq = !ms.sq; continue; }
-          if (ch === '"' && !ms.sq) { ms.dq = !ms.dq; continue; }
-          if (ms.sq || ms.dq) continue;
-          if (ch === '#' && tokens[j][k + 1] === '[') { ms.interp++; k++; continue; }
-          if (ch === ']' && ms.interp > 0) { ms.interp--; continue; }
-          if (ch === '@' && tokens[j][k + 1] === '(') { ms.link++; k++; continue; }
-          if (ms.link > 0) {
-            if (ch === '(') { ms.paren++; continue; }
-            if (ch === ')') {
-              if (ms.paren > 0) ms.paren--;
-              else ms.link--;
-              continue;
-            }
-          }
-        }
-
-        if (ms.interp <= 0 && ms.link <= 0) {
-          mergedTokens.push(pendingMerge);
-          mergedIndent.push(token_indent[pendingMergeIndent]);
-          mergedLines.push(pendingMergeLines);
-          pendingMerge = null;
-          pendingMergeLines = 0;
-          ms.interp = 0; ms.link = 0; ms.paren = 0; ms.sq = false; ms.dq = false;
+      for (let mi = 0; mi < merged.length; mi++) {
+        let tok;
+        this.incrementLine(1);
+        if (mi !== 0) tok = this.tok('newline');
+        if (merged[mi].indented) this.incrementColumn(indents);
+        if (tok) this.tokens.push(this.tokEnd(tok));
+        this.addText('text', merged[mi].text);
+        if (merged[mi].lines > 1) {
+          this.incrementLine(merged[mi].lines - 1);
         }
       }
-      if (pendingMerge !== null) {
-        mergedTokens.push(pendingMerge);
-        mergedIndent.push(token_indent[pendingMergeIndent]);
-        mergedLines.push(pendingMergeLines);
-      }
-
-      mergedTokens.forEach(
-        function(token, i) {
-          let tok;
-          this.incrementLine(1);
-          if (i !== 0) tok = this.tok('newline');
-          if (mergedIndent[i]) this.incrementColumn(indents);
-          if (tok) this.tokens.push(this.tokEnd(tok));
-          this.addText('text', token);
-          if (mergedLines[i] > 1) {
-            this.incrementLine(mergedLines[i] - 1);
-          }
-        }.bind(this)
-      );
       this.tokens.push(this.tokEnd(this.tok('end-pipeless-text')));
       return true;
     }

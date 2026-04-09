@@ -570,6 +570,52 @@ class Lexer {
     prefix = prefix || '';
     escaped = escaped || 0;
 
+    // Process leading escape sequences iteratively instead of recursing.
+    // Each iteration consumes one \#[, \@(, or \#{ and accumulates the
+    // literal characters into prefix.
+    for (;;) {
+      const earliest = this.findEarliestCandidate(value);
+
+      if (!earliest) {
+        value = prefix + value;
+        tok = this.tok(type, value);
+        this.incrementColumn(value.length + escaped);
+        this.tokens.push(this.tokEnd(tok));
+        return;
+      }
+
+      if (earliest.kind !== 'escaped') break;
+
+      prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
+      value = value.substring(earliest.pos + 3);
+      escaped++;
+    }
+
+    const earliest = this.findEarliestCandidate(value);
+
+    switch (earliest.kind) {
+
+    case 'interpolation':
+      return this.handleInterpolation(type, value, prefix, escaped, earliest.pos);
+
+    case 'link':
+      return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
+
+    case 'end':
+      if (prefix + value.substring(0, earliest.pos)) {
+        this.addText(type, value.substring(0, earliest.pos), prefix);
+      }
+      this.ended = true;
+      this.input = value.substr(earliest.pos + 1) + this.input;
+      return;
+
+    case 'variable':
+      return this.handleVariableRef(type, value, prefix, escaped, earliest.match);
+
+    }
+  }
+
+  findEarliestCandidate(value) {
     const candidates = [];
 
     if (this.interpolated) {
@@ -602,46 +648,10 @@ class Lexer {
       }
     }
 
-    if (candidates.length === 0) {
-      value = prefix + value;
-      tok = this.tok(type, value);
-      this.incrementColumn(value.length + escaped);
-      this.tokens.push(this.tokEnd(tok));
-      return;
-    }
+    if (candidates.length === 0) return null;
 
     candidates.sort((a, b) => a.pos - b.pos);
-    const earliest = candidates[0];
-
-    switch (earliest.kind) {
-
-    case 'escaped':
-      prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
-      return this.addText(
-        type,
-        value.substring(earliest.pos + 3),
-        prefix,
-        escaped + 1
-      );
-
-    case 'interpolation':
-      return this.handleInterpolation(type, value, prefix, escaped, earliest.pos);
-
-    case 'link':
-      return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
-
-    case 'end':
-      if (prefix + value.substring(0, earliest.pos)) {
-        this.addText(type, value.substring(0, earliest.pos), prefix);
-      }
-      this.ended = true;
-      this.input = value.substr(earliest.pos + 1) + this.input;
-      return;
-
-    case 'variable':
-      return this.handleVariableRef(type, value, prefix, escaped, earliest.match);
-
-    }
+    return candidates[0];
   }
 
   spawnChildLexer(input) {

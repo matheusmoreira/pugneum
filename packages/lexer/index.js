@@ -317,29 +317,29 @@ class Lexer {
     }
   }
   scanEndOfLine(regexp, type) {
-    let captures;
-    if ((captures = regexp.exec(this.input))) {
-      let whitespaceLength = 0;
-      let whitespace;
-      let tok;
-      if ((whitespace = /^([ ]+)([^ ]*)/.exec(captures[0]))) {
-        whitespaceLength = whitespace[1].length;
-        this.incrementColumn(whitespaceLength);
-      }
-      const newInput =this.input.substr(captures[0].length);
-      if (newInput[0] === ':') {
-        this.input = newInput;
-        tok = this.tok(type, captures[1]);
-        this.incrementColumn(captures[0].length - whitespaceLength);
-        return tok;
-      }
-      if (/^[ \t]*(\n|$)/.test(newInput)) {
-        this.input = newInput.substr(/^[ \t]*/.exec(newInput)[0].length);
-        tok = this.tok(type, captures[1]);
-        this.incrementColumn(captures[0].length - whitespaceLength);
-        return tok;
-      }
+    const captures = regexp.exec(this.input);
+    if (!captures) return;
+
+    const rest = this.input.substr(captures[0].length);
+    const followedByColon = rest[0] === ':';
+    const followedByEndOfLine = /^[ \t]*(\n|$)/.test(rest);
+
+    if (!followedByColon && !followedByEndOfLine) return;
+
+    // Match accepted — consume input and emit token
+    const leadingSpaces = /^([ ]+)/.exec(captures[0]);
+    const whitespaceLength = leadingSpaces ? leadingSpaces[1].length : 0;
+    this.incrementColumn(whitespaceLength);
+
+    if (followedByColon) {
+      this.input = rest;
+    } else {
+      this.input = rest.substr(/^[ \t]*/.exec(rest)[0].length);
     }
+
+    const tok = this.tok(type, captures[1]);
+    this.incrementColumn(captures[0].length - whitespaceLength);
+    return tok;
   }
 
   bracketExpression(skip) {

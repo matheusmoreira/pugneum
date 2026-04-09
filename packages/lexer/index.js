@@ -788,7 +788,7 @@ class Lexer {
       );
     }
     const content = inner.substring(0, end);
-    const afterLink = inner.substring(end + 1);
+    let afterLink = inner.substring(end + 1);
 
     // Extract identifier (first word) and optional link text
     const spaceIdx = content.indexOf(' ');
@@ -821,6 +821,16 @@ class Lexer {
     tok = this.tok('end-ref-link');
     this.incrementColumn(1); // ]
     this.tokens.push(this.tokEnd(tok));
+
+    // Support (attrs) immediately after ]: @[name text](class="x")
+    if (afterLink[0] === '(') {
+      const savedInput = this.input;
+      this.input = afterLink;
+      this.attrs();
+      afterLink = this.input;
+      this.input = savedInput;
+    }
+
     this.addText(type, afterLink);
   }
 

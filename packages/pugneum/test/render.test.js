@@ -136,6 +136,27 @@ describe('reference links', () => {
   it('should throw for undefined references', () => {
     expect(() => pg.render('p @[missing]')).toThrow(/Undefined reference 'missing'/);
   });
+
+  it('should support (attrs) after @[...]', () => {
+    const input = 'references\n  ex https://example.com\n\np @[ex click](class="cite")';
+    expect(pg.render(input)).toBe(
+      '<!DOCTYPE html><p><a class="cite" href="https://example.com">click</a></p>'
+    );
+  });
+
+  it('should support multiple custom attributes', () => {
+    const input = 'references\n  ex https://example.com\n\np @[ex click](target="_blank" rel="noopener")';
+    expect(pg.render(input)).toBe(
+      '<!DOCTYPE html><p><a href="https://example.com" target="_blank" rel="noopener">click</a></p>'
+    );
+  });
+
+  it('should support (attrs) with default text', () => {
+    const input = 'references\n  ex https://example.com\n\np @[ex](class="external")';
+    expect(pg.render(input)).toBe(
+      '<!DOCTYPE html><p><a class="external" href="https://example.com">ex</a></p>'
+    );
+  });
 });
 
 describe('renderFile()', () => {

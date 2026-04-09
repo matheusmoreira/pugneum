@@ -237,17 +237,22 @@ function resolveReferences(ast) {
           };
         }
 
+        const attrs = [{
+          name: 'href',
+          val: url,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+          mustEscape: false,
+        }];
+        if (node.attrs) {
+          attrs.push.apply(attrs, node.attrs);
+        }
+
         replace({
           type: 'Tag',
           name: 'a',
-          attrs: [{
-            name: 'href',
-            val: url,
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-            mustEscape: false,
-          }],
+          attrs: attrs,
           attributeBlocks: [],
           block: block,
           isInline: true,

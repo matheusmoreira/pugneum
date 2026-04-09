@@ -581,10 +581,17 @@ class Parser {
     }
     this.expect('end-ref-link');
 
+    // Collect optional (attrs) after ]
+    let attrs = [];
+    if (this.peek().type === 'start-attributes') {
+      attrs = this.attrs();
+    }
+
     return {
       type: 'ReferenceLink',
       name: name,
       block: block,
+      attrs: attrs,
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,

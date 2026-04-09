@@ -9712,6 +9712,7 @@ exports[`reference-links.pg 1`] = `
             "val": "",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links.pg",
               "line": 5,
@@ -9756,6 +9757,7 @@ exports[`reference-links.pg 1`] = `
             "val": "",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links.pg",
               "line": 6,
@@ -9808,6 +9810,7 @@ exports[`reference-links.pg 1`] = `
             "val": "I read ",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links.pg",
               "line": 7,
@@ -9860,6 +9863,7 @@ exports[`reference-links.pg 1`] = `
             "val": "See ",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links.pg",
               "line": 8,
@@ -9880,6 +9884,7 @@ exports[`reference-links.pg 1`] = `
             "val": " and ",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links.pg",
               "line": 8,
@@ -9992,6 +9997,7 @@ exports[`reference-links-forward.pg 1`] = `
             "val": "",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links-forward.pg",
               "line": 1,
@@ -10091,6 +10097,7 @@ exports[`reference-links-text-block.pg 1`] = `
             "val": "I read ",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links-text-block.pg",
               "line": 6,
@@ -10144,6 +10151,7 @@ exports[`reference-links-text-block.pg 1`] = `
             "val": "See also ",
           },
           {
+            "attrs": [],
             "block": {
               "filename": "reference-links-text-block.pg",
               "line": 10,

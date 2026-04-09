@@ -23592,6 +23592,1125 @@ exports[`quotes.pg 1`] = `
 ]
 `;
 
+exports[`reference-links.pg 1`] = `
+[
+  {
+    "loc": {
+      "end": {
+        "column": 11,
+        "line": 1,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "references",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 87,
+        "line": 2,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 2,
+      },
+    },
+    "name": "nystrom",
+    "type": "ref-def",
+    "url": "https://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 104,
+        "line": 3,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 3,
+      },
+    },
+    "name": "sicp",
+    "type": "ref-def",
+    "url": "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 5,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 5,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "nystrom",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 13,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 12,
+        "line": 5,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 13,
+        "line": 5,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 13,
+        "line": 5,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 6,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 6,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 6,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "nystrom",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 43,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 5,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "Baby's First Garbage Collector",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 44,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 43,
+        "line": 6,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 44,
+        "line": 6,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 44,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 7,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 7,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 10,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 7,
+      },
+    },
+    "type": "text",
+    "val": "I read ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 12,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 10,
+        "line": 7,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "nystrom",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 31,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 12,
+        "line": 7,
+      },
+    },
+    "type": "text",
+    "val": "the article",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 32,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 31,
+        "line": 7,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 56,
+        "line": 7,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 32,
+        "line": 7,
+      },
+    },
+    "type": "text",
+    "val": " and it changed my life.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 8,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 8,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 7,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 3,
+        "line": 8,
+      },
+    },
+    "type": "text",
+    "val": "See ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 9,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 7,
+        "line": 8,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "nystrom",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 17,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 16,
+        "line": 8,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 22,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 17,
+        "line": 8,
+      },
+    },
+    "type": "text",
+    "val": " and ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 24,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 22,
+        "line": 8,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "sicp",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 29,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 28,
+        "line": 8,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 39,
+        "line": 8,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 29,
+        "line": 8,
+      },
+    },
+    "type": "text",
+    "val": " for more.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 9,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 9,
+      },
+      "filename": "reference-links.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
+exports[`reference-links-escape.pg 1`] = `
+[
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 1,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 16,
+        "line": 1,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 3,
+        "line": 1,
+      },
+    },
+    "type": "text",
+    "val": "@[not a ref]",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 2,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 2,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 1,
+        "line": 2,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 25,
+        "line": 2,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 3,
+        "line": 2,
+      },
+    },
+    "type": "text",
+    "val": "text @[also not] more",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 3,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 1,
+        "line": 3,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 3,
+      },
+      "filename": "reference-links-escape.pg",
+      "start": {
+        "column": 1,
+        "line": 3,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
+exports[`reference-links-forward.pg 1`] = `
+[
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 3,
+        "line": 1,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 5,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 3,
+        "line": 1,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "example",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 23,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 5,
+        "line": 1,
+      },
+    },
+    "type": "text",
+    "val": "click here",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 24,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 23,
+        "line": 1,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 24,
+        "line": 1,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 24,
+        "line": 1,
+      },
+    },
+    "type": "text",
+    "val": "",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 3,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 1,
+        "line": 3,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 11,
+        "line": 3,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 1,
+        "line": 3,
+      },
+    },
+    "type": "references",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 30,
+        "line": 4,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 3,
+        "line": 4,
+      },
+    },
+    "name": "example",
+    "type": "ref-def",
+    "url": "https://example.com",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 5,
+      },
+      "filename": "reference-links-forward.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
+exports[`reference-links-text-block.pg 1`] = `
+[
+  {
+    "loc": {
+      "end": {
+        "column": 11,
+        "line": 1,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 1,
+      },
+    },
+    "type": "references",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 87,
+        "line": 2,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 2,
+      },
+    },
+    "name": "nystrom",
+    "type": "ref-def",
+    "url": "https://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 104,
+        "line": 3,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 3,
+      },
+    },
+    "name": "sicp",
+    "type": "ref-def",
+    "url": "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 5,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 5,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 5,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 5,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 2,
+        "line": 5,
+      },
+    },
+    "type": "dot",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 5,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 5,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 10,
+        "line": 6,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "I read ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 12,
+        "line": 6,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 10,
+        "line": 6,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "nystrom",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 50,
+        "line": 6,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 12,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": "Baby's First Garbage Collector",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 51,
+        "line": 6,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 50,
+        "line": 6,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 76,
+        "line": 6,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 51,
+        "line": 6,
+      },
+    },
+    "type": "text",
+    "val": " and it changed my life. ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 8,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 8,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 9,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "newline",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 2,
+        "line": 9,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 9,
+      },
+    },
+    "type": "tag",
+    "val": "p",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 9,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 2,
+        "line": 9,
+      },
+    },
+    "type": "dot",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 3,
+        "line": 9,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 9,
+      },
+    },
+    "type": "start-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 12,
+        "line": 10,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 3,
+        "line": 10,
+      },
+    },
+    "type": "text",
+    "val": "See also ",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 14,
+        "line": 10,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 12,
+        "line": 10,
+      },
+    },
+    "type": "start-ref-link",
+    "val": "sicp",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 68,
+        "line": 10,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 14,
+        "line": 10,
+      },
+    },
+    "type": "text",
+    "val": "Structure and Interpretation of Computer Programs",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 69,
+        "line": 10,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 68,
+        "line": 10,
+      },
+    },
+    "type": "end-ref-link",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 96,
+        "line": 10,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 69,
+        "line": 10,
+      },
+    },
+    "type": "text",
+    "val": " for the classic treatment.",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 11,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 11,
+      },
+    },
+    "type": "end-pipeless-text",
+  },
+  {
+    "loc": {
+      "end": {
+        "column": 1,
+        "line": 11,
+      },
+      "filename": "reference-links-text-block.pg",
+      "start": {
+        "column": 1,
+        "line": 11,
+      },
+    },
+    "type": "eos",
+  },
+]
+`;
+
 exports[`regression.1794.pg 1`] = `
 [
   {

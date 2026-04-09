@@ -185,12 +185,15 @@ class Parser {
         return this.parseExtends();
       case 'include':
         return this.parseInclude();
+      case 'references':
+        return this.parseReferences();
       case 'filter':
         return this.parseFilter();
       case 'comment':
         return this.parseComment();
       case 'text':
       case 'start-interpolation':
+      case 'start-ref-link':
         return this.parseText({block: true});
       case 'text-html':
         return this.initBlock(this.peek().loc.start.line, this.parseTextHtml());
@@ -265,6 +268,9 @@ class Parser {
           this.advance();
           tags.push(this.parseExpr());
           this.expect('end-interpolation');
+          break;
+        case 'start-ref-link':
+          tags.push(this.parseRefLink());
           break;
         default:
           break loop;
@@ -514,6 +520,77 @@ class Parser {
     };
   }
 
+  parseReferences() {
+    const tok = this.expect('references');
+    const definitions = [];
+    while (this.peek().type === 'ref-def') {
+      const def = this.advance();
+      definitions.push({
+        name: def.name,
+        url: def.url,
+        line: def.loc.start.line,
+        column: def.loc.start.column,
+        filename: this.filename,
+      });
+    }
+    return {
+      type: 'References',
+      definitions: definitions,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
+  parseRefLink() {
+    const tok = this.expect('start-ref-link');
+    return this.parseRefLinkContent(tok);
+  }
+
+  parseRefLinkContent(tok) {
+    const name = tok.val;
+    const block = this.emptyBlock(tok.loc.start.line);
+
+    // Collect link text content until end-ref-link
+    while (this.peek().type !== 'end-ref-link') {
+      const next = this.peek();
+      switch (next.type) {
+        case 'text': {
+          const textTok = this.advance();
+          block.nodes.push({
+            type: 'Text',
+            val: textTok.val,
+            line: textTok.loc.start.line,
+            column: textTok.loc.start.column,
+            filename: this.filename,
+          });
+          break;
+        }
+        case 'start-interpolation':
+          this.advance();
+          block.nodes.push(this.parseExpr());
+          this.expect('end-interpolation');
+          break;
+        default:
+          this.error(
+            'INVALID_TOKEN',
+            'Unexpected token in reference link: ' + next.type,
+            next
+          );
+      }
+    }
+    this.expect('end-ref-link');
+
+    return {
+      type: 'ReferenceLink',
+      name: name,
+      block: block,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
   /**
    * include block?
    */
@@ -653,6 +730,9 @@ class Parser {
         case 'start-interpolation':
           block.nodes.push(this.parseExpr());
           this.expect('end-interpolation');
+          break;
+        case 'start-ref-link':
+          block.nodes.push(this.parseRefLinkContent(tok));
           break;
         default:
           this.error(

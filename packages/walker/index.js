@@ -57,6 +57,12 @@ function walkAST(ast, before, after, options) {
       ast.filters = walkAndMergeNodes(ast.filters);
       walkAST(ast.file, before, after, options);
       break;
+    case 'ReferenceLink':
+      if (ast.block) {
+        ast.block = walkAST(ast.block, before, after, options);
+      }
+      break;
+    case 'References':
     case 'BlockComment':
     case 'Comment':
     case 'IncludeFilter':

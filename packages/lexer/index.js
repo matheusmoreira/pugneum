@@ -155,7 +155,11 @@ function interpolationsAreClosed(str, state) {
     if (ch === '"' && !state.sq) { state.dq = !state.dq; continue; }
     if (state.sq || state.dq) continue;
     if (ch === '#' && str[i + 1] === '[') { state.interp++; i++; continue; }
-    if (ch === ']' && state.interp > 0) { state.interp--; continue; }
+    if (ch === '@' && str[i + 1] === '[') { state.ref++; i++; continue; }
+    if (ch === ']') {
+      if (state.ref > 0) { state.ref--; continue; }
+      if (state.interp > 0) { state.interp--; continue; }
+    }
     if (ch === '@' && str[i + 1] === '(') { state.link++; i++; continue; }
     if (state.link > 0) {
       if (ch === '(') { state.paren++; continue; }
@@ -166,7 +170,7 @@ function interpolationsAreClosed(str, state) {
       }
     }
   }
-  return state.interp <= 0 && state.link <= 0;
+  return state.interp <= 0 && state.link <= 0 && state.ref <= 0;
 }
 
 /**
@@ -180,7 +184,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
   let pendingText = null;
   let pendingLines = 0;
   let pendingIndentIdx = 0;
-  const state = { interp: 0, link: 0, paren: 0, sq: false, dq: false };
+  const state = { interp: 0, link: 0, ref: 0, paren: 0, sq: false, dq: false };
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
@@ -199,7 +203,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       });
       pendingText = null;
       pendingLines = 0;
-      state.interp = 0; state.link = 0; state.paren = 0;
+      state.interp = 0; state.link = 0; state.ref = 0; state.paren = 0;
       state.sq = false; state.dq = false;
     }
   }
@@ -601,6 +605,9 @@ class Lexer {
     case 'link':
       return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
 
+    case 'reference':
+      return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
+
     case 'end':
       if (prefix + value.substring(0, earliest.pos)) {
         this.addText(type, value.substring(0, earliest.pos), prefix);
@@ -632,11 +639,17 @@ class Lexer {
       i = value.indexOf('\\@(');
       if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@(' });
 
+      i = value.indexOf('\\@[');
+      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@[' });
+
       i = value.indexOf('#[');
       if (i !== -1) candidates.push({ pos: i, kind: 'interpolation' });
 
       i = value.indexOf('@(');
       if (i !== -1) candidates.push({ pos: i, kind: 'link' });
+
+      i = value.indexOf('@[');
+      if (i !== -1) candidates.push({ pos: i, kind: 'reference' });
 
       const m = /(\\)?#{(\w+)}/.exec(value);
       if (m) {
@@ -747,6 +760,68 @@ class Lexer {
     this.incrementColumn(1); // )
     this.tokens.push(this.tokEnd(tok));
     this.addText(type, child.input);
+  }
+
+  handleRefLink(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const inner = value.substring(pos + 2); // after @[
+    // Find the matching ] accounting for nested #[...] brackets only
+    let depth = 1;
+    let end = -1;
+    for (let i = 0; i < inner.length; i++) {
+      const ch = inner[i];
+      if (ch === '\\') { i++; continue; }
+      if (ch === '#' && inner[i + 1] === '[') { depth++; i++; continue; }
+      if (ch === '[') { depth++; continue; }
+      if (ch === ']') {
+        depth--;
+        if (depth === 0) { end = i; break; }
+      }
+    }
+    if (end === -1) {
+      this.error(
+        'NO_END_BRACKET',
+        'End of line reached with no closing ] for @[] reference link.'
+      );
+    }
+    const content = inner.substring(0, end);
+    const afterLink = inner.substring(end + 1);
+
+    // Extract identifier (first word) and optional link text
+    const spaceIdx = content.indexOf(' ');
+    let name, linkText;
+    if (spaceIdx === -1) {
+      name = content;
+      linkText = null;
+    } else {
+      name = content.substring(0, spaceIdx);
+      linkText = content.substring(spaceIdx + 1);
+    }
+
+    if (!name) {
+      this.error('INVALID_REF_LINK', 'Reference link @[] requires an identifier.');
+    }
+
+    tok = this.tok('start-ref-link');
+    tok.val = name;
+    this.incrementColumn(2); // @[
+    this.tokens.push(this.tokEnd(tok));
+
+    if (linkText) {
+      const textTok = this.tok('text', linkText);
+      this.incrementColumn(name.length + 1 + linkText.length); // name + space + text
+      this.tokens.push(this.tokEnd(textTok));
+    } else {
+      this.incrementColumn(name.length);
+    }
+
+    tok = this.tok('end-ref-link');
+    this.incrementColumn(1); // ]
+    this.tokens.push(this.tokEnd(tok));
+    this.addText(type, afterLink);
   }
 
   handleVariableRef(type, value, prefix, escaped, match) {
@@ -991,6 +1066,71 @@ class Lexer {
       this.tokens.push(this.tokEnd(tok));
       return true;
     }
+  }
+
+  /**
+   * References block.
+   */
+
+  references() {
+    const tok = this.scanEndOfLine(/^references/, 'references');
+    if (tok) {
+      this.tokens.push(this.tokEnd(tok));
+      this.referencesBlock();
+      return true;
+    }
+  }
+
+  referencesBlock() {
+    while (this.blank());
+
+    const captures = this.scanIndentation();
+    const indents = captures && captures[1].length;
+    if (!indents || indents <= this.indentStack[0]) return;
+
+    let stringPtr = 0;
+    let isMatch;
+    do {
+      let i = this.input.substr(stringPtr + 1).indexOf('\n');
+      if (i === -1) i = this.input.length - stringPtr - 1;
+      const str = this.input.substr(stringPtr + 1, i);
+      const lineCaptures = this.indentRe.exec('\n' + str);
+      const lineIndents = lineCaptures && lineCaptures[1].length;
+      isMatch = lineIndents >= indents || !str.trim();
+      if (isMatch) {
+        stringPtr += str.length + 1;
+        const content = str.substr(indents).trim();
+        if (content) {
+          this.incrementLine(1);
+          this.incrementColumn(indents);
+
+          // Parse "name url" or "name 'quoted url'" or 'name "quoted url"'
+          const spaceIdx = content.indexOf(' ');
+          if (spaceIdx === -1) {
+            this.error(
+              'INVALID_REF_DEF',
+              'Reference definition requires both a name and a URL: ' + content
+            );
+          }
+          const name = content.substring(0, spaceIdx);
+          let url = content.substring(spaceIdx + 1).trim();
+
+          // Handle quoted URLs
+          if ((url[0] === "'" || url[0] === '"') && url[url.length - 1] === url[0]) {
+            url = url.substring(1, url.length - 1);
+          }
+
+          const tok = this.tok('ref-def');
+          tok.name = name;
+          tok.url = url;
+          this.incrementColumn(content.length);
+          this.tokens.push(this.tokEnd(tok));
+        } else {
+          this.incrementLine(1);
+        }
+      }
+    } while (this.input.length - stringPtr && isMatch);
+    this.consume(stringPtr);
   }
 
   skipWhitespace(str, i) {
@@ -1335,6 +1475,7 @@ class Lexer {
       this.block() ||
       this.mixinBlock() ||
       this.include() ||
+      this.references() ||
       this.mixin() ||
       this.call() ||
       this.tag() ||

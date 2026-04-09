@@ -23,6 +23,7 @@ function link(ast) {
     }
   }
   ast = applyIncludes(ast);
+  ast = resolveReferences(ast);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -187,6 +188,76 @@ function applyYield(ast, block) {
     defaultYieldLocation(ast).nodes.push(block);
   }
   return ast;
+}
+
+function resolveReferences(ast) {
+  // First pass: collect all reference definitions
+  const definitions = {};
+  walk(ast, function(node) {
+    if (node.type === 'References') {
+      for (const def of node.definitions) {
+        definitions[def.name] = def.url;
+      }
+    }
+  });
+
+  // Second pass: replace ReferenceLink nodes with Tag nodes, remove References nodes
+  return walk(
+    ast,
+    function before(node, replace) {
+      if (node.type === 'References') {
+        // Remove definitions from AST — they produce no output
+        replace([]);
+        return false;
+      }
+      if (node.type === 'ReferenceLink') {
+        const url = definitions[node.name];
+        if (url === undefined) {
+          error(
+            'UNDEFINED_REFERENCE',
+            "Undefined reference '" + node.name + "'",
+            node
+          );
+        }
+
+        // If the block is empty, generate default text from the reference name
+        let block = node.block;
+        if (!block || block.nodes.length === 0) {
+          block = {
+            type: 'Block',
+            nodes: [{
+              type: 'Text',
+              val: node.name,
+              line: node.line,
+              column: node.column,
+              filename: node.filename,
+            }],
+            line: node.line,
+            filename: node.filename,
+          };
+        }
+
+        replace({
+          type: 'Tag',
+          name: 'a',
+          attrs: [{
+            name: 'href',
+            val: url,
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+            mustEscape: false,
+          }],
+          attributeBlocks: [],
+          block: block,
+          isInline: true,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        });
+      }
+    }
+  );
 }
 
 function checkExtendPosition(ast, hasExtends) {

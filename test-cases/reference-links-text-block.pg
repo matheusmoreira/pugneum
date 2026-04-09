@@ -1,0 +1,11 @@
+references
+  nystrom https://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/
+  sicp https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html
+
+p.
+  I read @[nystrom Baby's First Garbage Collector]
+  and it changed my life.
+
+p.
+  See also @[sicp Structure and Interpretation
+  of Computer Programs] for the classic treatment.

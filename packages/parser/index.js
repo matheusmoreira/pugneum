@@ -879,6 +879,8 @@ class Parser {
     // (text | ':')?
     switch (this.peek().type) {
       case 'text':
+      case 'start-interpolation':
+      case 'start-ref-link':
         const text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);

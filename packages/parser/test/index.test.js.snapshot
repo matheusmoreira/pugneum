@@ -7592,7 +7592,14 @@ exports[`mixin-optional-args.pg 1`] = `
                   "type": "Variable",
                   "name": "text",
                   "line": 2,
-                  "column": 39,
+                  "column": 42,
+                  "filename": "mixin-optional-args.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "",
+                  "line": 2,
+                  "column": 47,
                   "filename": "mixin-optional-args.pg"
                 }
               ],
@@ -7888,7 +7895,14 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
                   "type": "Variable",
                   "name": "text",
                   "line": 2,
-                  "column": 39,
+                  "column": 42,
+                  "filename": "mixin-optional-attr-omission.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "",
+                  "line": 2,
+                  "column": 47,
                   "filename": "mixin-optional-attr-omission.pg"
                 }
               ],
@@ -8083,7 +8097,14 @@ exports[`mixin-variables.pg 1`] = `
                   "type": "Variable",
                   "name": "contents",
                   "line": 2,
-                  "column": 5,
+                  "column": 8,
+                  "filename": "mixin-variables.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "",
+                  "line": 2,
+                  "column": 17,
                   "filename": "mixin-variables.pg"
                 }
               ],

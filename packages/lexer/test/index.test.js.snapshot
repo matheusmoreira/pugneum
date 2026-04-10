@@ -19054,11 +19054,50 @@ exports[`mixin-optional-args.pg 1`] = `
     }
   },
   {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 40
+      },
+      "filename": "mixin-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 42
+      }
+    }
+  },
+  {
     "type": "variable",
     "loc": {
       "start": {
         "line": 2,
-        "column": 39
+        "column": 42
+      },
+      "filename": "mixin-optional-args.pg"
+    },
+    "val": "text"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 46
+      },
+      "filename": "mixin-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 47
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -19066,7 +19105,7 @@ exports[`mixin-optional-args.pg 1`] = `
         "column": 47
       }
     },
-    "val": "text"
+    "val": ""
   },
   {
     "type": "outdent",
@@ -19721,11 +19760,50 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     }
   },
   {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 40
+      },
+      "filename": "mixin-optional-attr-omission.pg",
+      "end": {
+        "line": 2,
+        "column": 42
+      }
+    }
+  },
+  {
     "type": "variable",
     "loc": {
       "start": {
         "line": 2,
-        "column": 39
+        "column": 42
+      },
+      "filename": "mixin-optional-attr-omission.pg"
+    },
+    "val": "text"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 46
+      },
+      "filename": "mixin-optional-attr-omission.pg",
+      "end": {
+        "line": 2,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 47
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
@@ -19733,7 +19811,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
         "column": 47
       }
     },
-    "val": "text"
+    "val": ""
   },
   {
     "type": "outdent",
@@ -20093,11 +20171,50 @@ exports[`mixin-variables.pg 1`] = `
     "val": "li"
   },
   {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 6
+      },
+      "filename": "mixin-variables.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
     "type": "variable",
     "loc": {
       "start": {
         "line": 2,
-        "column": 5
+        "column": 8
+      },
+      "filename": "mixin-variables.pg"
+    },
+    "val": "contents"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 16
+      },
+      "filename": "mixin-variables.pg",
+      "end": {
+        "line": 2,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 17
       },
       "filename": "mixin-variables.pg",
       "end": {
@@ -20105,7 +20222,7 @@ exports[`mixin-variables.pg 1`] = `
         "column": 17
       }
     },
-    "val": "contents"
+    "val": ""
   },
   {
     "type": "outdent",

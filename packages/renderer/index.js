@@ -36,8 +36,9 @@ class Compiler {
   compile() {
     this.buf = [];
 
-    // all pugneum documents will compile to HTML5
-    this.buffer('<!DOCTYPE html>');
+    if (this.options.doctype !== false) {
+      this.buffer('<!DOCTYPE html>');
+    }
 
     this.visit(this.node);
 

@@ -62,7 +62,7 @@ function resolve(filename, source, options) {
   return filename;
 }
 
-function read(filename, options) {
+function read(filename) {
   return fs.readFileSync(filename, 'utf8');
 }
 

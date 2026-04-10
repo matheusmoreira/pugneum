@@ -1,6 +1,6 @@
 {
   "name": "pugneum-filter-prismjs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Pugneum prismjs filter",
   "keywords": [
     "pugneum",
@@ -16,12 +16,12 @@
     "prism-minmaxed": "^1.0.0"
   },
   "peerDependencies": {
-    "pugneum-filterer": "^0.3.0"
+    "pugneum-filterer": "^1.0.0"
   },
   "devDependencies": {
-    "pugneum-filterer": "^0.3.0",
-    "pugneum-lexer": "^0.3.0",
-    "pugneum-parser": "^0.3.0"
+    "pugneum-filterer": "^1.0.0",
+    "pugneum-lexer": "^1.0.0",
+    "pugneum-parser": "^1.0.0"
   },
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

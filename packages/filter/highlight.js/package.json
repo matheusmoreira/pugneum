@@ -1,6 +1,6 @@
 {
   "name": "pugneum-filter-highlight.js",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Pugneum highlight.js filter",
   "keywords": [
     "pugneum",
@@ -15,12 +15,12 @@
     "highlight.js": "^11.8.0"
   },
   "peerDependencies": {
-    "pugneum-filterer": "^0.3.0"
+    "pugneum-filterer": "^1.0.0"
   },
   "devDependencies": {
-    "pugneum-filterer": "^0.3.0",
-    "pugneum-lexer": "^0.3.0",
-    "pugneum-parser": "^0.3.0"
+    "pugneum-filterer": "^1.0.0",
+    "pugneum-lexer": "^1.0.0",
+    "pugneum-parser": "^1.0.0"
   },
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

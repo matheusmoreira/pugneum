@@ -305,7 +305,7 @@ class Lexer {
   }
 
   consume(len) {
-    this.input = this.input.substr(len);
+    this.input = this.input.slice(len);
   }
 
   scan(regexp, type) {
@@ -324,7 +324,7 @@ class Lexer {
     const captures = regexp.exec(this.input);
     if (!captures) return;
 
-    const rest = this.input.substr(captures[0].length);
+    const rest = this.input.slice(captures[0].length);
     const followedByColon = rest[0] === ':';
     const followedByEndOfLine = /^[ \t]*(\n|$)/.test(rest);
 
@@ -338,7 +338,7 @@ class Lexer {
     if (followedByColon) {
       this.input = rest;
     } else {
-      this.input = rest.substr(/^[ \t]*/.exec(rest)[0].length);
+      this.input = rest.slice(/^[ \t]*/.exec(rest)[0].length);
     }
 
     const tok = this.tok(type, captures[1]);
@@ -360,7 +360,7 @@ class Lexer {
       if (ex.index !== undefined) {
         let idx = ex.index;
         // starting from this.input[skip]
-        let tmp = this.input.substr(skip).indexOf('\n');
+        let tmp = this.input.slice(skip).indexOf('\n');
         // starting from this.input[0]
         let nextNewline = tmp + skip;
         let ptr = 0;
@@ -368,7 +368,7 @@ class Lexer {
           this.incrementLine(1);
           idx -= nextNewline + 1;
           ptr += nextNewline + 1;
-          tmp = nextNewline = this.input.substr(ptr).indexOf('\n');
+          tmp = nextNewline = this.input.slice(ptr).indexOf('\n');
         }
 
         this.incrementColumn(idx);
@@ -524,7 +524,7 @@ class Lexer {
       this.error(
         'INVALID_ID',
         '"' +
-          /.[^ \t\(\#\.\:]*/.exec(this.input.substr(1))[0] +
+          /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
           '" is not a valid ID.'
       );
     }
@@ -552,7 +552,7 @@ class Lexer {
       this.error(
         'INVALID_CLASS_NAME',
         '"' +
-          /.[^ \t\(\#\.\:]*/.exec(this.input.substr(1))[0] +
+          /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
           '" is not a valid class name.  Class names can only contain "_", "-", a-z and 0-9, and must contain at least one of "_", or a-z'
       );
     }
@@ -563,7 +563,7 @@ class Lexer {
    */
   endInterpolation() {
     if (this.interpolated && this.input[0] === ']') {
-      this.input = this.input.substr(1);
+      this.input = this.input.slice(1);
       this.ended = true;
       return true;
     }
@@ -613,7 +613,7 @@ class Lexer {
         this.addText(type, value.substring(0, earliest.pos), prefix);
       }
       this.ended = true;
-      this.input = value.substr(earliest.pos + 1) + this.input;
+      this.input = value.slice(earliest.pos + 1) + this.input;
       return;
 
     case 'variable':
@@ -679,7 +679,7 @@ class Lexer {
     } catch (ex) {
       if (ex.code && /^PUGNEUM:/.test(ex.code)) {
         this.colno = ex.column;
-        this.error(ex.code.substr(8), ex.msg);
+        this.error(ex.code.slice(8), ex.msg);
       }
       throw ex;
     }
@@ -693,7 +693,7 @@ class Lexer {
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
-    const child = this.spawnChildLexer(value.substr(pos + 2));
+    const child = this.spawnChildLexer(value.slice(pos + 2));
     this.colno = child.colno;
     this.tokens = this.tokens.concat(child.tokens);
     tok = this.tok('end-interpolation');
@@ -836,7 +836,7 @@ class Lexer {
 
   handleVariableRef(type, value, prefix, escaped, match) {
     let tok;
-    let before = value.substr(0, match.index);
+    let before = value.slice(0, match.index);
     if (prefix || before) {
       before = prefix + before;
       tok = this.tok(type, before);
@@ -856,7 +856,7 @@ class Lexer {
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
 
-    this.addText(type, value.substr(match.index + match[0].length));
+    this.addText(type, value.slice(match.index + match[0].length));
   }
 
   text() {
@@ -1101,15 +1101,15 @@ class Lexer {
     let stringPtr = 0;
     let isMatch;
     do {
-      let i = this.input.substr(stringPtr + 1).indexOf('\n');
+      let i = this.input.slice(stringPtr + 1).indexOf('\n');
       if (i === -1) i = this.input.length - stringPtr - 1;
-      const str = this.input.substr(stringPtr + 1, i);
+      const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
       const lineCaptures = this.indentRe.exec('\n' + str);
       const lineIndents = lineCaptures && lineCaptures[1].length;
       isMatch = lineIndents >= indents || !str.trim();
       if (isMatch) {
         stringPtr += str.length + 1;
-        const content = str.substr(indents).trim();
+        const content = str.slice(indents).trim();
         if (content) {
           this.incrementLine(1);
           this.incrementColumn(indents);
@@ -1295,7 +1295,7 @@ class Lexer {
 
     i = this.skipWhitespace(str, i);
 
-    return str.substr(i);
+    return str.slice(i);
   }
 
   /**
@@ -1308,7 +1308,7 @@ class Lexer {
     if ('(' == this.input.charAt(0)) {
       tok = this.tok('start-attributes');
       const index = this.bracketExpression().end;
-      let str = this.input.substr(1, index - 1);
+      let str = this.input.slice(1, index);
 
       this.incrementColumn(1);
       this.tokens.push(this.tokEnd(tok));
@@ -1410,9 +1410,9 @@ class Lexer {
       let stringPtr = 0;
       do {
         // text has `\n` as a prefix
-        let i = this.input.substr(stringPtr + 1).indexOf('\n');
+        let i = this.input.slice(stringPtr + 1).indexOf('\n');
         if (-1 == i) i = this.input.length - stringPtr - 1;
-        const str = this.input.substr(stringPtr + 1, i);
+        const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
         const lineCaptures = this.indentRe.exec('\n' + str);
         const lineIndents = lineCaptures && lineCaptures[1].length;
         isMatch = lineIndents >= indents;
@@ -1421,7 +1421,7 @@ class Lexer {
         if (isMatch) {
           // consume test along with `\n` prefix if match
           stringPtr += str.length + 1;
-          tokens.push(str.substr(indents));
+          tokens.push(str.slice(indents));
         } else if (lineIndents > this.indentStack[0]) {
           // line is indented less than the first line but is still indented
           // need to retry lexing the text block
@@ -1468,7 +1468,7 @@ class Lexer {
   fail() {
     this.error(
       'UNEXPECTED_TEXT',
-      'unexpected text "' + this.input.substr(0, 5) + '"'
+      'unexpected text "' + this.input.slice(0, 5) + '"'
     );
   }
 

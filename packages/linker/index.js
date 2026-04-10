@@ -145,7 +145,7 @@ function applyIncludes(ast, child) {
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }
-        replace(applyYield(childAST, node.block));
+        replace(applyYield(childAST, node.block, node));
       }
     }
   );
@@ -161,7 +161,7 @@ function removeBlocks(ast) {
   });
 }
 
-function applyYield(ast, block) {
+function applyYield(ast, block, includeNode) {
   if (!block || !block.nodes.length) return ast;
   let replaced = false;
   ast = walk(ast, null, function(node, replace) {
@@ -171,21 +171,12 @@ function applyYield(ast, block) {
       node.nodes = [block];
     }
   });
-  function defaultYieldLocation(node) {
-    let res = node;
-    for (let i = 0; i < node.nodes.length; i++) {
-      if (node.nodes[i].textOnly) continue;
-      if (node.nodes[i].type === 'Block') {
-        res = defaultYieldLocation(node.nodes[i]);
-      } else if (node.nodes[i].block && node.nodes[i].block.nodes.length) {
-        res = defaultYieldLocation(node.nodes[i].block);
-      }
-    }
-    return res;
-  }
   if (!replaced) {
-    // todo: probably should deprecate this with a warning
-    defaultYieldLocation(ast).nodes.push(block);
+    error(
+      'MISSING_YIELD',
+      'Included template has no yield block but the include passes a block into it',
+      includeNode
+    );
   }
   return ast;
 }

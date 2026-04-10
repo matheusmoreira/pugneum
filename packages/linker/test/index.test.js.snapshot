@@ -1032,6 +1032,12 @@ exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
             "column": 3,
             "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
             "textOnly": true
+          },
+          {
+            "type": "YieldBlock",
+            "line": 4,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
           }
         ],
         "line": 1,
@@ -1106,60 +1112,68 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                     },
                     {
                       "type": "Block",
+                      "line": 4,
+                      "column": 3,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
                       "nodes": [
                         {
-                          "type": "Tag",
-                          "name": "script",
-                          "block": {
-                            "type": "Block",
-                            "nodes": [],
-                            "line": 3,
-                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
-                          },
-                          "attrs": [
+                          "type": "Block",
+                          "nodes": [
                             {
-                              "name": "src",
-                              "val": "/caustic.js",
+                              "type": "Tag",
+                              "name": "script",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [],
+                                "line": 3,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                              },
+                              "attrs": [
+                                {
+                                  "name": "src",
+                                  "val": "/caustic.js",
+                                  "line": 3,
+                                  "column": 12,
+                                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
+                                  "mustEscape": true
+                                }
+                              ],
+                              "attributeBlocks": [],
+                              "isInline": false,
                               "line": 3,
-                              "column": 12,
-                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
-                              "mustEscape": true
-                            }
-                          ],
-                          "attributeBlocks": [],
-                          "isInline": false,
-                          "line": 3,
-                          "column": 5,
-                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
-                        },
-                        {
-                          "type": "Tag",
-                          "name": "script",
-                          "block": {
-                            "type": "Block",
-                            "nodes": [],
-                            "line": 4,
-                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
-                          },
-                          "attrs": [
+                              "column": 5,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                            },
                             {
-                              "name": "src",
-                              "val": "/app.js",
+                              "type": "Tag",
+                              "name": "script",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [],
+                                "line": 4,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                              },
+                              "attrs": [
+                                {
+                                  "name": "src",
+                                  "val": "/app.js",
+                                  "line": 4,
+                                  "column": 12,
+                                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
+                                  "mustEscape": true
+                                }
+                              ],
+                              "attributeBlocks": [],
+                              "isInline": false,
                               "line": 4,
-                              "column": 12,
-                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
-                              "mustEscape": true
+                              "column": 5,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
                             }
                           ],
-                          "attributeBlocks": [],
-                          "isInline": false,
-                          "line": 4,
-                          "column": 5,
+                          "line": 3,
                           "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
                         }
-                      ],
-                      "line": 3,
-                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                      ]
                     }
                   ],
                   "line": 1,

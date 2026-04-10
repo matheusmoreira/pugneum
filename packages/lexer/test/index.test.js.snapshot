@@ -10445,16 +10445,44 @@ exports[`include-with-text-head.pg 1`] = `
     }
   },
   {
-    "type": "outdent",
+    "type": "newline",
     "loc": {
       "start": {
-        "line": 3,
-        "column": 26
+        "line": 4,
+        "column": 1
       },
       "filename": "include-with-text-head.pg",
       "end": {
-        "line": 3,
-        "column": 26
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "yield",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "include-with-text-head.pg",
+      "end": {
+        "line": 4,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "include-with-text-head.pg",
+      "end": {
+        "line": 5,
+        "column": 1
       }
     }
   },
@@ -10462,13 +10490,13 @@ exports[`include-with-text-head.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 3,
-        "column": 26
+        "line": 5,
+        "column": 1
       },
       "filename": "include-with-text-head.pg",
       "end": {
-        "line": 3,
-        "column": 26
+        "line": 5,
+        "column": 1
       }
     }
   }

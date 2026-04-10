@@ -4199,6 +4199,12 @@ exports[`include-with-text-head.pg 1`] = `
             "column": 3,
             "filename": "include-with-text-head.pg",
             "textOnly": true
+          },
+          {
+            "type": "YieldBlock",
+            "line": 4,
+            "column": 3,
+            "filename": "include-with-text-head.pg"
           }
         ],
         "line": 1,

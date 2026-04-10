@@ -605,6 +605,9 @@ class Lexer {
     case 'link':
       return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
 
+    case 'image':
+      return this.handleImageShorthand(type, value, prefix, escaped, earliest.pos);
+
     case 'reference':
       return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
 
@@ -642,6 +645,9 @@ class Lexer {
       i = value.indexOf('\\@[');
       if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@[' });
 
+      i = value.indexOf('\\!(');
+      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '!(' });
+
       i = value.indexOf('#[');
       if (i !== -1) candidates.push({ pos: i, kind: 'interpolation' });
 
@@ -650,6 +656,9 @@ class Lexer {
 
       i = value.indexOf('@[');
       if (i !== -1) candidates.push({ pos: i, kind: 'reference' });
+
+      i = value.indexOf('!(');
+      if (i !== -1) candidates.push({ pos: i, kind: 'image' });
 
       const m = /(\\)?#{(\w+)}/.exec(value);
       if (m) {
@@ -754,6 +763,87 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
     const child = this.spawnChildLexer(childInput);
     // Correct column to actual source position (synthesized input has different length)
+    this.incrementColumn(content.length);
+    this.tokens = this.tokens.concat(child.tokens);
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1); // )
+    this.tokens.push(this.tokEnd(tok));
+    this.addText(type, child.input);
+  }
+
+  handleImageShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const imageRest = value.substring(pos + 1); // from ( onwards
+    let range;
+    try {
+      range = parseUntil(imageRest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for !() image shorthand.'
+        );
+      }
+      throw ex;
+    }
+    const content = range.src;
+    let afterImage = imageRest.substring(range.end + 1);
+
+    let url, altText;
+    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
+      const quote = content[0];
+      const endQuote = content.indexOf(quote, 1);
+      if (endQuote === -1) {
+        this.error('INVALID_IMAGE', 'Unclosed quote in !() image URL.');
+      }
+      url = content.substring(1, endQuote);
+      altText = content.substring(endQuote + 1).trimStart() || url;
+    } else {
+      const spaceIdx = content.indexOf(' ');
+      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
+        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
+        altText = url;
+      } else {
+        url = content.substring(0, spaceIdx);
+        altText = content.substring(spaceIdx + 1);
+      }
+    }
+
+    // Build attribute string: src='url' alt='alt text'
+    const quote = url.includes("'") ? '"' : "'";
+    const escapedUrl = url.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    const altQuote = altText.includes("'") ? '"' : "'";
+    const escapedAlt = altText.replaceAll('\\', '\\\\').replaceAll(altQuote, '\\' + altQuote);
+
+    // Check for optional trailing (attrs) and include them in the tag
+    let extraAttrs = '';
+    if (afterImage[0] === '(') {
+      let attrRange;
+      try {
+        attrRange = parseUntil(afterImage, ')', 1);
+      } catch (ex) {
+        if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+          this.error(
+            'NO_END_BRACKET',
+            'End of line reached with no closing ) for !() image attributes.'
+          );
+        }
+        throw ex;
+      }
+      extraAttrs = ' ' + attrRange.src;
+      afterImage = afterImage.substring(attrRange.end + 1);
+    }
+
+    // Desugar !(url alt) to equivalent #[img(src='url' alt='alt text')] and use child lexer
+    const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs})]${afterImage}`;
+
+    tok = this.tok('start-interpolation');
+    this.incrementColumn(2); // !(
+    this.tokens.push(this.tokEnd(tok));
+    const child = this.spawnChildLexer(childInput);
     this.incrementColumn(content.length);
     this.tokens = this.tokens.concat(child.tokens);
     tok = this.tok('end-interpolation');

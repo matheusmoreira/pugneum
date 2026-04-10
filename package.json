@@ -27,6 +27,9 @@
     "packages/filter/highlight.js",
     "packages/filter/prismjs"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

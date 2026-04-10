@@ -684,18 +684,20 @@ class Parser {
 
     if ('indent' == this.peek().type) {
       this.inMixin++;
-      const mixin = {
-        type: 'Mixin',
-        name: name,
-        args: args,
-        block: this.block(),
-        call: false,
-        line: tok.loc.start.line,
-        column: tok.loc.start.column,
-        filename: this.filename,
-      };
-      this.inMixin--;
-      return mixin;
+      try {
+        return {
+          type: 'Mixin',
+          name: name,
+          args: args,
+          block: this.block(),
+          call: false,
+          line: tok.loc.start.line,
+          column: tok.loc.start.column,
+          filename: this.filename,
+        };
+      } finally {
+        this.inMixin--;
+      }
     } else {
       this.error(
         'MIXIN_WITHOUT_BODY',

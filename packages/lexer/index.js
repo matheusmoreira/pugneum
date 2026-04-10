@@ -660,7 +660,7 @@ class Lexer {
       i = value.indexOf('!(');
       if (i !== -1) candidates.push({ pos: i, kind: 'image' });
 
-      const m = /(\\)?#{(\w+)}/.exec(value);
+      const m = /(\\)?#{([-\w]+)}/.exec(value);
       if (m) {
         if (m[1]) {
           candidates.push({ pos: m.index, kind: 'escaped', literal: '#{' });
@@ -1107,7 +1107,7 @@ class Lexer {
 
   variable() {
     let captures;
-    if (captures = /^\s*#{(\w+)}/.exec(this.input)) {
+    if (captures = /^#{([-\w]+)}/.exec(this.input)) {
       const tok = this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
@@ -1153,12 +1153,25 @@ class Lexer {
         this.consume(increment);
         this.incrementColumn(increment);
 
-        const argsList = argsStr.split(/ +/).filter(Boolean);
-        for (let i = 0, len = argsList.length; i < len; ++i) {
-          if ((captures = /'(.*)'/.exec(argsList[i])) || (captures = /"(.*)"/.exec(argsList[i]))) {
-            tok.args.push(captures[1]);
+        // Parse arguments respecting quoted strings
+        let j = 0;
+        while (j < argsStr.length) {
+          while (j < argsStr.length && argsStr[j] === ' ') j++;
+          if (j >= argsStr.length) break;
+          if (argsStr[j] === "'" || argsStr[j] === '"') {
+            const quote = argsStr[j++];
+            let arg = '';
+            while (j < argsStr.length && argsStr[j] !== quote) {
+              arg += argsStr[j++];
+            }
+            if (j < argsStr.length) j++; // skip closing quote
+            tok.args.push(arg);
           } else {
-            tok.args.push(argsList[i]);
+            let arg = '';
+            while (j < argsStr.length && argsStr[j] !== ' ') {
+              arg += argsStr[j++];
+            }
+            tok.args.push(arg);
           }
         }
       }
@@ -1173,7 +1186,7 @@ class Lexer {
 
   mixin() {
     let captures;
-    if ((captures = /^mixin +([-\w]+)(?: *\((.*)\))? */.exec(this.input))) {
+    if ((captures = /^mixin +([a-zA-Z][-\w]*)(?: *\((.*)\))? */.exec(this.input))) {
       this.consume(captures[0].length);
       const tok = this.tok('mixin', captures[1]);
       tok.args = this.parseMixinParams(captures[2] || '');

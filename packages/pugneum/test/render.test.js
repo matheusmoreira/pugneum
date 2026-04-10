@@ -347,6 +347,50 @@ describe('inline mixin calls', () => {
   });
 });
 
+describe('variable edge cases', () => {
+  it('should render #{var} followed by @[ref] without space', () => {
+    assert.strictEqual(
+      pg.render('references\n  ex https://example.com\nmixin foo(v)\n  p #{v}@[ex]\n+foo(test)'),
+      '<!DOCTYPE html><p>test<a href="https://example.com">ex</a></p>'
+    );
+  });
+
+  it('should render #{var} followed by @[ref] with space', () => {
+    assert.strictEqual(
+      pg.render('references\n  ex https://example.com\nmixin foo(v)\n  p #{v} @[ex click]\n+foo(test)'),
+      '<!DOCTYPE html><p>test <a href="https://example.com">click</a></p>'
+    );
+  });
+
+  it('should render #{var} followed by @() link shorthand', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(v)\n  p #{v} @(/url link)\n+foo(test)'),
+      '<!DOCTYPE html><p>test <a href="/url">link</a></p>'
+    );
+  });
+
+  it('should resolve hyphenated variable names in text', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(my-var)\n  p #{my-var}\n+foo(hello)'),
+      '<!DOCTYPE html><p>hello</p>'
+    );
+  });
+
+  it('should resolve hyphenated variable names in attributes', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(my-var)\n  a(href="#{my-var}") link\n+foo(/url)'),
+      '<!DOCTYPE html><a href="/url">link</a>'
+    );
+  });
+
+  it('should handle quoted mixin arg with spaces', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(a)\n  p #{a}\n+foo("hello, world")'),
+      '<!DOCTYPE html><p>hello, world</p>'
+    );
+  });
+});
+
 describe('link shorthand', () => {
   it('should render basic link', () => {
     assert.strictEqual(pg.render('p @(/contact contact us)'),

@@ -858,14 +858,15 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     const inner = value.substring(pos + 2); // after @[
-    // Find the matching ] accounting for nested #[...] brackets only
+    // Find the matching ] for the ref link.
+    // Only #[...] interpolation nests; bare [ is literal.
+    // Use \] to include a literal ] in the link text.
     let depth = 1;
     let end = -1;
     for (let i = 0; i < inner.length; i++) {
       const ch = inner[i];
       if (ch === '\\') { i++; continue; }
       if (ch === '#' && inner[i + 1] === '[') { depth++; i++; continue; }
-      if (ch === '[') { depth++; continue; }
       if (ch === ']') {
         depth--;
         if (depth === 0) { end = i; break; }
@@ -901,8 +902,10 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     if (linkText) {
-      const textTok = this.tok('text', linkText);
-      this.incrementColumn(name.length + 1 + linkText.length); // name + space + text
+      // Unescape \[ \] \\ sequences in link text
+      const unescaped = linkText.replace(/\\([\[\]\\])/g, '$1');
+      const textTok = this.tok('text', unescaped);
+      this.incrementColumn(name.length + 1 + linkText.length); // name + space + text (source length)
       this.tokens.push(this.tokEnd(textTok));
     } else {
       this.incrementColumn(name.length);

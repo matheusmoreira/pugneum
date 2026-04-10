@@ -159,6 +159,34 @@ describe('reference links', () => {
       '<!DOCTYPE html><p><a class="external" href="https://example.com">ex</a></p>'
     );
   });
+
+  it('should treat bare [ as literal in link text', () => {
+    var input = 'references\n  mdn https://developer.mozilla.org\n\np @[mdn see [ bracket]';
+    assert.strictEqual(pg.render(input),
+      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">see [ bracket</a></p>'
+    );
+  });
+
+  it('should unescape \\] to literal ] in link text', () => {
+    var input = 'references\n  mdn https://developer.mozilla.org\n\np @[mdn text \\] more]';
+    assert.strictEqual(pg.render(input),
+      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">text ] more</a></p>'
+    );
+  });
+
+  it('should unescape \\[ and \\] in link text', () => {
+    var input = 'references\n  mdn https://developer.mozilla.org\n\np @[mdn Array\\[0\\]]';
+    assert.strictEqual(pg.render(input),
+      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">Array[0]</a></p>'
+    );
+  });
+
+  it('should unescape \\\\ to literal backslash before brackets', () => {
+    var input = 'references\n  ex https://example.com\n\np @[ex text \\\\]';
+    assert.strictEqual(pg.render(input),
+      '<!DOCTYPE html><p><a href="https://example.com">text \\</a></p>'
+    );
+  });
 });
 
 describe('image shorthand', () => {

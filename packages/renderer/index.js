@@ -343,7 +343,8 @@ class Compiler {
   }
 
   visitMixinBlock(mixinBlock) {
-    const current = this.callStack.at(-1);
+    const current = this.callStack.pop();
     this.visit(current.block);
+    this.callStack.push(current);
   }
 }

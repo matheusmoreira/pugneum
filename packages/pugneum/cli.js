@@ -40,8 +40,8 @@ const EXIT_CODES = {
     NOT_FILE: 5
 };
 
-function readAndValidateInput(path) {
-    const input = fs.readFileSync(path, 'utf8');
+function readAndValidateInput(filename) {
+    const input = fs.readFileSync(filename, 'utf8');
     const json = JSON.parse(input);
     const {inputDirectory, outputDirectory, baseDirectory} = json;
 

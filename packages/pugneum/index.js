@@ -25,11 +25,11 @@ function renderPugneum(string, options) {
   return rendered;
 };
 
-function renderPugneumFile(path, options) {
-  path = resolve(path);
-  let source = fs.readFileSync(path, 'utf8');
+function renderPugneumFile(filename, options) {
+  filename = resolve(filename);
+  let source = fs.readFileSync(filename, 'utf8');
   options ||= {};
-  options.filename = path;
+  options.filename = filename;
   return renderPugneum(source, options);
 };
 

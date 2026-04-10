@@ -211,8 +211,8 @@ class Compiler {
 
   resolveAttrValue(str, attr) {
     if (!str.includes('#{')) return str;
-    return str.replace(/(\\)?#\{(\w+)\}/g, (match, escaped, name) => {
-      if (escaped) return '#{' + name + '}';
+    return str.replace(/\\#\{(\w+)\}|#\{(\w+)\}/g, (match, escapedName, name) => {
+      if (escapedName) return '#{' + escapedName + '}';
       if (this.callStack.length === 0) {
         this.error(
           `Variable '${name}' used outside mixin in attribute`,

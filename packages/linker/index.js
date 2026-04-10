@@ -118,6 +118,12 @@ function extend(parentBlocks, ast) {
               case 'replace':
                 parentBlock.nodes = node.nodes;
                 break;
+              default:
+                error(
+                  'UNKNOWN_BLOCK_MODE',
+                  "Unknown block mode '" + node.mode + "'",
+                  node
+                );
             }
           });
         }

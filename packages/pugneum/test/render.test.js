@@ -161,6 +161,146 @@ describe('reference links', () => {
   });
 });
 
+describe('image shorthand', () => {
+  it('should render basic image', () => {
+    assert.strictEqual(pg.render('p !(/photo.jpg A photo)'),
+      '<!DOCTYPE html><p><img src="/photo.jpg" alt="A photo"></p>'
+    );
+  });
+
+  it('should use URL as alt text when no alt provided', () => {
+    assert.strictEqual(pg.render('p !(/logo.png)'),
+      '<!DOCTYPE html><p><img src="/logo.png" alt="/logo.png"></p>'
+    );
+  });
+
+  it('should support quoted URLs with spaces', () => {
+    assert.strictEqual(pg.render("p !('/my image.jpg' Photo)"),
+      "<!DOCTYPE html><p><img src=\"/my image.jpg\" alt=\"Photo\"></p>"
+    );
+  });
+
+  it('should support custom attributes after shorthand', () => {
+    assert.strictEqual(pg.render('p !(/hero.jpg Hero)(class="hero")'),
+      '<!DOCTYPE html><p><img class="hero" src="/hero.jpg" alt="Hero"></p>'
+    );
+  });
+
+  it('should support multiple custom attributes', () => {
+    assert.strictEqual(pg.render('p !(/img.jpg Alt)(class="lazy" loading="lazy")'),
+      '<!DOCTYPE html><p><img class="lazy" src="/img.jpg" alt="Alt" loading="lazy"></p>'
+    );
+  });
+
+  it('should work inline in text', () => {
+    assert.strictEqual(pg.render('p See !(/cat.jpg a cat) here.'),
+      '<!DOCTYPE html><p>See <img src="/cat.jpg" alt="a cat"> here.</p>'
+    );
+  });
+
+  it('should escape \\!( as literal text', () => {
+    assert.strictEqual(pg.render('p \\!(not an image)'),
+      '<!DOCTYPE html><p>!(not an image)</p>'
+    );
+  });
+
+  it('should work inside #[...] interpolation', () => {
+    assert.strictEqual(pg.render('p #[span !(/icon.png icon)]'),
+      '<!DOCTYPE html><p><span><img src="/icon.png" alt="icon"></span></p>'
+    );
+  });
+
+  it('should work in text blocks', () => {
+    assert.strictEqual(pg.render('p.\n  Image: !(/x.png alt text)'),
+      '<!DOCTYPE html><p>Image: <img src="/x.png" alt="alt text"></p>'
+    );
+  });
+});
+
+describe('variables in attributes', () => {
+  it('should resolve #{var} in attribute values', () => {
+    assert.strictEqual(
+      pg.render('mixin link(url)\n  a(href="#{url}") Click\n+link(/home)'),
+      '<!DOCTYPE html><a href="/home">Click</a>'
+    );
+  });
+
+  it('should resolve multiple variables in one value', () => {
+    assert.strictEqual(
+      pg.render('mixin tag(cls id)\n  div(class="#{cls}" id="#{id}")\n+tag(main header)'),
+      '<!DOCTYPE html><div class="main" id="header"></div>'
+    );
+  });
+
+  it('should mix literal text with variables', () => {
+    assert.strictEqual(
+      pg.render('mixin item(name)\n  div(class="item-#{name}") #{name}\n+item(active)'),
+      '<!DOCTYPE html><div class="item-active">active</div>'
+    );
+  });
+
+  it('should resolve variables from parent mixin scope', () => {
+    assert.strictEqual(
+      pg.render('mixin inner()\n  span(data-x="#{x}")\nmixin outer(x)\n  +inner()\n+outer(hello)'),
+      '<!DOCTYPE html><span data-x="hello"></span>'
+    );
+  });
+
+  it('should escape \\#{var} as literal text', () => {
+    assert.strictEqual(
+      pg.render('mixin test(x)\n  div(data-template="\\\\#{x}") Hi\n+test(val)'),
+      '<!DOCTYPE html><div data-template="#{x}">Hi</div>'
+    );
+  });
+
+  it('should error on #{var} outside mixin', () => {
+    assert.throws(
+      () => pg.render('div(data-x="#{oops}")'),
+      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW'
+    );
+  });
+
+  it('should error on undefined variable in attribute', () => {
+    assert.throws(
+      () => pg.render('mixin test(a)\n  div(data-x="#{b}")\n+test(val)'),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+    );
+  });
+
+  it('should pass through #{...} with non-word chars unchanged', () => {
+    assert.strictEqual(
+      pg.render('mixin test(x)\n  div(data-x="#{x}") #{ }\n+test(val)'),
+      '<!DOCTYPE html><div data-x="val">#{ }</div>'
+    );
+  });
+});
+
+describe('link shorthand', () => {
+  it('should render basic link', () => {
+    assert.strictEqual(pg.render('p @(/contact contact us)'),
+      '<!DOCTYPE html><p><a href="/contact">contact us</a></p>'
+    );
+  });
+
+  it('should use URL as text when no text provided', () => {
+    assert.strictEqual(pg.render('p @(https://example.com)'),
+      '<!DOCTYPE html><p><a href="https://example.com">https://example.com</a></p>'
+    );
+  });
+
+  it('should work inline in text', () => {
+    assert.strictEqual(pg.render('p Visit @(https://example.com our site) today.'),
+      '<!DOCTYPE html><p>Visit <a href="https://example.com">our site</a> today.</p>'
+    );
+  });
+
+  it('should escape \\@( as literal text', () => {
+    assert.strictEqual(pg.render('p \\@(not a link)'),
+      '<!DOCTYPE html><p>@(not a link)</p>'
+    );
+  });
+});
+
 describe('renderFile()', () => {
   var filePath = path.join(testCasesDir, 'basic.pg');
 

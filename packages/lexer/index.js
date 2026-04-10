@@ -1173,11 +1173,64 @@ class Lexer {
     if ((captures = /^mixin +([-\w]+)(?: *\((.*)\))? */.exec(this.input))) {
       this.consume(captures[0].length);
       const tok =this.tok('mixin', captures[1]);
-      tok.args = (captures[2] || '').split(/ +/).filter(Boolean);
+      tok.args = this.parseMixinParams(captures[2] || '');
       this.incrementColumn(captures[0].length);
       this.tokens.push(this.tokEnd(tok));
       return true;
     }
+  }
+
+  /**
+   * Parse mixin definition parameter list into an array of objects.
+   * Each object has a `name` property and an optional `default` property.
+   *
+   * Supports:
+   *   name              → { name: 'name' }
+   *   name=value        → { name: 'name', default: 'value' }
+   *   name='val ue'     → { name: 'name', default: 'val ue' }
+   *   name="val ue"     → { name: 'name', default: 'val ue' }
+   */
+  parseMixinParams(str) {
+    const params = [];
+    let i = 0;
+
+    while (i < str.length) {
+      // skip whitespace
+      while (i < str.length && str[i] === ' ') i++;
+      if (i >= str.length) break;
+
+      // read parameter name
+      let name = '';
+      while (i < str.length && str[i] !== ' ' && str[i] !== '=') {
+        name += str[i++];
+      }
+
+      if (!name) break;
+
+      // check for default value
+      if (i < str.length && str[i] === '=') {
+        i++; // skip '='
+        let dflt = '';
+        if (i < str.length && (str[i] === "'" || str[i] === '"')) {
+          // quoted default value
+          const quote = str[i++];
+          while (i < str.length && str[i] !== quote) {
+            dflt += str[i++];
+          }
+          if (i < str.length) i++; // skip closing quote
+        } else {
+          // unquoted default value
+          while (i < str.length && str[i] !== ' ') {
+            dflt += str[i++];
+          }
+        }
+        params.push({ name, default: dflt });
+      } else {
+        params.push({ name });
+      }
+    }
+
+    return params;
   }
 
   /**

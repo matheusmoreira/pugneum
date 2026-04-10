@@ -1,4 +1,3 @@
-var assert = require('node:assert/strict');
 var fs = require('fs');
 var {describe, test} = require('node:test');
 var lex = require('pugneum-lexer');
@@ -21,27 +20,6 @@ function testDir(dir) {
       var actual = link(loaded);
 
       t.assert.snapshot(actual);
-    });
-  });
-}
-
-function testDirError(dir) {
-  fs.readdirSync(dir).forEach(function(name) {
-    if (!/\.input\.json$/.test(name)) return;
-    test(name, function(t) {
-      var input = JSON.parse(fs.readFileSync(dir + '/' + name, 'utf8'));
-      var err;
-      try {
-        link(input);
-      } catch (ex) {
-        err = {
-          msg: ex.msg,
-          code: ex.code,
-          line: ex.line,
-        };
-      }
-      if (!err) throw new Error('Expected error');
-      t.assert.snapshot(err);
     });
   });
 }

@@ -1131,19 +1131,31 @@ class Lexer {
       // Check for args (not attributes)
       // just a space separated list of strings
       // no nested parentheses allowed
-      if ((captures = /^ *\((.*)\)/.exec(this.input))) {
-        const increment = captures[0].length;
+      if (this.input[0] === '(' || /^ *\(/.test(this.input)) {
+        const leading = /^ *\(/.exec(this.input)[0];
+        let range;
+        try {
+          range = parseUntil(this.input, ')', leading.length);
+        } catch (ex) {
+          if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+            this.error(
+              'NO_END_BRACKET',
+              'End of line reached with no closing ) for mixin call arguments.'
+            );
+          }
+          throw ex;
+        }
+        const argsStr = range.src;
+        const increment = range.end + 1;
         this.consume(increment);
         this.incrementColumn(increment);
 
-        const argsList = captures[1].split(/ +/).filter(Boolean);
-        if (argsList.length > 0) {
-          for (let i = 0, len = argsList.length; i < len; ++i) {
-            if ((captures = /'(.*)'/.exec(argsList[i])) || (captures = /"(.*)"/.exec(argsList[i]))) {
-              tok.args.push(captures[1]);
-            } else {
-              tok.args.push(argsList[i]);
-            }
+        const argsList = argsStr.split(/ +/).filter(Boolean);
+        for (let i = 0, len = argsList.length; i < len; ++i) {
+          if ((captures = /'(.*)'/.exec(argsList[i])) || (captures = /"(.*)"/.exec(argsList[i]))) {
+            tok.args.push(captures[1]);
+          } else {
+            tok.args.push(argsList[i]);
           }
         }
       }

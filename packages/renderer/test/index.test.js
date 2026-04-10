@@ -663,6 +663,26 @@ describe('error handling', () => {
       (err) => err instanceof TypeError && /pugneum-linker/.test(err.message)
     );
   });
+
+  test('recursive mixin throws RECURSIVE_MIXIN', () => {
+    // mixin loop calls +loop
+    var call = mixinCall('loop', []);
+    var decl = mixinDecl('loop', [], [call]);
+    assert.throws(
+      () => render(block([decl, mixinCall('loop', [])])),
+      (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN' && /Recursive call to mixin 'loop'/.test(err.message)
+    );
+  });
+
+  test('mutual recursion throws RECURSIVE_MIXIN', () => {
+    // mixin a calls +b, mixin b calls +a
+    var declA = mixinDecl('a', [], [mixinCall('b', [])]);
+    var declB = mixinDecl('b', [], [mixinCall('a', [])]);
+    assert.throws(
+      () => render(block([declA, declB, mixinCall('a', [])])),
+      (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN'
+    );
+  });
 });
 
 // Helper: mixin declaration node

@@ -2,6 +2,8 @@ const makeError = require('pugneum-error');
 
 // Map of self-closing void elements literally copied from the standard.
 // https://html.spec.whatwg.org/multipage/syntax.html#void-elements
+const MAX_MIXIN_DEPTH = 256;
+
 const selfClosing =
   'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr'
   .split(', ')
@@ -273,6 +275,26 @@ class Compiler {
         );
       }
 
+      // cycle detection: error if this mixin is already on the call stack
+      for (const frame of this.callStack) {
+        if (frame.name === mixin.name) {
+          this.error(
+            `Recursive call to mixin '${mixin.name}' detected`,
+            'RECURSIVE_MIXIN',
+            mixin
+          );
+        }
+      }
+
+      // depth limit: prevent unbounded resource consumption
+      if (this.callStack.length >= MAX_MIXIN_DEPTH) {
+        this.error(
+          `Mixin call stack depth exceeded ${MAX_MIXIN_DEPTH}`,
+          'MIXIN_STACK_OVERFLOW',
+          mixin
+        );
+      }
+
       // bind arguments: provided → string, default → default, neither → null
       const frame = this.callStack.at(-1);
       const parentEnvironment = (frame && frame.environment) || null;
@@ -293,7 +315,7 @@ class Compiler {
       const block = mixin.block;
 
       // evaluate mixin block which may contain variable nodes
-      this.callStack.push({environment, block});
+      this.callStack.push({name: mixin.name, environment, block});
       this.visit(declared.block);
       this.callStack.pop();
     } else {

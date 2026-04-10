@@ -189,22 +189,36 @@ class Compiler {
     const others = [];
     for (const attr of attrs) {
       if (attr.name === 'class') {
-        classes.push(attr.val);
+        classes.push(attr);
       } else {
         others.push(attr);
       }
     }
     if (classes.length > 0) {
-      this.buffer(' class="');
-      this.buffer(this.resolveAttrValue(classes.join(' '), attrs[0]).replace(/"/g, '&quot;'));
-      this.buffer('"');
+      // resolve each class contribution individually; skip null ones
+      const resolved = [];
+      for (const attr of classes) {
+        const val = this.resolveAttrValue(String(attr.val), attr);
+        if (val !== null) resolved.push(val);
+      }
+      if (resolved.length > 0) {
+        this.buffer(' class="');
+        this.buffer(resolved.join(' ').replace(/"/g, '&quot;'));
+        this.buffer('"');
+      }
     }
     for (const attr of others) {
-      this.buffer(' ');
-      this.buffer(attr.name);
-      if (attr.val !== true) {
+      if (attr.val === true) {
+        // boolean attribute
+        this.buffer(' ');
+        this.buffer(attr.name);
+      } else {
+        const val = this.resolveAttrValue(String(attr.val), attr);
+        if (val === null) continue; // null variable — omit entire attribute
+        this.buffer(' ');
+        this.buffer(attr.name);
         this.buffer('="');
-        this.buffer(this.resolveAttrValue(String(attr.val), attr).replace(/"/g, '&quot;'));
+        this.buffer(val.replace(/"/g, '&quot;'));
         this.buffer('"');
       }
     }
@@ -212,7 +226,8 @@ class Compiler {
 
   resolveAttrValue(str, attr) {
     if (!str.includes('#{')) return str;
-    return str.replace(/\\#\{(\w+)\}|#\{(\w+)\}/g, (match, escapedName, name) => {
+    let hasNull = false;
+    const resolved = str.replace(/\\#\{(\w+)\}|#\{(\w+)\}/g, (match, escapedName, name) => {
       if (escapedName) return '#{' + escapedName + '}';
       if (this.callStack.length === 0) {
         this.error(
@@ -230,8 +245,13 @@ class Compiler {
           attr
         );
       }
+      if (value === null) {
+        hasNull = true;
+        return '';
+      }
       return value;
     });
+    return hasNull ? null : resolved;
   }
 
   visitMixin(mixin) {
@@ -242,24 +262,31 @@ class Compiler {
         this.error(`Undefined mixin '${mixin.name}'`, 'UNDEFINED_MIXIN', mixin);
       }
 
-      // check arguments
+      // check arguments: allow fewer (optional), reject too many
       const args = mixin.args, len = declared.args.length;
 
-      if (args.length !== declared.args.length) {
+      if (args.length > len) {
         this.error(
-            `Arguments mismatch: mixin '${mixin.name}' declared ${len} called ${args.length}`,
+            `Too many arguments: mixin '${mixin.name}' declared ${len} called ${args.length}`,
             'MIXIN_ARGUMENT_COUNT_MISMATCH',
             mixin
         );
       }
 
-      // bind arguments
+      // bind arguments: provided → string, default → default, neither → null
       const frame = this.callStack.at(-1);
       const parentEnvironment = (frame && frame.environment) || null;
       const environment = Object.create(parentEnvironment);
 
-      for (let i = 0; i <len; ++i) {
-        environment[declared.args[i]] = args[i];
+      for (let i = 0; i < len; ++i) {
+        const param = declared.args[i];
+        if (i < args.length) {
+          environment[param.name] = args[i];
+        } else if ('default' in param) {
+          environment[param.name] = param.default;
+        } else {
+          environment[param.name] = null;
+        }
       }
 
       // bind caller's block
@@ -286,6 +313,9 @@ class Compiler {
     if (value === undefined) {
       this.error(`Variable '${variable.name}' is undefined`, 'UNDEFINED_VARIABLE', variable);
     }
+
+    // null means declared but not provided — emit nothing
+    if (value === null) return;
 
     this.buffer(value);
   }

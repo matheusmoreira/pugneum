@@ -205,7 +205,7 @@ describe('mixins', () => {
       type: 'Mixin',
       name: 'greeting',
       call: false,
-      args: ['name'],
+      args: [{name: 'name'}],
       block: block([
         tag('p', [], [{type: 'Variable', name: 'name', line: 1, column: 1, filename: 'test'}]),
       ]),
@@ -300,7 +300,7 @@ describe('mixins', () => {
       type: 'Mixin',
       name: 'outer',
       call: false,
-      args: ['x'],
+      args: [{name: 'x'}],
       block: block([{
         type: 'Mixin',
         name: 'inner',
@@ -350,12 +350,12 @@ describe('mixin errors', () => {
     );
   });
 
-  test('argument count mismatch throws MIXIN_ARGUMENT_COUNT_MISMATCH', () => {
+  test('too many arguments throws MIXIN_ARGUMENT_COUNT_MISMATCH', () => {
     var declaration = {
       type: 'Mixin',
       name: 'greet',
       call: false,
-      args: ['a', 'b'],
+      args: [{name: 'a'}],
       block: block([]),
       line: 1,
       column: 1,
@@ -365,7 +365,7 @@ describe('mixin errors', () => {
       type: 'Mixin',
       name: 'greet',
       call: true,
-      args: ['only-one'],
+      args: ['one', 'two'],
       block: block([]),
       line: 2,
       column: 1,
@@ -421,7 +421,7 @@ describe('variables in attributes', () => {
       type: 'Mixin',
       name: 'link',
       call: false,
-      args: ['url'],
+      args: [{name: 'url'}],
       block: block([tag('a', [{name: 'href', val: '#{url}', line: 1, column: 1, mustEscape: false}], [text('click')])]),
       line: 1,
       column: 1,
@@ -448,7 +448,7 @@ describe('variables in attributes', () => {
       type: 'Mixin',
       name: 'test',
       call: false,
-      args: ['a', 'b'],
+      args: [{name: 'a'}, {name: 'b'}],
       block: block([tag('div', [{name: 'data-x', val: '#{a}-#{b}', line: 1, column: 1, mustEscape: false}])]),
       line: 1,
       column: 1,
@@ -475,7 +475,7 @@ describe('variables in attributes', () => {
       type: 'Mixin',
       name: 'test',
       call: false,
-      args: ['x'],
+      args: [{name: 'x'}],
       block: block([tag('div', [{name: 'data-t', val: '\\#{x}', line: 1, column: 1, mustEscape: false}])]),
       line: 1,
       column: 1,
@@ -502,7 +502,7 @@ describe('variables in attributes', () => {
       type: 'Mixin',
       name: 'test',
       call: false,
-      args: ['cls'],
+      args: [{name: 'cls'}],
       block: block([tag('div', [{name: 'class', val: 'item-#{cls}', line: 1, column: 1, mustEscape: false}])]),
       line: 1,
       column: 1,
@@ -661,6 +661,263 @@ describe('error handling', () => {
     assert.throws(
       () => render(block([node])),
       (err) => err instanceof TypeError && /pugneum-linker/.test(err.message)
+    );
+  });
+});
+
+// Helper: mixin declaration node
+function mixinDecl(name, args, children) {
+  return {
+    type: 'Mixin',
+    name: name,
+    call: false,
+    args: args,
+    block: block(children || []),
+    line: 1,
+    column: 1,
+    filename: 'test',
+  };
+}
+
+// Helper: mixin call node
+function mixinCall(name, args, children) {
+  return {
+    type: 'Mixin',
+    name: name,
+    call: true,
+    args: args,
+    block: children ? block(children) : null,
+    line: 2,
+    column: 1,
+    filename: 'test',
+  };
+}
+
+// Helper: variable node
+function variable(name) {
+  return {type: 'Variable', name: name, line: 1, column: 1, filename: 'test'};
+}
+
+// Helper: attribute
+function attr(name, val) {
+  return {name: name, val: val, line: 1, column: 1, mustEscape: false};
+}
+
+describe('optional arguments', () => {
+  test('omitted trailing args produce no text output', () => {
+    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title'}], [
+      tag('p', [], [variable('title'), text(' '), variable('name')]),
+    ]);
+    var call = mixinCall('greet', ['Alice']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p> Alice</p>'
+    );
+  });
+
+  test('omitted arg with default uses default value', () => {
+    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title', default: 'friend'}], [
+      tag('p', [], [text('Hello, '), variable('title'), text(' '), variable('name')]),
+    ]);
+    var call = mixinCall('greet', ['Alice']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p>Hello, friend Alice</p>'
+    );
+  });
+
+  test('explicit arg overrides default', () => {
+    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title', default: 'friend'}], [
+      tag('p', [], [variable('title'), text(' '), variable('name')]),
+    ]);
+    var call = mixinCall('greet', ['Alice', 'Doctor']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p>Doctor Alice</p>'
+    );
+  });
+
+  test('all args can be omitted', () => {
+    var decl = mixinDecl('empty', [{name: 'a'}, {name: 'b'}], [
+      tag('p', [], [variable('a'), variable('b')]),
+    ]);
+    var call = mixinCall('empty', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p></p>'
+    );
+  });
+
+  test('all defaults used when no args provided', () => {
+    var decl = mixinDecl('defaults', [{name: 'a', default: 'x'}, {name: 'b', default: 'y'}], [
+      tag('p', [], [variable('a'), text('-'), variable('b')]),
+    ]);
+    var call = mixinCall('defaults', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p>x-y</p>'
+    );
+  });
+
+  test('too many args still throws MIXIN_ARGUMENT_COUNT_MISMATCH', () => {
+    var decl = mixinDecl('m', [{name: 'a'}], []);
+    var call = mixinCall('m', ['one', 'two', 'three']);
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH'
+    );
+  });
+
+  test('explicit empty string overrides default', () => {
+    var decl = mixinDecl('m', [{name: 'x', default: 'fallback'}], [
+      tag('p', [], [variable('x')]),
+    ]);
+    var call = mixinCall('m', ['']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p></p>'
+    );
+  });
+
+  test('default with empty string default', () => {
+    var decl = mixinDecl('m', [{name: 'x', default: ''}], [
+      tag('p', [], [variable('x')]),
+    ]);
+    var call = mixinCall('m', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><p></p>'
+    );
+  });
+});
+
+describe('optional arguments and attributes', () => {
+  test('null variable omits entire attribute', () => {
+    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target'}], [
+      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
+    ]);
+    var call = mixinCall('link', ['/page']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><a href="/page">click</a>'
+    );
+  });
+
+  test('null variable in composite attribute omits entire attribute', () => {
+    var decl = mixinDecl('icon', [{name: 'name'}, {name: 'size'}], [
+      tag('img', [attr('src', '/icons/#{name}.svg'), attr('class', 'icon-#{size}')]),
+    ]);
+    var call = mixinCall('icon', ['arrow']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><img src="/icons/arrow.svg">'
+    );
+  });
+
+  test('default value used in attribute', () => {
+    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target', default: '_blank'}], [
+      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
+    ]);
+    var call = mixinCall('link', ['/page']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><a href="/page" target="_blank">click</a>'
+    );
+  });
+
+  test('provided arg overrides default in attribute', () => {
+    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target', default: '_blank'}], [
+      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
+    ]);
+    var call = mixinCall('link', ['/page', '_self']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><a href="/page" target="_self">click</a>'
+    );
+  });
+
+  test('null class contribution is skipped, others preserved', () => {
+    var decl = mixinDecl('item', [{name: 'kind'}], [
+      tag('div', [attr('class', 'base'), attr('class', 'kind-#{kind}')], [text('hi')]),
+    ]);
+    var call = mixinCall('item', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div class="base">hi</div>'
+    );
+  });
+
+  test('all class contributions null omits class attribute', () => {
+    var decl = mixinDecl('item', [{name: 'a'}, {name: 'b'}], [
+      tag('div', [attr('class', '#{a}'), attr('class', '#{b}')], [text('hi')]),
+    ]);
+    var call = mixinCall('item', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div>hi</div>'
+    );
+  });
+
+  test('boolean attributes unaffected by optional args', () => {
+    var decl = mixinDecl('input', [{name: 'type'}], [
+      tag('input', [attr('type', '#{type}'), attr('disabled', true)]),
+    ]);
+    var call = mixinCall('input', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><input disabled>'
+    );
+  });
+
+  test('static attributes unaffected when variable attribute omitted', () => {
+    var decl = mixinDecl('m', [{name: 'x'}], [
+      tag('div', [attr('id', 'fixed'), attr('data-x', '#{x}')], [text('content')]),
+    ]);
+    var call = mixinCall('m', []);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div id="fixed">content</div>'
+    );
+  });
+
+  test('undeclared variable still throws UNDEFINED_VARIABLE', () => {
+    var decl = mixinDecl('m', [{name: 'x'}], [
+      tag('p', [], [variable('typo')]),
+    ]);
+    var call = mixinCall('m', ['val']);
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+    );
+  });
+
+  test('undeclared variable in attribute still throws UNDEFINED_VARIABLE', () => {
+    var decl = mixinDecl('m', [{name: 'x'}], [
+      tag('div', [attr('data-x', '#{typo}')]),
+    ]);
+    var call = mixinCall('m', ['val']);
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+    );
+  });
+
+  test('null variable does not leak through prototypal inheritance', () => {
+    // Inner mixin has param 'x' not provided (null).
+    // Outer mixin has param 'x' provided.
+    // Inner's null should NOT fall through to outer's value.
+    var inner = mixinDecl('inner', [{name: 'x'}], [
+      tag('span', [], [variable('x')]),
+    ]);
+    var outer = mixinDecl('outer', [{name: 'x'}], [
+      mixinCall('inner', []),
+    ]);
+    outer.line = 2;
+    var call = mixinCall('outer', ['hello']);
+    call.line = 3;
+    assert.strictEqual(
+      render(block([inner, outer, call])),
+      '<!DOCTYPE html><span></span>'
     );
   });
 });

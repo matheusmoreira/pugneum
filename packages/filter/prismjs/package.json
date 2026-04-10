@@ -10,7 +10,7 @@
     "prismjs",
     "prism"
   ],
-  "author": "Matheus Afonso Martins Moreira <matheus.a.m.moreira@gmail.com> (https://www.matheusmoreira.com/)",
+  "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
   "license": "MIT",
   "dependencies": {
     "prism-minmaxed": "^1.0.0"

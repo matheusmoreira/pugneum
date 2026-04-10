@@ -1,0 +1,144 @@
+exports[`filters can be used 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "name": "custom",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Filters can be used.",
+                  "line": 4,
+                  "column": 5,
+                  "filename": "index.test.js"
+                }
+              ],
+              "line": 3,
+              "filename": "index.test.js"
+            },
+            "attrs": [],
+            "line": 3,
+            "column": 3,
+            "filename": "index.test.js",
+            "val": "BEGINFilters can be used.END"
+          }
+        ],
+        "line": 2,
+        "filename": "index.test.js"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "index.test.js"
+    }
+  ],
+  "line": 0,
+  "filename": "index.test.js"
+}
+`;
+
+exports[`filters can be used with options 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "name": "custom-with-options",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Filters can be used with options.",
+                  "line": 4,
+                  "column": 5,
+                  "filename": "index.test.js"
+                },
+                {
+                  "type": "Text",
+                  "val": "\\n",
+                  "line": 5,
+                  "column": 1,
+                  "filename": "index.test.js"
+                },
+                {
+                  "type": "Text",
+                  "val": "The values aren't parsed though.",
+                  "line": 5,
+                  "column": 5,
+                  "filename": "index.test.js"
+                },
+                {
+                  "type": "Text",
+                  "val": "\\n",
+                  "line": 6,
+                  "column": 1,
+                  "filename": "index.test.js"
+                },
+                {
+                  "type": "Text",
+                  "val": "They're just strings.",
+                  "line": 6,
+                  "column": 5,
+                  "filename": "index.test.js"
+                }
+              ],
+              "line": 3,
+              "filename": "index.test.js"
+            },
+            "attrs": [
+              {
+                "name": "option",
+                "val": "value",
+                "line": 3,
+                "column": 24,
+                "filename": "index.test.js",
+                "mustEscape": true
+              },
+              {
+                "name": "number",
+                "val": "2",
+                "line": 3,
+                "column": 37,
+                "filename": "index.test.js",
+                "mustEscape": true
+              }
+            ],
+            "line": 3,
+            "column": 3,
+            "filename": "index.test.js",
+            "val": "BEGIN OPTIONSFilters can be used with options.\\nThe values aren't parsed though.\\nThey're just strings.END OPTIONS"
+          }
+        ],
+        "line": 2,
+        "filename": "index.test.js"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "index.test.js"
+    }
+  ],
+  "line": 0,
+  "filename": "index.test.js"
+}
+`;

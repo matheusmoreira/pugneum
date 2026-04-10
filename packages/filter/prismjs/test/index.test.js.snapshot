@@ -1,0 +1,141 @@
+exports[`syntax-highlighting-works.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "selfClosing": false,
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "selfClosing": false,
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "pre",
+                  "selfClosing": false,
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "code",
+                        "selfClosing": false,
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "name": "highlight",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "function thisShouldBeHighlighted(syntax) {",
+                                    "line": 6,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 7,
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "  return with('prism', { extension: 'js' });",
+                                    "line": 7,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 8,
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "}",
+                                    "line": 8,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  }
+                                ],
+                                "line": 5,
+                                "filename": "syntax-highlighting-works.pg"
+                              },
+                              "attrs": [
+                                {
+                                  "name": "language",
+                                  "val": "javascript",
+                                  "line": 5,
+                                  "column": 20,
+                                  "filename": "syntax-highlighting-works.pg",
+                                  "mustEscape": true
+                                }
+                              ],
+                              "line": 5,
+                              "column": 9,
+                              "filename": "syntax-highlighting-works.pg",
+                              "val": "<span class=\\"token keyword\\">function</span> <span class=\\"token function\\">thisShouldBeHighlighted</span><span class=\\"token punctuation\\">(</span><span class=\\"token parameter\\">syntax</span><span class=\\"token punctuation\\">)</span> <span class=\\"token punctuation\\">{</span>\\n  <span class=\\"token keyword control-flow\\">return</span> <span class=\\"token keyword\\">with</span><span class=\\"token punctuation\\">(</span><span class=\\"token string\\">'prism'</span><span class=\\"token punctuation\\">,</span> <span class=\\"token punctuation\\">{</span> <span class=\\"token literal-property property\\">extension</span><span class=\\"token operator\\">:</span> <span class=\\"token string\\">'js'</span> <span class=\\"token punctuation\\">}</span><span class=\\"token punctuation\\">)</span><span class=\\"token punctuation\\">;</span>\\n<span class=\\"token punctuation\\">}</span>"
+                            }
+                          ],
+                          "line": 4,
+                          "filename": "syntax-highlighting-works.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 4,
+                        "column": 7,
+                        "filename": "syntax-highlighting-works.pg"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "syntax-highlighting-works.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "syntax-highlighting-works.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "syntax-highlighting-works.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "syntax-highlighting-works.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "syntax-highlighting-works.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "syntax-highlighting-works.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "syntax-highlighting-works.pg"
+}
+`;

@@ -1,15 +1,15 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
+var fs = require('fs');
+var path = require('path');
+var {test} = require('node:test');
 
-const walk = require('pugneum-walker');
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const load = require('../');
+var walk = require('pugneum-walker');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var load = require('../');
 
-test('pugneum-loader', () => {
+test('pugneum-loader', (t) => {
   let filename = __dirname + '/foo.pg';
   let source = fs.readFileSync(filename, 'utf8');
   let tokens = lex(source, {filename});
@@ -28,5 +28,5 @@ test('pugneum-loader', () => {
     {includeDependencies: true}
   );
 
-  expect(ast).toMatchSnapshot();
+  t.assert.snapshot(ast);
 });

@@ -1,6 +1,7 @@
 'use strict';
 
-var assert = require('assert');
+var assert = require('node:assert/strict');
+var {describe, test} = require('node:test');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var walk = require('../');
@@ -9,9 +10,6 @@ test('simple', function() {
   var ast = walk(
     parse(lex('.my-class foo')),
     function before(node, replace) {
-      // called before walking the children of `node`
-      // to replace the node, call `replace(newNode)`
-      // return `false` to skip descending
       if (node.type === 'Text') {
         replace({
           type: 'Text',
@@ -22,11 +20,12 @@ test('simple', function() {
       }
     },
     function after(node, replace) {
-      // called before walking the children of `node`
-      // to replace the node, call `replace(newNode)`
     }
   );
-  expect(ast).toEqual(parse(lex('.my-class bar')));
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(ast)),
+    JSON.parse(JSON.stringify(parse(lex('.my-class bar'))))
+  );
 });
 
 describe('replace([])', function() {
@@ -91,18 +90,21 @@ describe('replace([])', function() {
       }
     );
 
-    expect(ast).toEqual({
-      type: 'Block',
-      nodes: [
-        {type: 'Text', val: 'e'},
-        {type: 'Text', val: 'f'},
-        {type: 'Text', val: 'b'},
-        {type: 'Text', val: 'c'},
-        {type: 'Text', val: 'd'},
-      ],
-    });
+    assert.deepStrictEqual(
+      JSON.parse(JSON.stringify(ast)),
+      {
+        type: 'Block',
+        nodes: [
+          {type: 'Text', val: 'e'},
+          {type: 'Text', val: 'f'},
+          {type: 'Text', val: 'b'},
+          {type: 'Text', val: 'c'},
+          {type: 'Text', val: 'd'},
+        ],
+      }
+    );
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       called,
       [
         'before a',
@@ -158,7 +160,10 @@ describe('replace([])', function() {
       }
     });
 
-    expect(ast).toEqual(parse(lex('include:filter3:filter4 file')));
+    assert.deepStrictEqual(
+      JSON.parse(JSON.stringify(ast)),
+      JSON.parse(JSON.stringify(parse(lex('include:filter3:filter4 file'))))
+    );
   });
 
   test('fails when parent is not Block', function() {

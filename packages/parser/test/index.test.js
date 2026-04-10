@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var {test} = require('node:test');
 var parse = require('../');
 var lex = require('pugneum-lexer');
 
@@ -13,11 +14,11 @@ function read(path) {
 }
 
 testCases.forEach(function(filename) {
-  test(filename, () => {
+  test(filename, (t) => {
     let input = read(filename),
         tokens = lex(input, {filename: filename}),
         ast = parse(tokens, {filename: filename});
 
-    expect(ast).toMatchSnapshot();
+    t.assert.snapshot(ast);
   });
 });

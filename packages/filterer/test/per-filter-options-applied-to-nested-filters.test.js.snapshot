@@ -1,0 +1,65 @@
+exports[`per filter options are applied, even to nested filters 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "name": "first",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "name": "second",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "val": "Will be wrapped in second.",
+                        "line": 4,
+                        "column": 5,
+                        "filename": "per-filter-options-applied-to-nested-filters.test.js"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "per-filter-options-applied-to-nested-filters.test.js"
+                  },
+                  "attrs": [],
+                  "line": 3,
+                  "column": 9,
+                  "filename": "per-filter-options-applied-to-nested-filters.test.js",
+                  "val": "SECOND\\nWill be wrapped in second.\\nEND SECOND"
+                }
+              ],
+              "line": 3,
+              "filename": "per-filter-options-applied-to-nested-filters.test.js"
+            },
+            "attrs": [],
+            "line": 3,
+            "column": 3,
+            "filename": "per-filter-options-applied-to-nested-filters.test.js",
+            "val": "SECOND\\nWill be wrapped in second.\\nEND SECOND"
+          }
+        ],
+        "line": 2,
+        "filename": "per-filter-options-applied-to-nested-filters.test.js"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "per-filter-options-applied-to-nested-filters.test.js"
+    }
+  ],
+  "line": 0,
+  "filename": "per-filter-options-applied-to-nested-filters.test.js"
+}
+`;

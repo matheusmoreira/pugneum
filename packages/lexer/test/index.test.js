@@ -1,17 +1,17 @@
 'use strict';
 
 var fs = require('fs');
-var assert = require('assert');
+var {test} = require('node:test');
 var lex = require('../');
 
 var dir = __dirname + '/../../../test-cases/';
 fs.readdirSync(dir).forEach(function(testCase) {
   if (/\.pg$/.test(testCase)) {
-    test(testCase, () => {
+    test(testCase, (t) => {
       var result = lex(fs.readFileSync(dir + testCase, 'utf8'), {
         filename: testCase,
       });
-      expect(result).toMatchSnapshot();
+      t.assert.snapshot(result);
     });
   }
 });
@@ -19,7 +19,7 @@ fs.readdirSync(dir).forEach(function(testCase) {
 var edir = __dirname + '/errors/';
 fs.readdirSync(edir).forEach(function(testCase) {
   if (/\.pg$/.test(testCase)) {
-    test(testCase, () => {
+    test(testCase, (t) => {
       var actual;
       try {
         lex(fs.readFileSync(edir + testCase, 'utf8'), {
@@ -35,7 +35,7 @@ fs.readdirSync(edir).forEach(function(testCase) {
           column: ex.column,
         };
       }
-      expect(actual).toMatchSnapshot();
+      t.assert.snapshot(actual);
     });
   }
 });

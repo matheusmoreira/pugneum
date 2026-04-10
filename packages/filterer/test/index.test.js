@@ -1,14 +1,15 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
+var fs = require('fs');
+var path = require('path');
+var assert = require('node:assert/strict');
+var {test} = require('node:test');
 
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const filter = require('../');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var filter = require('../');
 
-const filename = path.basename(__filename);
+var filename = path.basename(__filename);
 
 var customFilters = {
   custom: {
@@ -18,14 +19,14 @@ var customFilters = {
   },
   'custom-with-options': {
     filter: function(str, options) {
-      expect(options.option).toBe('value');
-      expect(options.number).toBe('2'); // no automatic parsing of option values
+      assert.strictEqual(options.option, 'value');
+      assert.strictEqual(options.number, '2'); // no automatic parsing of option values
       return 'BEGIN OPTIONS' + str + 'END OPTIONS';
     }
   }
 };
 
-test('filters can be used', () => {
+test('filters can be used', (t) => {
   const source = `
 p
   :custom
@@ -35,10 +36,10 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
 
   const output = filter(ast, customFilters);
-  expect(output).toMatchSnapshot();
+  t.assert.snapshot(output);
 });
 
-test('filters can be used with options', () => {
+test('filters can be used with options', (t) => {
   const source = `
 p
   :custom-with-options(option=value number=2)
@@ -50,7 +51,7 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
 
   const output = filter(ast, customFilters);
-  expect(output).toMatchSnapshot();
+  t.assert.snapshot(output);
 });
 process.chdir(__dirname + '/../');
 
@@ -65,13 +66,13 @@ testCases.forEach(function(filename) {
     return fs.readFileSync(__dirname + '/cases/' + path, 'utf8');
   }
 
-  test('cases/' + filename, function() {
+  test('cases/' + filename, function(t) {
     var actualAst = JSON.stringify(
       filter(JSON.parse(read(filename)), customFilters),
       null,
       '  '
     );
-    expect(actualAst).toMatchSnapshot();
+    t.assert.snapshot(actualAst);
   });
 });
 
@@ -80,7 +81,7 @@ testCases.forEach(function(filename) {
     return fs.readFileSync(__dirname + '/errors/' + path, 'utf8');
   }
 
-  test('errors/' + filename, function() {
+  test('errors/' + filename, function(t) {
     var actual;
     try {
       filter(JSON.parse(read(filename)), customFilters);
@@ -93,6 +94,6 @@ testCases.forEach(function(filename) {
         line: ex.line,
       };
     }
-    expect(actual).toMatchSnapshot();
+    t.assert.snapshot(actual);
   });
 });

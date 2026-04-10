@@ -1,0 +1,41 @@
+exports[`no uncessessary blocks should be added 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Hello",
+            "line": 3,
+            "column": 5
+          },
+          {
+            "type": "Text",
+            "val": "\\n",
+            "line": 4,
+            "column": 1
+          },
+          {
+            "type": "Text",
+            "val": "World",
+            "line": 4,
+            "column": 5
+          }
+        ],
+        "line": 2
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1
+    }
+  ],
+  "line": 0
+}
+`;

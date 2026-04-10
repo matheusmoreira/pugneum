@@ -1,16 +1,17 @@
-const assert = require('assert');
-const fs = require('fs');
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const load = require('pugneum-loader');
-const link = require('../');
+var assert = require('node:assert/strict');
+var fs = require('fs');
+var {describe, test} = require('node:test');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var load = require('pugneum-loader');
+var link = require('../');
 
-const basedir = __dirname + '/cases';
+var basedir = __dirname + '/cases';
 
 function testDir(dir) {
   fs.readdirSync(dir).forEach(function(name) {
     if (!/\.pg$/.test(name)) return;
-    test(name, function() {
+    test(name, function(t) {
       let filename = dir + '/' + name;
       let source = fs.readFileSync(filename, 'utf8');
       let options = {filename, source, lex, parse, basedir};
@@ -19,7 +20,7 @@ function testDir(dir) {
       let loaded = load(ast, options);
       var actual = link(loaded);
 
-      expect(actual).toMatchSnapshot();
+      t.assert.snapshot(actual);
     });
   });
 }
@@ -27,7 +28,7 @@ function testDir(dir) {
 function testDirError(dir) {
   fs.readdirSync(dir).forEach(function(name) {
     if (!/\.input\.json$/.test(name)) return;
-    test(name, function() {
+    test(name, function(t) {
       var input = JSON.parse(fs.readFileSync(dir + '/' + name, 'utf8'));
       var err;
       try {
@@ -40,7 +41,7 @@ function testDirError(dir) {
         };
       }
       if (!err) throw new Error('Expected error');
-      expect(err).toMatchSnapshot();
+      t.assert.snapshot(err);
     });
   });
 }

@@ -1,5 +1,6 @@
 'use strict';
 
+var {test} = require('node:test');
 var lex = require('pugneum-lexer');
 var parse = require('../');
 
@@ -9,6 +10,6 @@ div
   | World
 `;
 
-test('no uncessessary blocks should be added', () => {
-  expect(parse(lex(input))).toMatchSnapshot();
+test('no uncessessary blocks should be added', (t) => {
+  t.assert.snapshot(parse(lex(input)));
 });

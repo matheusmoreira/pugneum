@@ -1,10 +1,11 @@
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const filter = require('../');
+var {test} = require('node:test');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var filter = require('../');
 
-const filename = require('path').basename(__filename);
+var filename = require('path').basename(__filename);
 
-const customFilters = {
+var customFilters = {
   first: {
     filter: function(str, options) {
       return options.wrap? 'FIRST\n' + str + '\nEND FIRST' : str;
@@ -17,7 +18,7 @@ const customFilters = {
   }
 };
 
-test('per filter options are applied, even to nested filters', () => {
+test('per filter options are applied, even to nested filters', (t) => {
   const source = `
 p
   :first:second
@@ -31,5 +32,5 @@ p
   };
 
   const output = filter(ast, customFilters, options);
-  expect(output).toMatchSnapshot();
+  t.assert.snapshot(output);
 });

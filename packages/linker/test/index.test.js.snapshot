@@ -1,0 +1,3931 @@
+exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "html",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "head",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "title",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "My Application",
+                            "line": 3,
+                            "column": 11,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                          }
+                        ],
+                        "line": 3,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 3,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                    },
+                    {
+                      "type": "Block",
+                      "nodes": []
+                    }
+                  ],
+                  "line": 2,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 2,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "body",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Tag",
+                              "name": "h1",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "hello",
+                                    "line": 1,
+                                    "column": 4,
+                                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                                  }
+                                ],
+                                "line": 1,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                              },
+                              "attrs": [],
+                              "attributeBlocks": [],
+                              "isInline": false,
+                              "line": 1,
+                              "column": 1,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                            }
+                          ],
+                          "line": 0,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                          "declaredBlocks": {}
+                        }
+                      ]
+                    }
+                  ],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+              }
+            ],
+            "line": 1,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 1,
+          "column": 1,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+      "declaredBlocks": {
+        "head": [
+          {
+            "type": "NamedBlock",
+            "nodes": [],
+            "line": 4,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 5
+          }
+        ],
+        "content": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Block",
+                "nodes": [
+                  {
+                    "type": "Tag",
+                    "name": "h1",
+                    "block": {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "val": "hello",
+                          "line": 1,
+                          "column": 4,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                        }
+                      ],
+                      "line": 1,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                    },
+                    "attrs": [],
+                    "attributeBlocks": [],
+                    "isInline": false,
+                    "line": 1,
+                    "column": 1,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                  }
+                ],
+                "line": 0,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                "declaredBlocks": {}
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-from-root.pg",
+            "name": "content",
+            "mode": "replace",
+            "column": 1,
+            "parents": [
+              {
+                "type": "NamedBlock",
+                "nodes": [
+                  {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "h1",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "val": "hello",
+                              "line": 1,
+                              "column": 4,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                            }
+                          ],
+                          "line": 1,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 1,
+                        "column": 1,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                      }
+                    ],
+                    "line": 0,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                    "declaredBlocks": {}
+                  }
+                ],
+                "line": 6,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+                "name": "content",
+                "mode": "replace",
+                "column": 5
+              }
+            ]
+          }
+        ]
+      },
+      "hasExtends": true
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-extends-from-root.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Block",
+          "nodes": [
+            {
+              "type": "Tag",
+              "name": "div",
+              "block": {
+                "type": "Block",
+                "nodes": [
+                  {
+                    "type": "Text",
+                    "val": "test1",
+                    "line": 4,
+                    "column": 9,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                  }
+                ],
+                "line": 4,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+              },
+              "attrs": [],
+              "attributeBlocks": [],
+              "isInline": false,
+              "line": 4,
+              "column": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+            }
+          ]
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/empty-block.pg",
+      "declaredBlocks": {
+        "test": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "div",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "test1",
+                      "line": 4,
+                      "column": 9,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                    }
+                  ],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg",
+            "name": "test",
+            "mode": "replace",
+            "column": 1,
+            "parents": [
+              {
+                "type": "NamedBlock",
+                "nodes": [
+                  {
+                    "type": "Tag",
+                    "name": "div",
+                    "block": {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "val": "test1",
+                          "line": 4,
+                          "column": 9,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                        }
+                      ],
+                      "line": 4,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                    },
+                    "attrs": [],
+                    "attributeBlocks": [],
+                    "isInline": false,
+                    "line": 4,
+                    "column": 5,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-1.pg"
+                  }
+                ],
+                "line": 1,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/empty-block.pg",
+                "name": "test",
+                "mode": "replace",
+                "column": 1
+              }
+            ]
+          }
+        ]
+      },
+      "hasExtends": true
+    },
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Block",
+          "nodes": [
+            {
+              "type": "Tag",
+              "name": "div",
+              "block": {
+                "type": "Block",
+                "nodes": [
+                  {
+                    "type": "Text",
+                    "val": "test2",
+                    "line": 4,
+                    "column": 9,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                  }
+                ],
+                "line": 4,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+              },
+              "attrs": [],
+              "attributeBlocks": [],
+              "isInline": false,
+              "line": 4,
+              "column": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+            }
+          ]
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/empty-block.pg",
+      "declaredBlocks": {
+        "test": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "div",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "test2",
+                      "line": 4,
+                      "column": 9,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                    }
+                  ],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg",
+            "name": "test",
+            "mode": "replace",
+            "column": 1,
+            "parents": [
+              {
+                "type": "NamedBlock",
+                "nodes": [
+                  {
+                    "type": "Tag",
+                    "name": "div",
+                    "block": {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "val": "test2",
+                          "line": 4,
+                          "column": 9,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                        }
+                      ],
+                      "line": 4,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                    },
+                    "attrs": [],
+                    "attributeBlocks": [],
+                    "isInline": false,
+                    "line": 4,
+                    "column": 5,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-empty-block-2.pg"
+                  }
+                ],
+                "line": 1,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/empty-block.pg",
+                "name": "test",
+                "mode": "replace",
+                "column": 1
+              }
+            ]
+          }
+        ]
+      },
+      "hasExtends": true
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-extends-of-common-template.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "html",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "head",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "title",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "My Application",
+                            "line": 3,
+                            "column": 11,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                          }
+                        ],
+                        "line": 3,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 3,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                    },
+                    {
+                      "type": "Block",
+                      "nodes": []
+                    }
+                  ],
+                  "line": 2,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 2,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "body",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Tag",
+                              "name": "h1",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "hello",
+                                    "line": 1,
+                                    "column": 4,
+                                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                                  }
+                                ],
+                                "line": 1,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                              },
+                              "attrs": [],
+                              "attributeBlocks": [],
+                              "isInline": false,
+                              "line": 1,
+                              "column": 1,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                            }
+                          ],
+                          "line": 0,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                          "declaredBlocks": {}
+                        }
+                      ]
+                    }
+                  ],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+              }
+            ],
+            "line": 1,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 1,
+          "column": 1,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg"
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+      "declaredBlocks": {
+        "head": [
+          {
+            "type": "NamedBlock",
+            "nodes": [],
+            "line": 4,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 5
+          }
+        ],
+        "content": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Block",
+                "nodes": [
+                  {
+                    "type": "Tag",
+                    "name": "h1",
+                    "block": {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "val": "hello",
+                          "line": 1,
+                          "column": 4,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                        }
+                      ],
+                      "line": 1,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                    },
+                    "attrs": [],
+                    "attributeBlocks": [],
+                    "isInline": false,
+                    "line": 1,
+                    "column": 1,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                  }
+                ],
+                "line": 0,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                "declaredBlocks": {}
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/extends-relative.pg",
+            "name": "content",
+            "mode": "replace",
+            "column": 1,
+            "parents": [
+              {
+                "type": "NamedBlock",
+                "nodes": [
+                  {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "h1",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "val": "hello",
+                              "line": 1,
+                              "column": 4,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                            }
+                          ],
+                          "line": 1,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 1,
+                        "column": 1,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg"
+                      }
+                    ],
+                    "line": 0,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/include-from-root.pg",
+                    "declaredBlocks": {}
+                  }
+                ],
+                "line": 6,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/layout.pg",
+                "name": "content",
+                "mode": "replace",
+                "column": 5
+              }
+            ]
+          }
+        ]
+      },
+      "hasExtends": true
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-extends-relative.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-filter-stylus.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "style",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "@import \\"some-included\\"\\n"
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter-stylus.pg"
+      },
+      "attrs": [
+        {
+          "name": "type",
+          "val": "text/css",
+          "line": 1,
+          "column": 7,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter-stylus.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter-stylus.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter-stylus.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-filter.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n"
+                },
+                {
+                  "type": "Tag",
+                  "name": "script",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "val": "math =\\n  square: (value) -> value * value\\n"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 4,
+                  "column": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "script",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "val": "math =\\n  square: (value) -> value * value\\n"
+                      }
+                    ],
+                    "line": 6,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 6,
+                  "column": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-filter.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-only-text-body.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Text",
+      "val": "The message is \\"",
+      "line": 1,
+      "column": 3,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg"
+    },
+    {
+      "type": "YieldBlock",
+      "line": 2,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg"
+    },
+    {
+      "type": "Text",
+      "val": "\\"",
+      "line": 3,
+      "column": 3,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-only-text.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "p",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "The message is \\"",
+                            "line": 1,
+                            "column": 3,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg"
+                          },
+                          {
+                            "type": "Block",
+                            "line": 2,
+                            "column": 1,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg",
+                            "nodes": [
+                              {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Tag",
+                                    "name": "em",
+                                    "block": {
+                                      "type": "Block",
+                                      "nodes": [
+                                        {
+                                          "type": "Text",
+                                          "val": "hello world",
+                                          "line": 5,
+                                          "column": 12,
+                                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                                        }
+                                      ],
+                                      "line": 5,
+                                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                                    },
+                                    "attrs": [],
+                                    "attributeBlocks": [],
+                                    "isInline": true,
+                                    "line": 5,
+                                    "column": 9,
+                                    "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                                  }
+                                ],
+                                "line": 5,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Text",
+                            "val": "\\"",
+                            "line": 3,
+                            "column": 3,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg"
+                          }
+                        ],
+                        "line": 0,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text-body.pg",
+                        "declaredBlocks": {}
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-only-text.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "head",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "alert('hello world');",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+            },
+            "attrs": [
+              {
+                "name": "type",
+                "val": "text/javascript",
+                "line": 2,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+            "textOnly": true
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include-with-text.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "head",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "script",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "alert('hello world');",
+                            "line": 3,
+                            "column": 5,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+                          }
+                        ],
+                        "line": 2,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+                      },
+                      "attrs": [
+                        {
+                          "name": "type",
+                          "val": "text/javascript",
+                          "line": 2,
+                          "column": 10,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+                          "mustEscape": true
+                        }
+                      ],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 2,
+                      "column": 3,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+                      "textOnly": true
+                    },
+                    {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Tag",
+                          "name": "script",
+                          "block": {
+                            "type": "Block",
+                            "nodes": [],
+                            "line": 3,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                          },
+                          "attrs": [
+                            {
+                              "name": "src",
+                              "val": "/caustic.js",
+                              "line": 3,
+                              "column": 12,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
+                              "mustEscape": true
+                            }
+                          ],
+                          "attributeBlocks": [],
+                          "isInline": false,
+                          "line": 3,
+                          "column": 5,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                        },
+                        {
+                          "type": "Tag",
+                          "name": "script",
+                          "block": {
+                            "type": "Block",
+                            "nodes": [],
+                            "line": 4,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                          },
+                          "attrs": [
+                            {
+                              "name": "src",
+                              "val": "/app.js",
+                              "line": 4,
+                              "column": 12,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
+                              "mustEscape": true
+                            }
+                          ],
+                          "attributeBlocks": [],
+                          "isInline": false,
+                          "line": 4,
+                          "column": 5,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                        }
+                      ],
+                      "line": 3,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+                    }
+                  ],
+                  "line": 1,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 1,
+                "column": 1,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg"
+              }
+            ],
+            "line": 0,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text-head.pg",
+            "declaredBlocks": {}
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include-with-text.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include.script.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "script",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "div",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "h1",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "{{name}}",
+                            "line": 2,
+                            "column": 6,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                          }
+                        ],
+                        "line": 2,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 2,
+                      "column": 3,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                    },
+                    {
+                      "type": "Tag",
+                      "name": "p",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "{{name}} is a {{species}} that is {{age}} old",
+                            "line": 3,
+                            "column": 5,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                          }
+                        ],
+                        "line": 3,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 3,
+                      "column": 3,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                    }
+                  ],
+                  "line": 1,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "pet",
+                    "line": 1,
+                    "column": 1,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 1,
+                "column": 1,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg"
+              }
+            ],
+            "line": 0,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/pet.pg",
+            "declaredBlocks": {}
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/include.script.pg"
+      },
+      "attrs": [
+        {
+          "name": "id",
+          "val": "pet-template",
+          "line": 1,
+          "column": 7,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/include.script.pg",
+          "mustEscape": false
+        },
+        {
+          "name": "type",
+          "val": "text/x-template",
+          "line": 1,
+          "column": 21,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/include.script.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/include.script.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include.script.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "html",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "head",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "title",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [],
+                        "line": 3,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 3,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                    }
+                  ],
+                  "line": 2,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 2,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "body",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "h1",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "val": "Page",
+                            "line": 5,
+                            "column": 8,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                          }
+                        ],
+                        "line": 5,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 5,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                    },
+                    {
+                      "type": "Tag",
+                      "name": "div",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Tag",
+                            "name": "div",
+                            "block": {
+                              "type": "Block",
+                              "nodes": [
+                                {
+                                  "type": "Block",
+                                  "line": 8,
+                                  "column": 9,
+                                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg",
+                                  "nodes": [
+                                    {
+                                      "type": "Block",
+                                      "nodes": [
+                                        {
+                                          "type": "Tag",
+                                          "name": "p",
+                                          "block": {
+                                            "type": "Block",
+                                            "nodes": [
+                                              {
+                                                "type": "Text",
+                                                "val": "some content",
+                                                "line": 3,
+                                                "column": 5,
+                                                "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                              }
+                                            ],
+                                            "line": 3,
+                                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                          },
+                                          "attrs": [],
+                                          "attributeBlocks": [],
+                                          "isInline": false,
+                                          "line": 3,
+                                          "column": 3,
+                                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                        },
+                                        {
+                                          "type": "Tag",
+                                          "name": "p",
+                                          "block": {
+                                            "type": "Block",
+                                            "nodes": [
+                                              {
+                                                "type": "Text",
+                                                "val": "and some more",
+                                                "line": 4,
+                                                "column": 5,
+                                                "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                              }
+                                            ],
+                                            "line": 4,
+                                            "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                          },
+                                          "attrs": [],
+                                          "attributeBlocks": [],
+                                          "isInline": false,
+                                          "line": 4,
+                                          "column": 3,
+                                          "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                        }
+                                      ],
+                                      "line": 3,
+                                      "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "line": 7,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                            },
+                            "attrs": [
+                              {
+                                "name": "id",
+                                "val": "content-wrapper",
+                                "line": 7,
+                                "column": 7,
+                                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg",
+                                "mustEscape": false
+                              }
+                            ],
+                            "attributeBlocks": [],
+                            "isInline": false,
+                            "line": 7,
+                            "column": 7,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                          }
+                        ],
+                        "line": 6,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                      },
+                      "attrs": [
+                        {
+                          "name": "id",
+                          "val": "content",
+                          "line": 6,
+                          "column": 5,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg",
+                          "mustEscape": false
+                        }
+                      ],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 6,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                    },
+                    {
+                      "type": "Tag",
+                      "name": "div",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Tag",
+                            "name": "stuff",
+                            "block": {
+                              "type": "Block",
+                              "nodes": [],
+                              "line": 10,
+                              "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                            },
+                            "attrs": [],
+                            "attributeBlocks": [],
+                            "isInline": false,
+                            "line": 10,
+                            "column": 7,
+                            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                          }
+                        ],
+                        "line": 9,
+                        "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                      },
+                      "attrs": [
+                        {
+                          "name": "id",
+                          "val": "footer",
+                          "line": 9,
+                          "column": 5,
+                          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg",
+                          "mustEscape": false
+                        }
+                      ],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 9,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                    }
+                  ],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+              }
+            ],
+            "line": 1,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 1,
+          "column": 1,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg"
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/yield-nested.pg",
+      "declaredBlocks": {}
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/include.yield.nested.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > includes-with-ext-js.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "pre",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "var x = '\\\\n here is some \\\\n new lined text';\\n"
+                }
+              ],
+              "line": 2,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/includes-with-ext-js.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/includes-with-ext-js.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/includes-with-ext-js.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/includes-with-ext-js.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/includes-with-ext-js.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > includes.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Mixin",
+          "name": "foo",
+          "args": [],
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "bar",
+                      "line": 3,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg"
+                    }
+                  ],
+                  "line": 3,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 3,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg"
+          },
+          "call": false,
+          "line": 2,
+          "column": 1,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg"
+        }
+      ],
+      "line": 0,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/auxiliary/mixins.pg",
+      "declaredBlocks": {}
+    },
+    {
+      "type": "Mixin",
+      "name": "foo",
+      "args": [],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 4,
+      "column": 5,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "body",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "<p>:)</p>\\n"
+          },
+          {
+            "type": "Text",
+            "val": "<script>\\n  console.log(\\"foo\\\\nbar\\")\\n</script>\\n"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n"
+                }
+              ],
+              "line": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg"
+            },
+            "attrs": [
+              {
+                "name": "type",
+                "val": "text/javascript",
+                "line": 9,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 9,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg"
+          }
+        ],
+        "line": 6,
+        "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/cases/includes.pg",
+  "declaredBlocks": {}
+}
+`;
+
+exports[`cases from pugneum sources > layout.append.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "app.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "foo.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "bar.js",
+                    "line": 6,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 6,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+  "declaredBlocks": {
+    "head": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/jquery.js",
+                "line": 4,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/caustic.js",
+                "line": 5,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "app.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/app-layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "foo.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "bar.js",
+                "line": 6,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+        "name": "head",
+        "mode": "replace",
+        "column": 3
+      }
+    ],
+    "body": [
+      {
+        "type": "NamedBlock",
+        "nodes": [],
+        "line": 7,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append/layout.pg",
+        "name": "body",
+        "mode": "replace",
+        "column": 5
+      }
+    ]
+  },
+  "hasExtends": true
+}
+`;
+
+exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "app.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "foo.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "bar.js",
+                    "line": 6,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 6,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+  "declaredBlocks": {
+    "head": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/jquery.js",
+                "line": 4,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/caustic.js",
+                "line": 5,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "app.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/app-layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "foo.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "bar.js",
+                "line": 6,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.append.without-block.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+        "name": "head",
+        "mode": "replace",
+        "column": 3
+      }
+    ],
+    "body": [
+      {
+        "type": "NamedBlock",
+        "nodes": [],
+        "line": 7,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/append-without-block/layout.pg",
+        "name": "body",
+        "mode": "replace",
+        "column": 5
+      }
+    ]
+  },
+  "hasExtends": true
+}
+`;
+
+exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "p",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "val": "Last prepend must appear at top",
+                "line": 13,
+                "column": 17,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              }
+            ],
+            "line": 13,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "last",
+              "line": 13,
+              "column": 3,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            },
+            {
+              "name": "class",
+              "val": "prepend",
+              "line": 13,
+              "column": 8,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 13,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "p",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "val": "Something prepended to content",
+                "line": 7,
+                "column": 18,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              }
+            ],
+            "line": 7,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "first",
+              "line": 7,
+              "column": 3,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            },
+            {
+              "name": "class",
+              "val": "prepend",
+              "line": 7,
+              "column": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 7,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "div",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "val": "Defined content",
+                "line": 5,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+              }
+            ],
+            "line": 4,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "content",
+              "line": 4,
+              "column": 2,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg",
+              "mustEscape": false
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "p",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "val": "Something appended to content",
+                "line": 4,
+                "column": 17,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              }
+            ],
+            "line": 4,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "first",
+              "line": 4,
+              "column": 3,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            },
+            {
+              "name": "class",
+              "val": "append",
+              "line": 4,
+              "column": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "p",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "val": "Last append must be most last",
+                "line": 10,
+                "column": 16,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              }
+            ],
+            "line": 10,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "last",
+              "line": 10,
+              "column": 3,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            },
+            {
+              "name": "class",
+              "val": "append",
+              "line": 10,
+              "column": 8,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": false
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 10,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        }
+      ],
+      "line": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+      "name": "content",
+      "mode": "replace",
+      "column": 1
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 19,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "foo.js",
+              "line": 19,
+              "column": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": true
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 19,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "/app.js",
+              "line": 5,
+              "column": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+              "mustEscape": true
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg"
+        },
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 16,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "jquery.js",
+              "line": 16,
+              "column": 9,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+              "mustEscape": true
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 16,
+          "column": 2,
+          "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+      "name": "head",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+  "declaredBlocks": {
+    "content": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Last prepend must appear at top",
+                  "line": 13,
+                  "column": 17,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                }
+              ],
+              "line": 13,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "last",
+                "line": 13,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              },
+              {
+                "name": "class",
+                "val": "prepend",
+                "line": 13,
+                "column": 8,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 13,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Something prepended to content",
+                  "line": 7,
+                  "column": 18,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                }
+              ],
+              "line": 7,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "first",
+                "line": 7,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              },
+              {
+                "name": "class",
+                "val": "prepend",
+                "line": 7,
+                "column": 9,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 7,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "div",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Defined content",
+                  "line": 5,
+                  "column": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+                }
+              ],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "content",
+                "line": 4,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg",
+                "mustEscape": false
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Something appended to content",
+                  "line": 4,
+                  "column": 17,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                }
+              ],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "first",
+                "line": 4,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              },
+              {
+                "name": "class",
+                "val": "append",
+                "line": 4,
+                "column": 9,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Last append must be most last",
+                  "line": 10,
+                  "column": 16,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                }
+              ],
+              "line": 10,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "last",
+                "line": 10,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              },
+              {
+                "name": "class",
+                "val": "append",
+                "line": 10,
+                "column": 8,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": false
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 10,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg",
+        "name": "content",
+        "mode": "replace",
+        "column": 1,
+        "parents": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "Last prepend must appear at top",
+                      "line": 13,
+                      "column": 17,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                    }
+                  ],
+                  "line": 13,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "last",
+                    "line": 13,
+                    "column": 3,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  },
+                  {
+                    "name": "class",
+                    "val": "prepend",
+                    "line": 13,
+                    "column": 8,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 13,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "Something prepended to content",
+                      "line": 7,
+                      "column": 18,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                    }
+                  ],
+                  "line": 7,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "first",
+                    "line": 7,
+                    "column": 3,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  },
+                  {
+                    "name": "class",
+                    "val": "prepend",
+                    "line": 7,
+                    "column": 9,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 7,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "div",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "Defined content",
+                      "line": 5,
+                      "column": 5,
+                      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+                    }
+                  ],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "content",
+                    "line": 4,
+                    "column": 2,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/redefine.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "Something appended to content",
+                      "line": 4,
+                      "column": 17,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                    }
+                  ],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "first",
+                    "line": 4,
+                    "column": 3,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  },
+                  {
+                    "name": "class",
+                    "val": "append",
+                    "line": 4,
+                    "column": 9,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "val": "Last append must be most last",
+                      "line": 10,
+                      "column": 16,
+                      "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                    }
+                  ],
+                  "line": 10,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "class",
+                    "val": "last",
+                    "line": 10,
+                    "column": 3,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  },
+                  {
+                    "name": "class",
+                    "val": "append",
+                    "line": 10,
+                    "column": 8,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                    "mustEscape": false
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 10,
+                "column": 2,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+              }
+            ],
+            "line": 1,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+            "name": "content",
+            "mode": "replace",
+            "column": 1
+          }
+        ]
+      }
+    ],
+    "head": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 19,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "foo.js",
+                "line": 19,
+                "column": 9,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 19,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "/app.js",
+                "line": 5,
+                "column": 9,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 16,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "jquery.js",
+                "line": 16,
+                "column": 9,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 16,
+            "column": 2,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.multi.append.prepend.block.pg"
+          }
+        ],
+        "line": 4,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/multi-append-prepend-block/root.pg",
+        "name": "head",
+        "mode": "replace",
+        "column": 1
+      }
+    ]
+  },
+  "hasExtends": true
+}
+`;
+
+exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "foo.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "bar.js",
+                    "line": 6,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 6,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "app.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+  "declaredBlocks": {
+    "head": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "foo.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "bar.js",
+                "line": 6,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "app.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/app-layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/jquery.js",
+                "line": 4,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/caustic.js",
+                "line": 5,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+        "name": "head",
+        "mode": "replace",
+        "column": 3
+      }
+    ],
+    "body": [
+      {
+        "type": "NamedBlock",
+        "nodes": [],
+        "line": 7,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend/layout.pg",
+        "name": "body",
+        "mode": "replace",
+        "column": 5
+      }
+    ]
+  },
+  "hasExtends": true
+}
+`;
+
+exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "foo.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "bar.js",
+                    "line": 6,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 6,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "app.js",
+                    "line": 5,
+                    "column": 10,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+                    "mustEscape": true
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+  "declaredBlocks": {
+    "head": [
+      {
+        "type": "NamedBlock",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "foo.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "bar.js",
+                "line": 6,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/cases/layout.prepend.without-block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "app.js",
+                "line": 5,
+                "column": 10,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/app-layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/jquery.js",
+                "line": 4,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "script",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "vendor/caustic.js",
+                "line": 5,
+                "column": 12,
+                "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 5,
+            "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+        "name": "head",
+        "mode": "replace",
+        "column": 3
+      }
+    ],
+    "body": [
+      {
+        "type": "NamedBlock",
+        "nodes": [],
+        "line": 7,
+        "filename": "/home/dev/pugneum/packages/linker/test/fixtures/prepend-without-block/layout.pg",
+        "name": "body",
+        "mode": "replace",
+        "column": 5
+      }
+    ]
+  },
+  "hasExtends": true
+}
+`;

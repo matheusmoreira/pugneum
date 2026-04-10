@@ -1,0 +1,147 @@
+exports[`pugneum-loader 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "bar.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "foo.pg",
+        "fullPath": "bar.pg",
+        "str": "block bing\\n",
+        "raw": "block bing\\n",
+        "ast": {
+          "type": "Block",
+          "nodes": [
+            {
+              "type": "NamedBlock",
+              "nodes": [],
+              "line": 1,
+              "filename": "bar.pg",
+              "name": "bing",
+              "mode": "replace",
+              "column": 1
+            }
+          ],
+          "line": 0,
+          "filename": "bar.pg"
+        }
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "foo.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Include",
+          "file": {
+            "type": "FileReference",
+            "filename": "foo.pg",
+            "path": "bing.pg",
+            "line": 4,
+            "column": 11,
+            "fullPath": "bing.pg",
+            "str": ".bing bong\\n",
+            "raw": ".bing bong\\n",
+            "ast": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "val": "bong",
+                        "line": 1,
+                        "column": 7,
+                        "filename": "bing.pg"
+                      }
+                    ],
+                    "line": 1,
+                    "filename": "bing.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "class",
+                      "val": "bing",
+                      "line": 1,
+                      "column": 1,
+                      "filename": "/home/dev/pugneum/packages/loader/test/bing.pg",
+                      "mustEscape": false
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 1,
+                  "column": 1,
+                  "filename": "bing.pg"
+                }
+              ],
+              "line": 0,
+              "filename": "bing.pg"
+            }
+          },
+          "line": 4,
+          "column": 3,
+          "filename": "foo.pg",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 4,
+            "filename": "foo.pg"
+          }
+        },
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "RawInclude",
+                "file": {
+                  "type": "FileReference",
+                  "filename": "foo.pg",
+                  "path": "script.js",
+                  "line": 6,
+                  "column": 13,
+                  "fullPath": "script.js",
+                  "str": "document.write('hello world!');\\n",
+                  "raw": "document.write('hello world!');\\n"
+                },
+                "line": 6,
+                "column": 5,
+                "filename": "foo.pg",
+                "filters": []
+              }
+            ],
+            "line": 5,
+            "filename": "foo.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "foo.pg"
+        }
+      ],
+      "line": 3,
+      "filename": "foo.pg",
+      "name": "bing",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "foo.pg"
+}
+`;

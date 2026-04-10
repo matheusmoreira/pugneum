@@ -1,0 +1,75 @@
+exports[`installed filter packages can be used implicitly 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "pre",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "name": "highlight.js",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "val": "puts 'This should be', :syntax_highlighted",
+                        "line": 5,
+                        "column": 7,
+                        "filename": "resolution.test.js"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "resolution.test.js"
+                  },
+                  "attrs": [
+                    {
+                      "name": "language",
+                      "val": "ruby",
+                      "line": 4,
+                      "column": 21,
+                      "filename": "resolution.test.js",
+                      "mustEscape": true
+                    }
+                  ],
+                  "line": 4,
+                  "column": 5,
+                  "filename": "resolution.test.js",
+                  "val": "puts <span class=\\"hljs-string\\">&#x27;This should be&#x27;</span>, <span class=\\"hljs-symbol\\">:syntax_highlighted</span>"
+                }
+              ],
+              "line": 3,
+              "filename": "resolution.test.js"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 3,
+            "filename": "resolution.test.js"
+          }
+        ],
+        "line": 2,
+        "filename": "resolution.test.js"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "resolution.test.js"
+    }
+  ],
+  "line": 0,
+  "filename": "resolution.test.js"
+}
+`;

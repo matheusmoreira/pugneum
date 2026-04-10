@@ -1,28 +1,29 @@
-const path = require('path');
-const fs = require('fs');
+var path = require('path');
+var fs = require('fs');
+var {test} = require('node:test');
 
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const filter = require('pugneum-filterer');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var filter = require('pugneum-filterer');
 
-const prism = require('../');
-const customFilters = { 'highlight': prism };
+var prism = require('../');
+var customFilters = { 'highlight': prism };
 
-const casesDirectory = path.join(__dirname, 'cases');
-const cases = fs.readdirSync(casesDirectory);
+var casesDirectory = path.join(__dirname, 'cases');
+var cases = fs.readdirSync(casesDirectory);
 
 function readCase(name) {
   return fs.readFileSync(path.join(casesDirectory, name), 'utf8');
 }
 
 cases.forEach((filename) => {
-  test(filename, () => {
-    const options = { filename };
-    const source = readCase(filename);
-    const tokens = lex(source, options);
-    const ast = parse(tokens, options);
-    const filtered = filter(ast, customFilters);
+  test(filename, (t) => {
+    var options = { filename };
+    var source = readCase(filename);
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var filtered = filter(ast, customFilters);
 
-    expect(filtered).toMatchSnapshot();
+    t.assert.snapshot(filtered);
   });
 });

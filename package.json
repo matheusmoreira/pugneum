@@ -2,7 +2,6 @@
   "name": "pugneum-repository",
   "private": true,
   "devDependencies": {
-    "jest": "^29.6.4",
     "prettier": "^3.0.2"
   },
   "repository": {
@@ -12,7 +11,8 @@
   "scripts": {
     "prettier:check": "prettier --ignore-path .gitignore --list-different './**/*.js'",
     "format": "prettier --ignore-path .gitignore --write './**/*.js'",
-    "test": "jest"
+    "test": "node --test 'packages/**/test/*.test.js'",
+    "test:update-snapshots": "node --test --test-update-snapshots 'packages/**/test/*.test.js'"
   },
   "workspaces": [
     "packages/error",

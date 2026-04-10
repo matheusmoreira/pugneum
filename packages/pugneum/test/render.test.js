@@ -1,12 +1,14 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const pg = require('../');
+var assert = require('node:assert/strict');
+var {describe, it} = require('node:test');
+var fs = require('fs');
+var path = require('path');
+var pg = require('../');
 
 // Load test cases from the root test-cases/ directory.
 // Each .pg file has a corresponding .html file with expected output.
-const testCasesDir = path.resolve(__dirname, '../../../test-cases');
+var testCasesDir = path.resolve(__dirname, '../../../test-cases');
 
 function getTestCases() {
   return fs.readdirSync(testCasesDir)
@@ -16,175 +18,175 @@ function getTestCases() {
 
 describe('render()', () => {
   it('should render a simple tag', () => {
-    expect(pg.render('h1 Hello')).toBe('<!DOCTYPE html><h1>Hello</h1>');
+    assert.strictEqual(pg.render('h1 Hello'), '<!DOCTYPE html><h1>Hello</h1>');
   });
 
   it('should render nested tags', () => {
-    const input = 'div\n  p Hello';
-    expect(pg.render(input)).toBe('<!DOCTYPE html><div><p>Hello</p></div>');
+    var input = 'div\n  p Hello';
+    assert.strictEqual(pg.render(input), '<!DOCTYPE html><div><p>Hello</p></div>');
   });
 
   it('should render attributes', () => {
-    const input = 'a(href="/home") Home';
-    expect(pg.render(input)).toBe('<!DOCTYPE html><a href="/home">Home</a>');
+    var input = 'a(href="/home") Home';
+    assert.strictEqual(pg.render(input), '<!DOCTYPE html><a href="/home">Home</a>');
   });
 
   it('should render id shorthand', () => {
-    expect(pg.render('#main')).toBe('<!DOCTYPE html><div id="main"></div>');
+    assert.strictEqual(pg.render('#main'), '<!DOCTYPE html><div id="main"></div>');
   });
 
   it('should render class shorthand', () => {
-    expect(pg.render('.container')).toBe('<!DOCTYPE html><div class="container"></div>');
+    assert.strictEqual(pg.render('.container'), '<!DOCTYPE html><div class="container"></div>');
   });
 
   it('should render self-closing tags', () => {
-    expect(pg.render('br')).toBe('<!DOCTYPE html><br>');
-    expect(pg.render('img(src="a.png")')).toBe('<!DOCTYPE html><img src="a.png">');
-    expect(pg.render('hr')).toBe('<!DOCTYPE html><hr>');
+    assert.strictEqual(pg.render('br'), '<!DOCTYPE html><br>');
+    assert.strictEqual(pg.render('img(src="a.png")'), '<!DOCTYPE html><img src="a.png">');
+    assert.strictEqual(pg.render('hr'), '<!DOCTYPE html><hr>');
   });
 
   it('should render buffered comments', () => {
-    expect(pg.render('// comment')).toBe('<!DOCTYPE html><!-- comment-->');
+    assert.strictEqual(pg.render('// comment'), '<!DOCTYPE html><!-- comment-->');
   });
 
   it('should suppress unbuffered comments', () => {
-    expect(pg.render('//- hidden')).toBe('<!DOCTYPE html>');
+    assert.strictEqual(pg.render('//- hidden'), '<!DOCTYPE html>');
   });
 
   it('should render text blocks', () => {
-    const input = 'p.\n  Line 1\n  Line 2';
-    expect(pg.render(input)).toBe('<!DOCTYPE html><p>Line 1\nLine 2</p>');
+    var input = 'p.\n  Line 1\n  Line 2';
+    assert.strictEqual(pg.render(input), '<!DOCTYPE html><p>Line 1\nLine 2</p>');
   });
 
   it('should render multiple classes', () => {
-    expect(pg.render('.a.b.c')).toBe('<!DOCTYPE html><div class="a b c"></div>');
+    assert.strictEqual(pg.render('.a.b.c'), '<!DOCTYPE html><div class="a b c"></div>');
   });
 
   it('should render boolean attributes', () => {
-    expect(pg.render('input(disabled)')).toContain('disabled');
+    assert.match(pg.render('input(disabled)'), /disabled/);
   });
 });
 
 describe('reference links', () => {
   it('should resolve @[name] to <a> with identifier as text', () => {
-    const input = 'references\n  example https://example.com\n\np @[example]';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  example https://example.com\n\np @[example]';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://example.com">example</a></p>'
     );
   });
 
   it('should use explicit link text when provided', () => {
-    const input = 'references\n  gc https://example.com/gc\n\np @[gc Baby\'s First Garbage Collector]';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  gc https://example.com/gc\n\np @[gc Baby\'s First Garbage Collector]';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://example.com/gc">Baby\'s First Garbage Collector</a></p>'
     );
   });
 
   it('should resolve multiple references', () => {
-    const input = 'references\n  one https://one.com\n  two https://two.com\n\np @[one] and @[two]';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  one https://one.com\n  two https://two.com\n\np @[one] and @[two]';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://one.com">one</a> and <a href="https://two.com">two</a></p>'
     );
   });
 
   it('should work inline in prose', () => {
-    const input = 'references\n  docs https://docs.com\n\np Read @[docs the docs] today.';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  docs https://docs.com\n\np Read @[docs the docs] today.';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p>Read <a href="https://docs.com">the docs</a> today.</p>'
     );
   });
 
   it('should support forward references', () => {
-    const input = 'p @[example click here]\n\nreferences\n  example https://example.com';
-    expect(pg.render(input)).toBe(
+    var input = 'p @[example click here]\n\nreferences\n  example https://example.com';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://example.com">click here</a></p>'
     );
   });
 
   it('should work in text blocks', () => {
-    const input = 'references\n  ex https://example.com\n\np.\n  Visit @[ex the site] now.';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  ex https://example.com\n\np.\n  Visit @[ex the site] now.';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p>Visit <a href="https://example.com">the site</a> now.</p>'
     );
   });
 
   it('should escape \\@[ as literal text', () => {
-    expect(pg.render('p \\@[not a ref]')).toBe(
+    assert.strictEqual(pg.render('p \\@[not a ref]'),
       '<!DOCTYPE html><p>@[not a ref]</p>'
     );
   });
 
   it('should support quoted URLs with spaces', () => {
-    const input = "references\n  ex 'https://example.com/a b'\n\np @[ex]";
-    expect(pg.render(input)).toBe(
+    var input = "references\n  ex 'https://example.com/a b'\n\np @[ex]";
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://example.com/a b">ex</a></p>'
     );
   });
 
   it('should work inside #[...] interpolation', () => {
-    const input = 'references\n  docs https://docs.com\n\np #[em check @[docs the docs] out]';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  docs https://docs.com\n\np #[em check @[docs the docs] out]';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><em>check <a href="https://docs.com">the docs</a> out</em></p>'
     );
   });
 
   it('should produce no output for the references block itself', () => {
-    const input = 'references\n  ex https://example.com';
-    expect(pg.render(input)).toBe('<!DOCTYPE html>');
+    var input = 'references\n  ex https://example.com';
+    assert.strictEqual(pg.render(input), '<!DOCTYPE html>');
   });
 
   it('should throw for undefined references', () => {
-    expect(() => pg.render('p @[missing]')).toThrow(/Undefined reference 'missing'/);
+    assert.throws(() => pg.render('p @[missing]'), /Undefined reference 'missing'/);
   });
 
   it('should support (attrs) after @[...]', () => {
-    const input = 'references\n  ex https://example.com\n\np @[ex click](class="cite")';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  ex https://example.com\n\np @[ex click](class="cite")';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a class="cite" href="https://example.com">click</a></p>'
     );
   });
 
   it('should support multiple custom attributes', () => {
-    const input = 'references\n  ex https://example.com\n\np @[ex click](target="_blank" rel="noopener")';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  ex https://example.com\n\np @[ex click](target="_blank" rel="noopener")';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a href="https://example.com" target="_blank" rel="noopener">click</a></p>'
     );
   });
 
   it('should support (attrs) with default text', () => {
-    const input = 'references\n  ex https://example.com\n\np @[ex](class="external")';
-    expect(pg.render(input)).toBe(
+    var input = 'references\n  ex https://example.com\n\np @[ex](class="external")';
+    assert.strictEqual(pg.render(input),
       '<!DOCTYPE html><p><a class="external" href="https://example.com">ex</a></p>'
     );
   });
 });
 
 describe('renderFile()', () => {
-  const filePath = path.join(testCasesDir, 'basic.pg');
+  var filePath = path.join(testCasesDir, 'basic.pg');
 
   it('should render a file from disk', () => {
-    const result = pg.renderFile(filePath);
-    expect(typeof result).toBe('string');
-    expect(result).toContain('<!DOCTYPE html>');
+    var result = pg.renderFile(filePath);
+    assert.strictEqual(typeof result, 'string');
+    assert.match(result, /<!DOCTYPE html>/);
   });
 });
 
 // Run each .pg test case from test-cases/ that has a matching .html file
 describe('test-cases/', () => {
-  const cases = getTestCases();
+  var cases = getTestCases();
 
   cases.forEach(name => {
-    const htmlPath = path.join(testCasesDir, name + '.html');
+    var htmlPath = path.join(testCasesDir, name + '.html');
 
     // Only test cases that have an expected .html output file
     if (!fs.existsSync(htmlPath)) return;
 
     it(name, () => {
-      const pgPath = path.join(testCasesDir, name + '.pg');
-      const expected = fs.readFileSync(htmlPath, 'utf8').trim().replace(/\r/g, '');
-      const options = {filename: pgPath, basedir: testCasesDir};
-      const actual = pg.renderFile(pgPath, options);
-      expect(actual.trim()).toBe(expected);
+      var pgPath = path.join(testCasesDir, name + '.pg');
+      var expected = fs.readFileSync(htmlPath, 'utf8').trim().replace(/\r/g, '');
+      var options = {filename: pgPath, basedir: testCasesDir};
+      var actual = pg.renderFile(pgPath, options);
+      assert.strictEqual(actual.trim(), expected);
     });
   });
 });

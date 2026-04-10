@@ -1,11 +1,12 @@
-const path = require('path');
-const filename = path.basename(__filename);
+var path = require('path');
+var {test} = require('node:test');
+var filename = path.basename(__filename);
 
-const lex = require('pugneum-lexer');
-const parse = require('pugneum-parser');
-const filter = require('../');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+var filter = require('../');
 
-test('installed filter packages can be used implicitly', () => {
+test('installed filter packages can be used implicitly', (t) => {
 
   const source = `
 pre
@@ -18,5 +19,5 @@ pre
   const ast = parse(tokens, {filename, source});
   const filtered = filter(ast);
 
-  expect(filtered).toMatchSnapshot();
+  t.assert.snapshot(filtered);
 });

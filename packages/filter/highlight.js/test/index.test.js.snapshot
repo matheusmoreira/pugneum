@@ -1,0 +1,500 @@
+exports[`language-argument.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "selfClosing": false,
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "selfClosing": false,
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "pre",
+                  "selfClosing": false,
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "code",
+                        "selfClosing": false,
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "name": "highlight",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "(define (double x)",
+                                    "line": 6,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 7,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "  (* 2 x))",
+                                    "line": 7,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 8,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "(define (square x)",
+                                    "line": 8,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 9,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "  (* x x))",
+                                    "line": 9,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 10,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "(define (double-square x)",
+                                    "line": 10,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 11,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "  (double (square x)))",
+                                    "line": 11,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 12,
+                                    "column": 1,
+                                    "filename": "language-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "(display (double-square 10))",
+                                    "line": 12,
+                                    "column": 11,
+                                    "filename": "language-argument.pg"
+                                  }
+                                ],
+                                "line": 5,
+                                "filename": "language-argument.pg"
+                              },
+                              "attrs": [
+                                {
+                                  "name": "language",
+                                  "val": "scheme",
+                                  "line": 5,
+                                  "column": 20,
+                                  "filename": "language-argument.pg",
+                                  "mustEscape": true
+                                }
+                              ],
+                              "line": 5,
+                              "column": 9,
+                              "filename": "language-argument.pg",
+                              "val": "(<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">define</span></span> (<span class=\\"hljs-name\\">double</span> x)\\n  (<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">*</span></span> <span class=\\"hljs-number\\">2</span> x))\\n(<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">define</span></span> (<span class=\\"hljs-name\\">square</span> x)\\n  (<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">*</span></span> x x))\\n(<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">define</span></span> (<span class=\\"hljs-name\\">double-square</span> x)\\n  (<span class=\\"hljs-name\\">double</span> (<span class=\\"hljs-name\\">square</span> x)))\\n(<span class=\\"hljs-name\\"><span class=\\"hljs-built_in\\">display</span></span> (<span class=\\"hljs-name\\">double-square</span> <span class=\\"hljs-number\\">10</span>))"
+                            }
+                          ],
+                          "line": 4,
+                          "filename": "language-argument.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 4,
+                        "column": 7,
+                        "filename": "language-argument.pg"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "language-argument.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "language-argument.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "language-argument.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "language-argument.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "language-argument.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "language-argument.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "language-argument.pg"
+}
+`;
+
+exports[`language-subset-argument.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "selfClosing": false,
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "selfClosing": false,
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "pre",
+                  "selfClosing": false,
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "code",
+                        "selfClosing": false,
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "name": "highlight",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "#include <stdio.h>",
+                                    "line": 6,
+                                    "column": 11,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 7,
+                                    "column": 1,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "",
+                                    "line": 7,
+                                    "column": 1,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 8,
+                                    "column": 1,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "int main(int argc, char **argv) {",
+                                    "line": 8,
+                                    "column": 11,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 9,
+                                    "column": 1,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\tputs(\\"Pugneum!\\");",
+                                    "line": 9,
+                                    "column": 11,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 10,
+                                    "column": 1,
+                                    "filename": "language-subset-argument.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "}",
+                                    "line": 10,
+                                    "column": 11,
+                                    "filename": "language-subset-argument.pg"
+                                  }
+                                ],
+                                "line": 5,
+                                "filename": "language-subset-argument.pg"
+                              },
+                              "attrs": [
+                                {
+                                  "name": "languageSubset",
+                                  "val": "c,c++",
+                                  "line": 5,
+                                  "column": 20,
+                                  "filename": "language-subset-argument.pg",
+                                  "mustEscape": true
+                                }
+                              ],
+                              "line": 5,
+                              "column": 9,
+                              "filename": "language-subset-argument.pg",
+                              "val": "<span class=\\"hljs-meta\\">#<span class=\\"hljs-keyword\\">include</span> <span class=\\"hljs-string\\">&lt;stdio.h&gt;</span></span>\\n\\n<span class=\\"hljs-function\\"><span class=\\"hljs-type\\">int</span> <span class=\\"hljs-title\\">main</span><span class=\\"hljs-params\\">(<span class=\\"hljs-type\\">int</span> argc, <span class=\\"hljs-type\\">char</span> **argv)</span> </span>{\\n\\t<span class=\\"hljs-built_in\\">puts</span>(<span class=\\"hljs-string\\">&quot;Pugneum!&quot;</span>);\\n}"
+                            }
+                          ],
+                          "line": 4,
+                          "filename": "language-subset-argument.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 4,
+                        "column": 7,
+                        "filename": "language-subset-argument.pg"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "language-subset-argument.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "language-subset-argument.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "language-subset-argument.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "language-subset-argument.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "language-subset-argument.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "language-subset-argument.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "language-subset-argument.pg"
+}
+`;
+
+exports[`syntax-highlighting-works.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "selfClosing": false,
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "body",
+            "selfClosing": false,
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "pre",
+                  "selfClosing": false,
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "code",
+                        "selfClosing": false,
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "name": "highlight",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "val": "function thisShouldBeHighlighted(syntax) {",
+                                    "line": 6,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 7,
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "  return with('highlight', { extension: 'js' });",
+                                    "line": 7,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "\\n",
+                                    "line": 8,
+                                    "column": 1,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  },
+                                  {
+                                    "type": "Text",
+                                    "val": "}",
+                                    "line": 8,
+                                    "column": 11,
+                                    "filename": "syntax-highlighting-works.pg"
+                                  }
+                                ],
+                                "line": 5,
+                                "filename": "syntax-highlighting-works.pg"
+                              },
+                              "attrs": [],
+                              "line": 5,
+                              "column": 9,
+                              "filename": "syntax-highlighting-works.pg",
+                              "val": "<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">thisShouldBeHighlighted</span><span class=\\"hljs-params\\">(syntax)</span> {\\n  <span class=\\"hljs-keyword\\">return</span> <span class=\\"hljs-keyword\\">with</span>(<span class=\\"hljs-string\\">&#x27;highlight&#x27;</span>, { extension: <span class=\\"hljs-string\\">&#x27;js&#x27;</span> });\\n}"
+                            }
+                          ],
+                          "line": 4,
+                          "filename": "syntax-highlighting-works.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 4,
+                        "column": 7,
+                        "filename": "syntax-highlighting-works.pg"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "syntax-highlighting-works.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "syntax-highlighting-works.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "syntax-highlighting-works.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "syntax-highlighting-works.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "syntax-highlighting-works.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "syntax-highlighting-works.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "syntax-highlighting-works.pg"
+}
+`;

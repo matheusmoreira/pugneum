@@ -155,6 +155,13 @@ mixin button(url text)
 Variables can be used in both text content and attribute values
 with the `#{name}` syntax. Escape with `\#{` for literal output.
 
+Mixins can be called inline within text using `#[+mixin(args)]`:
+
+```pugneum
+p Click the #[+icon(settings)] button to open preferences.
+p I am #[+b(very)] #[+b(happy)] today.
+```
+
 Mixins can also receive block content from the caller:
 
 ```pugneum

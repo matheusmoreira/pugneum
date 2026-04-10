@@ -275,6 +275,50 @@ describe('variables in attributes', () => {
   });
 });
 
+describe('inline mixin calls', () => {
+  it('should render mixin inline in text', () => {
+    assert.strictEqual(
+      pg.render('mixin b(text)\n  strong #{text}\n\np I am #[+b(very)] happy.'),
+      '<!DOCTYPE html><p>I am <strong>very</strong> happy.</p>'
+    );
+  });
+
+  it('should support multiple inline calls in one line', () => {
+    assert.strictEqual(
+      pg.render('mixin b(t)\n  strong #{t}\n\np #[+b(a)] and #[+b(b)]'),
+      '<!DOCTYPE html><p><strong>a</strong> and <strong>b</strong></p>'
+    );
+  });
+
+  it('should support inline mixin with no args', () => {
+    assert.strictEqual(
+      pg.render('mixin sep()\n  span |\n\np A #[+sep()] B'),
+      '<!DOCTYPE html><p>A <span>|</span> B</p>'
+    );
+  });
+
+  it('should support inline mixin with block content', () => {
+    assert.strictEqual(
+      pg.render('mixin wrap()\n  span.w\n    block\n\np #[+wrap() #[em hi]] end'),
+      '<!DOCTYPE html><p><span class="w"><em>hi</em></span> end</p>'
+    );
+  });
+
+  it('should work in text blocks', () => {
+    assert.strictEqual(
+      pg.render('mixin code(name)\n  code #{name}\n\np.\n  Use #[+code(div)] elements.'),
+      '<!DOCTYPE html><p>Use <code>div</code> elements.</p>'
+    );
+  });
+
+  it('should work with #{var} in attributes', () => {
+    assert.strictEqual(
+      pg.render('mixin link(url text)\n  a(href="#{url}") #{text}\n\np Go #[+link(/x here)]'),
+      '<!DOCTYPE html><p>Go <a href="/x">here</a></p>'
+    );
+  });
+});
+
 describe('link shorthand', () => {
   it('should render basic link', () => {
     assert.strictEqual(pg.render('p @(/contact contact us)'),

@@ -195,7 +195,7 @@ class Compiler {
     }
     if (classes.length > 0) {
       this.buffer(' class="');
-      this.buffer(classes.join(' ').replace(/"/g, '&quot;'));
+      this.buffer(this.resolveAttrValue(classes.join(' '), attrs[0]).replace(/"/g, '&quot;'));
       this.buffer('"');
     }
     for (const attr of others) {
@@ -203,10 +203,34 @@ class Compiler {
       this.buffer(attr.name);
       if (attr.val !== true) {
         this.buffer('="');
-        this.buffer(String(attr.val).replace(/"/g, '&quot;'));
+        this.buffer(this.resolveAttrValue(String(attr.val), attr).replace(/"/g, '&quot;'));
         this.buffer('"');
       }
     }
+  }
+
+  resolveAttrValue(str, attr) {
+    if (!str.includes('#{')) return str;
+    return str.replace(/(\\)?#\{(\w+)\}/g, (match, escaped, name) => {
+      if (escaped) return '#{' + name + '}';
+      if (this.callStack.length === 0) {
+        this.error(
+          `Variable '${name}' used outside mixin in attribute`,
+          'CALL_STACK_UNDERFLOW',
+          attr
+        );
+      }
+      const frame = this.callStack.at(-1);
+      const value = frame.environment[name];
+      if (value === undefined) {
+        this.error(
+          `Variable '${name}' is undefined`,
+          'UNDEFINED_VARIABLE',
+          attr
+        );
+      }
+      return value;
+    });
   }
 
   visitMixin(mixin) {

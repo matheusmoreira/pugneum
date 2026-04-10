@@ -181,3 +181,36 @@ describe('replace([])', function() {
     });
   });
 });
+
+test('before returning false skips children and after', function() {
+  var visited = [];
+  walk(
+    parse(lex('div\n  p Hello')),
+    function before(node) {
+      visited.push('before ' + node.type);
+      if (node.type === 'Tag') {
+        return false;
+      }
+    },
+    function after(node) {
+      visited.push('after ' + node.type);
+    }
+  );
+  // Tag's children (Block containing Text) should not be visited
+  assert(!visited.includes('before Text'),
+    'Text child should not be visited when before returns false for Tag');
+  // after should not be called for the skipped Tag
+  assert(!visited.includes('after Tag'),
+    'after should not be called when before returns false');
+});
+
+test('unknown node type throws', function() {
+  assert.throws(
+    function() {
+      walk({type: 'UnknownNodeType', line: 1});
+    },
+    function(err) {
+      return err.message === 'Unexpected node type UnknownNodeType';
+    }
+  );
+});

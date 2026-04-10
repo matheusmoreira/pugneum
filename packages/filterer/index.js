@@ -68,12 +68,13 @@ function filterFile(name, file, attrs, filters, node) {
 }
 
 function getBodyAsText(node) {
-  return node.block.nodes.map((node) => node.val).join('');
+  if (!node.block) return '';
+  return node.block.nodes.map((n) => n.val).join('');
 }
 
 function getAttributes(node, options) {
   const attrs = {};
-  node.attrs.forEach(function(attr) {
+  (node.attrs || []).forEach(function(attr) {
       attrs[attr.name] =
         attr.val === true ? true : attr.val;
   });

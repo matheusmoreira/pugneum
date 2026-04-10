@@ -107,6 +107,11 @@ class Compiler {
     this.buffer(node.str);
   }
 
+  visitInterpolatedTag(tag) {
+    tag.name = tag.expr;
+    return this.visitTag(tag);
+  }
+
   visitNamedBlock(block) {
     return this.visitBlock(block);
   }

@@ -314,7 +314,7 @@ class Lexer {
       const len =captures[0].length;
       const val = captures[1];
       const diff = len - (val ? val.length : 0);
-      const tok =this.tok(type, val);
+      const tok = this.tok(type, val);
       this.consume(len);
       this.incrementColumn(diff);
       return tok;
@@ -454,7 +454,7 @@ class Lexer {
     let captures;
     if ((captures = /^\/\/(-)?([^\n]*)/.exec(this.input))) {
       this.consume(captures[0].length);
-      const tok =this.tok('comment', captures[2]);
+      const tok = this.tok('comment', captures[2]);
       tok.buffer = '-' != captures[1];
       this.interpolationAllowed = tok.buffer;
       this.tokens.push(tok);
@@ -490,7 +490,7 @@ class Lexer {
    */
 
   filter(opts) {
-    const tok =this.scan(/^:([\w\-]+)/, 'filter') ||
+    const tok = this.scan(/^:([\w\-]+)/, 'filter') ||
         this.scan(/^:'(.+)'/, 'filter') ||
         this.scan(/^:"(.+)"/, 'filter');
 
@@ -513,7 +513,7 @@ class Lexer {
    */
 
   id() {
-    const tok =this.scan(/^#([\w-]+)/, 'id');
+    const tok = this.scan(/^#([\w-]+)/, 'id');
     if (tok) {
       this.tokens.push(tok);
       this.incrementColumn(tok.val.length);
@@ -535,7 +535,7 @@ class Lexer {
    */
 
   className() {
-    const tok =this.scan(/^\.([_a-z0-9\-]*[_a-z][_a-z0-9\-]*)/i, 'class');
+    const tok = this.scan(/^\.([_a-z0-9\-]*[_a-z][_a-z0-9\-]*)/i, 'class');
     if (tok) {
       this.tokens.push(tok);
       this.incrementColumn(tok.val.length);
@@ -820,7 +820,7 @@ class Lexer {
 
     // Check for optional trailing (attrs) and include them in the tag
     let extraAttrs = '';
-    if (afterImage[0] === '(') {
+    if (afterImage.startsWith('(')) {
       let attrRange;
       try {
         attrRange = parseUntil(afterImage, ')', 1);
@@ -913,7 +913,7 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     // Support (attrs) immediately after ]: @[name text](class="x")
-    if (afterLink[0] === '(') {
+    if (afterLink.startsWith('(')) {
       const savedInput = this.input;
       this.input = afterLink;
       this.attrs();
@@ -950,7 +950,7 @@ class Lexer {
   }
 
   text() {
-    const tok =this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
+    const tok = this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
       this.scan(/^( )/, 'text') ||
       this.scan(/^\|( ?)/, 'text');
     if (tok) {
@@ -960,7 +960,7 @@ class Lexer {
   }
 
   textHtml() {
-    const tok =this.scan(/^(<[^\n]*)/, 'text-html');
+    const tok = this.scan(/^(<[^\n]*)/, 'text-html');
     if (tok) {
       this.addText('text-html', tok.val);
       return true;
@@ -985,7 +985,7 @@ class Lexer {
    */
 
   ['extends']() {
-    const tok =this.scan(/^extends?(?= |$|\n)/, 'extends');
+    const tok = this.scan(/^extends?(?= |$|\n)/, 'extends');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       if (!this.path()) {
@@ -1058,7 +1058,7 @@ class Lexer {
    */
 
   yield() {
-    const tok =this.scanEndOfLine(/^yield/, 'yield');
+    const tok = this.scanEndOfLine(/^yield/, 'yield');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       return true;
@@ -1070,7 +1070,7 @@ class Lexer {
    */
 
   include() {
-    const tok =this.scan(/^include(?=:| |$|\n)/, 'include');
+    const tok = this.scan(/^include(?=:| |$|\n)/, 'include');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       while (this.filter({inInclude: true}));
@@ -1095,7 +1095,7 @@ class Lexer {
    */
 
   path() {
-    const tok =this.scanEndOfLine(/^ ([^\n]+)/, 'path');
+    const tok = this.scanEndOfLine(/^ ([^\n]+)/, 'path');
     if (tok && (tok.val = tok.val.trim())) {
       this.tokens.push(this.tokEnd(tok));
       return true;
@@ -1105,7 +1105,7 @@ class Lexer {
   variable() {
     let captures;
     if (captures = /^\s*#{(\w+)}/.exec(this.input)) {
-      const tok =this.tok('variable', captures[1]);
+      const tok = this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
       this.consume(captures[0].length);
@@ -1172,7 +1172,7 @@ class Lexer {
     let captures;
     if ((captures = /^mixin +([-\w]+)(?: *\((.*)\))? */.exec(this.input))) {
       this.consume(captures[0].length);
-      const tok =this.tok('mixin', captures[1]);
+      const tok = this.tok('mixin', captures[1]);
       tok.args = this.parseMixinParams(captures[2] || '');
       this.incrementColumn(captures[0].length);
       this.tokens.push(this.tokEnd(tok));
@@ -1285,6 +1285,13 @@ class Lexer {
             url = url.substring(1, url.length - 1);
           }
 
+          if (!url) {
+            this.error(
+              'INVALID_REF_DEF',
+              'Reference definition requires a non-empty URL: ' + content
+            );
+          }
+
           const tok = this.tok('ref-def');
           tok.name = name;
           tok.url = url;
@@ -1326,7 +1333,7 @@ class Lexer {
       return '';
     }
 
-    const tok =this.tok('attribute');
+    const tok = this.tok('attribute');
 
     // quote?
     if (quoteRe.test(str[i])) {
@@ -1613,7 +1620,7 @@ class Lexer {
    */
 
   colon() {
-    const tok =this.scan(/^: +/, ':');
+    const tok = this.scan(/^: +/, ':');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       return true;

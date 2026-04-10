@@ -42,6 +42,7 @@ function walkAST(ast, before, after, options) {
     case 'Mixin':
     case 'Tag':
     case 'InterpolatedTag':
+    case 'BlockComment':
       if (ast.block) {
         ast.block = walkAST(ast.block, before, after, options);
       }
@@ -63,7 +64,6 @@ function walkAST(ast, before, after, options) {
       }
       break;
     case 'References':
-    case 'BlockComment':
     case 'Comment':
     case 'IncludeFilter':
     case 'MixinBlock':

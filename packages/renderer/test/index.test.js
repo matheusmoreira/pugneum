@@ -415,6 +415,157 @@ describe('variable errors', () => {
   });
 });
 
+describe('variables in attributes', () => {
+  test('resolves #{var} in attribute value inside mixin', () => {
+    var declaration = {
+      type: 'Mixin',
+      name: 'link',
+      call: false,
+      args: ['url'],
+      block: block([tag('a', [{name: 'href', val: '#{url}', line: 1, column: 1, mustEscape: false}], [text('click')])]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    var call = {
+      type: 'Mixin',
+      name: 'link',
+      call: true,
+      args: ['/home'],
+      block: block([]),
+      line: 2,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([declaration, call])),
+      '<!DOCTYPE html><a href="/home">click</a>'
+    );
+  });
+
+  test('resolves multiple #{var} in one attribute', () => {
+    var declaration = {
+      type: 'Mixin',
+      name: 'test',
+      call: false,
+      args: ['a', 'b'],
+      block: block([tag('div', [{name: 'data-x', val: '#{a}-#{b}', line: 1, column: 1, mustEscape: false}])]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    var call = {
+      type: 'Mixin',
+      name: 'test',
+      call: true,
+      args: ['hello', 'world'],
+      block: block([]),
+      line: 2,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([declaration, call])),
+      '<!DOCTYPE html><div data-x="hello-world"></div>'
+    );
+  });
+
+  test('escaped \\#{var} passes through as literal', () => {
+    var declaration = {
+      type: 'Mixin',
+      name: 'test',
+      call: false,
+      args: ['x'],
+      block: block([tag('div', [{name: 'data-t', val: '\\#{x}', line: 1, column: 1, mustEscape: false}])]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    var call = {
+      type: 'Mixin',
+      name: 'test',
+      call: true,
+      args: ['val'],
+      block: block([]),
+      line: 2,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([declaration, call])),
+      '<!DOCTYPE html><div data-t="#{x}"></div>'
+    );
+  });
+
+  test('#{var} in class attribute is resolved', () => {
+    var declaration = {
+      type: 'Mixin',
+      name: 'test',
+      call: false,
+      args: ['cls'],
+      block: block([tag('div', [{name: 'class', val: 'item-#{cls}', line: 1, column: 1, mustEscape: false}])]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    var call = {
+      type: 'Mixin',
+      name: 'test',
+      call: true,
+      args: ['active'],
+      block: block([]),
+      line: 2,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([declaration, call])),
+      '<!DOCTYPE html><div class="item-active"></div>'
+    );
+  });
+
+  test('#{var} outside mixin throws CALL_STACK_UNDERFLOW', () => {
+    assert.throws(
+      () => render(block([tag('div', [{name: 'x', val: '#{oops}', line: 1, column: 1, mustEscape: false}])])),
+      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW'
+    );
+  });
+
+  test('undefined #{var} in attribute throws UNDEFINED_VARIABLE', () => {
+    var declaration = {
+      type: 'Mixin',
+      name: 'test',
+      call: false,
+      args: [],
+      block: block([tag('div', [{name: 'x', val: '#{missing}', line: 1, column: 1, mustEscape: false}])]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    var call = {
+      type: 'Mixin',
+      name: 'test',
+      call: true,
+      args: [],
+      block: block([]),
+      line: 2,
+      column: 1,
+      filename: 'test',
+    };
+    assert.throws(
+      () => render(block([declaration, call])),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+    );
+  });
+
+  test('attribute without #{} is not affected', () => {
+    assert.strictEqual(
+      render(block([tag('a', [{name: 'href', val: '/static', line: 1, column: 1, mustEscape: false}], [text('link')])])),
+      '<!DOCTYPE html><a href="/static">link</a>'
+    );
+  });
+});
+
 describe('interpolated tags', () => {
   test('renders like a normal tag using expr as name', () => {
     var node = {

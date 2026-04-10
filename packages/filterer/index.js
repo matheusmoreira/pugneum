@@ -16,7 +16,7 @@ function applyFilters(ast, filters, options) {
         const attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         node.type = 'Text';
-        node.val = filterText(node.name, text, attrs, filters);
+        node.val = filterText(node.name, text, attrs, filters, node);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         const firstFilter = node.filters.pop();
         const attrs = getAttributes(firstFilter, options);
@@ -26,7 +26,8 @@ function applyFilters(ast, filters, options) {
           firstFilter.name,
           node.file,
           attrs,
-          filters
+          filters,
+          node
         );
         node.filters
           .slice()
@@ -34,7 +35,7 @@ function applyFilters(ast, filters, options) {
           .forEach(function(filter) {
             const filterAttrs = getAttributes(filter, options);
             filterAttrs.filename = filename;
-            node.val = filterText(filter.name, node.val, filterAttrs);
+            node.val = filterText(filter.name, node.val, filterAttrs, filters, node);
           });
         node.filters = undefined;
         node.file = undefined;
@@ -55,13 +56,13 @@ function handleNestedFilters(node, filters, options) {
   }
 }
 
-function filterText(filter, text, attrs, filters) {
-  const resolved = resolveFilter(filter, filters);
+function filterText(name, text, attrs, filters, node) {
+  const resolved = resolveFilter(name, filters, node);
   return resolved.filter(text, attrs);
 }
 
-function filterFile(filter, file, attrs, filters) {
-  const resolved = resolveFilter(filter, filters);
+function filterFile(name, file, attrs, filters, node) {
+  const resolved = resolveFilter(name, filters, node);
   const input = resolved.binary? file.raw : file.str;
   return resolved.filter(input, attrs);
 }
@@ -81,19 +82,19 @@ function getAttributes(node, options) {
   return attrs;
 }
 
-function resolveFilter(filter, filters) {
-  if (filters && filters[filter]) {
-    return filters[filter];
+function resolveFilter(name, filters, node) {
+  if (filters && filters[name]) {
+    return filters[name];
   }
 
   try {
-    return require(packagePrefix + filter);
+    return require(packagePrefix + name);
   } catch (ex) {
     if (ex.code === 'MODULE_NOT_FOUND') {
-      throw error('UNKNOWN_FILTER', `Unknown filter '${filter}'`, {
-        line: 0,
-        column: 0,
-        filename: '',
+      throw error('UNKNOWN_FILTER', `Unknown filter '${name}'`, {
+        line: node ? node.line : 0,
+        column: node ? node.column : 0,
+        filename: node ? node.filename : '',
         source: '',
       });
     }

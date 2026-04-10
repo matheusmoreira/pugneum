@@ -19,7 +19,7 @@ function renderPugneum(string, options) {
   let ast = parse(tokens, options);
   let loaded = load(ast, options);
   let linked = link(loaded, options);
-  let filtered = filter(linked, options);
+  let filtered = filter(linked, options.filters, options);
   let rendered = render(filtered, options);
 
   return rendered;

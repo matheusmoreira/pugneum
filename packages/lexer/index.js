@@ -61,6 +61,8 @@ function scanChar(str, i, quote) {
     return {i: i + 1, quote};
   }
 
+  if (c === '\\') return {i: i + 2, quote: null};
+
   if (c === '\'' || c === '"' || c === '`') {
     return {i: i + 1, quote: c};
   }
@@ -752,6 +754,9 @@ class Lexer {
         linkText = content.substring(spaceIdx + 1);
       }
     }
+    // Unescape \( \) \\ sequences from bracket-matching escapes
+    url = url.replace(/\\([()\\])/g, '$1');
+    linkText = linkText.replace(/\\([()\\])/g, '$1');
 
     // Desugar @(url text) to equivalent #[a(href='url') text] and use child lexer
     const quote = url.includes("'") ? '"' : "'";
@@ -811,6 +816,9 @@ class Lexer {
         altText = content.substring(spaceIdx + 1);
       }
     }
+    // Unescape \( \) \\ sequences from bracket-matching escapes
+    url = url.replace(/\\([()\\])/g, '$1');
+    altText = altText.replace(/\\([()\\])/g, '$1');
 
     // Build attribute string: src='url' alt='alt text'
     const quote = url.includes("'") ? '"' : "'";
@@ -1153,7 +1161,7 @@ class Lexer {
         this.consume(increment);
         this.incrementColumn(increment);
 
-        // Parse arguments respecting quoted strings
+        // Parse arguments respecting quoted strings and escape sequences
         let j = 0;
         while (j < argsStr.length) {
           while (j < argsStr.length && argsStr[j] === ' ') j++;
@@ -1162,6 +1170,9 @@ class Lexer {
             const quote = argsStr[j++];
             let arg = '';
             while (j < argsStr.length && argsStr[j] !== quote) {
+              if (argsStr[j] === '\\' && j + 1 < argsStr.length) {
+                j++; // skip backslash, include next char
+              }
               arg += argsStr[j++];
             }
             if (j < argsStr.length) j++; // skip closing quote
@@ -1228,9 +1239,12 @@ class Lexer {
         i++; // skip '='
         let dflt = '';
         if (i < str.length && (str[i] === "'" || str[i] === '"')) {
-          // quoted default value
+          // quoted default value with escape sequence support
           const quote = str[i++];
           while (i < str.length && str[i] !== quote) {
+            if (str[i] === '\\' && i + 1 < str.length) {
+              i++; // skip backslash, include next char
+            }
             dflt += str[i++];
           }
           if (i < str.length) i++; // skip closing quote

@@ -243,6 +243,12 @@ describe('image shorthand', () => {
       '<!DOCTYPE html><p>Image: <img src="/x.png" alt="alt text"></p>'
     );
   });
+
+  it('should unescape \\( and \\) in unquoted content', () => {
+    assert.strictEqual(pg.render('p !(photo_\\(1\\).jpg Alt)'),
+      '<!DOCTYPE html><p><img src="photo_(1).jpg" alt="Alt"></p>'
+    );
+  });
 });
 
 describe('variables in attributes', () => {
@@ -389,6 +395,20 @@ describe('variable edge cases', () => {
       '<!DOCTYPE html><p>hello, world</p>'
     );
   });
+
+  it('should handle escaped quotes in mixin args', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(a)\n  p #{a}\n+foo("say \\"hi\\"")'),
+      '<!DOCTYPE html><p>say "hi"</p>'
+    );
+  });
+
+  it('should handle escaped quotes in mixin default values', () => {
+    assert.strictEqual(
+      pg.render('mixin foo(a="it\\"s")\n  p #{a}\n+foo'),
+      '<!DOCTYPE html><p>it"s</p>'
+    );
+  });
 });
 
 describe('link shorthand', () => {
@@ -413,6 +433,13 @@ describe('link shorthand', () => {
   it('should escape \\@( as literal text', () => {
     assert.strictEqual(pg.render('p \\@(not a link)'),
       '<!DOCTYPE html><p>@(not a link)</p>'
+    );
+  });
+
+  it('should unescape \\( and \\) in unquoted content', () => {
+    assert.strictEqual(
+      pg.render('p @(https://example.com/Rust_\\(language\\) Rust)'),
+      '<!DOCTYPE html><p><a href="https://example.com/Rust_(language)">Rust</a></p>'
     );
   });
 });

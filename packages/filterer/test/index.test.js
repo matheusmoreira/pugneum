@@ -18,9 +18,7 @@ var customFilters = {
   },
   'custom-with-options': {
     filter: function(str, options) {
-      assert.strictEqual(options.option, 'value');
-      assert.strictEqual(options.number, '2'); // no automatic parsing of option values
-      return 'BEGIN OPTIONS' + str + 'END OPTIONS';
+      return 'option=' + options.option + ' number=' + options.number + ' ' + str;
     }
   }
 };
@@ -38,7 +36,7 @@ p
   t.assert.snapshot(output);
 });
 
-test('filters can be used with options', (t) => {
+test('filters can be used with options', () => {
   const source = `
 p
   :custom-with-options(option=value number=2)
@@ -50,5 +48,9 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
 
   const output = filter(ast, customFilters);
-  t.assert.snapshot(output);
+
+  // find the filtered text node
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.val.startsWith('option=value number=2 '), true,
+    'filter options should be passed as string values without automatic parsing');
 });

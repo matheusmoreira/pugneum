@@ -1,0 +1,11 @@
+mixin link(href text target)
+  a(href='#{href}' target='#{target}') #{text}
+
++link(/home Home)
++link(/away Away _blank)
+
+mixin icon(name size)
+  img.icon(src='/icons/#{name}.svg' class='icon-#{size}')
+
++icon(arrow)
++icon(arrow lg)

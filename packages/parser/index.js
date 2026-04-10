@@ -856,11 +856,10 @@ class Parser {
           continue;
         case 'start-attributes':
           if (seenAttrs) {
-            console.warn(
-              this.filename +
-                ', line ' +
-                this.peek().loc.start.line +
-                ':\nYou should not have pugneum tags with multiple attributes.'
+            this.error(
+              'MULTIPLE_ATTRIBUTES',
+              'Tags should not have multiple attribute blocks',
+              this.peek()
             );
           }
           seenAttrs = true;

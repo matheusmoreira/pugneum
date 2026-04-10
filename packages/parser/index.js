@@ -98,10 +98,10 @@ class Parser {
   parse() {
     const block = this.emptyBlock(0);
 
-    while ('eos' != this.peek().type) {
-      if ('newline' == this.peek().type) {
+    while ('eos' !== this.peek().type) {
+      if ('newline' === this.peek().type) {
         this.advance();
-      } else if ('text-html' == this.peek().type) {
+      } else if ('text-html' === this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
         const expr = this.parseExpr();
@@ -463,7 +463,7 @@ class Parser {
     const tok = this.expect('block');
 
     const node =
-      'indent' == this.peek().type
+      'indent' === this.peek().type
         ? this.block()
         : this.emptyBlock(tok.loc.start.line);
     node.type = 'NamedBlock';
@@ -626,7 +626,7 @@ class Parser {
 
     if (/\.pg$/.test(node.file.path) && !filters.length) {
       node.block =
-        'indent' == this.peek().type
+        'indent' === this.peek().type
           ? this.block()
           : this.emptyBlock(tok.loc.start.line);
     } else {
@@ -682,7 +682,7 @@ class Parser {
     const name = tok.val;
     const args = tok.args;
 
-    if ('indent' == this.peek().type) {
+    if ('indent' === this.peek().type) {
       this.inMixin++;
       try {
         return {
@@ -716,14 +716,14 @@ class Parser {
     if (!tok) return;
     const block = this.emptyBlock(tok.loc.start.line);
     while (this.peek().type !== 'end-pipeless-text') {
-      const tok = this.advance();
-      switch (tok.type) {
+      const currentTok = this.advance();
+      switch (currentTok.type) {
         case 'text':
           block.nodes.push({
             type: 'Text',
-            val: tok.val,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
+            val: currentTok.val,
+            line: currentTok.loc.start.line,
+            column: currentTok.loc.start.column,
             filename: this.filename,
           });
           break;
@@ -731,8 +731,8 @@ class Parser {
           block.nodes.push({
             type: 'Text',
             val: '\n',
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
+            line: currentTok.loc.start.line,
+            column: currentTok.loc.start.column,
             filename: this.filename,
           });
           break;
@@ -741,13 +741,13 @@ class Parser {
           this.expect('end-interpolation');
           break;
         case 'start-ref-link':
-          block.nodes.push(this.parseRefLinkContent(tok));
+          block.nodes.push(this.parseRefLinkContent(currentTok));
           break;
         default:
           this.error(
             'INVALID_TOKEN',
-            'Unexpected token type: ' + tok.type,
-            tok
+            'Unexpected token type: ' + currentTok.type,
+            currentTok
           );
       }
     }
@@ -762,10 +762,10 @@ class Parser {
   block() {
     const tok = this.expect('indent');
     const block = this.emptyBlock(tok.loc.start.line);
-    while ('outdent' != this.peek().type) {
-      if ('newline' == this.peek().type) {
+    while ('outdent' !== this.peek().type) {
+      if ('newline' === this.peek().type) {
         this.advance();
-      } else if ('text-html' == this.peek().type) {
+      } else if ('text-html' === this.peek().type) {
         block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
         const expr = this.parseExpr();
@@ -871,7 +871,7 @@ class Parser {
     }
 
     // check immediate '.'
-    if ('dot' == this.peek().type) {
+    if ('dot' === this.peek().type) {
       tag.textOnly = true;
       this.advance();
     }
@@ -914,12 +914,12 @@ class Parser {
     }
 
     // newline*
-    while ('newline' == this.peek().type) this.advance();
+    while ('newline' === this.peek().type) this.advance();
 
     // block?
     if (tag.textOnly) {
       tag.block = this.parseTextBlock() || this.emptyBlock(tag.line);
-    } else if ('indent' == this.peek().type) {
+    } else if ('indent' === this.peek().type) {
       const block = this.block();
       for (let i = 0, len = block.nodes.length; i < len; ++i) {
         tag.block.nodes.push(block.nodes[i]);

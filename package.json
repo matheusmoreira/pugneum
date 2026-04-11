@@ -25,7 +25,8 @@
     "packages/walker",
     "packages/pugneum",
     "packages/filter/highlight.js",
-    "packages/filter/prismjs"
+    "packages/filter/prismjs",
+    "packages/feed"
   ],
   "engines": {
     "node": ">=18"

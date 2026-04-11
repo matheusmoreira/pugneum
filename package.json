@@ -19,6 +19,7 @@
     "packages/lexer",
     "packages/parser",
     "packages/loader",
+    "packages/loader/test/fixtures/mock-lib",
     "packages/linker",
     "packages/filterer",
     "packages/renderer",

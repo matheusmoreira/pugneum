@@ -48,6 +48,10 @@ module.exports = function generateFeeds(options) {
     var entry = indexData.entries[i];
     var articlePath = path.join(outputDir, entry.href);
 
+    if (!fs.existsSync(articlePath) && fs.existsSync(articlePath + '.html')) {
+      articlePath += '.html';
+    }
+
     if (!fs.existsSync(articlePath)) {
       console.warn('pugneum-feed: article not found, skipping: ' + entry.href);
       continue;

@@ -85,6 +85,57 @@ describe('path resolution', () => {
   });
 });
 
+describe('library includes', () => {
+  test('resolves @-prefixed include from node_modules', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @pugneum/mock-lib/greeting.pg';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    ast = load(ast, {lex, parse});
+
+    // The file should have been loaded — walk to find the included AST
+    var included = false;
+    walk(ast, function (node) {
+      if (node.type === 'Include' && node.file && node.file.ast) {
+        included = true;
+      }
+    }, {includeDependencies: true});
+
+    assert.ok(included, 'library include was resolved and loaded');
+  });
+
+  test('missing @-prefixed package produces clear error', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @pugneum/nonexistent/file.pg';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) => /Package not found.*@pugneum\/nonexistent/.test(err.message),
+    );
+  });
+
+  test('@-prefixed resolution works with extends', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'extends @pugneum/mock-lib/greeting.pg';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    ast = load(ast, {lex, parse});
+
+    var extended = false;
+    walk(ast, function (node) {
+      if (node.type === 'Extends' && node.file && node.file.ast) {
+        extended = true;
+      }
+    }, {includeDependencies: true});
+
+    assert.ok(extended, 'library extends was resolved and loaded');
+  });
+});
+
 describe('custom resolve and read', () => {
   test('accepts custom resolve function', () => {
     var filename = __dirname + '/test.pg';

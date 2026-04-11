@@ -1,0 +1,2 @@
+mixin greeting(name)
+  p Hello, #{name}

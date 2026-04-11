@@ -3,6 +3,7 @@ const path = require('path');
 const walk = require('pugneum-walker');
 
 module.exports = load;
+module.exports.resolve = resolve;
 
 function load(ast, options) {
   options = getOptions(options);
@@ -44,22 +45,44 @@ function load(ast, options) {
 
 function resolve(filename, source, options) {
   filename = filename.trim();
+
+  if (filename[0] === '@') {
+    return resolveLibrary(filename);
+  }
+
   if (filename[0] !== '/' && !source)
     throw new Error(
-      'the "filename" option is required to use includes and extends with "relative" paths'
+      'the "filename" option is required to use includes and extends with "relative" paths',
     );
 
   if (filename[0] === '/' && !options.basedir)
     throw new Error(
-      'the "basedir" option is required to use includes and extends with "absolute" paths'
+      'the "basedir" option is required to use includes and extends with "absolute" paths',
     );
 
   filename = path.join(
     filename[0] === '/' ? options.basedir : path.dirname(source.trim()),
-    filename
+    filename,
   );
 
   return filename;
+}
+
+function resolveLibrary(filename) {
+  // Split @scope/package/sub/path.pg into package name and subpath
+  var parts = filename.split('/');
+  var pkg = parts.slice(0, 2).join('/');
+  var subpath = parts.slice(2).join('/');
+
+  try {
+    var pkgJson = require.resolve(pkg + '/package.json');
+  } catch (e) {
+    throw new Error(
+      'Package not found: ' + pkg + '\n    Install it with: npm install ' + pkg,
+    );
+  }
+
+  return path.join(path.dirname(pkgJson), subpath);
 }
 
 function read(filename) {

@@ -5,28 +5,24 @@ exports[`language-argument.pg 1`] = `
     {
       "type": "Tag",
       "name": "html",
-      "selfClosing": false,
       "block": {
         "type": "Block",
         "nodes": [
           {
             "type": "Tag",
             "name": "body",
-            "selfClosing": false,
             "block": {
               "type": "Block",
               "nodes": [
                 {
                   "type": "Tag",
                   "name": "pre",
-                  "selfClosing": false,
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Tag",
                         "name": "code",
-                        "selfClosing": false,
                         "block": {
                           "type": "Block",
                           "nodes": [
@@ -203,28 +199,24 @@ exports[`language-subset-argument.pg 1`] = `
     {
       "type": "Tag",
       "name": "html",
-      "selfClosing": false,
       "block": {
         "type": "Block",
         "nodes": [
           {
             "type": "Tag",
             "name": "body",
-            "selfClosing": false,
             "block": {
               "type": "Block",
               "nodes": [
                 {
                   "type": "Tag",
                   "name": "pre",
-                  "selfClosing": false,
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Tag",
                         "name": "code",
-                        "selfClosing": false,
                         "block": {
                           "type": "Block",
                           "nodes": [
@@ -373,28 +365,24 @@ exports[`syntax-highlighting-works.pg 1`] = `
     {
       "type": "Tag",
       "name": "html",
-      "selfClosing": false,
       "block": {
         "type": "Block",
         "nodes": [
           {
             "type": "Tag",
             "name": "body",
-            "selfClosing": false,
             "block": {
               "type": "Block",
               "nodes": [
                 {
                   "type": "Tag",
                   "name": "pre",
-                  "selfClosing": false,
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Tag",
                         "name": "code",
-                        "selfClosing": false,
                         "block": {
                           "type": "Block",
                           "nodes": [

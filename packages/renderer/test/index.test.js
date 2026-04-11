@@ -136,6 +136,84 @@ describe('void elements', () => {
   });
 });
 
+describe('SVG void elements', () => {
+  test('rect is self-closing', () => {
+    var attrs = [
+      {name: 'x', val: '0', line: 1, column: 1, mustEscape: false},
+      {name: 'y', val: '0', line: 1, column: 1, mustEscape: false},
+      {name: 'width', val: '100', line: 1, column: 1, mustEscape: false},
+      {name: 'height', val: '50', line: 1, column: 1, mustEscape: false},
+    ];
+    assert.strictEqual(
+      render(block([tag('rect', attrs)])),
+      '<!DOCTYPE html><rect x="0" y="0" width="100" height="50">'
+    );
+  });
+
+  test('circle is self-closing', () => {
+    var attrs = [
+      {name: 'cx', val: '50', line: 1, column: 1, mustEscape: false},
+      {name: 'cy', val: '50', line: 1, column: 1, mustEscape: false},
+      {name: 'r', val: '25', line: 1, column: 1, mustEscape: false},
+    ];
+    assert.strictEqual(
+      render(block([tag('circle', attrs)])),
+      '<!DOCTYPE html><circle cx="50" cy="50" r="25">'
+    );
+  });
+
+  test('line is self-closing', () => {
+    var attrs = [
+      {name: 'x1', val: '0', line: 1, column: 1, mustEscape: false},
+      {name: 'y1', val: '0', line: 1, column: 1, mustEscape: false},
+      {name: 'x2', val: '100', line: 1, column: 1, mustEscape: false},
+      {name: 'y2', val: '100', line: 1, column: 1, mustEscape: false},
+    ];
+    assert.strictEqual(
+      render(block([tag('line', attrs)])),
+      '<!DOCTYPE html><line x1="0" y1="0" x2="100" y2="100">'
+    );
+  });
+
+  test('path is self-closing', () => {
+    var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1, mustEscape: false}];
+    assert.strictEqual(
+      render(block([tag('path', attrs)])),
+      '<!DOCTYPE html><path d="M0 0 L100 100">'
+    );
+  });
+
+  test('SVG container elements are NOT self-closing', () => {
+    assert.strictEqual(
+      render(block([tag('svg', [], [tag('rect')])])),
+      '<!DOCTYPE html><svg><rect></svg>'
+    );
+    assert.strictEqual(
+      render(block([tag('g', [], [tag('circle')])])),
+      '<!DOCTYPE html><g><circle></g>'
+    );
+    assert.strictEqual(
+      render(block([tag('text', [], [text('hello')])])),
+      '<!DOCTYPE html><text>hello</text>'
+    );
+    assert.strictEqual(
+      render(block([tag('use', [{name: 'href', val: '#icon', line: 1, column: 1, mustEscape: false}], [text('')])])),
+      '<!DOCTYPE html><use href="#icon"></use>'
+    );
+    assert.strictEqual(
+      render(block([tag('image', [{name: 'href', val: 'pic.png', line: 1, column: 1, mustEscape: false}], [text('')])])),
+      '<!DOCTYPE html><image href="pic.png"></image>'
+    );
+  });
+
+  test('SVG void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
+    assert.throws(
+      () => render(block([tag('rect', [], [text('content')])])),
+      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT'
+    );
+  });
+});
+
 describe('comments', () => {
   test('buffered comment', () => {
     var node = {type: 'Comment', val: ' hello ', buffer: true, line: 1, filename: 'test'};

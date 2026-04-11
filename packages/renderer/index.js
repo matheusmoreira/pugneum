@@ -1,12 +1,17 @@
 const makeError = require('pugneum-error');
 
-// Map of self-closing void elements literally copied from the standard.
-// https://html.spec.whatwg.org/multipage/syntax.html#void-elements
+// Map of self-closing void elements.
 const MAX_MIXIN_DEPTH = 256;
 
-const selfClosing =
-  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr'
-  .split(', ')
+const selfClosing = (
+  // HTML void elements
+  // https://html.spec.whatwg.org/multipage/syntax.html#void-elements
+  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr, '
+  // SVG elements that never have children
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
+  + 'circle, ellipse, line, path, polygon, polyline, rect, stop, '
+  + 'animate, animateMotion, animateTransform, set'
+).split(', ')
   .reduce(function(voidElements, element) {
     voidElements[element] = true;
     return voidElements;

@@ -16,6 +16,19 @@ exports.indexPage = function indexPage(indexPath) {
   return {url, title, description, author, language, entries};
 };
 
+exports.articlePage = function articlePage(filePath, selector) {
+  var html = fs.readFileSync(filePath, 'utf8');
+  var dom = htmlparser2.parseDocument(html);
+
+  var title = extractTitle(dom);
+  var description = extractMeta(dom, 'description');
+  var author = extractMeta(dom, 'author');
+  var keywords = extractKeywords(dom);
+  var content = extractContent(dom, selector);
+
+  return {title, description, author, keywords, content};
+};
+
 function extractBaseHref(dom) {
   var bases = DomUtils.getElementsByTagName('base', dom);
   if (bases.length > 0 && bases[0].attribs.href) {
@@ -71,4 +84,20 @@ function extractEntries(dom) {
 
   entries.sort((a, b) => b.published.localeCompare(a.published));
   return entries;
+}
+
+function extractKeywords(dom) {
+  var raw = extractMeta(dom, 'keywords');
+  if (!raw) {
+    return [];
+  }
+  return raw.split(',').map((k) => k.trim());
+}
+
+function extractContent(dom, selector) {
+  var elements = DomUtils.getElementsByTagName(selector, dom);
+  if (elements.length > 0) {
+    return DomUtils.getInnerHTML(elements[0]);
+  }
+  return '';
 }

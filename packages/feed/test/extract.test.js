@@ -42,3 +42,33 @@ describe('index page extraction', () => {
     assert.ok(!hrefs.includes('/about'));
   });
 });
+
+describe('article page enrichment', () => {
+  test('extracts full metadata from article page', (t) => {
+    var result = extract.articlePage(
+      path.join(fixturesDir, 'articles', 'first.html'),
+      'article',
+    );
+
+    assert.strictEqual(result.title, 'First Article - Test Site');
+    assert.strictEqual(result.description, 'Summary of the first article');
+    assert.strictEqual(result.author, 'First Author');
+    assert.deepStrictEqual(result.keywords, ['test', 'first', 'article']);
+    assert.ok(result.content.includes('<h1>First Article</h1>'));
+    assert.ok(result.content.includes('<p>This is the full content'));
+    assert.ok(!result.content.includes('<nav>'));
+  });
+
+  test('handles missing optional metadata', (t) => {
+    var result = extract.articlePage(
+      path.join(fixturesDir, 'articles', 'second.html'),
+      'article',
+    );
+
+    assert.strictEqual(result.title, 'Second Article - Test Site');
+    assert.strictEqual(result.description, 'Summary of the second article');
+    assert.strictEqual(result.author, 'Test Author');
+    assert.deepStrictEqual(result.keywords, []);
+    assert.ok(result.content.includes('<h1>Second Article</h1>'));
+  });
+});

@@ -65,7 +65,7 @@ module.exports = function generateFeeds(options) {
       published: entry.published,
       summary: articleData.description,
       author: articleData.author || author,
-      content: articleData.content,
+      content: resolveRelativeUrls(articleData.content, url),
       keywords: articleData.keywords,
     });
   }
@@ -90,3 +90,10 @@ module.exports = function generateFeeds(options) {
   fs.writeFileSync(path.join(writeDir, atomPath), atom, {encoding: 'utf8'});
   fs.writeFileSync(path.join(writeDir, rssPath), rss, {encoding: 'utf8'});
 };
+
+function resolveRelativeUrls(html, baseUrl) {
+  return html
+    .replace(/(<a\s[^>]*href=")\/([^"]*")/g, '$1' + baseUrl + '$2')
+    .replace(/(<img\s[^>]*src=")\/([^"]*")/g, '$1' + baseUrl + '$2')
+    .replace(/(<source\s[^>]*src=")\/([^"]*")/g, '$1' + baseUrl + '$2');
+}

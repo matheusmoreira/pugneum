@@ -22,7 +22,7 @@ module.exports = function generateRss(feed) {
       '      <content:encoded><![CDATA[' +
         entry.content +
         ']]></content:encoded>',
-      '      <author>' + escapeXml(entry.author) + '</author>',
+      '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
       '    </item>',
     ]
       .filter((line) => line !== null)
@@ -31,7 +31,7 @@ module.exports = function generateRss(feed) {
 
   var lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
-    '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">',
     '  <channel>',
     '    <title>' + escapeXml(feed.title) + '</title>',
     '    <link>' + escapeXml(feed.url) + '</link>',

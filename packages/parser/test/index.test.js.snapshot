@@ -11327,6 +11327,295 @@ exports[`source.pg 1`] = `
 }
 `;
 
+exports[`svg-basic.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "svg",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "rect",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 2,
+              "filename": "svg-basic.pg"
+            },
+            "attrs": [
+              {
+                "name": "x",
+                "val": "10",
+                "line": 2,
+                "column": 8,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "y",
+                "val": "10",
+                "line": 2,
+                "column": 15,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "width",
+                "val": "80",
+                "line": 2,
+                "column": 22,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "height",
+                "val": "30",
+                "line": 2,
+                "column": 33,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "fill",
+                "val": "none",
+                "line": 2,
+                "column": 45,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "stroke",
+                "val": "#333",
+                "line": 2,
+                "column": 57,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "svg-basic.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "text",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Lexer",
+                  "line": 3,
+                  "column": 44,
+                  "filename": "svg-basic.pg"
+                }
+              ],
+              "line": 3,
+              "filename": "svg-basic.pg"
+            },
+            "attrs": [
+              {
+                "name": "x",
+                "val": "50",
+                "line": 3,
+                "column": 8,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "y",
+                "val": "30",
+                "line": 3,
+                "column": 15,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "text-anchor",
+                "val": "middle",
+                "line": 3,
+                "column": 22,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 3,
+            "column": 3,
+            "filename": "svg-basic.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "circle",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "svg-basic.pg"
+            },
+            "attrs": [
+              {
+                "name": "cx",
+                "val": "150",
+                "line": 4,
+                "column": 10,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "cy",
+                "val": "25",
+                "line": 4,
+                "column": 19,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "r",
+                "val": "20",
+                "line": 4,
+                "column": 27,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "fill",
+                "val": "blue",
+                "line": 4,
+                "column": 34,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 3,
+            "filename": "svg-basic.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "line",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "svg-basic.pg"
+            },
+            "attrs": [
+              {
+                "name": "x1",
+                "val": "90",
+                "line": 5,
+                "column": 8,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "y1",
+                "val": "25",
+                "line": 5,
+                "column": 16,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "x2",
+                "val": "130",
+                "line": 5,
+                "column": 24,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "y2",
+                "val": "25",
+                "line": 5,
+                "column": 33,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "stroke",
+                "val": "#333",
+                "line": 5,
+                "column": 41,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "svg-basic.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "path",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "svg-basic.pg"
+            },
+            "attrs": [
+              {
+                "name": "d",
+                "val": "M0 0 L10 10",
+                "line": 6,
+                "column": 8,
+                "filename": "svg-basic.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "svg-basic.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "svg-basic.pg"
+      },
+      "attrs": [
+        {
+          "name": "xmlns",
+          "val": "http://www.w3.org/2000/svg",
+          "line": 1,
+          "column": 5,
+          "filename": "svg-basic.pg",
+          "mustEscape": true
+        },
+        {
+          "name": "viewBox",
+          "val": "0 0 200 100",
+          "line": 1,
+          "column": 40,
+          "filename": "svg-basic.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "svg-basic.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "svg-basic.pg"
+}
+`;
+
 exports[`tags.self-closing.pg 1`] = `
 {
   "type": "Block",

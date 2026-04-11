@@ -27488,6 +27488,719 @@ exports[`source.pg 1`] = `
 ]
 `;
 
+exports[`svg-basic.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 4
+      }
+    },
+    "val": "svg"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 39
+      }
+    },
+    "name": "xmlns",
+    "val": "http://www.w3.org/2000/svg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 40
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 61
+      }
+    },
+    "name": "viewBox",
+    "val": "0 0 200 100"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 61
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 62
+      }
+    }
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    },
+    "val": "rect"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 7
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 8
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 14
+      }
+    },
+    "name": "x",
+    "val": "10"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 15
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 21
+      }
+    },
+    "name": "y",
+    "val": "10"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 22
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 32
+      }
+    },
+    "name": "width",
+    "val": "80"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 33
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 44
+      }
+    },
+    "name": "height",
+    "val": "30"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 45
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 56
+      }
+    },
+    "name": "fill",
+    "val": "none"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 57
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 70
+      }
+    },
+    "name": "stroke",
+    "val": "#333"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 70
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 71
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 7
+      }
+    },
+    "val": "text"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 7
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 8
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    },
+    "name": "x",
+    "val": "50"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 15
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 21
+      }
+    },
+    "name": "y",
+    "val": "30"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 22
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 42
+      }
+    },
+    "name": "text-anchor",
+    "val": "middle"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 42
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 44
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 49
+      }
+    },
+    "val": "Lexer"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 9
+      }
+    },
+    "val": "circle"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 9
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 10
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 18
+      }
+    },
+    "name": "cx",
+    "val": "150"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 19
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 26
+      }
+    },
+    "name": "cy",
+    "val": "25"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 27
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 33
+      }
+    },
+    "name": "r",
+    "val": "20"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 34
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 45
+      }
+    },
+    "name": "fill",
+    "val": "blue"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 45
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 46
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "line"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 7
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 8
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 15
+      }
+    },
+    "name": "x1",
+    "val": "90"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 16
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    },
+    "name": "y1",
+    "val": "25"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 24
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 32
+      }
+    },
+    "name": "x2",
+    "val": "130"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 33
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 40
+      }
+    },
+    "name": "y2",
+    "val": "25"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 41
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 54
+      }
+    },
+    "name": "stroke",
+    "val": "#333"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 54
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 55
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "path"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 7
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 8
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 23
+      }
+    },
+    "name": "d",
+    "val": "M0 0 L10 10"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 23
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 24
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "svg-basic.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`tags.self-closing.pg 1`] = `
 [
   {

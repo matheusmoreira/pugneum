@@ -20,13 +20,16 @@ test('pugneum-loader', (t) => {
 
   ast = walk(
     ast,
-    function(node) {
-      if (node.filename)
-        node.filename = path.basename(node.filename);
-      if (node.fullPath)
-        node.fullPath = path.basename(node.fullPath);
+    function (node) {
+      if (node.filename) node.filename = path.basename(node.filename);
+      if (node.fullPath) node.fullPath = path.basename(node.fullPath);
+      if (node.attrs) {
+        node.attrs.forEach(function (attr) {
+          if (attr.filename) attr.filename = path.basename(attr.filename);
+        });
+      }
     },
-    {includeDependencies: true}
+    {includeDependencies: true},
   );
 
   t.assert.snapshot(ast);

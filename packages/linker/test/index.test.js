@@ -1,5 +1,6 @@
 var assert = require('node:assert/strict');
 var fs = require('fs');
+var path = require('path');
 var {describe, test} = require('node:test');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
@@ -14,7 +15,15 @@ function linkFile(filename) {
   let tokens = lex(source, options);
   let ast = parse(tokens, options);
   let loaded = load(ast, options);
-  return link(loaded);
+  let linked = link(loaded);
+  return JSON.parse(
+    JSON.stringify(linked, function (key, value) {
+      if ((key === 'filename' || key === 'fullPath') && typeof value === 'string') {
+        return path.basename(value);
+      }
+      return value;
+    }),
+  );
 }
 
 function testDir(dir) {

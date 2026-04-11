@@ -1,0 +1,20 @@
+{
+  "name": "pugneum-feed",
+  "version": "1.0.0",
+  "description": "Atom and RSS feed generator for Pugneum sites",
+  "keywords": [
+    "pugneum",
+    "feed",
+    "atom",
+    "rss",
+    "xml"
+  ],
+  "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "htmlparser2": "^9.0.0",
+    "pugneum-error": "^1.0.0"
+  },
+  "funding": "https://github.com/sponsors/matheusmoreira"
+}

@@ -50,10 +50,10 @@ function readAndValidateInput(filename) {
         process.exit(EXIT_CODES.INVALID_INPUT);
     }
 
-    return {inputDirectory, outputDirectory, baseDirectory};
+    return {inputDirectory, outputDirectory, baseDirectory, feeds: json.feeds};
 }
 
-const {baseDirectory, inputDirectory, outputDirectory} = readAndValidateInput('pugneum.json');
+const {baseDirectory, inputDirectory, outputDirectory, feeds} = readAndValidateInput('pugneum.json');
 
 const pg = require('pugneum');
 const pgExtension = /\.pg$/;
@@ -113,6 +113,22 @@ function handleError(error) {
 
 try {
     processDirectory(inputDirectory, compilePugneumAndSave);
+
+    if (feeds) {
+        try {
+            var generateFeeds = require('pugneum-feed');
+            generateFeeds({
+                outputDirectory: outputDirectory,
+                feeds: feeds,
+            });
+        } catch (feedError) {
+            if (feedError.code === 'MODULE_NOT_FOUND' && feedError.message.includes('pugneum-feed')) {
+                console.warn('pugneum-feed is not installed, skipping feed generation');
+            } else {
+                throw feedError;
+            }
+        }
+    }
 } catch (error) {
     handleError(error);
 }

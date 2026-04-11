@@ -40,6 +40,14 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)"
   ],
+  "peerDependencies": {
+    "pugneum-feed": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pugneum-feed": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": ">=18"
   },

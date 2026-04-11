@@ -44,7 +44,7 @@ describe('config overrides', () => {
     });
 
     var atom = fs.readFileSync(path.join(outputDir, 'atom.xml'), 'utf8');
-    assert.ok(atom.includes('https://override.com/'));
+    assert.match(atom, /https:\/\/override\.com\//);
     assert.ok(atom.includes('Override Title'));
     assert.ok(atom.includes('Override Author'));
     assert.ok(atom.includes('Override Description'));

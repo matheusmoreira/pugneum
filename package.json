@@ -29,7 +29,7 @@
     "packages/feed"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"

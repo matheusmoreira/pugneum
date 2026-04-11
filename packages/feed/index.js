@@ -60,7 +60,7 @@ module.exports = function generateFeeds(options) {
     var articleData = extract.articlePage(articlePath, selector);
 
     entries.push({
-      url: url + entry.href,
+      url: url + entry.href.replace(/^\//, ''),
       title: articleData.title || entry.title,
       published: entry.published,
       summary: articleData.description,

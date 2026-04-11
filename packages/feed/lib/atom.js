@@ -27,16 +27,12 @@ module.exports = function generateAtom(feed) {
   ];
 
   if (feed.description) {
-    lines.push(
-      '  <subtitle>' + escapeXml(feed.description) + '</subtitle>',
-    );
+    lines.push('  <subtitle>' + escapeXml(feed.description) + '</subtitle>');
   }
 
   lines.push(
     '  <link href="' + escapeXml(feed.url) + '" rel="alternate"/>',
-    '  <link href="' +
-      escapeXml(feed.url + feed.atomPath) +
-      '" rel="self"/>',
+    '  <link href="' + escapeXml(feed.url + feed.atomPath) + '" rel="self"/>',
     '  <id>' + escapeXml(feed.url) + '</id>',
     '  <updated>' + feedUpdated(feed) + '</updated>',
     '  <author>',

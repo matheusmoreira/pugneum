@@ -7,9 +7,7 @@ var fixturesDir = path.join(__dirname, 'fixtures');
 
 describe('index page extraction', () => {
   test('extracts feed metadata from index page', (t) => {
-    var result = extract.indexPage(
-      path.join(fixturesDir, 'index.html'),
-    );
+    var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     assert.strictEqual(result.url, 'https://example.com/');
     assert.strictEqual(result.title, 'Test Site');
@@ -19,9 +17,7 @@ describe('index page extraction', () => {
   });
 
   test('discovers articles sorted newest first', (t) => {
-    var result = extract.indexPage(
-      path.join(fixturesDir, 'index.html'),
-    );
+    var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     assert.strictEqual(result.entries.length, 2);
     assert.strictEqual(result.entries[0].href, 'articles/second.html');
@@ -33,9 +29,7 @@ describe('index page extraction', () => {
   });
 
   test('ignores links without data-published-at', (t) => {
-    var result = extract.indexPage(
-      path.join(fixturesDir, 'index.html'),
-    );
+    var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     var hrefs = result.entries.map((e) => e.href);
     assert.ok(!hrefs.includes('/'));

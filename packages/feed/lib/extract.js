@@ -73,16 +73,16 @@ function extractEntries(dom) {
   for (var i = 0; i < elements.length; i++) {
     var published = elements[i].attribs['data-published-at'];
     var links = DomUtils.getElementsByTagName('a', elements[i]);
-    if (links.length > 0) {
+    if (links.length > 0 && links[0].attribs && links[0].attribs.href) {
       entries.push({
         href: links[0].attribs.href,
         title: DomUtils.textContent(links[0]),
-        published: published,
+        published: published || '',
       });
     }
   }
 
-  entries.sort((a, b) => b.published.localeCompare(a.published));
+  entries.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
   return entries;
 }
 

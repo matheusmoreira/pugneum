@@ -53,8 +53,11 @@ module.exports = function generateFeeds(options) {
     }
 
     if (!fs.existsSync(articlePath)) {
-      console.warn('pugneum-feed: article not found, skipping: ' + entry.href);
-      continue;
+      throw makeError(
+        'FEED_ARTICLE_NOT_FOUND',
+        'Article not found: ' + entry.href + '\n    resolved to: ' + articlePath,
+        {line: 0},
+      );
     }
 
     var articleData = extract.articlePage(articlePath, selector);

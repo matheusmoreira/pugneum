@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var os = require('os');
+var crypto = require('crypto');
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var generateFeeds = require('../');
@@ -11,12 +12,12 @@ var outputDir = path.join(__dirname, 'output');
 
 describe('extract.indexPage robustness', () => {
   function writeTemp(content) {
-    var p = path.join(os.tmpdir(), 'pugneum-extract-test-' + Date.now() + '.html');
+    var p = path.join(os.tmpdir(), 'pugneum-extract-test-' + crypto.randomUUID() + '.html');
     fs.writeFileSync(p, content);
     return p;
   }
 
-  test('entry without data-published-at is included with empty published string', () => {
+  test('entry without data-published-at attribute is excluded', () => {
     var p = writeTemp(
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>'
       + '<meta name="description" content="d"><meta name="author" content="a"></head><body>'
@@ -138,6 +139,34 @@ describe('error handling', () => {
     );
 
     fs.rmSync(noBaseDir, {recursive: true});
+  });
+
+  test('throws FEED_ARTICLE_NOT_FOUND for missing article', () => {
+    var missingDir = path.join(__dirname, 'fixtures-missing-article');
+    fs.mkdirSync(missingDir, {recursive: true});
+    fs.writeFileSync(
+      path.join(missingDir, 'index.html'),
+      '<!DOCTYPE html><html lang="en"><head>'
+      + '<base href="https://example.com/">'
+      + '<title>Test</title>'
+      + '<meta name="description" content="test">'
+      + '<meta name="author" content="Author">'
+      + '</head><body>'
+      + '<div data-published-at="2026-01-01"><a href="nonexistent.html">Missing</a></div>'
+      + '</body></html>',
+    );
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: missingDir,
+          feeds: {enabled: true},
+          writeDirectory: missingDir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_ARTICLE_NOT_FOUND',
+    );
+
+    fs.rmSync(missingDir, {recursive: true});
   });
 
   test('skips when feeds.enabled is false', () => {

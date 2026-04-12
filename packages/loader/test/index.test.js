@@ -136,6 +136,43 @@ describe('library includes', () => {
   });
 });
 
+describe('circular dependency detection', () => {
+  test('circular include throws CIRCULAR_DEPENDENCY', () => {
+    var filename = __dirname + '/cycle-a.pg';
+    var source = fs.readFileSync(filename, 'utf8');
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) => err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY'
+        && /cycle-a\.pg/.test(err.message)
+    );
+  });
+
+  test('circular extends throws CIRCULAR_DEPENDENCY', () => {
+    var filename = __dirname + '/extends-cycle-a.pg';
+    var source = fs.readFileSync(filename, 'utf8');
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) => err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY'
+        && /extends-cycle-a\.pg/.test(err.message)
+    );
+  });
+
+  test('diamond dependency: same file included via two branches does not throw', () => {
+    // diamond-parent includes diamond-a and diamond-b, both of which include
+    // diamond-shared. diamond-shared should load fine from both branches.
+    var filename = __dirname + '/diamond-parent.pg';
+    var source = fs.readFileSync(filename, 'utf8');
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+    // Should not throw — the same file reached via independent branches is valid
+    load(ast, {lex, parse});
+  });
+});
+
 describe('custom resolve and read', () => {
   test('accepts custom resolve function', () => {
     var filename = __dirname + '/test.pg';

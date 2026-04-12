@@ -1,12 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const walk = require('pugneum-walker');
+const makeError = require('pugneum-error');
 
 module.exports = load;
 module.exports.resolve = resolve;
 
-function load(ast, options) {
+function load(ast, options, visiting) {
   options = getOptions(options);
+  visiting = visiting || new Set();
   // clone the ast
   ast = structuredClone(ast);
   return walk(ast, function(node) {
@@ -33,10 +35,18 @@ function load(ast, options) {
         file.str = str;
         file.raw = raw;
         if (node.type === 'Extends' || node.type === 'Include') {
+          const canonical = path.resolve(filePath);
+          if (visiting.has(canonical)) {
+            throw makeError('CIRCULAR_DEPENDENCY',
+              'Circular dependency detected: ' + filePath + ' is already being loaded',
+              {line: node.line, column: node.column, filename: node.filename});
+          }
+          visiting.add(canonical);
           const opts = Object.assign({}, options, {filename: filePath, source: str});
           const tokens = options.lex(str, opts);
           const fileAst = options.parse(tokens, opts);
-          file.ast = load(fileAst, opts);
+          file.ast = load(fileAst, opts, visiting);
+          visiting.delete(canonical);
         }
       }
     }

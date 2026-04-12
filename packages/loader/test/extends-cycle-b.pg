@@ -1,0 +1,4 @@
+extends extends-cycle-a.pg
+
+block content
+  p From B

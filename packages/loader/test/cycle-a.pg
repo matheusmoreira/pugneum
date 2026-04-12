@@ -1,0 +1,2 @@
+p From A
+include cycle-b.pg

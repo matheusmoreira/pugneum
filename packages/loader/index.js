@@ -29,8 +29,16 @@ function load(ast, options, visiting) {
           raw = options.read(filePath, options);
           str = raw.toString('utf8');
         } catch (ex) {
-          ex.message += '\n    at ' + node.filename + ' line ' + node.line;
-          throw ex;
+          const code =
+            ex.code && ex.code.startsWith('PUGNEUM:')
+              ? ex.code.slice('PUGNEUM:'.length)
+              : 'LOAD_ERROR';
+          throw makeError(code, ex.msg || ex.message, {
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+            source: options.source,
+          });
         }
         file.str = str;
         file.raw = raw;
@@ -68,13 +76,17 @@ function resolve(filename, source, options) {
   }
 
   if (filename[0] !== '/' && !source)
-    throw new Error(
+    throw makeError(
+      'FILENAME_REQUIRED',
       'the "filename" option is required to use includes and extends with "relative" paths',
+      {line: 0, column: 0, filename: ''},
     );
 
   if (filename[0] === '/' && !options.basedir)
-    throw new Error(
+    throw makeError(
+      'BASEDIR_REQUIRED',
       'the "basedir" option is required to use includes and extends with "absolute" paths',
+      {line: 0, column: 0, filename: ''},
     );
 
   filename = path.join(
@@ -94,8 +106,10 @@ function resolveLibrary(filename) {
   try {
     var pkgJson = require.resolve(pkg + '/package.json');
   } catch (e) {
-    throw new Error(
+    throw makeError(
+      'PACKAGE_NOT_FOUND',
       'Package not found: ' + pkg + '\n    Install it with: npm install ' + pkg,
+      {line: 0, column: 0, filename: ''},
     );
   }
 

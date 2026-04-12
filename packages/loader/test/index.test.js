@@ -59,22 +59,36 @@ describe('option validation', () => {
 });
 
 describe('path resolution', () => {
-  test('throws for relative path without filename', () => {
+  test('throws FILENAME_REQUIRED for relative path without filename', () => {
     var ast = parse(lex('include foo.pg'), {});
-    assert.throws(() => load(ast, {lex, parse}), /filename.*required/);
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) =>
+        err.code === 'PUGNEUM:FILENAME_REQUIRED' &&
+        /filename.*required/.test(err.message),
+    );
   });
 
-  test('throws for absolute path without basedir', () => {
+  test('throws BASEDIR_REQUIRED for absolute path without basedir', () => {
     var ast = parse(lex('include /foo.pg', {filename: 'test.pg'}), {
       filename: 'test.pg',
     });
-    assert.throws(() => load(ast, {lex, parse}), /basedir.*required/);
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) =>
+        err.code === 'PUGNEUM:BASEDIR_REQUIRED' &&
+        /basedir.*required/.test(err.message),
+    );
   });
 
-  test('throws for missing file', () => {
+  test('throws LOAD_ERROR for missing file', () => {
     var filename = __dirname + '/test.pg';
     var ast = parse(lex('include nonexistent.pg', {filename}), {filename});
-    assert.throws(() => load(ast, {lex, parse}), /ENOENT/);
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) =>
+        err.code === 'PUGNEUM:LOAD_ERROR' && /ENOENT/.test(err.message),
+    );
   });
 });
 
@@ -102,7 +116,7 @@ describe('library includes', () => {
     assert.ok(included, 'library include was resolved and loaded');
   });
 
-  test('missing @-prefixed package produces clear error', () => {
+  test('missing @-prefixed package produces PACKAGE_NOT_FOUND error', () => {
     var filename = __dirname + '/test.pg';
     var source = 'include @pugneum/nonexistent/file.pg';
     var tokens = lex(source, {filename});
@@ -110,7 +124,9 @@ describe('library includes', () => {
 
     assert.throws(
       () => load(ast, {lex, parse}),
-      (err) => /Package not found.*@pugneum\/nonexistent/.test(err.message),
+      (err) =>
+        err.code === 'PUGNEUM:PACKAGE_NOT_FOUND' &&
+        /Package not found.*@pugneum\/nonexistent/.test(err.message),
     );
   });
 

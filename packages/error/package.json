@@ -4,7 +4,6 @@
   "description": "Pugneum error object factory",
   "keywords": [
     "pugneum",
-    "pug",
     "error"
   ],
   "repository": {

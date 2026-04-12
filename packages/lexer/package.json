@@ -4,7 +4,6 @@
   "description": "Lexes pugneum templates and transforms them into arrays of tokens",
   "keywords": [
     "pugneum",
-    "pug",
     "lexer"
   ],
   "dependencies": {

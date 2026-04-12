@@ -6,8 +6,7 @@
     "pugneum",
     "ast",
     "traversal",
-    "walk",
-    "pug"
+    "walk"
   ],
   "devDependencies": {
     "pugneum-lexer": "^1.0.0",

@@ -4,8 +4,7 @@
   "description": "Applies filters to pugneum templates",
   "keywords": [
     "pugneum",
-    "filter",
-    "pug"
+    "filter"
   ],
   "dependencies": {
     "pugneum-error": "^1.0.0",

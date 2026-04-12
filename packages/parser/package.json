@@ -4,7 +4,6 @@
   "description": "Parses an array of pugneum tokens into an abstract syntax tree",
   "keywords": [
     "pugneum",
-    "pug",
     "parser"
   ],
   "dependencies": {

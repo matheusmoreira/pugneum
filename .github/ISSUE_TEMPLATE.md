@@ -1,38 +1,26 @@
-<!-- For bugs and feature request, please fillin the following -->
-<!-- For general questions, please use the pug tag on stack overflow: -->
-<!-- https://stackoverflow.com/questions/tagged/pug -->
-
-**Pug Version:** your version number here
+**Pugneum Version:** your version number here
 
 **Node Version:** your version number here
 
-## Input JavaScript Values
+## Input Template
 
-```js
-pug.renderFile('input.pug', {
-  whatIsIt: 'language',
-});
-```
-
-## Input Pug
-
-```pug
-h1 I Love Pug
-p It's a great #{whatIsIt}
+```pugneum
+h1 Hello World
+p A simple template
 ```
 
 ## Expected HTML
 
 ```html
-<h1>I Love Pug</h1>
-<p>It's a great language</p>
+<h1>Hello World</h1>
+<p>A simple template</p>
 ```
 
 ## Actual HTML
 
 ```html
-<h1>I Love Pug</h1>
-<p>It's a great language</p>
+<h1>Hello World</h1>
+<p>A simple template</p>
 ```
 
 ## Additional Comments

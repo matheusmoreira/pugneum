@@ -5,8 +5,7 @@
   "keywords": [
     "pugneum",
     "loader",
-    "resolver",
-    "pug"
+    "resolver"
   ],
   "dependencies": {
     "pugneum-error": "^1.0.0",

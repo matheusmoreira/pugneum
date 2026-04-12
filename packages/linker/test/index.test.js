@@ -40,7 +40,7 @@ describe('cases from pugneum sources', function() {
 });
 
 describe('duplicate reference definitions', () => {
-  test('last definition wins and warns', (t) => {
+  test('throws DUPLICATE_REFERENCE error', (t) => {
     var source = [
       'references',
       '  ex https://first.com',
@@ -53,31 +53,14 @@ describe('duplicate reference definitions', () => {
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
 
-    // Capture console.warn output
-    var warnings = [];
-    var origWarn = console.warn;
-    console.warn = function(msg) { warnings.push(msg); };
-    try {
-      var linked = link(loaded);
-    } finally {
-      console.warn = origWarn;
-    }
-
-    assert.strictEqual(warnings.length, 1);
-    assert.match(warnings[0], /duplicate reference 'ex'/);
-    assert.match(warnings[0], /overrides previous definition/);
-
-    // Verify last definition wins: the ReferenceLink should resolve to second.com
-    var walk = require('pugneum-walker');
-    var foundUrl = null;
-    walk(linked, function(node) {
-      if (node.type === 'Tag' && node.name === 'a') {
-        for (var attr of node.attrs) {
-          if (attr.name === 'href') foundUrl = attr.val;
-        }
+    assert.throws(
+      () => link(loaded),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_REFERENCE');
+        assert.match(err.message, /Duplicate reference 'ex'/);
+        return true;
       }
-    });
-    assert.strictEqual(foundUrl, 'https://second.com');
+    );
   });
 });
 

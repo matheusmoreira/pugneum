@@ -194,10 +194,10 @@ function resolveReferences(ast) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
         if (def.name in definitions) {
-          const location = (def.filename ? def.filename + ':' : '') + def.line;
-          console.warn(
-            'pugneum: duplicate reference \'' + def.name + '\' at ' + location
-            + ' (overrides previous definition)'
+          error(
+            'DUPLICATE_REFERENCE',
+            `Duplicate reference '${def.name}'`,
+            def
           );
         }
         definitions[def.name] = def.url;

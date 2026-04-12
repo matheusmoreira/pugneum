@@ -19,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "github:matheusmoreira/pugneum",
-    "directory": "packages/filters"
+    "directory": "packages/filterer"
   },
   "author": "Forbes Lindesay",
   "contributors": [

@@ -1,0 +1,6 @@
+
+extends window.pg
+
+block window-content
+  .dialog
+    block content

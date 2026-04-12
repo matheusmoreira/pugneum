@@ -1,0 +1,5 @@
+
+extends layout.pg
+
+block append head
+  script(src='app.js')

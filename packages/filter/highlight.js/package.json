@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "github:matheusmoreira/pugneum",
+    "url": "git+https://github.com/matheusmoreira/pugneum.git",
     "directory": "packages/filter/highlight.js"
   },
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",

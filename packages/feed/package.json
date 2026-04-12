@@ -14,7 +14,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "github:matheusmoreira/pugneum",
+    "url": "git+https://github.com/matheusmoreira/pugneum.git",
     "directory": "packages/feed"
   },
   "dependencies": {

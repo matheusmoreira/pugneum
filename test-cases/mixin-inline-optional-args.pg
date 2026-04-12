@@ -1,0 +1,9 @@
+mixin btn(text target=/)
+  a(href="#{target}") #{text}
+
+mixin icon(name size=16)
+  img(src="/icons/#{name}.svg" width="#{size}" height="#{size}")
+
+p Click #[+btn(here)] or #[+btn(there /page)]
+
+p Icons: #[+icon(star)] and #[+icon(heart 32)]

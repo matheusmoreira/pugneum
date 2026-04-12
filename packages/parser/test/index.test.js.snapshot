@@ -7561,6 +7561,279 @@ exports[`mixin-hoist.pg 1`] = `
 }
 `;
 
+exports[`mixin-inline-optional-args.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "btn",
+      "args": [
+        {
+          "name": "text"
+        },
+        {
+          "name": "target",
+          "default": "/"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Variable",
+                  "name": "text",
+                  "line": 2,
+                  "column": 25,
+                  "filename": "mixin-inline-optional-args.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "",
+                  "line": 2,
+                  "column": 30,
+                  "filename": "mixin-inline-optional-args.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "mixin-inline-optional-args.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "#{target}",
+                "line": 2,
+                "column": 5,
+                "filename": "mixin-inline-optional-args.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 3,
+            "filename": "mixin-inline-optional-args.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "mixin-inline-optional-args.pg"
+      },
+      "call": false,
+      "line": 1,
+      "column": 1,
+      "filename": "mixin-inline-optional-args.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "icon",
+      "args": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "size",
+          "default": "16"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "mixin-inline-optional-args.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "/icons/#{name}.svg",
+                "line": 5,
+                "column": 7,
+                "filename": "mixin-inline-optional-args.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "width",
+                "val": "#{size}",
+                "line": 5,
+                "column": 32,
+                "filename": "mixin-inline-optional-args.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "height",
+                "val": "#{size}",
+                "line": 5,
+                "column": 48,
+                "filename": "mixin-inline-optional-args.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 3,
+            "filename": "mixin-inline-optional-args.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "mixin-inline-optional-args.pg"
+      },
+      "call": false,
+      "line": 4,
+      "column": 1,
+      "filename": "mixin-inline-optional-args.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Click ",
+            "line": 7,
+            "column": 3,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Mixin",
+            "name": "btn",
+            "args": [
+              "here"
+            ],
+            "block": null,
+            "call": true,
+            "attrs": [],
+            "attributeBlocks": [],
+            "line": 7,
+            "column": 15,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Text",
+            "val": " or ",
+            "line": 7,
+            "column": 22,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Mixin",
+            "name": "btn",
+            "args": [
+              "there",
+              "/page"
+            ],
+            "block": null,
+            "call": true,
+            "attrs": [],
+            "attributeBlocks": [],
+            "line": 7,
+            "column": 32,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 7,
+            "column": 46,
+            "filename": "mixin-inline-optional-args.pg"
+          }
+        ],
+        "line": 7,
+        "filename": "mixin-inline-optional-args.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 1,
+      "filename": "mixin-inline-optional-args.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Icons: ",
+            "line": 9,
+            "column": 3,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Mixin",
+            "name": "icon",
+            "args": [
+              "star"
+            ],
+            "block": null,
+            "call": true,
+            "attrs": [],
+            "attributeBlocks": [],
+            "line": 9,
+            "column": 17,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Text",
+            "val": " and ",
+            "line": 9,
+            "column": 24,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Mixin",
+            "name": "icon",
+            "args": [
+              "heart",
+              "32"
+            ],
+            "block": null,
+            "call": true,
+            "attrs": [],
+            "attributeBlocks": [],
+            "line": 9,
+            "column": 36,
+            "filename": "mixin-inline-optional-args.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 9,
+            "column": 47,
+            "filename": "mixin-inline-optional-args.pg"
+          }
+        ],
+        "line": 9,
+        "filename": "mixin-inline-optional-args.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
+      "column": 1,
+      "filename": "mixin-inline-optional-args.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "mixin-inline-optional-args.pg"
+}
+`;
+
 exports[`mixin-optional-args.pg 1`] = `
 {
   "type": "Block",

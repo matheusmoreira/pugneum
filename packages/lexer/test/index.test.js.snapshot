@@ -18935,6 +18935,669 @@ exports[`mixin-hoist.pg 1`] = `
 ]
 `;
 
+exports[`mixin-inline-optional-args.pg 1`] = `
+[
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 1,
+        "column": 25
+      }
+    },
+    "val": "btn",
+    "args": [
+      {
+        "name": "text"
+      },
+      {
+        "name": "target",
+        "default": "/"
+      }
+    ]
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 4
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 4
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 21
+      }
+    },
+    "name": "href",
+    "val": "#{target}"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 21
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 23
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 25
+      }
+    }
+  },
+  {
+    "type": "variable",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 25
+      },
+      "filename": "mixin-inline-optional-args.pg"
+    },
+    "val": "text"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 29
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 30
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 30
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 30
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 4,
+        "column": 25
+      }
+    },
+    "val": "icon",
+    "args": [
+      {
+        "name": "name"
+      },
+      {
+        "name": "size",
+        "default": "16"
+      }
+    ]
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 6
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 6
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 7
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 31
+      }
+    },
+    "name": "src",
+    "val": "/icons/#{name}.svg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 32
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 47
+      }
+    },
+    "name": "width",
+    "val": "#{size}"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 48
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 64
+      }
+    },
+    "name": "height",
+    "val": "#{size}"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 64
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 65
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 9
+      }
+    },
+    "val": "Click "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 9
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 11
+      }
+    }
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 21
+      }
+    },
+    "val": "btn",
+    "args": [
+      "here"
+    ]
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 21
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 22
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 26
+      }
+    },
+    "val": " or "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 26
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 28
+      }
+    }
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 32
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 45
+      }
+    },
+    "val": "btn",
+    "args": [
+      "there",
+      "/page"
+    ]
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 45
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 46
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 46
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 46
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 3
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 10
+      }
+    },
+    "val": "Icons: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 10
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 17
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 23
+      }
+    },
+    "val": "icon",
+    "args": [
+      "star"
+    ]
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 23
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 24
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 24
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 29
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 29
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 36
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 46
+      }
+    },
+    "val": "icon",
+    "args": [
+      "heart",
+      "32"
+    ]
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 46
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 47
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 9,
+        "column": 47
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 10,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 10,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`mixin-optional-args.pg 1`] = `
 [
   {

@@ -86,8 +86,7 @@ describe('path resolution', () => {
     var ast = parse(lex('include nonexistent.pg', {filename}), {filename});
     assert.throws(
       () => load(ast, {lex, parse}),
-      (err) =>
-        err.code === 'PUGNEUM:LOAD_ERROR' && /ENOENT/.test(err.message),
+      (err) => err.code === 'PUGNEUM:LOAD_ERROR' && /ENOENT/.test(err.message),
     );
   });
 });

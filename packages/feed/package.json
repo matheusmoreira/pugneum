@@ -12,6 +12,11 @@
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
   "license": "MIT",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/feed"
+  },
   "dependencies": {
     "htmlparser2": "^9.0.0",
     "pugneum-error": "^1.0.0"

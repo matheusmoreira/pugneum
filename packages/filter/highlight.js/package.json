@@ -9,6 +9,11 @@
     "highlight",
     "highlight.js"
   ],
+  "repository": {
+    "type": "git",
+    "url": "github:matheusmoreira/pugneum",
+    "directory": "packages/filter/highlight.js"
+  },
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
   "license": "MIT",
   "dependencies": {

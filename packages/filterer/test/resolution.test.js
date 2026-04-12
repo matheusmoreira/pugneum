@@ -7,7 +7,6 @@ var parse = require('pugneum-parser');
 var filter = require('../');
 
 test('installed filter packages can be used implicitly', (t) => {
-
   const source = `
 pre
   code

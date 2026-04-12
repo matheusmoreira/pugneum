@@ -7,7 +7,7 @@ var parse = require('pugneum-parser');
 var filter = require('pugneum-filterer');
 
 var hljs = require('../');
-var customFilters = { 'highlight': hljs };
+var customFilters = {highlight: hljs};
 
 var casesDirectory = path.join(__dirname, 'cases');
 var cases = fs.readdirSync(casesDirectory);
@@ -18,7 +18,7 @@ function readCase(name) {
 
 cases.forEach((filename) => {
   test(filename, (t) => {
-    var options = { filename };
+    var options = {filename};
     var source = readCase(filename);
     var tokens = lex(source, options);
     var ast = parse(tokens, options);

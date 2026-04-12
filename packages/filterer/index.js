@@ -9,7 +9,7 @@ function applyFilters(ast, filters, options) {
   options = options || {};
   walk(
     ast,
-    function(node) {
+    function (node) {
       if (node.type === 'Filter') {
         handleNestedFilters(node, filters, options);
         const text = getBodyAsText(node);
@@ -27,32 +27,34 @@ function applyFilters(ast, filters, options) {
           node.file,
           attrs,
           filters,
-          node
+          node,
         );
         node.filters
           .slice()
           .reverse()
-          .forEach(function(filter) {
+          .forEach(function (filter) {
             const filterAttrs = getAttributes(filter, options);
             filterAttrs.filename = filename;
-            node.val = filterText(filter.name, node.val, filterAttrs, filters, node);
+            node.val = filterText(
+              filter.name,
+              node.val,
+              filterAttrs,
+              filters,
+              node,
+            );
           });
         delete node.filters;
         delete node.file;
       }
     },
-    {includeDependencies: true}
+    {includeDependencies: true},
   );
   return ast;
 }
 
 function handleNestedFilters(node, filters, options) {
   if (node.block.nodes[0] && node.block.nodes[0].type === 'Filter') {
-    node.block.nodes[0] = applyFilters(
-      node.block,
-      filters,
-      options
-    ).nodes[0];
+    node.block.nodes[0] = applyFilters(node.block, filters, options).nodes[0];
   }
 }
 
@@ -63,7 +65,7 @@ function filterText(name, text, attrs, filters, node) {
 
 function filterFile(name, file, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
-  const input = resolved.binary? file.raw : file.str;
+  const input = resolved.binary ? file.raw : file.str;
   return resolved.filter(input, attrs);
 }
 
@@ -74,9 +76,8 @@ function getBodyAsText(node) {
 
 function getAttributes(node, options) {
   const attrs = {};
-  (node.attrs || []).forEach(function(attr) {
-      attrs[attr.name] =
-        attr.val === true ? true : attr.val;
+  (node.attrs || []).forEach(function (attr) {
+    attrs[attr.name] = attr.val === true ? true : attr.val;
   });
   const opts = options[node.name] || {};
   Object.assign(attrs, opts);

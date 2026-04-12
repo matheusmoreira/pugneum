@@ -11,7 +11,7 @@ function walkAST(ast, before, after, options) {
   const replace = function replace(replacement) {
     if (Array.isArray(replacement) && !replace.arrayAllowed) {
       throw new Error(
-        'replace() can only be called with an array if the last parent is a Block or NamedBlock'
+        'replace() can only be called with an array if the last parent is a Block or NamedBlock',
       );
     }
     ast = replacement;
@@ -86,7 +86,7 @@ function walkAST(ast, before, after, options) {
   return ast;
 
   function walkAndMergeNodes(nodes) {
-    return nodes.reduce(function(nodes, node) {
+    return nodes.reduce(function (nodes, node) {
       const result = walkAST(node, before, after, options);
       if (Array.isArray(result)) {
         return nodes.concat(result);

@@ -14,29 +14,32 @@ const c0 = '\u0000-\u001F';
 const control = c0 + '\u007F-\u009F';
 
 // https://infra.spec.whatwg.org/#noncharacter
-const noncharacter  =
-  '\uFDD0-\uFDEF'   +
-  '\uFFFE\uFFFF'    +
-  '\u1FFFE\u1FFFF'  +
-  '\u2FFFE\u2FFFF'  +
-  '\u3FFFE\u3FFFF'  +
-  '\u4FFFE\u4FFFF'  +
-  '\u5FFFE\u5FFFF'  +
-  '\u6FFFE\u6FFFF'  +
-  '\u7FFFE\u7FFFF'  +
-  '\u8FFFE\u8FFFF'  +
-  '\u9FFFE\u9FFFF'  +
-  '\uAFFFE\uAFFFF'  +
-  '\uBFFFE\uBFFFF'  +
-  '\uCFFFE\uCFFFF'  +
-  '\uDFFFE\uDFFFF'  +
-  '\uEFFFE\uEFFFF'  +
-  '\uFFFFE\uFFFFF'  +
+const noncharacter =
+  '\uFDD0-\uFDEF' +
+  '\uFFFE\uFFFF' +
+  '\u1FFFE\u1FFFF' +
+  '\u2FFFE\u2FFFF' +
+  '\u3FFFE\u3FFFF' +
+  '\u4FFFE\u4FFFF' +
+  '\u5FFFE\u5FFFF' +
+  '\u6FFFE\u6FFFF' +
+  '\u7FFFE\u7FFFF' +
+  '\u8FFFE\u8FFFF' +
+  '\u9FFFE\u9FFFF' +
+  '\uAFFFE\uAFFFF' +
+  '\uBFFFE\uBFFFF' +
+  '\uCFFFE\uCFFFF' +
+  '\uDFFFE\uDFFFF' +
+  '\uEFFFE\uEFFFF' +
+  '\uFFFFE\uFFFFF' +
   '\u10FFFE\u10FFFF';
 
 // https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
 const attributeNamePunctuation = ' \'">/=';
-const attributeName = new RegExp('[^' + control + attributeNamePunctuation + noncharacter + ']', 'g');
+const attributeName = new RegExp(
+  '[^' + control + attributeNamePunctuation + noncharacter + ']',
+  'g',
+);
 
 const whitespaceRe = /[ \n\t]/;
 
@@ -63,7 +66,7 @@ function scanChar(str, i, quote) {
 
   if (c === '\\') return {i: i + 2, quote: null};
 
-  if (c === '\'' || c === '"' || c === '`') {
+  if (c === "'" || c === '"' || c === '`') {
     return {i: i + 1, quote: c};
   }
 
@@ -88,7 +91,7 @@ function parseUntil(str, end, start) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quote || c === '\'' || c === '"' || c === '`') {
+    if (quote || c === "'" || c === '"' || c === '`') {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -105,7 +108,7 @@ function parseUntil(str, end, start) {
   }
 
   const err = new Error(
-    'The end of the string reached with no closing bracket ' + end + ' found.'
+    'The end of the string reached with no closing bracket ' + end + ' found.',
   );
   err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
   err.index = i;
@@ -127,7 +130,7 @@ function isNesting(str) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quote || c === '\'' || c === '"' || c === '`') {
+    if (quote || c === "'" || c === '"' || c === '`') {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -152,19 +155,49 @@ function isNesting(str) {
 function interpolationsAreClosed(str, state) {
   for (let i = 0; i < str.length; i++) {
     const ch = str[i];
-    if (ch === '\\') { i++; continue; }
-    if (ch === "'" && !state.dq) { state.sq = !state.sq; continue; }
-    if (ch === '"' && !state.sq) { state.dq = !state.dq; continue; }
-    if (state.sq || state.dq) continue;
-    if (ch === '#' && str[i + 1] === '[') { state.interp++; i++; continue; }
-    if (ch === '@' && str[i + 1] === '[') { state.ref++; i++; continue; }
-    if (ch === ']') {
-      if (state.ref > 0) { state.ref--; continue; }
-      if (state.interp > 0) { state.interp--; continue; }
+    if (ch === '\\') {
+      i++;
+      continue;
     }
-    if (ch === '@' && str[i + 1] === '(') { state.link++; i++; continue; }
+    if (ch === "'" && !state.dq) {
+      state.sq = !state.sq;
+      continue;
+    }
+    if (ch === '"' && !state.sq) {
+      state.dq = !state.dq;
+      continue;
+    }
+    if (state.sq || state.dq) continue;
+    if (ch === '#' && str[i + 1] === '[') {
+      state.interp++;
+      i++;
+      continue;
+    }
+    if (ch === '@' && str[i + 1] === '[') {
+      state.ref++;
+      i++;
+      continue;
+    }
+    if (ch === ']') {
+      if (state.ref > 0) {
+        state.ref--;
+        continue;
+      }
+      if (state.interp > 0) {
+        state.interp--;
+        continue;
+      }
+    }
+    if (ch === '@' && str[i + 1] === '(') {
+      state.link++;
+      i++;
+      continue;
+    }
     if (state.link > 0) {
-      if (ch === '(') { state.paren++; continue; }
+      if (ch === '(') {
+        state.paren++;
+        continue;
+      }
       if (ch === ')') {
         if (state.paren > 0) state.paren--;
         else state.link--;
@@ -186,7 +219,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
   let pendingText = null;
   let pendingLines = 0;
   let pendingIndentIdx = 0;
-  const state = { interp: 0, link: 0, ref: 0, paren: 0, sq: false, dq: false };
+  const state = {interp: 0, link: 0, ref: 0, paren: 0, sq: false, dq: false};
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
@@ -205,8 +238,12 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       });
       pendingText = null;
       pendingLines = 0;
-      state.interp = 0; state.link = 0; state.ref = 0; state.paren = 0;
-      state.sq = false; state.dq = false;
+      state.interp = 0;
+      state.link = 0;
+      state.ref = 0;
+      state.paren = 0;
+      state.sq = false;
+      state.dq = false;
     }
   }
   if (pendingText !== null) {
@@ -224,12 +261,12 @@ class Lexer {
     options = options || {};
     if (typeof str !== 'string') {
       throw new Error(
-        'Expected source code to be a string but got "' + typeof str + '"'
+        'Expected source code to be a string but got "' + typeof str + '"',
       );
     }
     if (typeof options !== 'object') {
       throw new Error(
-        'Expected "options" to be an object but got "' + typeof options + '"'
+        'Expected "options" to be an object but got "' + typeof options + '"',
       );
     }
     //Strip any UTF-8 BOM off of the start of `str`, if it exists.
@@ -267,7 +304,7 @@ class Lexer {
     if (isNesting(exp)) {
       this.error(
         'INCORRECT_NESTING',
-        'Nesting must match on expression `' + exp + '`'
+        'Nesting must match on expression `' + exp + '`',
       );
     }
   }
@@ -313,7 +350,7 @@ class Lexer {
   scan(regexp, type) {
     let captures;
     if ((captures = regexp.exec(this.input))) {
-      const len =captures[0].length;
+      const len = captures[0].length;
       const val = captures[1];
       const diff = len - (val ? val.length : 0);
       const tok = this.tok(type, val);
@@ -380,7 +417,7 @@ class Lexer {
           'NO_END_BRACKET',
           'The end of the string reached with no closing bracket ' +
             end +
-            ' found.'
+            ' found.',
         );
       } else if (ex.code === 'CHARACTER_PARSER:MISMATCHED_BRACKET') {
         this.error('BRACKET_MISMATCH', ex.message);
@@ -424,7 +461,7 @@ class Lexer {
     if (this.interpolated) {
       this.error(
         'NO_END_BRACKET',
-        'End of line was reached with no closing bracket for interpolation.'
+        'End of line was reached with no closing bracket for interpolation.',
       );
     }
     for (let i = 0; this.indentStack[i]; i++) {
@@ -492,9 +529,10 @@ class Lexer {
    */
 
   filter(opts) {
-    const tok = this.scan(/^:([\w\-]+)/, 'filter') ||
-        this.scan(/^:'(.+)'/, 'filter') ||
-        this.scan(/^:"(.+)"/, 'filter');
+    const tok =
+      this.scan(/^:([\w\-]+)/, 'filter') ||
+      this.scan(/^:'(.+)'/, 'filter') ||
+      this.scan(/^:"(.+)"/, 'filter');
 
     const inInclude = opts && opts.inInclude;
     if (tok) {
@@ -527,7 +565,7 @@ class Lexer {
         'INVALID_ID',
         '"' +
           /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
-          '" is not a valid ID.'
+          '" is not a valid ID.',
       );
     }
   }
@@ -547,7 +585,7 @@ class Lexer {
     if (/^\.[_a-z0-9\-]+/i.test(this.input)) {
       this.error(
         'INVALID_CLASS_NAME',
-        'Class names must contain at least one letter or underscore.'
+        'Class names must contain at least one letter or underscore.',
       );
     }
     if (/^\./.test(this.input)) {
@@ -555,7 +593,7 @@ class Lexer {
         'INVALID_CLASS_NAME',
         '"' +
           /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
-          '" is not a valid class name.  Class names can only contain "_", "-", a-z and 0-9, and must contain at least one of "_", or a-z'
+          '" is not a valid class name.  Class names can only contain "_", "-", a-z and 0-9, and must contain at least one of "_", or a-z',
       );
     }
   }
@@ -600,30 +638,52 @@ class Lexer {
     const earliest = this.findEarliestCandidate(value);
 
     switch (earliest.kind) {
+      case 'interpolation':
+        return this.handleInterpolation(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
 
-    case 'interpolation':
-      return this.handleInterpolation(type, value, prefix, escaped, earliest.pos);
+      case 'link':
+        return this.handleLinkShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
 
-    case 'link':
-      return this.handleLinkShorthand(type, value, prefix, escaped, earliest.pos);
+      case 'image':
+        return this.handleImageShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
 
-    case 'image':
-      return this.handleImageShorthand(type, value, prefix, escaped, earliest.pos);
+      case 'reference':
+        return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
 
-    case 'reference':
-      return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
+      case 'end':
+        if (prefix + value.substring(0, earliest.pos)) {
+          this.addText(type, value.substring(0, earliest.pos), prefix);
+        }
+        this.ended = true;
+        this.input = value.slice(earliest.pos + 1) + this.input;
+        return;
 
-    case 'end':
-      if (prefix + value.substring(0, earliest.pos)) {
-        this.addText(type, value.substring(0, earliest.pos), prefix);
-      }
-      this.ended = true;
-      this.input = value.slice(earliest.pos + 1) + this.input;
-      return;
-
-    case 'variable':
-      return this.handleVariableRef(type, value, prefix, escaped, earliest.match);
-
+      case 'variable':
+        return this.handleVariableRef(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.match,
+        );
     }
   }
 
@@ -632,42 +692,42 @@ class Lexer {
 
     if (this.interpolated) {
       const i = value.indexOf(']');
-      if (i !== -1) candidates.push({ pos: i, kind: 'end' });
+      if (i !== -1) candidates.push({pos: i, kind: 'end'});
     }
 
     if (this.interpolationAllowed) {
       let i;
 
       i = value.indexOf('\\#[');
-      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '#[' });
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#['});
 
       i = value.indexOf('\\@(');
-      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@(' });
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@('});
 
       i = value.indexOf('\\@[');
-      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '@[' });
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@['});
 
       i = value.indexOf('\\!(');
-      if (i !== -1) candidates.push({ pos: i, kind: 'escaped', literal: '!(' });
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
       i = value.indexOf('#[');
-      if (i !== -1) candidates.push({ pos: i, kind: 'interpolation' });
+      if (i !== -1) candidates.push({pos: i, kind: 'interpolation'});
 
       i = value.indexOf('@(');
-      if (i !== -1) candidates.push({ pos: i, kind: 'link' });
+      if (i !== -1) candidates.push({pos: i, kind: 'link'});
 
       i = value.indexOf('@[');
-      if (i !== -1) candidates.push({ pos: i, kind: 'reference' });
+      if (i !== -1) candidates.push({pos: i, kind: 'reference'});
 
       i = value.indexOf('!(');
-      if (i !== -1) candidates.push({ pos: i, kind: 'image' });
+      if (i !== -1) candidates.push({pos: i, kind: 'image'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
         if (m[1]) {
-          candidates.push({ pos: m.index, kind: 'escaped', literal: '#{' });
+          candidates.push({pos: m.index, kind: 'escaped', literal: '#{'});
         } else {
-          candidates.push({ pos: m.index, kind: 'variable', match: m });
+          candidates.push({pos: m.index, kind: 'variable', match: m});
         }
       }
     }
@@ -726,7 +786,7 @@ class Lexer {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
           'NO_END_BRACKET',
-          'End of line reached with no closing ) for @() link shorthand.'
+          'End of line reached with no closing ) for @() link shorthand.',
         );
       }
       throw ex;
@@ -760,7 +820,9 @@ class Lexer {
 
     // Desugar @(url text) to equivalent #[a(href='url') text] and use child lexer
     const quote = url.includes("'") ? '"' : "'";
-    const escapedUrl = url.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    const escapedUrl = url
+      .replaceAll('\\', '\\\\')
+      .replaceAll(quote, '\\' + quote);
     const childInput = `a(href=${quote}${escapedUrl}${quote}) ${linkText}]${afterLink}`;
 
     tok = this.tok('start-interpolation');
@@ -789,7 +851,7 @@ class Lexer {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
           'NO_END_BRACKET',
-          'End of line reached with no closing ) for !() image shorthand.'
+          'End of line reached with no closing ) for !() image shorthand.',
         );
       }
       throw ex;
@@ -822,9 +884,13 @@ class Lexer {
 
     // Build attribute string: src='url' alt='alt text'
     const quote = url.includes("'") ? '"' : "'";
-    const escapedUrl = url.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    const escapedUrl = url
+      .replaceAll('\\', '\\\\')
+      .replaceAll(quote, '\\' + quote);
     const altQuote = altText.includes("'") ? '"' : "'";
-    const escapedAlt = altText.replaceAll('\\', '\\\\').replaceAll(altQuote, '\\' + altQuote);
+    const escapedAlt = altText
+      .replaceAll('\\', '\\\\')
+      .replaceAll(altQuote, '\\' + altQuote);
 
     // Check for optional trailing (attrs) and include them in the tag
     let extraAttrs = '';
@@ -836,7 +902,7 @@ class Lexer {
         if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
           this.error(
             'NO_END_BRACKET',
-            'End of line reached with no closing ) for !() image attributes.'
+            'End of line reached with no closing ) for !() image attributes.',
           );
         }
         throw ex;
@@ -873,17 +939,27 @@ class Lexer {
     let end = -1;
     for (let i = 0; i < inner.length; i++) {
       const ch = inner[i];
-      if (ch === '\\') { i++; continue; }
-      if (ch === '#' && inner[i + 1] === '[') { depth++; i++; continue; }
+      if (ch === '\\') {
+        i++;
+        continue;
+      }
+      if (ch === '#' && inner[i + 1] === '[') {
+        depth++;
+        i++;
+        continue;
+      }
       if (ch === ']') {
         depth--;
-        if (depth === 0) { end = i; break; }
+        if (depth === 0) {
+          end = i;
+          break;
+        }
       }
     }
     if (end === -1) {
       this.error(
         'NO_END_BRACKET',
-        'End of line reached with no closing ] for @[] reference link.'
+        'End of line reached with no closing ] for @[] reference link.',
       );
     }
     const content = inner.substring(0, end);
@@ -901,7 +977,10 @@ class Lexer {
     }
 
     if (!name) {
-      this.error('INVALID_REF_LINK', 'Reference link @[] requires an identifier.');
+      this.error(
+        'INVALID_REF_LINK',
+        'Reference link @[] requires an identifier.',
+      );
     }
 
     tok = this.tok('start-ref-link');
@@ -961,7 +1040,8 @@ class Lexer {
   }
 
   text() {
-    const tok = this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
+    const tok =
+      this.scan(/^(?:\| ?| )([^\n]+)/, 'text') ||
       this.scan(/^( )/, 'text') ||
       this.scan(/^\|( ?)/, 'text');
     if (tok) {
@@ -1019,12 +1099,7 @@ class Lexer {
       let name = captures[1].trim();
       let comment = '';
       if (name.indexOf('//') !== -1) {
-        comment =
-          '//' +
-          name
-            .split('//')
-            .slice(1)
-            .join('//');
+        comment = '//' + name.split('//').slice(1).join('//');
         name = name.split('//')[0].trim();
       }
       if (!name) return;
@@ -1115,7 +1190,7 @@ class Lexer {
 
   variable() {
     let captures;
-    if (captures = /^#{([-a-zA-Z_?]+)}/.exec(this.input)) {
+    if ((captures = /^#{([-a-zA-Z_?]+)}/.exec(this.input))) {
       const tok = this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
@@ -1151,7 +1226,7 @@ class Lexer {
           if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
             this.error(
               'NO_END_BRACKET',
-              'End of line reached with no closing ) for mixin call arguments.'
+              'End of line reached with no closing ) for mixin call arguments.',
             );
           }
           throw ex;
@@ -1197,7 +1272,9 @@ class Lexer {
 
   mixin() {
     let captures;
-    if ((captures = /^mixin +([a-zA-Z][-\w]*)(?: *\((.*)\))? */.exec(this.input))) {
+    if (
+      (captures = /^mixin +([a-zA-Z][-\w]*)(?: *\((.*)\))? */.exec(this.input))
+    ) {
       this.consume(captures[0].length);
       const tok = this.tok('mixin', captures[1]);
       tok.args = this.parseMixinParams(captures[2] || '');
@@ -1256,9 +1333,9 @@ class Lexer {
             dflt += str[i++];
           }
         }
-        params.push({ name, default: dflt });
+        params.push({name, default: dflt});
       } else {
-        params.push({ name });
+        params.push({name});
       }
     }
 
@@ -1306,21 +1383,24 @@ class Lexer {
           if (spaceIdx === -1) {
             this.error(
               'INVALID_REF_DEF',
-              'Reference definition requires both a name and a URL: ' + content
+              'Reference definition requires both a name and a URL: ' + content,
             );
           }
           const name = content.substring(0, spaceIdx);
           let url = content.substring(spaceIdx + 1).trim();
 
           // Handle quoted URLs
-          if ((url[0] === "'" || url[0] === '"') && url[url.length - 1] === url[0]) {
+          if (
+            (url[0] === "'" || url[0] === '"') &&
+            url[url.length - 1] === url[0]
+          ) {
             url = url.substring(1, url.length - 1);
           }
 
           if (!url) {
             this.error(
               'INVALID_REF_DEF',
-              'Reference definition requires a non-empty URL: ' + content
+              'Reference definition requires a non-empty URL: ' + content,
             );
           }
 
@@ -1355,7 +1435,8 @@ class Lexer {
   attribute(str) {
     let quote = '';
     const quoteRe = /['"]/;
-    let key = '', value = '';
+    let key = '',
+      value = '';
     let i;
 
     // consume all whitespace before the key
@@ -1383,10 +1464,7 @@ class Lexer {
           break;
         }
       } else {
-        if (
-          whitespaceRe.test(str[i]) ||
-          str[i] === '='
-        ) {
+        if (whitespaceRe.test(str[i]) || str[i] === '=') {
           break;
         }
       }
@@ -1402,10 +1480,10 @@ class Lexer {
 
     const invalid = key.replaceAll(attributeName, '');
     if (invalid.length !== 0) {
-        this.error(
-          'INVALID_ATTRIBUTE_NAME',
-          'Code points not allowed in HTML attribute names: ' + invalid
-        );
+      this.error(
+        'INVALID_ATTRIBUTE_NAME',
+        'Code points not allowed in HTML attribute names: ' + invalid,
+      );
     }
 
     tok.name = key;
@@ -1425,7 +1503,9 @@ class Lexer {
         quote = str[i];
         this.incrementColumn(1);
         i++;
-      } else { quote = null; }
+      } else {
+        quote = null;
+      }
 
       // start looping through the value
       for (; i < str.length; i++) {
@@ -1438,21 +1518,21 @@ class Lexer {
           if (str[i] === '\\') {
             ++i;
             switch (str[i]) {
-            case '\'':
-              value += '\'';
-              break;
-            case '"':
-              value += '"';
-              break;
-            case 'n':
-              value += '\n';
-              break;
-            case 't':
-              value += '\t';
-              break;
-            default:
-              value += str[i];
-              break;
+              case "'":
+                value += "'";
+                break;
+              case '"':
+                value += '"';
+                break;
+              case 'n':
+                value += '\n';
+                break;
+              case 't':
+                value += '\t';
+                break;
+              default:
+                value += str[i];
+                break;
             }
             this.incrementColumn(2);
             continue;
@@ -1483,8 +1563,8 @@ class Lexer {
     if (quote && str[i] && !whitespaceRe.test(str[i])) {
       this.error(
         'MALFORMED_ATTRIBUTE',
-        'Invalid code point after attribute value: `' + str[i] + '`'
-        );
+        'Invalid code point after attribute value: `' + str[i] + '`',
+      );
     }
 
     i = this.skipWhitespace(str, i);
@@ -1537,7 +1617,7 @@ class Lexer {
       if (' ' == this.input[0] || '\t' == this.input[0]) {
         this.error(
           'INVALID_INDENTATION',
-          'Invalid indentation, you can use tabs or spaces but not both'
+          'Invalid indentation, you can use tabs or spaces but not both',
         );
       }
 
@@ -1558,7 +1638,7 @@ class Lexer {
                 this.indentStack[1] +
                 ' or ' +
                 this.indentStack[0] +
-                ' spaces/tabs.'
+                ' spaces/tabs.',
             );
           }
           outdent_count++;
@@ -1662,7 +1742,7 @@ class Lexer {
   fail() {
     this.error(
       'UNEXPECTED_TEXT',
-      'unexpected text "' + this.input.slice(0, 5) + '"'
+      'unexpected text "' + this.input.slice(0, 5) + '"',
     );
   }
 

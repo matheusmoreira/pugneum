@@ -11,17 +11,20 @@ function block(nodes) {
 
 // Helper: Tag node
 function tag(name, attrs, children, opts) {
-  return Object.assign({
-    type: 'Tag',
-    name: name,
-    attrs: attrs || [],
-    attributeBlocks: [],
-    block: block(children || []),
-    isInline: false,
-    line: 1,
-    column: 1,
-    filename: 'test',
-  }, opts);
+  return Object.assign(
+    {
+      type: 'Tag',
+      name: name,
+      attrs: attrs || [],
+      attributeBlocks: [],
+      block: block(children || []),
+      isInline: false,
+      line: 1,
+      column: 1,
+      filename: 'test',
+    },
+    opts,
+  );
 }
 
 // Helper: Text node
@@ -41,32 +44,36 @@ describe('basic rendering', () => {
   test('tag with text', () => {
     assert.strictEqual(
       render(block([tag('p', [], [text('hi')])])),
-      '<!DOCTYPE html><p>hi</p>'
+      '<!DOCTYPE html><p>hi</p>',
     );
   });
 
   test('nested tags', () => {
     assert.strictEqual(
       render(block([tag('div', [], [tag('span', [], [text('x')])])])),
-      '<!DOCTYPE html><div><span>x</span></div>'
+      '<!DOCTYPE html><div><span>x</span></div>',
     );
   });
 });
 
 describe('attributes', () => {
   test('string attribute', () => {
-    var attrs = [{name: 'href', val: '/home', line: 1, column: 1, mustEscape: false}];
+    var attrs = [
+      {name: 'href', val: '/home', line: 1, column: 1, mustEscape: false},
+    ];
     assert.strictEqual(
       render(block([tag('a', attrs, [text('link')])])),
-      '<!DOCTYPE html><a href="/home">link</a>'
+      '<!DOCTYPE html><a href="/home">link</a>',
     );
   });
 
   test('boolean attribute', () => {
-    var attrs = [{name: 'disabled', val: true, line: 1, column: 1, mustEscape: false}];
+    var attrs = [
+      {name: 'disabled', val: true, line: 1, column: 1, mustEscape: false},
+    ];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
-      '<!DOCTYPE html><input disabled>'
+      '<!DOCTYPE html><input disabled>',
     );
   });
 
@@ -77,61 +84,62 @@ describe('attributes', () => {
     ];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
-      '<!DOCTYPE html><div class="a b"></div>'
+      '<!DOCTYPE html><div class="a b"></div>',
     );
   });
 
   test('quotes in attribute values are escaped', () => {
-    var attrs = [{name: 'title', val: 'say "hello"', line: 1, column: 1, mustEscape: false}];
+    var attrs = [
+      {
+        name: 'title',
+        val: 'say "hello"',
+        line: 1,
+        column: 1,
+        mustEscape: false,
+      },
+    ];
     assert.strictEqual(
       render(block([tag('span', attrs, [text('x')])])),
-      '<!DOCTYPE html><span title="say &quot;hello&quot;">x</span>'
+      '<!DOCTYPE html><span title="say &quot;hello&quot;">x</span>',
     );
   });
 
   test('quotes in class values are escaped', () => {
-    var attrs = [{name: 'class', val: 'a"b', line: 1, column: 1, mustEscape: false}];
+    var attrs = [
+      {name: 'class', val: 'a"b', line: 1, column: 1, mustEscape: false},
+    ];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
-      '<!DOCTYPE html><div class="a&quot;b"></div>'
+      '<!DOCTYPE html><div class="a&quot;b"></div>',
     );
   });
 });
 
 describe('void elements', () => {
   test('self-closing by tag name', () => {
-    assert.strictEqual(
-      render(block([tag('br')])),
-      '<!DOCTYPE html><br>'
-    );
-    assert.strictEqual(
-      render(block([tag('hr')])),
-      '<!DOCTYPE html><hr>'
-    );
-    assert.strictEqual(
-      render(block([tag('img')])),
-      '<!DOCTYPE html><img>'
-    );
+    assert.strictEqual(render(block([tag('br')])), '<!DOCTYPE html><br>');
+    assert.strictEqual(render(block([tag('hr')])), '<!DOCTYPE html><hr>');
+    assert.strictEqual(render(block([tag('img')])), '<!DOCTYPE html><img>');
   });
 
   test('self-closing by property', () => {
     assert.strictEqual(
       render(block([tag('custom', [], [], {selfClosing: true})])),
-      '<!DOCTYPE html><custom>'
+      '<!DOCTYPE html><custom>',
     );
   });
 
   test('void element with whitespace-only content is allowed', () => {
     assert.strictEqual(
       render(block([tag('br', [], [text('  ')])])),
-      '<!DOCTYPE html><br>'
+      '<!DOCTYPE html><br>',
     );
   });
 
   test('void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
     assert.throws(
       () => render(block([tag('br', [], [text('content')])])),
-      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT'
+      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
     );
   });
 });
@@ -146,7 +154,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('rect', attrs)])),
-      '<!DOCTYPE html><rect x="0" y="0" width="100" height="50">'
+      '<!DOCTYPE html><rect x="0" y="0" width="100" height="50">',
     );
   });
 
@@ -158,7 +166,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('circle', attrs)])),
-      '<!DOCTYPE html><circle cx="50" cy="50" r="25">'
+      '<!DOCTYPE html><circle cx="50" cy="50" r="25">',
     );
   });
 
@@ -171,64 +179,104 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('line', attrs)])),
-      '<!DOCTYPE html><line x1="0" y1="0" x2="100" y2="100">'
+      '<!DOCTYPE html><line x1="0" y1="0" x2="100" y2="100">',
     );
   });
 
   test('path is self-closing', () => {
-    var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1, mustEscape: false}];
+    var attrs = [
+      {name: 'd', val: 'M0 0 L100 100', line: 1, column: 1, mustEscape: false},
+    ];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
-      '<!DOCTYPE html><path d="M0 0 L100 100">'
+      '<!DOCTYPE html><path d="M0 0 L100 100">',
     );
   });
 
   test('SVG container elements are NOT self-closing', () => {
     assert.strictEqual(
       render(block([tag('svg', [], [tag('rect')])])),
-      '<!DOCTYPE html><svg><rect></svg>'
+      '<!DOCTYPE html><svg><rect></svg>',
     );
     assert.strictEqual(
       render(block([tag('g', [], [tag('circle')])])),
-      '<!DOCTYPE html><g><circle></g>'
+      '<!DOCTYPE html><g><circle></g>',
     );
     assert.strictEqual(
       render(block([tag('text', [], [text('hello')])])),
-      '<!DOCTYPE html><text>hello</text>'
+      '<!DOCTYPE html><text>hello</text>',
     );
     assert.strictEqual(
-      render(block([tag('use', [{name: 'href', val: '#icon', line: 1, column: 1, mustEscape: false}], [text('')])])),
-      '<!DOCTYPE html><use href="#icon"></use>'
+      render(
+        block([
+          tag(
+            'use',
+            [
+              {
+                name: 'href',
+                val: '#icon',
+                line: 1,
+                column: 1,
+                mustEscape: false,
+              },
+            ],
+            [text('')],
+          ),
+        ]),
+      ),
+      '<!DOCTYPE html><use href="#icon"></use>',
     );
     assert.strictEqual(
-      render(block([tag('image', [{name: 'href', val: 'pic.png', line: 1, column: 1, mustEscape: false}], [text('')])])),
-      '<!DOCTYPE html><image href="pic.png"></image>'
+      render(
+        block([
+          tag(
+            'image',
+            [
+              {
+                name: 'href',
+                val: 'pic.png',
+                line: 1,
+                column: 1,
+                mustEscape: false,
+              },
+            ],
+            [text('')],
+          ),
+        ]),
+      ),
+      '<!DOCTYPE html><image href="pic.png"></image>',
     );
   });
 
   test('SVG void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
     assert.throws(
       () => render(block([tag('rect', [], [text('content')])])),
-      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT'
+      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
     );
   });
 });
 
 describe('comments', () => {
   test('buffered comment', () => {
-    var node = {type: 'Comment', val: ' hello ', buffer: true, line: 1, filename: 'test'};
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html><!-- hello -->'
-    );
+    var node = {
+      type: 'Comment',
+      val: ' hello ',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!-- hello -->');
   });
 
   test('unbuffered comment produces no output', () => {
-    var node = {type: 'Comment', val: ' hidden ', buffer: false, line: 1, filename: 'test'};
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html>'
-    );
+    var node = {
+      type: 'Comment',
+      val: ' hidden ',
+      buffer: false,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
   });
 
   test('buffered block comment', () => {
@@ -242,7 +290,7 @@ describe('comments', () => {
     };
     assert.strictEqual(
       render(block([node])),
-      '<!DOCTYPE html><!-- start body-->'
+      '<!DOCTYPE html><!-- start body-->',
     );
   });
 
@@ -255,10 +303,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html>'
-    );
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
   });
 
   test('block comment with empty val', () => {
@@ -270,10 +315,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html><!--content-->'
-    );
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!--content-->');
   });
 });
 
@@ -285,7 +327,19 @@ describe('mixins', () => {
       call: false,
       args: [{name: 'name'}],
       block: block([
-        tag('p', [], [{type: 'Variable', name: 'name', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'p',
+          [],
+          [
+            {
+              type: 'Variable',
+              name: 'name',
+              line: 1,
+              column: 1,
+              filename: 'test',
+            },
+          ],
+        ),
       ]),
       line: 1,
       column: 1,
@@ -303,7 +357,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><p>world</p>'
+      '<!DOCTYPE html><p>world</p>',
     );
   });
 
@@ -330,7 +384,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><hr>'
+      '<!DOCTYPE html><hr>',
     );
   });
 
@@ -341,7 +395,11 @@ describe('mixins', () => {
       call: false,
       args: [],
       block: block([
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ]),
       line: 1,
       column: 1,
@@ -359,7 +417,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div>inside</div>'
+      '<!DOCTYPE html><div>inside</div>',
     );
   });
 
@@ -369,7 +427,9 @@ describe('mixins', () => {
       name: 'inner',
       call: false,
       args: [],
-      block: block([{type: 'Variable', name: 'x', line: 1, column: 1, filename: 'test'}]),
+      block: block([
+        {type: 'Variable', name: 'x', line: 1, column: 1, filename: 'test'},
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -379,16 +439,18 @@ describe('mixins', () => {
       name: 'outer',
       call: false,
       args: [{name: 'x'}],
-      block: block([{
-        type: 'Mixin',
-        name: 'inner',
-        call: true,
-        args: [],
-        block: block([]),
-        line: 3,
-        column: 1,
-        filename: 'test',
-      }]),
+      block: block([
+        {
+          type: 'Mixin',
+          name: 'inner',
+          call: true,
+          args: [],
+          block: block([]),
+          line: 3,
+          column: 1,
+          filename: 'test',
+        },
+      ]),
       line: 2,
       column: 1,
       filename: 'test',
@@ -405,7 +467,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([inner, outer, call])),
-      '<!DOCTYPE html>hello'
+      '<!DOCTYPE html>hello',
     );
   });
 });
@@ -424,7 +486,7 @@ describe('mixin errors', () => {
     };
     assert.throws(
       () => render(block([call])),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_MIXIN'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_MIXIN',
     );
   });
 
@@ -451,17 +513,23 @@ describe('mixin errors', () => {
     };
     assert.throws(
       () => render(block([declaration, call])),
-      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH'
+      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
     );
   });
 });
 
 describe('variable errors', () => {
   test('variable outside mixin throws CALL_STACK_UNDERFLOW', () => {
-    var variable = {type: 'Variable', name: 'x', line: 1, column: 1, filename: 'test'};
+    var variable = {
+      type: 'Variable',
+      name: 'x',
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
     assert.throws(
       () => render(block([variable])),
-      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW'
+      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
     );
   });
 
@@ -471,7 +539,15 @@ describe('variable errors', () => {
       name: 'm',
       call: false,
       args: [],
-      block: block([{type: 'Variable', name: 'missing', line: 1, column: 1, filename: 'test'}]),
+      block: block([
+        {
+          type: 'Variable',
+          name: 'missing',
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -488,7 +564,7 @@ describe('variable errors', () => {
     };
     assert.throws(
       () => render(block([declaration, call])),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
     );
   });
 });
@@ -500,7 +576,21 @@ describe('variables in attributes', () => {
       name: 'link',
       call: false,
       args: [{name: 'url'}],
-      block: block([tag('a', [{name: 'href', val: '#{url}', line: 1, column: 1, mustEscape: false}], [text('click')])]),
+      block: block([
+        tag(
+          'a',
+          [
+            {
+              name: 'href',
+              val: '#{url}',
+              line: 1,
+              column: 1,
+              mustEscape: false,
+            },
+          ],
+          [text('click')],
+        ),
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -517,7 +607,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><a href="/home">click</a>'
+      '<!DOCTYPE html><a href="/home">click</a>',
     );
   });
 
@@ -527,7 +617,17 @@ describe('variables in attributes', () => {
       name: 'test',
       call: false,
       args: [{name: 'a'}, {name: 'b'}],
-      block: block([tag('div', [{name: 'data-x', val: '#{a}-#{b}', line: 1, column: 1, mustEscape: false}])]),
+      block: block([
+        tag('div', [
+          {
+            name: 'data-x',
+            val: '#{a}-#{b}',
+            line: 1,
+            column: 1,
+            mustEscape: false,
+          },
+        ]),
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -544,7 +644,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div data-x="hello-world"></div>'
+      '<!DOCTYPE html><div data-x="hello-world"></div>',
     );
   });
 
@@ -554,7 +654,17 @@ describe('variables in attributes', () => {
       name: 'test',
       call: false,
       args: [{name: 'x'}],
-      block: block([tag('div', [{name: 'data-t', val: '\\#{x}', line: 1, column: 1, mustEscape: false}])]),
+      block: block([
+        tag('div', [
+          {
+            name: 'data-t',
+            val: '\\#{x}',
+            line: 1,
+            column: 1,
+            mustEscape: false,
+          },
+        ]),
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -571,7 +681,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div data-t="#{x}"></div>'
+      '<!DOCTYPE html><div data-t="#{x}"></div>',
     );
   });
 
@@ -581,7 +691,17 @@ describe('variables in attributes', () => {
       name: 'test',
       call: false,
       args: [{name: 'cls'}],
-      block: block([tag('div', [{name: 'class', val: 'item-#{cls}', line: 1, column: 1, mustEscape: false}])]),
+      block: block([
+        tag('div', [
+          {
+            name: 'class',
+            val: 'item-#{cls}',
+            line: 1,
+            column: 1,
+            mustEscape: false,
+          },
+        ]),
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -598,14 +718,27 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div class="item-active"></div>'
+      '<!DOCTYPE html><div class="item-active"></div>',
     );
   });
 
   test('#{var} outside mixin throws CALL_STACK_UNDERFLOW', () => {
     assert.throws(
-      () => render(block([tag('div', [{name: 'x', val: '#{oops}', line: 1, column: 1, mustEscape: false}])])),
-      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW'
+      () =>
+        render(
+          block([
+            tag('div', [
+              {
+                name: 'x',
+                val: '#{oops}',
+                line: 1,
+                column: 1,
+                mustEscape: false,
+              },
+            ]),
+          ]),
+        ),
+      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
     );
   });
 
@@ -615,7 +748,11 @@ describe('variables in attributes', () => {
       name: 'test',
       call: false,
       args: [],
-      block: block([tag('div', [{name: 'x', val: '#{missing}', line: 1, column: 1, mustEscape: false}])]),
+      block: block([
+        tag('div', [
+          {name: 'x', val: '#{missing}', line: 1, column: 1, mustEscape: false},
+        ]),
+      ]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -632,14 +769,30 @@ describe('variables in attributes', () => {
     };
     assert.throws(
       () => render(block([declaration, call])),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
     );
   });
 
   test('attribute without #{} is not affected', () => {
     assert.strictEqual(
-      render(block([tag('a', [{name: 'href', val: '/static', line: 1, column: 1, mustEscape: false}], [text('link')])])),
-      '<!DOCTYPE html><a href="/static">link</a>'
+      render(
+        block([
+          tag(
+            'a',
+            [
+              {
+                name: 'href',
+                val: '/static',
+                line: 1,
+                column: 1,
+                mustEscape: false,
+              },
+            ],
+            [text('link')],
+          ),
+        ]),
+      ),
+      '<!DOCTYPE html><a href="/static">link</a>',
     );
   });
 });
@@ -660,7 +813,7 @@ describe('interpolated tags', () => {
     };
     assert.strictEqual(
       render(block([node])),
-      '<!DOCTYPE html><em>stressed</em>'
+      '<!DOCTYPE html><em>stressed</em>',
     );
   });
 
@@ -677,20 +830,14 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html><br>'
-    );
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html><br>');
   });
 });
 
 describe('yield block', () => {
   test('produces no output', () => {
     var node = {type: 'YieldBlock', line: 1, filename: 'test'};
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html>'
-    );
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
   });
 });
 
@@ -704,10 +851,7 @@ describe('named block', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!DOCTYPE html>block content'
-    );
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html>block content');
   });
 });
 
@@ -715,14 +859,14 @@ describe('error handling', () => {
   test('null node throws TypeError', () => {
     assert.throws(
       () => render(block([null])),
-      (err) => err instanceof TypeError && /is null/.test(err.message)
+      (err) => err instanceof TypeError && /is null/.test(err.message),
     );
   });
 
   test('undefined node throws TypeError', () => {
     assert.throws(
       () => render(block([undefined])),
-      (err) => err instanceof TypeError && /is undefined/.test(err.message)
+      (err) => err instanceof TypeError && /is undefined/.test(err.message),
     );
   });
 
@@ -730,7 +874,7 @@ describe('error handling', () => {
     var node = {type: 'Filter', name: 'x', line: 1, filename: 'test'};
     assert.throws(
       () => render(block([node])),
-      (err) => err instanceof TypeError && /pugneum-filterer/.test(err.message)
+      (err) => err instanceof TypeError && /pugneum-filterer/.test(err.message),
     );
   });
 
@@ -738,7 +882,7 @@ describe('error handling', () => {
     var node = {type: 'Extends', line: 1, filename: 'test'};
     assert.throws(
       () => render(block([node])),
-      (err) => err instanceof TypeError && /pugneum-linker/.test(err.message)
+      (err) => err instanceof TypeError && /pugneum-linker/.test(err.message),
     );
   });
 
@@ -748,7 +892,9 @@ describe('error handling', () => {
     var decl = mixinDecl('loop', [], [call]);
     assert.throws(
       () => render(block([decl, mixinCall('loop', [])])),
-      (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN' && /Recursive call to mixin 'loop'/.test(err.message)
+      (err) =>
+        err.code === 'PUGNEUM:RECURSIVE_MIXIN' &&
+        /Recursive call to mixin 'loop'/.test(err.message),
     );
   });
 
@@ -758,7 +904,7 @@ describe('error handling', () => {
     var declB = mixinDecl('b', [], [mixinCall('a', [])]);
     assert.throws(
       () => render(block([declA, declB, mixinCall('a', [])])),
-      (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN'
+      (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN',
     );
   });
 });
@@ -803,57 +949,73 @@ function attr(name, val) {
 
 describe('optional arguments', () => {
   test('omitted trailing args produce no text output', () => {
-    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title'}], [
-      tag('p', [], [variable('title'), text(' '), variable('name')]),
-    ]);
+    var decl = mixinDecl(
+      'greet',
+      [{name: 'name'}, {name: 'title'}],
+      [tag('p', [], [variable('title'), text(' '), variable('name')])],
+    );
     var call = mixinCall('greet', ['Alice']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p> Alice</p>'
+      '<!DOCTYPE html><p> Alice</p>',
     );
   });
 
   test('omitted arg with default uses default value', () => {
-    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title', default: 'friend'}], [
-      tag('p', [], [text('Hello, '), variable('title'), text(' '), variable('name')]),
-    ]);
+    var decl = mixinDecl(
+      'greet',
+      [{name: 'name'}, {name: 'title', default: 'friend'}],
+      [
+        tag(
+          'p',
+          [],
+          [text('Hello, '), variable('title'), text(' '), variable('name')],
+        ),
+      ],
+    );
     var call = mixinCall('greet', ['Alice']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>Hello, friend Alice</p>'
+      '<!DOCTYPE html><p>Hello, friend Alice</p>',
     );
   });
 
   test('explicit arg overrides default', () => {
-    var decl = mixinDecl('greet', [{name: 'name'}, {name: 'title', default: 'friend'}], [
-      tag('p', [], [variable('title'), text(' '), variable('name')]),
-    ]);
+    var decl = mixinDecl(
+      'greet',
+      [{name: 'name'}, {name: 'title', default: 'friend'}],
+      [tag('p', [], [variable('title'), text(' '), variable('name')])],
+    );
     var call = mixinCall('greet', ['Alice', 'Doctor']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>Doctor Alice</p>'
+      '<!DOCTYPE html><p>Doctor Alice</p>',
     );
   });
 
   test('all args can be omitted', () => {
-    var decl = mixinDecl('empty', [{name: 'a'}, {name: 'b'}], [
-      tag('p', [], [variable('a'), variable('b')]),
-    ]);
-    var call = mixinCall('empty', []);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<!DOCTYPE html><p></p>'
+    var decl = mixinDecl(
+      'empty',
+      [{name: 'a'}, {name: 'b'}],
+      [tag('p', [], [variable('a'), variable('b')])],
     );
+    var call = mixinCall('empty', []);
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
   });
 
   test('all defaults used when no args provided', () => {
-    var decl = mixinDecl('defaults', [{name: 'a', default: 'x'}, {name: 'b', default: 'y'}], [
-      tag('p', [], [variable('a'), text('-'), variable('b')]),
-    ]);
+    var decl = mixinDecl(
+      'defaults',
+      [
+        {name: 'a', default: 'x'},
+        {name: 'b', default: 'y'},
+      ],
+      [tag('p', [], [variable('a'), text('-'), variable('b')])],
+    );
     var call = mixinCall('defaults', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>x-y</p>'
+      '<!DOCTYPE html><p>x-y</p>',
     );
   });
 
@@ -862,141 +1024,200 @@ describe('optional arguments', () => {
     var call = mixinCall('m', ['one', 'two', 'three']);
     assert.throws(
       () => render(block([decl, call])),
-      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH'
+      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
     );
   });
 
   test('explicit empty string overrides default', () => {
-    var decl = mixinDecl('m', [{name: 'x', default: 'fallback'}], [
-      tag('p', [], [variable('x')]),
-    ]);
-    var call = mixinCall('m', ['']);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<!DOCTYPE html><p></p>'
+    var decl = mixinDecl(
+      'm',
+      [{name: 'x', default: 'fallback'}],
+      [tag('p', [], [variable('x')])],
     );
+    var call = mixinCall('m', ['']);
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
   });
 
   test('default with empty string default', () => {
-    var decl = mixinDecl('m', [{name: 'x', default: ''}], [
-      tag('p', [], [variable('x')]),
-    ]);
-    var call = mixinCall('m', []);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<!DOCTYPE html><p></p>'
+    var decl = mixinDecl(
+      'm',
+      [{name: 'x', default: ''}],
+      [tag('p', [], [variable('x')])],
     );
+    var call = mixinCall('m', []);
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
   });
 });
 
 describe('optional arguments and attributes', () => {
   test('null variable omits entire attribute', () => {
-    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target'}], [
-      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
-    ]);
+    var decl = mixinDecl(
+      'link',
+      [{name: 'href'}, {name: 'target'}],
+      [
+        tag(
+          'a',
+          [attr('href', '#{href}'), attr('target', '#{target}')],
+          [text('click')],
+        ),
+      ],
+    );
     var call = mixinCall('link', ['/page']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page">click</a>'
+      '<!DOCTYPE html><a href="/page">click</a>',
     );
   });
 
   test('null variable in composite attribute omits entire attribute', () => {
-    var decl = mixinDecl('icon', [{name: 'name'}, {name: 'size'}], [
-      tag('img', [attr('src', '/icons/#{name}.svg'), attr('class', 'icon-#{size}')]),
-    ]);
+    var decl = mixinDecl(
+      'icon',
+      [{name: 'name'}, {name: 'size'}],
+      [
+        tag('img', [
+          attr('src', '/icons/#{name}.svg'),
+          attr('class', 'icon-#{size}'),
+        ]),
+      ],
+    );
     var call = mixinCall('icon', ['arrow']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><img src="/icons/arrow.svg">'
+      '<!DOCTYPE html><img src="/icons/arrow.svg">',
     );
   });
 
   test('default value used in attribute', () => {
-    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target', default: '_blank'}], [
-      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
-    ]);
+    var decl = mixinDecl(
+      'link',
+      [{name: 'href'}, {name: 'target', default: '_blank'}],
+      [
+        tag(
+          'a',
+          [attr('href', '#{href}'), attr('target', '#{target}')],
+          [text('click')],
+        ),
+      ],
+    );
     var call = mixinCall('link', ['/page']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page" target="_blank">click</a>'
+      '<!DOCTYPE html><a href="/page" target="_blank">click</a>',
     );
   });
 
   test('provided arg overrides default in attribute', () => {
-    var decl = mixinDecl('link', [{name: 'href'}, {name: 'target', default: '_blank'}], [
-      tag('a', [attr('href', '#{href}'), attr('target', '#{target}')], [text('click')]),
-    ]);
+    var decl = mixinDecl(
+      'link',
+      [{name: 'href'}, {name: 'target', default: '_blank'}],
+      [
+        tag(
+          'a',
+          [attr('href', '#{href}'), attr('target', '#{target}')],
+          [text('click')],
+        ),
+      ],
+    );
     var call = mixinCall('link', ['/page', '_self']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page" target="_self">click</a>'
+      '<!DOCTYPE html><a href="/page" target="_self">click</a>',
     );
   });
 
   test('null class contribution is skipped, others preserved', () => {
-    var decl = mixinDecl('item', [{name: 'kind'}], [
-      tag('div', [attr('class', 'base'), attr('class', 'kind-#{kind}')], [text('hi')]),
-    ]);
+    var decl = mixinDecl(
+      'item',
+      [{name: 'kind'}],
+      [
+        tag(
+          'div',
+          [attr('class', 'base'), attr('class', 'kind-#{kind}')],
+          [text('hi')],
+        ),
+      ],
+    );
     var call = mixinCall('item', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div class="base">hi</div>'
+      '<!DOCTYPE html><div class="base">hi</div>',
     );
   });
 
   test('all class contributions null omits class attribute', () => {
-    var decl = mixinDecl('item', [{name: 'a'}, {name: 'b'}], [
-      tag('div', [attr('class', '#{a}'), attr('class', '#{b}')], [text('hi')]),
-    ]);
+    var decl = mixinDecl(
+      'item',
+      [{name: 'a'}, {name: 'b'}],
+      [
+        tag(
+          'div',
+          [attr('class', '#{a}'), attr('class', '#{b}')],
+          [text('hi')],
+        ),
+      ],
+    );
     var call = mixinCall('item', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div>hi</div>'
+      '<!DOCTYPE html><div>hi</div>',
     );
   });
 
   test('boolean attributes unaffected by optional args', () => {
-    var decl = mixinDecl('input', [{name: 'type'}], [
-      tag('input', [attr('type', '#{type}'), attr('disabled', true)]),
-    ]);
+    var decl = mixinDecl(
+      'input',
+      [{name: 'type'}],
+      [tag('input', [attr('type', '#{type}'), attr('disabled', true)])],
+    );
     var call = mixinCall('input', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><input disabled>'
+      '<!DOCTYPE html><input disabled>',
     );
   });
 
   test('static attributes unaffected when variable attribute omitted', () => {
-    var decl = mixinDecl('m', [{name: 'x'}], [
-      tag('div', [attr('id', 'fixed'), attr('data-x', '#{x}')], [text('content')]),
-    ]);
+    var decl = mixinDecl(
+      'm',
+      [{name: 'x'}],
+      [
+        tag(
+          'div',
+          [attr('id', 'fixed'), attr('data-x', '#{x}')],
+          [text('content')],
+        ),
+      ],
+    );
     var call = mixinCall('m', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div id="fixed">content</div>'
+      '<!DOCTYPE html><div id="fixed">content</div>',
     );
   });
 
   test('undeclared variable still throws UNDEFINED_VARIABLE', () => {
-    var decl = mixinDecl('m', [{name: 'x'}], [
-      tag('p', [], [variable('typo')]),
-    ]);
+    var decl = mixinDecl(
+      'm',
+      [{name: 'x'}],
+      [tag('p', [], [variable('typo')])],
+    );
     var call = mixinCall('m', ['val']);
     assert.throws(
       () => render(block([decl, call])),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
     );
   });
 
   test('undeclared variable in attribute still throws UNDEFINED_VARIABLE', () => {
-    var decl = mixinDecl('m', [{name: 'x'}], [
-      tag('div', [attr('data-x', '#{typo}')]),
-    ]);
+    var decl = mixinDecl(
+      'm',
+      [{name: 'x'}],
+      [tag('div', [attr('data-x', '#{typo}')])],
+    );
     var call = mixinCall('m', ['val']);
     assert.throws(
       () => render(block([decl, call])),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
     );
   });
 
@@ -1004,18 +1225,18 @@ describe('optional arguments and attributes', () => {
     // Inner mixin has param 'x' not provided (null).
     // Outer mixin has param 'x' provided.
     // Inner's null should NOT fall through to outer's value.
-    var inner = mixinDecl('inner', [{name: 'x'}], [
-      tag('span', [], [variable('x')]),
-    ]);
-    var outer = mixinDecl('outer', [{name: 'x'}], [
-      mixinCall('inner', []),
-    ]);
+    var inner = mixinDecl(
+      'inner',
+      [{name: 'x'}],
+      [tag('span', [], [variable('x')])],
+    );
+    var outer = mixinDecl('outer', [{name: 'x'}], [mixinCall('inner', [])]);
     outer.line = 2;
     var call = mixinCall('outer', ['hello']);
     call.line = 3;
     assert.strictEqual(
       render(block([inner, outer, call])),
-      '<!DOCTYPE html><span></span>'
+      '<!DOCTYPE html><span></span>',
     );
   });
 });

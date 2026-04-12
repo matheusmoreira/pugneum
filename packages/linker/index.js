@@ -39,28 +39,28 @@ function link(ast) {
         error(
           'UNEXPECTED_NODES_IN_EXTENDING_ROOT',
           'Only named blocks and mixins can appear at the top level of an extending template',
-          node
+          node,
         );
       }
     });
     const parent = link(extendsNode.file.ast);
     extend(parent.declaredBlocks, ast);
     const foundBlockNames = [];
-    walk(parent, function(node) {
+    walk(parent, function (node) {
       if (node.type === 'NamedBlock') {
         foundBlockNames.push(node.name);
       }
     });
-    expectedBlocks.forEach(function(expectedBlock) {
+    expectedBlocks.forEach(function (expectedBlock) {
       if (foundBlockNames.indexOf(expectedBlock.name) === -1) {
         error(
           'UNEXPECTED_BLOCK',
           'Unexpected block ' + expectedBlock.name,
-          expectedBlock
+          expectedBlock,
         );
       }
     });
-    Object.keys(ast.declaredBlocks).forEach(function(name) {
+    Object.keys(ast.declaredBlocks).forEach(function (name) {
       parent.declaredBlocks[name] = ast.declaredBlocks[name];
     });
     parent.nodes = mixins.concat(parent.nodes);
@@ -83,7 +83,7 @@ function findDeclaredBlocks(ast) /*: {[name: string]: Array<BlockNode>}*/ {
 
 function flattenParentBlocks(parentBlocks, accumulator) {
   accumulator = accumulator || [];
-  parentBlocks.forEach(function(parentBlock) {
+  parentBlocks.forEach(function (parentBlock) {
     if (parentBlock.parents) {
       flattenParentBlocks(parentBlock.parents, accumulator);
     }
@@ -107,7 +107,7 @@ function extend(parentBlocks, ast) {
           : [];
         if (parentBlockList.length) {
           node.parents = parentBlockList;
-          parentBlockList.forEach(function(parentBlock) {
+          parentBlockList.forEach(function (parentBlock) {
             switch (node.mode) {
               case 'append':
                 parentBlock.nodes = parentBlock.nodes.concat(node.nodes);
@@ -122,7 +122,7 @@ function extend(parentBlocks, ast) {
                 error(
                   'UNKNOWN_BLOCK_MODE',
                   "Unknown block mode '" + node.mode + "'",
-                  node
+                  node,
                 );
             }
           });
@@ -133,7 +133,7 @@ function extend(parentBlocks, ast) {
       if (node.type === 'NamedBlock' && !node.ignore) {
         delete stack[node.name];
       }
-    }
+    },
   );
 }
 
@@ -153,11 +153,11 @@ function applyIncludes(ast) {
         }
         replace(applyYield(childAST, node.block, node));
       }
-    }
+    },
   );
 }
 function removeBlocks(ast) {
-  return walk(ast, function(node, replace) {
+  return walk(ast, function (node, replace) {
     if (node.type === 'NamedBlock') {
       replace({
         type: 'Block',
@@ -170,7 +170,7 @@ function removeBlocks(ast) {
 function applyYield(ast, block, includeNode) {
   if (!block || !block.nodes.length) return ast;
   let replaced = false;
-  ast = walk(ast, null, function(node, replace) {
+  ast = walk(ast, null, function (node, replace) {
     if (node.type === 'YieldBlock') {
       replaced = true;
       node.type = 'Block';
@@ -181,7 +181,7 @@ function applyYield(ast, block, includeNode) {
     error(
       'MISSING_YIELD',
       'Included template has no yield block but the include passes a block into it',
-      includeNode
+      includeNode,
     );
   }
   return ast;
@@ -190,14 +190,14 @@ function applyYield(ast, block, includeNode) {
 function resolveReferences(ast) {
   // First pass: collect all reference definitions
   const definitions = {};
-  walk(ast, function(node) {
+  walk(ast, function (node) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
         if (def.name in definitions) {
           error(
             'DUPLICATE_REFERENCE',
             `Duplicate reference '${def.name}'`,
-            def
+            def,
           );
         }
         definitions[def.name] = def.url;
@@ -206,72 +206,73 @@ function resolveReferences(ast) {
   });
 
   // Second pass: replace ReferenceLink nodes with Tag nodes, remove References nodes
-  return walk(
-    ast,
-    function before(node, replace) {
-      if (node.type === 'References') {
-        // Remove definitions from AST — they produce no output
-        replace([]);
-        return false;
+  return walk(ast, function before(node, replace) {
+    if (node.type === 'References') {
+      // Remove definitions from AST — they produce no output
+      replace([]);
+      return false;
+    }
+    if (node.type === 'ReferenceLink') {
+      const url = definitions[node.name];
+      if (url === undefined) {
+        error(
+          'UNDEFINED_REFERENCE',
+          "Undefined reference '" + node.name + "'",
+          node,
+        );
       }
-      if (node.type === 'ReferenceLink') {
-        const url = definitions[node.name];
-        if (url === undefined) {
-          error(
-            'UNDEFINED_REFERENCE',
-            "Undefined reference '" + node.name + "'",
-            node
-          );
-        }
 
-        // If the block is empty, generate default text from the reference name
-        let block = node.block;
-        if (!block || block.nodes.length === 0) {
-          block = {
-            type: 'Block',
-            nodes: [{
+      // If the block is empty, generate default text from the reference name
+      let block = node.block;
+      if (!block || block.nodes.length === 0) {
+        block = {
+          type: 'Block',
+          nodes: [
+            {
               type: 'Text',
               val: node.name,
               line: node.line,
               column: node.column,
               filename: node.filename,
-            }],
-            line: node.line,
-            filename: node.filename,
-          };
-        }
+            },
+          ],
+          line: node.line,
+          filename: node.filename,
+        };
+      }
 
-        const attrs = [{
+      const attrs = [
+        {
           name: 'href',
           val: url,
           line: node.line,
           column: node.column,
           filename: node.filename,
           mustEscape: false,
-        }];
-        if (node.attrs) {
-          attrs.push.apply(attrs, node.attrs);
-        }
-
-        replace({
-          type: 'Tag',
-          name: 'a',
-          attrs: attrs,
-          attributeBlocks: [],
-          block: block,
-          isInline: true,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        });
+        },
+      ];
+      if (node.attrs) {
+        attrs.push.apply(attrs, node.attrs);
       }
+
+      replace({
+        type: 'Tag',
+        name: 'a',
+        attrs: attrs,
+        attributeBlocks: [],
+        block: block,
+        isInline: true,
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      });
     }
-  );
+  });
 }
 
 function checkExtendPosition(ast, hasExtends) {
   let legitExtendsReached = false;
-  walk(ast, function(node) {
+  walk(ast, function (node) {
     if (node.type === 'Extends') {
       if (hasExtends && !legitExtendsReached) {
         legitExtendsReached = true;
@@ -279,7 +280,7 @@ function checkExtendPosition(ast, hasExtends) {
         error(
           'EXTENDS_NOT_FIRST',
           'Declaration of template inheritance ("extends") should be the first thing in the file. There can only be one extends statement per file.',
-          node
+          node,
         );
       }
     }

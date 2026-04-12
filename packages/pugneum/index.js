@@ -23,7 +23,7 @@ function renderPugneum(string, options) {
   let rendered = render(filtered, options);
 
   return rendered;
-};
+}
 
 function renderPugneumFile(filename, options) {
   filename = resolve(filename);
@@ -31,7 +31,7 @@ function renderPugneumFile(filename, options) {
   options ||= {};
   options.filename = filename;
   return renderPugneum(source, options);
-};
+}
 
 exports.render = renderPugneum;
 exports.renderFile = renderPugneumFile;

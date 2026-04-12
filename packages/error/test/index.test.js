@@ -2,15 +2,16 @@ var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var error = require('../');
 
-describe('with a source', function() {
-  test('and a filename', function() {
+describe('with a source', function () {
+  test('and a filename', function () {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       filename: 'myfile',
       source: 'foo\nbar\nbaz\nbash\nbing',
     });
-    assert.strictEqual(err.message,
-      'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
+    assert.strictEqual(
+      err.message,
+      'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
     assert.strictEqual(err.msg, 'My message');
@@ -18,13 +19,14 @@ describe('with a source', function() {
     assert.strictEqual(err.filename, 'myfile');
     assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
   });
-  test('and no filename', function() {
+  test('and no filename', function () {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       source: 'foo\nbar\nbaz\nbash\nbing',
     });
-    assert.strictEqual(err.message,
-      '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
+    assert.strictEqual(
+      err.message,
+      '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
     assert.strictEqual(err.msg, 'My message');
@@ -34,8 +36,8 @@ describe('with a source', function() {
   });
 });
 
-describe('without source', function() {
-  test('and with a filename', function() {
+describe('without source', function () {
+  test('and with a filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile'});
     assert.strictEqual(err.message, 'myfile:3\n\nMy message');
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
@@ -44,7 +46,7 @@ describe('without source', function() {
     assert.strictEqual(err.filename, 'myfile');
     assert.strictEqual(err.source, undefined);
   });
-  test('and with no filename', function() {
+  test('and with no filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3});
     assert.strictEqual(err.message, '3\n\nMy message');
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
@@ -55,16 +57,17 @@ describe('without source', function() {
   });
 });
 
-describe('with column', function() {
-  test('and with a filename', function() {
+describe('with column', function () {
+  test('and with a filename', function () {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       column: 2,
       filename: 'myfile',
       source: 'foo\nbar\nbaz\nbash\nbing',
     });
-    assert.strictEqual(err.message,
-      'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message'
+    assert.strictEqual(
+      err.message,
+      'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message',
     );
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
     assert.strictEqual(err.msg, 'My message');
@@ -72,7 +75,7 @@ describe('with column', function() {
     assert.strictEqual(err.filename, 'myfile');
     assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
   });
-  test('and with no filename', function() {
+  test('and with no filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3, column: 1});
     assert.strictEqual(err.message, '3:1\n\nMy message');
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
@@ -83,15 +86,16 @@ describe('with column', function() {
   });
 });
 
-describe('invalid information', function() {
-  test('negative column', function() {
+describe('invalid information', function () {
+  test('negative column', function () {
     var err = error('MY_CODE', 'My message', {
       line: 3,
       column: -1,
       source: 'foo\nbar\nbaz\nbash\nbing',
     });
-    assert.strictEqual(err.message,
-      '3:-1\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message'
+    assert.strictEqual(
+      err.message,
+      '3:-1\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
     assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
     assert.strictEqual(err.msg, 'My message');
@@ -99,7 +103,7 @@ describe('invalid information', function() {
     assert.strictEqual(err.filename, undefined);
     assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
   });
-  test('out of range line', function() {
+  test('out of range line', function () {
     check(0);
     check(6);
 

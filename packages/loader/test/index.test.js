@@ -39,21 +39,21 @@ describe('option validation', () => {
   test('throws if options is not an object', () => {
     assert.throws(
       () => load({type: 'Block', nodes: []}, 'bad'),
-      /options must be an object/
+      /options must be an object/,
     );
   });
 
   test('throws if lex is not a function', () => {
     assert.throws(
       () => load({type: 'Block', nodes: []}, {lex: 'bad', parse}),
-      /lex.*function/
+      /lex.*function/,
     );
   });
 
   test('throws if parse is not a function', () => {
     assert.throws(
       () => load({type: 'Block', nodes: []}, {lex, parse: 42}),
-      /parse.*function/
+      /parse.*function/,
     );
   });
 });
@@ -61,27 +61,20 @@ describe('option validation', () => {
 describe('path resolution', () => {
   test('throws for relative path without filename', () => {
     var ast = parse(lex('include foo.pg'), {});
-    assert.throws(
-      () => load(ast, {lex, parse}),
-      /filename.*required/
-    );
+    assert.throws(() => load(ast, {lex, parse}), /filename.*required/);
   });
 
   test('throws for absolute path without basedir', () => {
-    var ast = parse(lex('include /foo.pg', {filename: 'test.pg'}), {filename: 'test.pg'});
-    assert.throws(
-      () => load(ast, {lex, parse}),
-      /basedir.*required/
-    );
+    var ast = parse(lex('include /foo.pg', {filename: 'test.pg'}), {
+      filename: 'test.pg',
+    });
+    assert.throws(() => load(ast, {lex, parse}), /basedir.*required/);
   });
 
   test('throws for missing file', () => {
     var filename = __dirname + '/test.pg';
     var ast = parse(lex('include nonexistent.pg', {filename}), {filename});
-    assert.throws(
-      () => load(ast, {lex, parse}),
-      /ENOENT/
-    );
+    assert.throws(() => load(ast, {lex, parse}), /ENOENT/);
   });
 });
 
@@ -96,11 +89,15 @@ describe('library includes', () => {
 
     // The file should have been loaded — walk to find the included AST
     var included = false;
-    walk(ast, function (node) {
-      if (node.type === 'Include' && node.file && node.file.ast) {
-        included = true;
-      }
-    }, {includeDependencies: true});
+    walk(
+      ast,
+      function (node) {
+        if (node.type === 'Include' && node.file && node.file.ast) {
+          included = true;
+        }
+      },
+      {includeDependencies: true},
+    );
 
     assert.ok(included, 'library include was resolved and loaded');
   });
@@ -126,11 +123,15 @@ describe('library includes', () => {
     ast = load(ast, {lex, parse});
 
     var extended = false;
-    walk(ast, function (node) {
-      if (node.type === 'Extends' && node.file && node.file.ast) {
-        extended = true;
-      }
-    }, {includeDependencies: true});
+    walk(
+      ast,
+      function (node) {
+        if (node.type === 'Extends' && node.file && node.file.ast) {
+          extended = true;
+        }
+      },
+      {includeDependencies: true},
+    );
 
     assert.ok(extended, 'library extends was resolved and loaded');
   });
@@ -144,8 +145,9 @@ describe('circular dependency detection', () => {
     var ast = parse(tokens, {filename});
     assert.throws(
       () => load(ast, {lex, parse}),
-      (err) => err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY'
-        && /cycle-a\.pg/.test(err.message)
+      (err) =>
+        err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY' &&
+        /cycle-a\.pg/.test(err.message),
     );
   });
 
@@ -156,8 +158,9 @@ describe('circular dependency detection', () => {
     var ast = parse(tokens, {filename});
     assert.throws(
       () => load(ast, {lex, parse}),
-      (err) => err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY'
-        && /extends-cycle-a\.pg/.test(err.message)
+      (err) =>
+        err.code === 'PUGNEUM:CIRCULAR_DEPENDENCY' &&
+        /extends-cycle-a\.pg/.test(err.message),
     );
   });
 
@@ -178,7 +181,7 @@ describe('custom resolve and read', () => {
     var filename = __dirname + '/test.pg';
     var ast = parse(lex('include foo.pg', {filename}), {filename});
     var customResolveCalled = false;
-    var customResolve = function(file, source, opts) {
+    var customResolve = function (file, source, opts) {
       customResolveCalled = true;
       return path.join(path.dirname(source), file);
     };
@@ -195,7 +198,7 @@ describe('custom resolve and read', () => {
     var filename = __dirname + '/test.pg';
     var ast = parse(lex('include other.pg', {filename}), {filename});
     var readCalled = false;
-    var customRead = function(file) {
+    var customRead = function (file) {
       readCalled = true;
       return Buffer.from('p hello');
     };

@@ -18,7 +18,10 @@ function linkFile(filename) {
   let linked = link(loaded);
   return JSON.parse(
     JSON.stringify(linked, function (key, value) {
-      if ((key === 'filename' || key === 'fullPath') && typeof value === 'string') {
+      if (
+        (key === 'filename' || key === 'fullPath') &&
+        typeof value === 'string'
+      ) {
         return path.basename(value);
       }
       return value;
@@ -27,15 +30,15 @@ function linkFile(filename) {
 }
 
 function testDir(dir) {
-  fs.readdirSync(dir).forEach(function(name) {
+  fs.readdirSync(dir).forEach(function (name) {
     if (!/\.pg$/.test(name)) return;
-    test(name, function(t) {
+    test(name, function (t) {
       t.assert.snapshot(linkFile(dir + '/' + name));
     });
   });
 }
 
-describe('cases from pugneum sources', function() {
+describe('cases from pugneum sources', function () {
   testDir(__dirname + '/cases');
 });
 
@@ -59,17 +62,14 @@ describe('duplicate reference definitions', () => {
         assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_REFERENCE');
         assert.match(err.message, /Duplicate reference 'ex'/);
         return true;
-      }
+      },
     );
   });
 });
 
 describe('error handling', () => {
   test('top level must be a Block', () => {
-    assert.throws(
-      () => link({type: 'Tag', name: 'div'}),
-      /top level.*block/i
-    );
+    assert.throws(() => link({type: 'Tag', name: 'div'}), /top level.*block/i);
   });
 
   test('UNDEFINED_REFERENCE for unknown @[ref]', () => {
@@ -82,20 +82,26 @@ describe('error handling', () => {
     var loaded = load(ast, options);
     assert.throws(
       () => link(loaded),
-      (err) => err.code === 'PUGNEUM:UNDEFINED_REFERENCE'
+      (err) => err.code === 'PUGNEUM:UNDEFINED_REFERENCE',
     );
   });
 
   test('MISSING_YIELD when include passes block but template has no yield', () => {
     var dir = __dirname + '/cases';
     var includer = 'include auxiliary/pet.pg\n  p Extra content';
-    var options = {filename: dir + '/test.pg', source: includer, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source: includer,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(includer, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
     assert.throws(
       () => link(loaded),
-      (err) => err.code === 'PUGNEUM:MISSING_YIELD'
+      (err) => err.code === 'PUGNEUM:MISSING_YIELD',
     );
   });
 });

@@ -11,7 +11,7 @@ function load(ast, options, visiting) {
   visiting = visiting || new Set();
   // clone the ast
   ast = structuredClone(ast);
-  return walk(ast, function(node) {
+  return walk(ast, function (node) {
     if (node.str === undefined) {
       if (
         node.type === 'Include' ||
@@ -37,12 +37,19 @@ function load(ast, options, visiting) {
         if (node.type === 'Extends' || node.type === 'Include') {
           const canonical = path.resolve(filePath);
           if (visiting.has(canonical)) {
-            throw makeError('CIRCULAR_DEPENDENCY',
-              'Circular dependency detected: ' + filePath + ' is already being loaded',
-              {line: node.line, column: node.column, filename: node.filename});
+            throw makeError(
+              'CIRCULAR_DEPENDENCY',
+              'Circular dependency detected: ' +
+                filePath +
+                ' is already being loaded',
+              {line: node.line, column: node.column, filename: node.filename},
+            );
           }
           visiting.add(canonical);
-          const opts = Object.assign({}, options, {filename: filePath, source: str});
+          const opts = Object.assign({}, options, {
+            filename: filePath,
+            source: str,
+          });
           const tokens = options.lex(str, opts);
           const fileAst = options.parse(tokens, opts);
           file.ast = load(fileAst, opts, visiting);
@@ -129,6 +136,6 @@ function getOptions(options) {
       resolve: resolve,
       read: read,
     },
-    options
+    options,
   );
 }

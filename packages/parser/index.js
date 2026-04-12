@@ -41,20 +41,39 @@ function parse(tokens, options) {
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
 const inlineTags = [
-  'a', 'abbr', 'acronym', 'address', 'audio',
-  'b', 'bdi', 'bdo', 'br',
-  'cite', 'code',
-  'data', 'dfn',
+  'a',
+  'abbr',
+  'acronym',
+  'address',
+  'audio',
+  'b',
+  'bdi',
+  'bdo',
+  'br',
+  'cite',
+  'code',
+  'data',
+  'dfn',
   'em',
-  'i', 'img',
+  'i',
+  'img',
   'kbd',
   'mark',
   'q',
-  'rp', 'rt', 'ruby',
-  's', 'samp', 'small', 'span', 'strong', 'sub', 'sup',
+  'rp',
+  'rt',
+  'ruby',
+  's',
+  'samp',
+  'small',
+  'span',
+  'strong',
+  'sub',
+  'sup',
   'time',
   'u',
-  'var', 'video',
+  'var',
+  'video',
   'wbr',
 ];
 
@@ -63,12 +82,12 @@ class Parser {
     options = options || {};
     if (!Array.isArray(tokens)) {
       throw new Error(
-        'Expected tokens to be an Array but got "' + typeof tokens + '"'
+        'Expected tokens to be an Array but got "' + typeof tokens + '"',
       );
     }
     if (typeof options !== 'object') {
       throw new Error(
-        'Expected "options" to be an object but got "' + typeof options + '"'
+        'Expected "options" to be an object but got "' + typeof options + '"',
       );
     }
     this.tokens = new TokenStream(tokens);
@@ -125,7 +144,7 @@ class Parser {
       this.error(
         'INVALID_TOKEN',
         'expected "' + type + '", but got "' + this.peek().type + '"',
-        this.peek()
+        this.peek(),
       );
     }
   }
@@ -218,7 +237,7 @@ class Parser {
         this.error(
           'INVALID_TOKEN',
           'unexpected token "' + this.peek().type + '"',
-          this.peek()
+          this.peek(),
         );
     }
   }
@@ -304,7 +323,7 @@ class Parser {
           break;
         case 'indent':
           const block = this.block();
-          block.nodes.forEach(function(node) {
+          block.nodes.forEach(function (node) {
             if (node.isHtml) {
               if (!currentNode) {
                 currentNode = node;
@@ -481,7 +500,7 @@ class Parser {
       this.error(
         'BLOCK_OUTSIDE_MIXIN',
         'Anonymous blocks are not allowed unless they are part of a mixin.',
-        tok
+        tok,
       );
     }
     return {
@@ -498,7 +517,7 @@ class Parser {
       this.error(
         'VARIABLE_OUTSIDE_MIXIN',
         'Variables cannot be used outside mixins',
-        tok
+        tok,
       );
     }
     return {
@@ -575,7 +594,7 @@ class Parser {
           this.error(
             'INVALID_TOKEN',
             'Unexpected token in reference link: ' + next.type,
-            next
+            next,
           );
       }
     }
@@ -636,7 +655,7 @@ class Parser {
         this.error(
           'RAW_INCLUDE_BLOCK',
           'Raw inclusion cannot contain a block',
-          this.peek()
+          this.peek(),
         );
       }
     }
@@ -702,7 +721,7 @@ class Parser {
       this.error(
         'MIXIN_WITHOUT_BODY',
         'Mixin ' + name + ' declared without body',
-        tok
+        tok,
       );
     }
   }
@@ -747,7 +766,7 @@ class Parser {
           this.error(
             'INVALID_TOKEN',
             'Unexpected token type: ' + currentTok.type,
-            currentTok
+            currentTok,
           );
       }
     }
@@ -840,7 +859,7 @@ class Parser {
               this.error(
                 'DUPLICATE_ID',
                 'Duplicate attribute "id" is not allowed.',
-                tok
+                tok,
               );
             }
             attributeNames.push('id');
@@ -859,7 +878,7 @@ class Parser {
             this.error(
               'MULTIPLE_ATTRIBUTES',
               'Tags should not have multiple attribute blocks',
-              this.peek()
+              this.peek(),
             );
           }
           seenAttrs = true;
@@ -911,7 +930,7 @@ class Parser {
           'Unexpected token `' +
             this.peek().type +
             '` expected `text`, `:`, `newline` or `eos`',
-          this.peek()
+          this.peek(),
         );
     }
 
@@ -942,7 +961,7 @@ class Parser {
           this.error(
             'DUPLICATE_ATTRIBUTE',
             'Duplicate attribute "' + tok.name + '" is not allowed.',
-            tok
+            tok,
           );
         }
         attributeNames.push(tok.name);

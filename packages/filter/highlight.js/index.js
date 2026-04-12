@@ -3,7 +3,7 @@
 const hljs = require('highlight.js');
 
 exports.filter = function pugneum_filter_highlightjs(text, attributes) {
-  const { language, languageSubset, ignoreIllegals } = attributes;
+  const {language, languageSubset, ignoreIllegals} = attributes;
 
   if (language) {
     const options = {language};
@@ -13,7 +13,6 @@ exports.filter = function pugneum_filter_highlightjs(text, attributes) {
     }
 
     return hljs.highlight(text, options).value;
-
   } else {
     const args = [];
 
@@ -23,4 +22,4 @@ exports.filter = function pugneum_filter_highlightjs(text, attributes) {
 
     return hljs.highlightAuto(text, ...args).value;
   }
-}
+};

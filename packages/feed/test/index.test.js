@@ -12,17 +12,20 @@ var outputDir = path.join(__dirname, 'output');
 
 describe('extract.indexPage robustness', () => {
   function writeTemp(content) {
-    var p = path.join(os.tmpdir(), 'pugneum-extract-test-' + crypto.randomUUID() + '.html');
+    var p = path.join(
+      os.tmpdir(),
+      'pugneum-extract-test-' + crypto.randomUUID() + '.html',
+    );
     fs.writeFileSync(p, content);
     return p;
   }
 
   test('entry without data-published-at attribute is excluded', () => {
     var p = writeTemp(
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>'
-      + '<meta name="description" content="d"><meta name="author" content="a"></head><body>'
-      + '<li><a href="article.html">No date</a></li>'
-      + '</body></html>',
+      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
+        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
+        '<li><a href="article.html">No date</a></li>' +
+        '</body></html>',
     );
     try {
       var result = extract.indexPage(p);
@@ -37,11 +40,11 @@ describe('extract.indexPage robustness', () => {
   test('entries are sorted in descending date order', () => {
     // Also exercises the sort guard: (b.published || '').localeCompare(a.published || '')
     var p = writeTemp(
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>'
-      + '<meta name="description" content="d"><meta name="author" content="a"></head><body>'
-      + '<li data-published-at="2026-01-01"><a href="earlier.html">Earlier</a></li>'
-      + '<li data-published-at="2026-06-15"><a href="later.html">Later</a></li>'
-      + '</body></html>',
+      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
+        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
+        '<li data-published-at="2026-01-01"><a href="earlier.html">Earlier</a></li>' +
+        '<li data-published-at="2026-06-15"><a href="later.html">Later</a></li>' +
+        '</body></html>',
     );
     try {
       var result = extract.indexPage(p);
@@ -56,11 +59,11 @@ describe('extract.indexPage robustness', () => {
 
   test('anchor without href is excluded from entries', () => {
     var p = writeTemp(
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>'
-      + '<meta name="description" content="d"><meta name="author" content="a"></head><body>'
-      + '<li data-published-at="2026-01-01"><a>No href anchor</a></li>'
-      + '<li data-published-at="2026-01-02"><a href="valid.html">Valid</a></li>'
-      + '</body></html>',
+      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
+        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
+        '<li data-published-at="2026-01-01"><a>No href anchor</a></li>' +
+        '<li data-published-at="2026-01-02"><a href="valid.html">Valid</a></li>' +
+        '</body></html>',
     );
     try {
       var result = extract.indexPage(p);
@@ -146,14 +149,14 @@ describe('error handling', () => {
     fs.mkdirSync(missingDir, {recursive: true});
     fs.writeFileSync(
       path.join(missingDir, 'index.html'),
-      '<!DOCTYPE html><html lang="en"><head>'
-      + '<base href="https://example.com/">'
-      + '<title>Test</title>'
-      + '<meta name="description" content="test">'
-      + '<meta name="author" content="Author">'
-      + '</head><body>'
-      + '<div data-published-at="2026-01-01"><a href="nonexistent.html">Missing</a></div>'
-      + '</body></html>',
+      '<!DOCTYPE html><html lang="en"><head>' +
+        '<base href="https://example.com/">' +
+        '<title>Test</title>' +
+        '<meta name="description" content="test">' +
+        '<meta name="author" content="Author">' +
+        '</head><body>' +
+        '<div data-published-at="2026-01-01"><a href="nonexistent.html">Missing</a></div>' +
+        '</body></html>',
     );
 
     assert.throws(

@@ -12,15 +12,17 @@ var filename = path.basename(__filename);
 
 var customFilters = {
   custom: {
-    filter: function(str, options) {
+    filter: function (str, options) {
       return 'BEGIN' + str + 'END';
-    }
+    },
   },
   'custom-with-options': {
-    filter: function(str, options) {
-      return 'option=' + options.option + ' number=' + options.number + ' ' + str;
-    }
-  }
+    filter: function (str, options) {
+      return (
+        'option=' + options.option + ' number=' + options.number + ' ' + str
+      );
+    },
+  },
 };
 
 test('filters can be used', (t) => {
@@ -51,6 +53,9 @@ p
 
   // find the filtered text node
   const textNode = output.nodes[0].block.nodes[0];
-  assert.strictEqual(textNode.val.startsWith('option=value number=2 '), true,
-    'filter options should be passed as string values without automatic parsing');
+  assert.strictEqual(
+    textNode.val.startsWith('option=value number=2 '),
+    true,
+    'filter options should be passed as string values without automatic parsing',
+  );
 });

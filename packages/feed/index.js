@@ -55,7 +55,10 @@ module.exports = function generateFeeds(options) {
     if (!fs.existsSync(articlePath)) {
       throw makeError(
         'FEED_ARTICLE_NOT_FOUND',
-        'Article not found: ' + entry.href + '\n    resolved to: ' + articlePath,
+        'Article not found: ' +
+          entry.href +
+          '\n    resolved to: ' +
+          articlePath,
         {line: 0},
       );
     }

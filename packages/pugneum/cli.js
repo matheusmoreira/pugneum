@@ -42,7 +42,13 @@ const EXIT_CODES = {
 
 function readAndValidateInput(filename) {
     const input = fs.readFileSync(filename, 'utf8');
-    const json = JSON.parse(input);
+    let json;
+    try {
+        json = JSON.parse(input);
+    } catch (e) {
+        console.log(`Invalid JSON in ${filename}: ${e.message}`);
+        process.exit(EXIT_CODES.INVALID_INPUT);
+    }
     const {inputDirectory, outputDirectory, baseDirectory} = json;
 
     if (!inputDirectory || !outputDirectory) {

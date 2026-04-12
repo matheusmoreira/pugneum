@@ -193,6 +193,13 @@ function resolveReferences(ast) {
   walk(ast, function(node) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
+        if (def.name in definitions) {
+          const location = (def.filename ? def.filename + ':' : '') + def.line;
+          console.warn(
+            'pugneum: duplicate reference \'' + def.name + '\' at ' + location
+            + ' (overrides previous definition)'
+          );
+        }
         definitions[def.name] = def.url;
       }
     }

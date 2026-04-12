@@ -3992,35 +3992,6 @@ exports[`include-extends-of-common-template.pg 1`] = `
 }
 `;
 
-exports[`include-extends-relative.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Include",
-      "file": {
-        "type": "FileReference",
-        "filename": "include-extends-relative.pg",
-        "path": "../cases/auxiliary/extends-relative.pg",
-        "line": 1,
-        "column": 9
-      },
-      "line": 1,
-      "column": 1,
-      "filename": "include-extends-relative.pg",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 1,
-        "filename": "include-extends-relative.pg"
-      }
-    }
-  ],
-  "line": 0,
-  "filename": "include-extends-relative.pg"
-}
-`;
-
 exports[`include-only-text-body.pg 1`] = `
 {
   "type": "Block",
@@ -8885,55 +8856,6 @@ exports[`mixin-variables.pg 1`] = `
 }
 `;
 
-exports[`mixin-via-include.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Comment",
-      "val": " regression test for https://github.com/pugjs/pug/issues/1435",
-      "buffer": false,
-      "line": 1,
-      "column": 1,
-      "filename": "mixin-via-include.pg"
-    },
-    {
-      "type": "Include",
-      "file": {
-        "type": "FileReference",
-        "filename": "mixin-via-include.pg",
-        "path": "../fixtures/mixin-include.pg",
-        "line": 3,
-        "column": 9
-      },
-      "line": 3,
-      "column": 1,
-      "filename": "mixin-via-include.pg",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 3,
-        "filename": "mixin-via-include.pg"
-      }
-    },
-    {
-      "type": "Mixin",
-      "name": "bang",
-      "args": [],
-      "block": null,
-      "call": true,
-      "attrs": [],
-      "attributeBlocks": [],
-      "line": 5,
-      "column": 6,
-      "filename": "mixin-via-include.pg"
-    }
-  ],
-  "line": 0,
-  "filename": "mixin-via-include.pg"
-}
-`;
-
 exports[`mixin.block-tag-behaviour.pg 1`] = `
 {
   "type": "Block",
@@ -11252,58 +11174,6 @@ exports[`reference-links.pg 1`] = `
   ],
   "line": 0,
   "filename": "reference-links.pg"
-}
-`;
-
-exports[`regression.1794.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Extends",
-      "file": {
-        "type": "FileReference",
-        "path": "./auxiliary/1794-extends.pg",
-        "line": 1,
-        "column": 9,
-        "filename": "regression.1794.pg"
-      },
-      "line": 1,
-      "column": 1,
-      "filename": "regression.1794.pg"
-    },
-    {
-      "type": "NamedBlock",
-      "nodes": [
-        {
-          "type": "Include",
-          "file": {
-            "type": "FileReference",
-            "filename": "regression.1794.pg",
-            "path": "./auxiliary/1794-include.pg",
-            "line": 4,
-            "column": 11
-          },
-          "line": 4,
-          "column": 3,
-          "filename": "regression.1794.pg",
-          "block": {
-            "type": "Block",
-            "nodes": [],
-            "line": 4,
-            "filename": "regression.1794.pg"
-          }
-        }
-      ],
-      "line": 3,
-      "filename": "regression.1794.pg",
-      "name": "content",
-      "mode": "replace",
-      "column": 1
-    }
-  ],
-  "line": 0,
-  "filename": "regression.1794.pg"
 }
 `;
 

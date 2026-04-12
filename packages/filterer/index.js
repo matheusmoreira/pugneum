@@ -37,8 +37,8 @@ function applyFilters(ast, filters, options) {
             filterAttrs.filename = filename;
             node.val = filterText(filter.name, node.val, filterAttrs, filters, node);
           });
-        node.filters = undefined;
-        node.file = undefined;
+        delete node.filters;
+        delete node.file;
       }
     },
     {includeDependencies: true}
@@ -69,7 +69,7 @@ function filterFile(name, file, attrs, filters, node) {
 
 function getBodyAsText(node) {
   if (!node.block) return '';
-  return node.block.nodes.map((n) => n.val).join('');
+  return node.block.nodes.map((n) => n.val || '').join('');
 }
 
 function getAttributes(node, options) {

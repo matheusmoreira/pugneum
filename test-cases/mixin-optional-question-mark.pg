@@ -1,0 +1,17 @@
+mixin link(href text target?)
+  a(href='#{href}' target='#{target?}') #{text}
+
++link(/home Home)
++link(/away Away _blank)
+
+mixin greeting(name title?)
+  p Hello, #{title?} #{name}!
+
++greeting(Alice)
++greeting(Alice Doctor)
+
+mixin meta(name content lang?=en)
+  meta(name='#{name}' content='#{content}' lang='#{lang?}')
+
++meta(author Matheus)
++meta(author Matheus pt-BR)

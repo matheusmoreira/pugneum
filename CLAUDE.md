@@ -66,6 +66,6 @@ Beyond standard Pug syntax, pugneum adds:
 - `@(url text)` — inline link shorthand → `<a href="url">text</a>`
 - `!(src alt)` — inline image shorthand → `<img src="src" alt="alt">`
 - `@[ref text]` — reference links (URLs defined in `references` block)
-- `#{var}` — variable interpolation in text and attributes (mixin arguments only)
+- `#{var}` — variable interpolation in text and attributes (mixin arguments only); names match `[a-zA-Z_?-]`
 - `#[+mixin(args)]` — inline mixin calls within text
-- `mixin name(arg1 arg2?)` — optional arguments with `?` suffix
+- `mixin name(arg1 arg2?)` — `?` is part of the name, referenced as `#{arg2?}`; trailing args are implicitly optional

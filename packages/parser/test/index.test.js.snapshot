@@ -8345,6 +8345,324 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
 }
 `;
 
+exports[`mixin-optional-question-mark.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "link",
+      "args": [
+        {
+          "name": "href"
+        },
+        {
+          "name": "text"
+        },
+        {
+          "name": "target?"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Variable",
+                  "name": "text",
+                  "line": 2,
+                  "column": 43,
+                  "filename": "mixin-optional-question-mark.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "",
+                  "line": 2,
+                  "column": 48,
+                  "filename": "mixin-optional-question-mark.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "mixin-optional-question-mark.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "#{href}",
+                "line": 2,
+                "column": 5,
+                "filename": "mixin-optional-question-mark.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "target",
+                "val": "#{target?}",
+                "line": 2,
+                "column": 20,
+                "filename": "mixin-optional-question-mark.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 3,
+            "filename": "mixin-optional-question-mark.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "mixin-optional-question-mark.pg"
+      },
+      "call": false,
+      "line": 1,
+      "column": 1,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "link",
+      "args": [
+        "/home",
+        "Home"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 4,
+      "column": 6,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "link",
+      "args": [
+        "/away",
+        "Away",
+        "_blank"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 5,
+      "column": 6,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "greeting",
+      "args": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "title?"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "Hello, ",
+                  "line": 8,
+                  "column": 5,
+                  "filename": "mixin-optional-question-mark.pg"
+                },
+                {
+                  "type": "Variable",
+                  "name": "title?",
+                  "line": 8,
+                  "column": 14,
+                  "filename": "mixin-optional-question-mark.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": " ",
+                  "line": 8,
+                  "column": 21,
+                  "filename": "mixin-optional-question-mark.pg"
+                },
+                {
+                  "type": "Variable",
+                  "name": "name",
+                  "line": 8,
+                  "column": 24,
+                  "filename": "mixin-optional-question-mark.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": "!",
+                  "line": 8,
+                  "column": 29,
+                  "filename": "mixin-optional-question-mark.pg"
+                }
+              ],
+              "line": 8,
+              "filename": "mixin-optional-question-mark.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 8,
+            "column": 3,
+            "filename": "mixin-optional-question-mark.pg"
+          }
+        ],
+        "line": 8,
+        "filename": "mixin-optional-question-mark.pg"
+      },
+      "call": false,
+      "line": 7,
+      "column": 1,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "greeting",
+      "args": [
+        "Alice"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 10,
+      "column": 10,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "greeting",
+      "args": [
+        "Alice",
+        "Doctor"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 11,
+      "column": 10,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "meta",
+      "args": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "content"
+        },
+        {
+          "name": "lang?",
+          "default": "en"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "meta",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 14,
+              "filename": "mixin-optional-question-mark.pg"
+            },
+            "attrs": [
+              {
+                "name": "name",
+                "val": "#{name}",
+                "line": 14,
+                "column": 8,
+                "filename": "mixin-optional-question-mark.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "content",
+                "val": "#{content}",
+                "line": 14,
+                "column": 23,
+                "filename": "mixin-optional-question-mark.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "lang",
+                "val": "#{lang?}",
+                "line": 14,
+                "column": 44,
+                "filename": "mixin-optional-question-mark.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 14,
+            "column": 3,
+            "filename": "mixin-optional-question-mark.pg"
+          }
+        ],
+        "line": 14,
+        "filename": "mixin-optional-question-mark.pg"
+      },
+      "call": false,
+      "line": 13,
+      "column": 1,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "meta",
+      "args": [
+        "author",
+        "Matheus"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 16,
+      "column": 6,
+      "filename": "mixin-optional-question-mark.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "meta",
+      "args": [
+        "author",
+        "Matheus",
+        "pt-BR"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 17,
+      "column": 6,
+      "filename": "mixin-optional-question-mark.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "mixin-optional-question-mark.pg"
+}
+`;
+
 exports[`mixin-variables.pg 1`] = `
 {
   "type": "Block",

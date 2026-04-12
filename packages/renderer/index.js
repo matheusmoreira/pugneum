@@ -230,7 +230,7 @@ class Compiler {
   resolveAttrValue(str, attr) {
     if (!str.includes('#{')) return str;
     let hasNull = false;
-    const resolved = str.replace(/\\#\{([-\w]+)\}|#\{([-\w]+)\}/g, (match, escapedName, name) => {
+    const resolved = str.replace(/\\#\{([-a-zA-Z_?]+)\}|#\{([-a-zA-Z_?]+)\}/g, (match, escapedName, name) => {
       if (escapedName) return '#{' + escapedName + '}';
       if (this.callStack.length === 0) {
         this.error(

@@ -662,7 +662,7 @@ class Lexer {
       i = value.indexOf('!(');
       if (i !== -1) candidates.push({ pos: i, kind: 'image' });
 
-      const m = /(\\)?#{([-\w]+)}/.exec(value);
+      const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
         if (m[1]) {
           candidates.push({ pos: m.index, kind: 'escaped', literal: '#{' });
@@ -1115,7 +1115,7 @@ class Lexer {
 
   variable() {
     let captures;
-    if (captures = /^#{([-\w]+)}/.exec(this.input)) {
+    if (captures = /^#{([-a-zA-Z_?]+)}/.exec(this.input)) {
       const tok = this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
@@ -1213,7 +1213,9 @@ class Lexer {
    *
    * Supports:
    *   name              → { name: 'name' }
+   *   name?             → { name: 'name?' }  (? is part of the name)
    *   name=value        → { name: 'name', default: 'value' }
+   *   name?=value       → { name: 'name?', default: 'value' }
    *   name='val ue'     → { name: 'name', default: 'val ue' }
    *   name="val ue"     → { name: 'name', default: 'val ue' }
    */

@@ -1617,6 +1617,15 @@ class Lexer {
             continue;
           }
         } else {
+          if (str[i] === '\\' && i + 1 < str.length) {
+            const next = str[i + 1];
+            if (next === '\\' || whitespaceRe.test(next)) {
+              value += next;
+              this.incrementColumn(2);
+              i++;
+              continue;
+            }
+          }
           if (whitespaceRe.test(str[i])) {
             break;
           }

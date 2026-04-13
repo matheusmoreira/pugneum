@@ -32,12 +32,36 @@
 const path = require('path');
 const fs = require('fs');
 
+const pkg = require('./package.json');
+
+const args = process.argv.slice(2);
+
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`pugneum v${pkg.version} — ${pkg.description}
+
+Usage: pugneum [options]
+
+Reads pugneum.json in the current directory to compile .pg templates
+from the configured input directory into HTML in the output directory.
+
+Options:
+  -h, --help     Show this help
+  -v, --version  Show version number`);
+  process.exit(0);
+}
+
+if (args.includes('--version') || args.includes('-v')) {
+  console.log(pkg.version);
+  process.exit(0);
+}
+
 const EXIT_CODES = {
   INVALID_INPUT: 1,
   NOT_FOUND: 2,
   PERMISSION_DENIED: 3,
   NOT_DIRECTORY: 4,
   NOT_FILE: 5,
+  TEMPLATE_ERROR: 6,
 };
 
 function readAndValidateInput(filename) {
@@ -46,25 +70,21 @@ function readAndValidateInput(filename) {
   try {
     json = JSON.parse(input);
   } catch (e) {
-    console.log(`Invalid JSON in ${filename}: ${e.message}`);
+    console.error(`Invalid JSON in ${filename}: ${e.message}`);
     process.exit(EXIT_CODES.INVALID_INPUT);
   }
   const {inputDirectory, outputDirectory, baseDirectory} = json;
 
   if (!inputDirectory || !outputDirectory) {
-    console.log('"inputDirectory" and "outputDirectory" are required');
+    console.error('"inputDirectory" and "outputDirectory" are required');
     process.exit(EXIT_CODES.INVALID_INPUT);
   }
 
   return {inputDirectory, outputDirectory, baseDirectory, feeds: json.feeds};
 }
 
-const {baseDirectory, inputDirectory, outputDirectory, feeds} =
-  readAndValidateInput('pugneum.json');
-
 const pg = require('pugneum');
 const pgExtension = /\.pg$/;
-const pgOptions = {basedir: baseDirectory};
 
 function isPugneum(file) {
   return pgExtension.test(file);
@@ -86,42 +106,48 @@ function processDirectory(directory, f) {
   }
 }
 
-function compilePugneumAndSave(input) {
-  const relative = path.relative(inputDirectory, input);
-  const outputPath = path
-    .join(outputDirectory, relative)
-    .replace(pgExtension, '.html');
-  const directory = path.dirname(outputPath);
-  const output = pg.renderFile(input, pgOptions);
-  fs.mkdirSync(directory, {recursive: true});
-  fs.writeFileSync(outputPath, output, {encoding: 'utf8'});
-}
-
 function handleError(error) {
   switch (error.code) {
     case 'ENOENT':
-      console.log(`Path not found: '${error.path}'`);
+      console.error(`Path not found: '${error.path}'`);
       process.exit(EXIT_CODES.NOT_FOUND);
       break;
     case 'ENOTDIR':
-      console.log(`Expected directory: '${error.path}'`);
+      console.error(`Expected directory: '${error.path}'`);
       process.exit(EXIT_CODES.NOT_DIRECTORY);
       break;
     case 'EISDIR':
-      console.log(`Expected file: '${error.path}'`);
+      console.error(`Expected file: '${error.path}'`);
       process.exit(EXIT_CODES.NOT_FILE);
       break;
     case 'EACCES':
-      console.log(`Permission denied: '${error.path}'`);
+      console.error(`Permission denied: '${error.path}'`);
       process.exit(EXIT_CODES.PERMISSION_DENIED);
       break;
     default:
+      if (error.code && error.code.startsWith('PUGNEUM:')) {
+        console.error(error.message);
+        process.exit(EXIT_CODES.TEMPLATE_ERROR);
+      }
       throw error;
   }
 }
 
 try {
-  processDirectory(inputDirectory, compilePugneumAndSave);
+  const {baseDirectory, inputDirectory, outputDirectory, feeds} =
+    readAndValidateInput('pugneum.json');
+  const pgOptions = {basedir: baseDirectory};
+
+  processDirectory(inputDirectory, function compilePugneumAndSave(input) {
+    const relative = path.relative(inputDirectory, input);
+    const outputPath = path
+      .join(outputDirectory, relative)
+      .replace(pgExtension, '.html');
+    const directory = path.dirname(outputPath);
+    const output = pg.renderFile(input, pgOptions);
+    fs.mkdirSync(directory, {recursive: true});
+    fs.writeFileSync(outputPath, output, {encoding: 'utf8'});
+  });
 
   if (feeds) {
     try {

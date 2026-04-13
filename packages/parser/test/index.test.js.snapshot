@@ -158,6 +158,99 @@ exports[`attrs-escape.pg 1`] = `
 }
 `;
 
+exports[`attrs-unquoted-escape.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "a",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 1,
+        "filename": "attrs-unquoted-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "href",
+          "val": "/my path",
+          "line": 1,
+          "column": 3,
+          "filename": "attrs-unquoted-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": true,
+      "line": 1,
+      "column": 1,
+      "filename": "attrs-unquoted-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "a",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 2,
+        "filename": "attrs-unquoted-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "href",
+          "val": "/C:\\\\Windows\\\\system32",
+          "line": 2,
+          "column": 3,
+          "filename": "attrs-unquoted-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": true,
+      "line": 2,
+      "column": 1,
+      "filename": "attrs-unquoted-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "a",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 3,
+        "filename": "attrs-unquoted-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-x",
+          "val": "hello world",
+          "line": 3,
+          "column": 3,
+          "filename": "attrs-unquoted-escape.pg",
+          "mustEscape": true
+        },
+        {
+          "name": "class",
+          "val": "foo",
+          "line": 3,
+          "column": 23,
+          "filename": "attrs-unquoted-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": true,
+      "line": 3,
+      "column": 1,
+      "filename": "attrs-unquoted-escape.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "attrs-unquoted-escape.pg"
+}
+`;
+
 exports[`attrs.pg 1`] = `
 {
   "type": "Block",
@@ -4253,73 +4346,6 @@ exports[`filters.verbatim.pg 1`] = `
   ],
   "line": 0,
   "filename": "filters.verbatim.pg"
-}
-`;
-
-exports[`html.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Text",
-      "val": "<ul>\\n<li>foo</li>\\n<li>bar</li>\\n<li>baz</li>\\n</ul>\\n<!--build:js /js/app.min.js?v=1449104952939-->\\n<!--endbuild-->",
-      "filename": "html.pg",
-      "line": 1,
-      "column": 1,
-      "isHtml": true
-    },
-    {
-      "type": "Tag",
-      "name": "p",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "Text",
-            "val": "You can <em>embed</em> html as well.",
-            "line": 10,
-            "column": 3,
-            "filename": "html.pg"
-          }
-        ],
-        "line": 10,
-        "filename": "html.pg"
-      },
-      "attrs": [],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 10,
-      "column": 1,
-      "filename": "html.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "p",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "Text",
-            "val": "<strong>Even</strong> as the body of a block expansion.",
-            "filename": "html.pg",
-            "line": 11,
-            "column": 4,
-            "isHtml": true
-          }
-        ],
-        "line": 11,
-        "filename": "html.pg"
-      },
-      "attrs": [],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 11,
-      "column": 1,
-      "filename": "html.pg"
-    }
-  ],
-  "line": 0,
-  "filename": "html.pg"
 }
 `;
 

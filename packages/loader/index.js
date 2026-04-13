@@ -89,10 +89,28 @@ function resolve(filename, source, options) {
       {line: 0, column: 0, filename: ''},
     );
 
-  filename = path.join(
-    filename[0] === '/' ? options.basedir : path.dirname(source.trim()),
-    filename,
-  );
+  const isAbsolute = filename[0] === '/';
+  const baseDir = isAbsolute ? options.basedir : path.dirname(source.trim());
+  filename = path.join(baseDir, filename);
+
+  // Prevent path traversal: absolute paths resolve against basedir, so
+  // verify the result stays within it.  Relative paths resolve against
+  // the including file's directory and may legitimately reference sibling
+  // directories, so they are not constrained here.
+  if (isAbsolute) {
+    const resolved = path.resolve(filename);
+    const resolvedBase = path.resolve(options.basedir);
+    if (
+      resolved !== resolvedBase &&
+      !resolved.startsWith(resolvedBase + path.sep)
+    ) {
+      throw makeError(
+        'PATH_TRAVERSAL',
+        'Include path escapes base directory: ' + filename,
+        {line: 0, column: 0, filename: ''},
+      );
+    }
+  }
 
   return filename;
 }
@@ -113,7 +131,21 @@ function resolveLibrary(filename) {
     );
   }
 
-  return path.join(path.dirname(pkgJson), subpath);
+  var pkgDir = path.dirname(pkgJson);
+  var resolved = path.resolve(path.join(pkgDir, subpath));
+  var resolvedPkgDir = path.resolve(pkgDir);
+  if (
+    resolved !== resolvedPkgDir &&
+    !resolved.startsWith(resolvedPkgDir + path.sep)
+  ) {
+    throw makeError(
+      'PATH_TRAVERSAL',
+      'Library path escapes package directory: ' + filename,
+      {line: 0, column: 0, filename: ''},
+    );
+  }
+
+  return path.join(pkgDir, subpath);
 }
 
 function read(filename) {

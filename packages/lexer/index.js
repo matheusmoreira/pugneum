@@ -638,7 +638,7 @@ class Lexer {
       this.tokEnd(tok);
       return true;
     }
-    if (/^#/.test(this.input)) {
+    if (/^#/.test(this.input) && !/^#[[{]/.test(this.input)) {
       this.error(
         'INVALID_ID',
         '"' +
@@ -1274,6 +1274,16 @@ class Lexer {
       this.tokEnd(tok);
       return true;
     }
+    const bad = /^#{([^}\n]*)}/.exec(this.input);
+    if (bad) {
+      this.error(
+        'INVALID_VARIABLE_NAME',
+        '"' +
+          bad[1] +
+          '" is not a valid variable name.' +
+          ' Variable names may only contain letters, hyphens, underscores and question marks.',
+      );
+    }
   }
 
   /**
@@ -1828,6 +1838,22 @@ class Lexer {
   }
 
   fail() {
+    const inlinePatterns = [
+      [/^#\[/, '#[...] inline tags'],
+      [/^@\(/, '@(...) inline links'],
+      [/^@\[/, '@[...] reference links'],
+      [/^!\(/, '!(...) inline images'],
+    ];
+    for (const [re, name] of inlinePatterns) {
+      if (re.test(this.input)) {
+        this.error(
+          'INLINE_SYNTAX_AT_LINE_START',
+          name +
+            ' can only appear inside text content,' +
+            ' not at the start of a line.',
+        );
+      }
+    }
     this.error(
       'UNEXPECTED_TEXT',
       'unexpected text "' + this.input.slice(0, 5) + '"',

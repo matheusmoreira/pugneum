@@ -17547,6 +17547,42 @@ exports[`inline-block-comment.pg 1`] = `
 ]
 `;
 
+exports[`inline-image-at-line-start.pg 1`] = `
+{
+  "msg": "!(...) inline images can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`inline-interpolation-at-line-start.pg 1`] = `
+{
+  "msg": "#[...] inline tags can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`inline-link-at-line-start.pg 1`] = `
+{
+  "msg": "@(...) inline links can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`inline-reflink-at-line-start.pg 1`] = `
+{
+  "msg": "@[...] reference links can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
+`;
+
 exports[`inline-tag.pg 1`] = `
 [
   {
@@ -19040,6 +19076,15 @@ exports[`invalid-id.pg 1`] = `
 {
   "msg": "\\"ä\\" is not a valid ID.",
   "code": "PUGNEUM:INVALID_ID",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`invalid-variable-name.pg 1`] = `
+{
+  "msg": "\\"123\\" is not a valid variable name. Variable names may only contain letters, hyphens, underscores and question marks.",
+  "code": "PUGNEUM:INVALID_VARIABLE_NAME",
   "line": 1,
   "column": 1
 }

@@ -609,8 +609,8 @@ class Lexer {
   filter(opts) {
     const tok =
       this.scan(/^:([\w\-]+)/, 'filter') ||
-      this.scan(/^:'(.+)'/, 'filter') ||
-      this.scan(/^:"(.+)"/, 'filter');
+      this.scan(/^:'([^']+)'/, 'filter') ||
+      this.scan(/^:"([^"]+)"/, 'filter');
 
     const inInclude = opts && opts.inInclude;
     if (tok) {
@@ -1383,13 +1383,19 @@ class Lexer {
       while (i < str.length && str[i] === ' ') i++;
       if (i >= str.length) break;
 
-      // read parameter name
+      // read parameter name: only characters valid for variable interpolation
       let name = '';
-      while (i < str.length && str[i] !== ' ' && str[i] !== '=') {
+      while (i < str.length && /[-a-zA-Z_?]/.test(str[i])) {
         name += str[i++];
       }
 
-      if (!name) break;
+      if (!name) {
+        this.error(
+          'INVALID_MIXIN_PARAM',
+          'Invalid character in mixin parameter name: ' +
+            JSON.stringify(str[i]),
+        );
+      }
 
       // check for default value
       if (i < str.length && str[i] === '=') {

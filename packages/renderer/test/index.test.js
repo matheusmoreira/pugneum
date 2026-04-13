@@ -907,6 +907,23 @@ describe('error handling', () => {
       (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN',
     );
   });
+
+  test('deep mixin chain exceeding MAX_MIXIN_DEPTH throws MIXIN_STACK_OVERFLOW', () => {
+    // Build a chain of 257 distinct mixins: m0 calls m1, m1 calls m2, ..., m256 calls m257
+    var depth = 257;
+    var nodes = [];
+    for (var i = 0; i < depth; i++) {
+      nodes.push(mixinDecl('m' + i, [], [mixinCall('m' + (i + 1), [])]));
+    }
+    // Final mixin that doesn't call anything
+    nodes.push(mixinDecl('m' + depth, [], [text('end')]));
+    // Kick off the chain
+    nodes.push(mixinCall('m0', []));
+    assert.throws(
+      () => render(block(nodes)),
+      (err) => err.code === 'PUGNEUM:MIXIN_STACK_OVERFLOW',
+    );
+  });
 });
 
 // Helper: mixin declaration node

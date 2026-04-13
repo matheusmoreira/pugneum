@@ -18756,6 +18756,15 @@ exports[`invalid-id.pg 1`] = `
 }
 `;
 
+exports[`invalid-mixin-param.pg 1`] = `
+{
+  "msg": "Invalid character in mixin parameter name: \\"$\\"",
+  "code": "PUGNEUM:INVALID_MIXIN_PARAM",
+  "line": 1,
+  "column": 1
+}
+`;
+
 exports[`invalid-variable-name.pg 1`] = `
 {
   "msg": "\\"123\\" is not a valid variable name. Variable names may only contain letters, hyphens, underscores and question marks.",

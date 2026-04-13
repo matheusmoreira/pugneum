@@ -38,6 +38,44 @@ p
   t.assert.snapshot(output);
 });
 
+test('__proto__ attribute does not pollute Object.prototype', () => {
+  const inspecting = {
+    filter: function (str, options) {
+      // The __proto__ attr should be a regular property on the null-prototype
+      // attrs object, not trigger prototype pollution
+      assert.strictEqual(options.__proto__, 'malicious');
+      // Object.prototype must remain unpolluted
+      assert.strictEqual({}.malicious, undefined);
+      return str;
+    },
+  };
+
+  const source = `
+p
+  :inspecting(__proto__=malicious)
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  filter(ast, {inspecting});
+});
+
+test('invalid filter name throws INVALID_FILTER_NAME', () => {
+  const source = `
+p
+  :'../../../etc/malicious'
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_NAME' &&
+      /Invalid filter name/.test(err.message),
+  );
+});
+
 test('filters can be used with options', () => {
   const source = `
 p

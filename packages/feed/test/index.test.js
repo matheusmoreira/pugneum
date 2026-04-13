@@ -172,6 +172,50 @@ describe('error handling', () => {
     fs.rmSync(missingDir, {recursive: true});
   });
 
+  test('throws FEED_PATH_TRAVERSAL for article href escaping output directory', () => {
+    var traversalDir = path.join(__dirname, 'fixtures-traversal');
+    fs.mkdirSync(traversalDir, {recursive: true});
+    fs.writeFileSync(
+      path.join(traversalDir, 'index.html'),
+      '<!DOCTYPE html><html lang="en"><head>' +
+        '<base href="https://example.com/">' +
+        '<title>Test</title>' +
+        '<meta name="description" content="test">' +
+        '<meta name="author" content="Author">' +
+        '</head><body>' +
+        '<div data-published-at="2026-01-01"><a href="../../etc/passwd">Malicious</a></div>' +
+        '</body></html>',
+    );
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: traversalDir,
+          feeds: {enabled: true},
+          writeDirectory: traversalDir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_PATH_TRAVERSAL',
+    );
+
+    fs.rmSync(traversalDir, {recursive: true});
+  });
+
+  test('throws FEED_PATH_TRAVERSAL for feed write path escaping write directory', () => {
+    fs.mkdirSync(outputDir, {recursive: true});
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: fixturesDir,
+          feeds: {enabled: true, atom: '../../malicious.xml'},
+          writeDirectory: outputDir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_PATH_TRAVERSAL',
+    );
+
+    fs.rmSync(outputDir, {recursive: true});
+  });
+
   test('skips when feeds.enabled is false', () => {
     fs.mkdirSync(outputDir, {recursive: true});
 

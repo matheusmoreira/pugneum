@@ -89,6 +89,32 @@ describe('path resolution', () => {
       (err) => err.code === 'PUGNEUM:LOAD_ERROR' && /ENOENT/.test(err.message),
     );
   });
+
+  test('throws PATH_TRAVERSAL for absolute path escaping basedir', () => {
+    var filename = __dirname + '/test.pg';
+    var basedir = __dirname;
+    var ast = parse(lex('include /../../etc/passwd', {filename}), {filename});
+    assert.throws(
+      () => load(ast, {lex, parse, basedir}),
+      (err) =>
+        err.code === 'PUGNEUM:PATH_TRAVERSAL' &&
+        /escapes base directory/.test(err.message),
+    );
+  });
+
+  test('absolute path within basedir resolves normally', () => {
+    var filename = __dirname + '/test.pg';
+    var basedir = __dirname;
+    var ast = parse(lex('include /nonexistent-file.pg', {filename}), {
+      filename,
+    });
+    // Should not throw PATH_TRAVERSAL — throws LOAD_ERROR because the
+    // file doesn't exist, but the path itself is valid
+    assert.throws(
+      () => load(ast, {lex, parse, basedir}),
+      (err) => err.code === 'PUGNEUM:LOAD_ERROR',
+    );
+  });
 });
 
 describe('library includes', () => {
@@ -149,6 +175,20 @@ describe('library includes', () => {
     );
 
     assert.ok(extended, 'library extends was resolved and loaded');
+  });
+
+  test('throws PATH_TRAVERSAL for @-prefixed path escaping package directory', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @pugneum/mock-lib/../../etc/passwd';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) =>
+        err.code === 'PUGNEUM:PATH_TRAVERSAL' &&
+        /escapes package directory/.test(err.message),
+    );
   });
 });
 

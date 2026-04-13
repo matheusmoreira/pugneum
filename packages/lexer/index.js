@@ -567,6 +567,22 @@ class Lexer {
   }
 
   /**
+   * Escaped tag.
+   *
+   * A backslash before a valid tag name escapes keyword meaning,
+   * forcing it to be treated as an HTML element name.
+   * e.g. \extends → <extends>, \yield → <yield>
+   */
+
+  escapedTag() {
+    if (this.input[0] !== '\\') return;
+    if (!/^\\(\w(?:[-:\w]*\w)?)/.test(this.input)) return;
+    this.consume(1);
+    this.incrementColumn(1);
+    return this.tag();
+  }
+
+  /**
    * Tag.
    */
 
@@ -1136,7 +1152,7 @@ class Lexer {
    */
 
   ['extends']() {
-    const tok = this.scan(/^extends?(?= |$|\n)/, 'extends');
+    const tok = this.scan(/^extends(?= |$|\n)/, 'extends');
     if (tok) {
       this.tokens.push(this.tokEnd(tok));
       if (!this.path()) {
@@ -1144,7 +1160,7 @@ class Lexer {
       }
       return true;
     }
-    if (this.scan(/^extends?\b/)) {
+    if (this.scan(/^extends\b/)) {
       this.error('MALFORMED_EXTENDS', 'malformed extends');
     }
   }
@@ -1815,6 +1831,7 @@ class Lexer {
       this.eos() ||
       this.endInterpolation() ||
       this.variable() ||
+      this.escapedTag() ||
       this.yield() ||
       this['extends']() ||
       this.append() ||

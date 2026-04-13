@@ -2606,6 +2606,297 @@ exports[`escape-chars.pg 1`] = `
 }
 `;
 
+exports[`escaped-tags.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "extends",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 1,
+            "column": 10,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "yield",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 2,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "block",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "content",
+            "line": 3,
+            "column": 8,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "references",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 4,
+            "column": 13,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 4,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "include",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 5,
+            "column": 10,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "mixin",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 6,
+            "column": 8,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 6,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "append",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 7,
+            "column": 9,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 7,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "prepend",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 8,
+            "column": 10,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 8,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 8,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 9,
+            "column": 6,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 9,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "extends",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 10,
+            "column": 30,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 10,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [
+        {
+          "name": "class",
+          "val": "foo",
+          "line": 10,
+          "column": 9,
+          "filename": "escaped-tags.pg",
+          "mustEscape": false
+        },
+        {
+          "name": "id",
+          "val": "bar",
+          "line": 10,
+          "column": 13,
+          "filename": "escaped-tags.pg",
+          "mustEscape": false
+        },
+        {
+          "name": "data-x",
+          "val": "1",
+          "line": 10,
+          "column": 18,
+          "filename": "escaped-tags.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 10,
+      "column": 2,
+      "filename": "escaped-tags.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "extend",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "hello",
+            "line": 11,
+            "column": 8,
+            "filename": "escaped-tags.pg"
+          }
+        ],
+        "line": 11,
+        "filename": "escaped-tags.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 11,
+      "column": 1,
+      "filename": "escaped-tags.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "escaped-tags.pg"
+}
+`;
+
 exports[`escaping-class-attribute.pg 1`] = `
 {
   "type": "Block",
@@ -5955,7 +6246,7 @@ exports[`inheritance.extend.include.pg 1`] = `
         "type": "FileReference",
         "path": "auxiliary/layout.include.pg",
         "line": 2,
-        "column": 8,
+        "column": 9,
         "filename": "inheritance.extend.include.pg"
       },
       "line": 2,
@@ -6129,7 +6420,7 @@ exports[`inheritance.extend.mixins.block.pg 1`] = `
         "type": "FileReference",
         "path": "auxiliary/inheritance.extend.mixin.block.pg",
         "line": 1,
-        "column": 8,
+        "column": 9,
         "filename": "inheritance.extend.mixins.block.pg"
       },
       "line": 1,
@@ -6186,7 +6477,7 @@ exports[`inheritance.extend.pg 1`] = `
         "type": "FileReference",
         "path": "auxiliary/layout.pg",
         "line": 2,
-        "column": 8,
+        "column": 9,
         "filename": "inheritance.extend.pg"
       },
       "line": 2,
@@ -6359,7 +6650,7 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
         "type": "FileReference",
         "path": "auxiliary/layout.pg",
         "line": 2,
-        "column": 8,
+        "column": 9,
         "filename": "inheritance.extend.whitespace.pg"
       },
       "line": 2,

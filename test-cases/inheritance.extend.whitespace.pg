@@ -1,5 +1,5 @@
 
-extend auxiliary/layout.pg
+extends auxiliary/layout.pg
 
 block head
 

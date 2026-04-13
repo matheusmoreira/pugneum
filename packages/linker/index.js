@@ -12,7 +12,7 @@ module.exports = link;
 
 function link(ast) {
   if (ast.type !== 'Block') {
-    throw new Error('The top level element should always be a block');
+    error('INVALID_AST', 'The top level element should always be a block', ast);
   }
   let extendsNode = null;
   if (ast.nodes.length) {

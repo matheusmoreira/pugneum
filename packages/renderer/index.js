@@ -32,7 +32,7 @@ class Compiler {
     this.callStack = [];
   }
 
-  error(message, code, node) {
+  error(code, message, node) {
     const err = makeError(code, message, {
       line: node.line,
       column: node.column,
@@ -144,11 +144,11 @@ class Compiler {
         })
       ) {
         this.error(
+          'VOID_ELEMENT_WITH_CONTENT',
           tag.name +
             ' is a self closing element: <' +
             tag.name +
             '> but contains nested content',
-          'VOID_ELEMENT_WITH_CONTENT',
           tag,
         );
       }
@@ -237,8 +237,8 @@ class Compiler {
         if (escapedName) return '#{' + escapedName + '}';
         if (this.callStack.length === 0) {
           this.error(
-            `Variable '${name}' used outside mixin in attribute`,
             'CALL_STACK_UNDERFLOW',
+            `Variable '${name}' used outside mixin in attribute`,
             attr,
           );
         }
@@ -246,8 +246,8 @@ class Compiler {
         const value = frame.environment[name];
         if (value === undefined) {
           this.error(
-            `Variable '${name}' is undefined`,
             'UNDEFINED_VARIABLE',
+            `Variable '${name}' is undefined`,
             attr,
           );
         }
@@ -266,7 +266,7 @@ class Compiler {
       // find defined mixin of same name
       const declared = this.mixins[mixin.name];
       if (!declared) {
-        this.error(`Undefined mixin '${mixin.name}'`, 'UNDEFINED_MIXIN', mixin);
+        this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
 
       // check arguments: allow fewer (optional), reject too many
@@ -275,8 +275,8 @@ class Compiler {
 
       if (args.length > len) {
         this.error(
-          `Too many arguments: mixin '${mixin.name}' declared ${len} called ${args.length}`,
           'MIXIN_ARGUMENT_COUNT_MISMATCH',
+          `Too many arguments: mixin '${mixin.name}' declared ${len} called ${args.length}`,
           mixin,
         );
       }
@@ -285,8 +285,8 @@ class Compiler {
       for (const frame of this.callStack) {
         if (frame.name === mixin.name) {
           this.error(
-            `Recursive call to mixin '${mixin.name}' detected`,
             'RECURSIVE_MIXIN',
+            `Recursive call to mixin '${mixin.name}' detected`,
             mixin,
           );
         }
@@ -295,8 +295,8 @@ class Compiler {
       // depth limit: prevent unbounded resource consumption
       if (this.callStack.length >= MAX_MIXIN_DEPTH) {
         this.error(
-          `Mixin call stack depth exceeded ${MAX_MIXIN_DEPTH}`,
           'MIXIN_STACK_OVERFLOW',
+          `Mixin call stack depth exceeded ${MAX_MIXIN_DEPTH}`,
           mixin,
         );
       }
@@ -333,8 +333,8 @@ class Compiler {
   visitVariable(variable) {
     if (this.callStack.length === 0) {
       this.error(
-        `Variable '${variable.name}' used outside mixin`,
         'CALL_STACK_UNDERFLOW',
+        `Variable '${variable.name}' used outside mixin`,
         variable,
       );
     }
@@ -344,8 +344,8 @@ class Compiler {
 
     if (value === undefined) {
       this.error(
-        `Variable '${variable.name}' is undefined`,
         'UNDEFINED_VARIABLE',
+        `Variable '${variable.name}' is undefined`,
         variable,
       );
     }

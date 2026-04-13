@@ -43,10 +43,24 @@ module.exports = function generateFeeds(options) {
   }
 
   // Phase 2: Enrich entries from article pages
+  var resolvedOutputDir = path.resolve(outputDir);
   var entries = [];
   for (var i = 0; i < indexData.entries.length; i++) {
     var entry = indexData.entries[i];
     var articlePath = path.join(outputDir, entry.href);
+
+    // Prevent path traversal: article path must stay within output directory
+    var resolvedArticle = path.resolve(articlePath);
+    if (
+      resolvedArticle !== resolvedOutputDir &&
+      !resolvedArticle.startsWith(resolvedOutputDir + path.sep)
+    ) {
+      throw makeError(
+        'FEED_PATH_TRAVERSAL',
+        'Article href escapes output directory: ' + entry.href,
+        {line: 0},
+      );
+    }
 
     if (!fs.existsSync(articlePath) && fs.existsSync(articlePath + '.html')) {
       articlePath += '.html';
@@ -93,6 +107,22 @@ module.exports = function generateFeeds(options) {
   var rss = generateRss(feed);
 
   fs.mkdirSync(writeDir, {recursive: true});
+
+  // Prevent path traversal: feed output paths must stay within write directory
+  var resolvedWriteDir = path.resolve(writeDir);
+  var resolvedAtom = path.resolve(path.join(writeDir, atomPath));
+  var resolvedRss = path.resolve(path.join(writeDir, rssPath));
+  if (
+    !resolvedAtom.startsWith(resolvedWriteDir + path.sep) ||
+    !resolvedRss.startsWith(resolvedWriteDir + path.sep)
+  ) {
+    throw makeError(
+      'FEED_PATH_TRAVERSAL',
+      'Feed output path escapes write directory',
+      {line: 0},
+    );
+  }
+
   fs.writeFileSync(path.join(writeDir, atomPath), atom, {encoding: 'utf8'});
   fs.writeFileSync(path.join(writeDir, rssPath), rss, {encoding: 'utf8'});
 };

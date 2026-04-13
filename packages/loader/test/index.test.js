@@ -234,18 +234,13 @@ describe('circular dependency detection', () => {
 describe('custom resolve and read', () => {
   test('accepts custom resolve function', () => {
     var filename = __dirname + '/test.pg';
-    var ast = parse(lex('include foo.pg', {filename}), {filename});
+    var ast = parse(lex('include bar.pg', {filename}), {filename});
     var customResolveCalled = false;
     var customResolve = function (file, source, opts) {
       customResolveCalled = true;
       return path.join(path.dirname(source), file);
     };
-    // Will fail because foo.pg doesn't exist, but resolve should be called
-    try {
-      load(ast, {lex, parse, resolve: customResolve});
-    } catch (e) {
-      // Expected: file not found
-    }
+    load(ast, {lex, parse, resolve: customResolve});
     assert.ok(customResolveCalled, 'custom resolve was called');
   });
 

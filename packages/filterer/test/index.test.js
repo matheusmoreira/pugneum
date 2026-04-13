@@ -92,8 +92,7 @@ p
   // find the filtered text node
   const textNode = output.nodes[0].block.nodes[0];
   assert.strictEqual(
-    textNode.val.startsWith('option=value number=2 '),
-    true,
-    'filter options should be passed as string values without automatic parsing',
+    textNode.val,
+    "option=value number=2 Filters can be used with options.\nThe values aren't parsed though.\nThey're just strings.",
   );
 });

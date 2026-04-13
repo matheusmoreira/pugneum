@@ -73,8 +73,6 @@ describe('error handling', () => {
   });
 
   test('UNDEFINED_REFERENCE for unknown @[ref]', () => {
-    var filename = basedir + '/auxiliary/layout-append.pg';
-    // Build a minimal AST with an undefined reference
     var source = 'p @[missing]';
     var options = {filename: 'test.pg', source, lex, parse, basedir};
     var tokens = lex(source, options);

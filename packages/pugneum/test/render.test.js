@@ -88,7 +88,10 @@ describe('render()', () => {
   });
 
   it('should render boolean attributes', () => {
-    assert.match(pg.render('input(disabled)'), /disabled/);
+    assert.strictEqual(
+      pg.render('input(disabled)'),
+      '<!DOCTYPE html><input disabled>',
+    );
   });
 });
 

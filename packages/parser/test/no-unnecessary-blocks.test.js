@@ -10,6 +10,6 @@ div
   | World
 `;
 
-test('no uncessessary blocks should be added', (t) => {
+test('no unnecessary blocks should be added', (t) => {
   t.assert.snapshot(parse(lex(input)));
 });

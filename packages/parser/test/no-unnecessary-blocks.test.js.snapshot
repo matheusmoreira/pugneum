@@ -1,4 +1,4 @@
-exports[`no uncessessary blocks should be added 1`] = `
+exports[`no unnecessary blocks should be added 1`] = `
 {
   "type": "Block",
   "nodes": [

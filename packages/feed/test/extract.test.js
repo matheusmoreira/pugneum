@@ -6,7 +6,7 @@ var extract = require('../lib/extract');
 var fixturesDir = path.join(__dirname, 'fixtures');
 
 describe('index page extraction', () => {
-  test('extracts feed metadata from index page', (t) => {
+  test('extracts feed metadata from index page', () => {
     var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     assert.strictEqual(result.url, 'https://example.com/');
@@ -16,7 +16,7 @@ describe('index page extraction', () => {
     assert.strictEqual(result.language, 'en');
   });
 
-  test('discovers articles sorted newest first', (t) => {
+  test('discovers articles sorted newest first', () => {
     var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     assert.strictEqual(result.entries.length, 2);
@@ -28,7 +28,7 @@ describe('index page extraction', () => {
     assert.strictEqual(result.entries[1].published, '2026-03-15');
   });
 
-  test('ignores links without data-published-at', (t) => {
+  test('ignores links without data-published-at', () => {
     var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
     var hrefs = result.entries.map((e) => e.href);
@@ -38,7 +38,7 @@ describe('index page extraction', () => {
 });
 
 describe('article page enrichment', () => {
-  test('extracts full metadata from article page', (t) => {
+  test('extracts full metadata from article page', () => {
     var result = extract.articlePage(
       path.join(fixturesDir, 'articles', 'first.html'),
       'article',
@@ -53,7 +53,7 @@ describe('article page enrichment', () => {
     assert.ok(!result.content.includes('<nav>'));
   });
 
-  test('handles missing optional metadata', (t) => {
+  test('handles missing optional metadata', () => {
     var result = extract.articlePage(
       path.join(fixturesDir, 'articles', 'second.html'),
       'article',

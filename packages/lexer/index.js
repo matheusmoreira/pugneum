@@ -1126,14 +1126,6 @@ class Lexer {
     }
   }
 
-  textHtml() {
-    const tok = this.scan(/^(<[^\n]*)/, 'text-html');
-    if (tok) {
-      this.addText('text-html', tok.val);
-      return true;
-    }
-  }
-
   /**
    * Dot.
    */
@@ -1885,7 +1877,6 @@ class Lexer {
       this.attrs() ||
       this.indent() ||
       this.text() ||
-      this.textHtml() ||
       this.comment() ||
       this.colon() ||
       this.fail()

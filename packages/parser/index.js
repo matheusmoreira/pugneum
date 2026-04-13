@@ -120,8 +120,6 @@ class Parser {
     while ('eos' !== this.peek().type) {
       if ('newline' === this.peek().type) {
         this.advance();
-      } else if ('text-html' === this.peek().type) {
-        block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
         const expr = this.parseExpr();
         if (expr) {
@@ -180,7 +178,6 @@ class Parser {
    * | filter
    * | comment
    * | text
-   * | text-html
    * | dot
    * | yield
    * | id
@@ -214,8 +211,6 @@ class Parser {
       case 'start-interpolation':
       case 'start-ref-link':
         return this.parseText({block: true});
-      case 'text-html':
-        return this.initBlock(this.peek().loc.start.line, this.parseTextHtml());
       case 'dot':
         return this.parseDot();
       case 'call':
@@ -298,53 +293,6 @@ class Parser {
     }
     if (tags.length === 1) return tags[0];
     else return this.initBlock(lineno, tags);
-  }
-
-  parseTextHtml() {
-    const nodes = [];
-    let currentNode = null;
-    loop: while (true) {
-      switch (this.peek().type) {
-        case 'text-html':
-          const text = this.advance();
-          if (!currentNode) {
-            currentNode = {
-              type: 'Text',
-              val: text.val,
-              filename: this.filename,
-              line: text.loc.start.line,
-              column: text.loc.start.column,
-              isHtml: true,
-            };
-            nodes.push(currentNode);
-          } else {
-            currentNode.val += '\n' + text.val;
-          }
-          break;
-        case 'indent':
-          const block = this.block();
-          block.nodes.forEach(function (node) {
-            if (node.isHtml) {
-              if (!currentNode) {
-                currentNode = node;
-                nodes.push(currentNode);
-              } else {
-                currentNode.val += '\n' + node.val;
-              }
-            } else {
-              currentNode = null;
-              nodes.push(node);
-            }
-          });
-          break;
-        case 'newline':
-          this.advance();
-          break;
-        default:
-          break loop;
-      }
-    }
-    return nodes;
   }
 
   /**
@@ -784,8 +732,6 @@ class Parser {
     while ('outdent' !== this.peek().type) {
       if ('newline' === this.peek().type) {
         this.advance();
-      } else if ('text-html' === this.peek().type) {
-        block.nodes = block.nodes.concat(this.parseTextHtml());
       } else {
         const expr = this.parseExpr();
         if (expr.type === 'Block') {

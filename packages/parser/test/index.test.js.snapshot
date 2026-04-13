@@ -1,3 +1,163 @@
+exports[`attrs-escape.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 1,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-escaped",
+          "val": "back\\\\slash",
+          "line": 1,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 2,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-newline",
+          "val": "line\\none",
+          "line": 2,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 3,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-tab",
+          "val": "col\\tone",
+          "line": 3,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 4,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-quote",
+          "val": "it's here",
+          "line": 4,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 5,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-dquote",
+          "val": "say \\"hello\\"",
+          "line": 5,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [],
+        "line": 6,
+        "filename": "attrs-escape.pg"
+      },
+      "attrs": [
+        {
+          "name": "data-unknown",
+          "val": "foo\\\\bar",
+          "line": 6,
+          "column": 5,
+          "filename": "attrs-escape.pg",
+          "mustEscape": true
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "attrs-escape.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "attrs-escape.pg"
+}
+`;
+
 exports[`attrs.pg 1`] = `
 {
   "type": "Block",
@@ -3915,6 +4075,956 @@ exports[`html5.pg 1`] = `
 }
 `;
 
+exports[`image-shorthand-multiline.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Multi-line ",
+            "line": 2,
+            "column": 3,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 2,
+              "filename": "image-shorthand-multiline.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/images/long-path.png",
+                "line": 2,
+                "column": 20,
+                "filename": "image-shorthand-multiline.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "the image",
+                "line": 2,
+                "column": 67,
+                "filename": "image-shorthand-multiline.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 16,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Text",
+            "val": " in text block.",
+            "line": 2,
+            "column": 67,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Text",
+            "val": "\\n",
+            "line": 4,
+            "column": 1,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 4,
+            "column": 1,
+            "filename": "image-shorthand-multiline.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "image-shorthand-multiline.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "image-shorthand-multiline.pg",
+      "textOnly": true
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Before ",
+            "line": 6,
+            "column": 3,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 6,
+              "filename": "image-shorthand-multiline.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/very/long/image/path.png",
+                "line": 6,
+                "column": 16,
+                "filename": "image-shorthand-multiline.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "alt text here",
+                "line": 6,
+                "column": 67,
+                "filename": "image-shorthand-multiline.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 6,
+            "column": 12,
+            "filename": "image-shorthand-multiline.pg"
+          },
+          {
+            "type": "Text",
+            "val": " after.",
+            "line": 6,
+            "column": 71,
+            "filename": "image-shorthand-multiline.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "image-shorthand-multiline.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "image-shorthand-multiline.pg",
+      "textOnly": true
+    }
+  ],
+  "line": 0,
+  "filename": "image-shorthand-multiline.pg"
+}
+`;
+
+exports[`image-shorthand-quoted.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 3,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 1,
+              "filename": "image-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/path with spaces.png",
+                "line": 1,
+                "column": 9,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 1,
+                "column": 56,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 5,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 56,
+            "filename": "image-shorthand-quoted.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "image-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "image-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 3,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 2,
+              "filename": "image-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/another path.png",
+                "line": 2,
+                "column": 9,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 2,
+                "column": 52,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 5,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 52,
+            "filename": "image-shorthand-quoted.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "image-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "image-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 3,
+            "column": 3,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 3,
+              "filename": "image-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/it\\"s-here.png",
+                "line": 3,
+                "column": 9,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 3,
+                "column": 49,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 5,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 3,
+            "column": 50,
+            "filename": "image-shorthand-quoted.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "image-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "image-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 4,
+            "column": 3,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 4,
+              "filename": "image-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/it's-here.png",
+                "line": 4,
+                "column": 9,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 4,
+                "column": 49,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 5,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 4,
+            "column": 50,
+            "filename": "image-shorthand-quoted.pg"
+          }
+        ],
+        "line": 4,
+        "filename": "image-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "image-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 3,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "image-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/back\\\\slash.png",
+                "line": 5,
+                "column": 9,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 5,
+                "column": 51,
+                "filename": "image-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 5,
+            "filename": "image-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 51,
+            "filename": "image-shorthand-quoted.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "image-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "image-shorthand-quoted.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "image-shorthand-quoted.pg"
+}
+`;
+
+exports[`image-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 1,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "photo.jpg",
+                "line": 1,
+                "column": 9,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a cat",
+                "line": 1,
+                "column": 25,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 5,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 21,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 2,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "https://example.com/logo.png",
+                "line": 2,
+                "column": 9,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "https://example.com/logo.png",
+                "line": 2,
+                "column": 44,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 5,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 34,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "See ",
+            "line": 3,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 3,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "icon.png",
+                "line": 3,
+                "column": 13,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "the icon",
+                "line": 3,
+                "column": 28,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 9,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": " here.",
+            "line": 3,
+            "column": 27,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "!(not an image)",
+            "line": 4,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 4,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "check ",
+                  "line": 5,
+                  "column": 8,
+                  "filename": "image-shorthand.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "img",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [],
+                    "line": 5,
+                    "filename": "image-shorthand.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "src",
+                      "val": "badge.svg",
+                      "line": 5,
+                      "column": 20,
+                      "filename": "image-shorthand.pg",
+                      "mustEscape": true
+                    },
+                    {
+                      "name": "alt",
+                      "val": "badge",
+                      "line": 5,
+                      "column": 36,
+                      "filename": "image-shorthand.pg",
+                      "mustEscape": true
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 5,
+                  "column": 16,
+                  "filename": "image-shorthand.pg"
+                },
+                {
+                  "type": "Text",
+                  "val": " out",
+                  "line": 5,
+                  "column": 32,
+                  "filename": "image-shorthand.pg"
+                }
+              ],
+              "line": 5,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 5,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 37,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "Text with ",
+            "line": 7,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 7,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "photo.jpg",
+                "line": 7,
+                "column": 19,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 7,
+                "column": 35,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 7,
+            "column": 15,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": " inside.",
+            "line": 7,
+            "column": 33,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 6,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "image-shorthand.pg",
+      "textOnly": true
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 8,
+            "column": 3,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 8,
+              "filename": "image-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "/img/pic.jpg",
+                "line": 8,
+                "column": 9,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "alt",
+                "val": "a photo",
+                "line": 8,
+                "column": 28,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "class",
+                "val": "photo",
+                "line": 8,
+                "column": 42,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              },
+              {
+                "name": "loading",
+                "val": "lazy",
+                "line": 8,
+                "column": 56,
+                "filename": "image-shorthand.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 8,
+            "column": 5,
+            "filename": "image-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 8,
+            "column": 26,
+            "filename": "image-shorthand.pg"
+          }
+        ],
+        "line": 8,
+        "filename": "image-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 8,
+      "column": 1,
+      "filename": "image-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "image-shorthand.pg"
+}
+`;
+
 exports[`include-extends-from-root.pg 1`] = `
 {
   "type": "Block",
@@ -6778,6 +7888,336 @@ exports[`layout.prepend.without-block.pg 1`] = `
   ],
   "line": 0,
   "filename": "layout.prepend.without-block.pg"
+}
+`;
+
+exports[`link-shorthand-quoted.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 3,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "click here",
+                  "line": 1,
+                  "column": 52,
+                  "filename": "link-shorthand-quoted.pg"
+                }
+              ],
+              "line": 1,
+              "filename": "link-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "https://example.com/path with spaces",
+                "line": 1,
+                "column": 7,
+                "filename": "link-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 5,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 1,
+            "column": 55,
+            "filename": "link-shorthand-quoted.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "link-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "link-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 3,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "visit",
+                  "line": 2,
+                  "column": 48,
+                  "filename": "link-shorthand-quoted.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "link-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "https://example.com/another path",
+                "line": 2,
+                "column": 7,
+                "filename": "link-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 5,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 2,
+            "column": 46,
+            "filename": "link-shorthand-quoted.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "link-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "link-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 3,
+            "column": 3,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "the page",
+                  "line": 3,
+                  "column": 45,
+                  "filename": "link-shorthand-quoted.pg"
+                }
+              ],
+              "line": 3,
+              "filename": "link-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "https://example.com/it\\"s-here",
+                "line": 3,
+                "column": 7,
+                "filename": "link-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 5,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 3,
+            "column": 47,
+            "filename": "link-shorthand-quoted.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "link-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "link-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 4,
+            "column": 3,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "the page",
+                  "line": 4,
+                  "column": 45,
+                  "filename": "link-shorthand-quoted.pg"
+                }
+              ],
+              "line": 4,
+              "filename": "link-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "https://example.com/it's-here",
+                "line": 4,
+                "column": 7,
+                "filename": "link-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 5,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 4,
+            "column": 47,
+            "filename": "link-shorthand-quoted.pg"
+          }
+        ],
+        "line": 4,
+        "filename": "link-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "link-shorthand-quoted.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 3,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "val": "the page",
+                  "line": 5,
+                  "column": 47,
+                  "filename": "link-shorthand-quoted.pg"
+                }
+              ],
+              "line": 5,
+              "filename": "link-shorthand-quoted.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "https://example.com/back\\\\slash",
+                "line": 5,
+                "column": 7,
+                "filename": "link-shorthand-quoted.pg",
+                "mustEscape": true
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 5,
+            "filename": "link-shorthand-quoted.pg"
+          },
+          {
+            "type": "Text",
+            "val": "",
+            "line": 5,
+            "column": 48,
+            "filename": "link-shorthand-quoted.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "link-shorthand-quoted.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "link-shorthand-quoted.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "link-shorthand-quoted.pg"
 }
 `;
 

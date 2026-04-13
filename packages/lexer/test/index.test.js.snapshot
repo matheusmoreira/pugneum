@@ -1,3 +1,460 @@
+exports[`attrs-escape.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 1,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 1,
+        "column": 31
+      }
+    },
+    "name": "data-escaped",
+    "val": "back\\\\slash"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 31
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 1,
+        "column": 32
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 2,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 2,
+        "column": 29
+      }
+    },
+    "name": "data-newline",
+    "val": "line\\none"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 29
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 2,
+        "column": 30
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 3,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 3,
+        "column": 24
+      }
+    },
+    "name": "data-tab",
+    "val": "col\\tone"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 24
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 3,
+        "column": 25
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 4,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 4,
+        "column": 28
+      }
+    },
+    "name": "data-quote",
+    "val": "it's here"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 28
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 4,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 5,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 5,
+        "column": 32
+      }
+    },
+    "name": "data-dquote",
+    "val": "say \\"hello\\""
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 32
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 5,
+        "column": 33
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 6,
+        "column": 4
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 4
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 6,
+        "column": 27
+      }
+    },
+    "name": "data-unknown",
+    "val": "foo\\\\bar"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 27
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 6,
+        "column": 28
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "attrs-escape.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`attrs.pg 1`] = `
 [
   {
@@ -9687,6 +10144,2459 @@ exports[`html5.pg 1`] = `
 ]
 `;
 
+exports[`image-shorthand-multiline.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "dot",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 14
+      }
+    },
+    "val": "Multi-line "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 14
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 16
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 16
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 19
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 19
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 20
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 66
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/images/long-path.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 67
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 82
+      }
+    },
+    "name": "alt",
+    "val": "the image"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 82
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 83
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 66
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 67
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 67
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 2,
+        "column": 82
+      }
+    },
+    "val": " in text block."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "dot",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 2
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 10
+      }
+    },
+    "val": "Before "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 10
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 12
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 15
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 16
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 16
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 66
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/very/long/image/path.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 67
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 86
+      }
+    },
+    "name": "alt",
+    "val": "alt text here"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 86
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 87
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 70
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 71
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 71
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 6,
+        "column": 78
+      }
+    },
+    "val": " after."
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "image-shorthand-multiline.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`image-shorthand-quoted.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 55
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/path with spaces.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 56
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 69
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 69
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 70
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 55
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 56
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 56
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 56
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 8
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 51
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/another path.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 52
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 65
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 65
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 66
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 51
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 52
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 52
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 52
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 8
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 9
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 48
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/it\\"s-here.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 49
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 62
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 62
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 63
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 49
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 50
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 50
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 50
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 8
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 9
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 48
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/it's-here.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 49
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 62
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 62
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 63
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 49
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 50
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 50
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 50
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 8
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 50
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/back\\\\slash.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 51
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 64
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 64
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 65
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 50
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 51
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 51
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 51
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "image-shorthand-quoted.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`image-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 24
+      }
+    },
+    "name": "src",
+    "val": "photo.jpg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 25
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "name": "alt",
+    "val": "a cat"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 36
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 37
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 20
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 21
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 8
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 43
+      }
+    },
+    "name": "src",
+    "val": "https://example.com/logo.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 44
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 78
+      }
+    },
+    "name": "alt",
+    "val": "https://example.com/logo.png"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 78
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 79
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 33
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 34
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 34
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 34
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 7
+      }
+    },
+    "val": "See "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 7
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 9
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 12
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 12
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 13
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 27
+      }
+    },
+    "name": "src",
+    "val": "icon.png"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 28
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 42
+      }
+    },
+    "name": "alt",
+    "val": "the icon"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 42
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 26
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 27
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 27
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 33
+      }
+    },
+    "val": " here."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 19
+      }
+    },
+    "val": "!(not an image)"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 8
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 14
+      }
+    },
+    "val": "check "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 14
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 16
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 16
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 19
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 19
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 20
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "badge.svg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 36
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 47
+      }
+    },
+    "name": "alt",
+    "val": "badge"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 47
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 31
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 32
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 32
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    },
+    "val": " out"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 36
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 37
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 37
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 37
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "dot",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 2
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 13
+      }
+    },
+    "val": "Text with "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 13
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 18
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 18
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 19
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 19
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "photo.jpg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 35
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 48
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 48
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 49
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 32
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 33
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 33
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 41
+      }
+    },
+    "val": " inside."
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 41
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 41
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 5
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 8
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 8
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 9
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 27
+      }
+    },
+    "name": "src",
+    "val": "/img/pic.jpg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 28
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 41
+      }
+    },
+    "name": "alt",
+    "val": "a photo"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 42
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 55
+      }
+    },
+    "name": "class",
+    "val": "photo"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 56
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 70
+      }
+    },
+    "name": "loading",
+    "val": "lazy"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 70
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 71
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 25
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 26
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 8,
+        "column": 26
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "image-shorthand.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`include-extends-from-root.pg 1`] = `
 [
   {
@@ -17014,6 +19924,830 @@ exports[`layout.prepend.without-block.pg 1`] = `
       "filename": "layout.prepend.without-block.pg",
       "end": {
         "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`link-shorthand-quoted.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 6
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 50
+      }
+    },
+    "name": "href",
+    "val": "https://example.com/path with spaces"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 50
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 51
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 52
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 62
+      }
+    },
+    "val": "click here"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 54
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 55
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 55
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 1,
+        "column": 55
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 6
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 7
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 46
+      }
+    },
+    "name": "href",
+    "val": "https://example.com/another path"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 46
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 48
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 53
+      }
+    },
+    "val": "visit"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 45
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 46
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 46
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 2,
+        "column": 46
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 6
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 7
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    },
+    "name": "href",
+    "val": "https://example.com/it\\"s-here"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 43
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 44
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 45
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 53
+      }
+    },
+    "val": "the page"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 46
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 47
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 3,
+        "column": 47
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 6
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 7
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 43
+      }
+    },
+    "name": "href",
+    "val": "https://example.com/it's-here"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 43
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 44
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 45
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 53
+      }
+    },
+    "val": "the page"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 46
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 47
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 4,
+        "column": 47
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 6
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 7
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 45
+      }
+    },
+    "name": "href",
+    "val": "https://example.com/back\\\\slash"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 45
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 46
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 47
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 55
+      }
+    },
+    "val": "the page"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 47
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 48
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "link-shorthand-quoted.pg",
+      "end": {
+        "line": 6,
         "column": 1
       }
     }

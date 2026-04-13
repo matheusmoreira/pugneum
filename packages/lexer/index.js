@@ -149,7 +149,40 @@ function isNesting(str) {
 }
 
 /**
- * Check whether a line has unclosed #[...] or @(...) interpolation constructs.
+ * Find the closing quote in a string, respecting backslash escapes.
+ * Returns the index of the closing quote, or -1 if not found.
+ *
+ * @param {string} str - The string to search within
+ * @param {string} quote - The quote character to find (' or ")
+ * @param {number} start - The index to start searching from (after the opening quote)
+ * @returns {number}
+ */
+function findClosingQuote(str, quote, start) {
+  for (let i = start; i < str.length; i++) {
+    if (str[i] === '\\' && i + 1 < str.length) {
+      i++;
+      continue;
+    }
+    if (str[i] === quote) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Unescape backslash sequences in URL or text extracted from shorthand syntax.
+ * Handles \( \) \\ \' \" escapes.
+ *
+ * @param {string} str - The string to unescape
+ * @returns {string}
+ */
+function unescapeShorthand(str) {
+  return str.replace(/\\([()\\'"])/g, '$1');
+}
+
+/**
+ * Check whether a line has unclosed #[...], @(...) or !(...) interpolation constructs.
  * Returns true if all interpolations are closed (line is complete).
  */
 function interpolationsAreClosed(str, state) {
@@ -195,21 +228,39 @@ function interpolationsAreClosed(str, state) {
     }
     if (state.link > 0) {
       if (ch === '(') {
-        state.paren++;
+        state.linkParen++;
         continue;
       }
       if (ch === ')') {
-        if (state.paren > 0) state.paren--;
+        if (state.linkParen > 0) state.linkParen--;
         else state.link--;
         continue;
       }
     }
+    if (ch === '!' && str[i + 1] === '(') {
+      state.image++;
+      i++;
+      continue;
+    }
+    if (state.image > 0) {
+      if (ch === '(') {
+        state.imageParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.imageParen > 0) state.imageParen--;
+        else state.image--;
+        continue;
+      }
+    }
   }
-  return state.interp <= 0 && state.link <= 0 && state.ref <= 0;
+  return (
+    state.interp <= 0 && state.link <= 0 && state.ref <= 0 && state.image <= 0
+  );
 }
 
 /**
- * Merge consecutive lines that have unclosed #[...] or @(...) constructs
+ * Merge consecutive lines that have unclosed #[...], @(...) or !(...) constructs
  * into single entries so multi-line inline elements are handled as one unit.
  *
  * Returns an array of {text, indented, lines} objects.
@@ -219,7 +270,16 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
   let pendingText = null;
   let pendingLines = 0;
   let pendingIndentIdx = 0;
-  const state = {interp: 0, link: 0, ref: 0, paren: 0, sq: false, dq: false};
+  const state = {
+    interp: 0,
+    link: 0,
+    linkParen: 0,
+    ref: 0,
+    image: 0,
+    imageParen: 0,
+    sq: false,
+    dq: false,
+  };
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
@@ -240,8 +300,10 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       pendingLines = 0;
       state.interp = 0;
       state.link = 0;
+      state.linkParen = 0;
       state.ref = 0;
-      state.paren = 0;
+      state.image = 0;
+      state.imageParen = 0;
       state.sq = false;
       state.dq = false;
     }
@@ -797,7 +859,7 @@ class Lexer {
     let url, linkText;
     if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
       const quote = content[0];
-      const endQuote = content.indexOf(quote, 1);
+      const endQuote = findClosingQuote(content, quote, 1);
       if (endQuote === -1) {
         this.error('INVALID_LINK', 'Unclosed quote in @() link URL.');
       }
@@ -814,9 +876,8 @@ class Lexer {
         linkText = content.substring(spaceIdx + 1);
       }
     }
-    // Unescape \( \) \\ sequences from bracket-matching escapes
-    url = url.replace(/\\([()\\])/g, '$1');
-    linkText = linkText.replace(/\\([()\\])/g, '$1');
+    url = unescapeShorthand(url);
+    linkText = unescapeShorthand(linkText);
 
     // Desugar @(url text) to equivalent #[a(href='url') text] and use child lexer
     const quote = url.includes("'") ? '"' : "'";
@@ -862,7 +923,7 @@ class Lexer {
     let url, altText;
     if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
       const quote = content[0];
-      const endQuote = content.indexOf(quote, 1);
+      const endQuote = findClosingQuote(content, quote, 1);
       if (endQuote === -1) {
         this.error('INVALID_IMAGE', 'Unclosed quote in !() image URL.');
       }
@@ -878,9 +939,8 @@ class Lexer {
         altText = content.substring(spaceIdx + 1);
       }
     }
-    // Unescape \( \) \\ sequences from bracket-matching escapes
-    url = url.replace(/\\([()\\])/g, '$1');
-    altText = altText.replace(/\\([()\\])/g, '$1');
+    url = unescapeShorthand(url);
+    altText = unescapeShorthand(altText);
 
     // Build attribute string: src='url' alt='alt text'
     const quote = url.includes("'") ? '"' : "'";
@@ -1524,6 +1584,9 @@ class Lexer {
               case '"':
                 value += '"';
                 break;
+              case '\\':
+                value += '\\';
+                break;
               case 'n':
                 value += '\n';
                 break;
@@ -1531,7 +1594,7 @@ class Lexer {
                 value += '\t';
                 break;
               default:
-                value += str[i];
+                value += '\\' + str[i];
                 break;
             }
             this.incrementColumn(2);

@@ -1,0 +1,6 @@
+div(data-escaped='back\\slash')
+div(data-newline='line\none')
+div(data-tab='col\tone')
+div(data-quote="it\'s here")
+div(data-dquote='say \"hello\"')
+div(data-unknown='foo\bar')

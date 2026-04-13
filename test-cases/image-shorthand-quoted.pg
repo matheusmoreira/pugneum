@@ -1,0 +1,5 @@
+p !("https://example.com/path with spaces.png" a photo)
+p !('https://example.com/another path.png' a photo)
+p !("https://example.com/it\"s-here.png" a photo)
+p !('https://example.com/it\'s-here.png' a photo)
+p !("https://example.com/back\\slash.png" a photo)

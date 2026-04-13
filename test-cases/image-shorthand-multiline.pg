@@ -1,0 +1,7 @@
+p.
+  Multi-line !(https://example.com/images/long-path.png
+  the image) in text block.
+
+p.
+  Before !(https://example.com/very/long/image/path.png
+  alt text here) after.

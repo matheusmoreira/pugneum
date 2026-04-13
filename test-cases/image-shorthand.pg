@@ -1,0 +1,8 @@
+p !(photo.jpg a cat)
+p !(https://example.com/logo.png)
+p See !(icon.png the icon) here.
+p \!(not an image)
+p #[em check !(badge.svg badge) out]
+p.
+  Text with !(photo.jpg a photo) inside.
+p !(/img/pic.jpg a photo)(class="photo" loading="lazy")

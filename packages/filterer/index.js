@@ -75,18 +75,31 @@ function getBodyAsText(node) {
 }
 
 function getAttributes(node, options) {
-  const attrs = {};
+  const attrs = Object.create(null);
   (node.attrs || []).forEach(function (attr) {
     attrs[attr.name] = attr.val === true ? true : attr.val;
   });
-  const opts = options[node.name] || {};
+  const opts =
+    options && Object.prototype.hasOwnProperty.call(options, node.name)
+      ? options[node.name]
+      : {};
   Object.assign(attrs, opts);
   return attrs;
 }
 
 function resolveFilter(name, filters, node) {
-  if (filters && filters[name]) {
+  if (filters && Object.prototype.hasOwnProperty.call(filters, name)) {
     return filters[name];
+  }
+
+  // Validate filter name before require() — only allow safe package name characters
+  if (!/^[\w][\w\-.]*$/.test(name)) {
+    throw error('INVALID_FILTER_NAME', `Invalid filter name '${name}'`, {
+      line: node ? node.line : 0,
+      column: node ? node.column : 0,
+      filename: node ? node.filename : '',
+      source: '',
+    });
   }
 
   try {

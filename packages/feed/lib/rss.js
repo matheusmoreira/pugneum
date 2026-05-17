@@ -62,16 +62,16 @@ module.exports = function generateRss(feed) {
 
 function feedLastBuildDate(feed) {
   if (feed.entries.length > 0) {
-    return toRFC822(feed.entries[0].published);
+    return toRFC822(feed.entries[0].published, feed.buildDate);
   }
   if (feed.updated) {
-    return toRFC822(feed.updated);
+    return toRFC822(feed.updated, feed.buildDate);
   }
-  return new Date().toUTCString();
+  return new Date(feed.buildDate).toUTCString();
 }
 
-function toRFC822(dateStr) {
-  if (!dateStr) return new Date().toUTCString();
+function toRFC822(dateStr, fallback) {
+  if (!dateStr) return new Date(fallback || Date.now()).toUTCString();
   const normalized = dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00Z';
   return new Date(normalized).toUTCString();
 }

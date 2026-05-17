@@ -54,16 +54,16 @@ module.exports = function generateAtom(feed) {
 
 function feedUpdated(feed) {
   if (feed.entries.length > 0) {
-    return escapeXml(toISO8601(feed.entries[0].published));
+    return escapeXml(toISO8601(feed.entries[0].published, feed.buildDate));
   }
   if (feed.updated) {
-    return escapeXml(toISO8601(feed.updated));
+    return escapeXml(toISO8601(feed.updated, feed.buildDate));
   }
-  return new Date().toISOString();
+  return feed.buildDate;
 }
 
-function toISO8601(dateStr) {
-  if (!dateStr) return new Date().toISOString();
+function toISO8601(dateStr, fallback) {
+  if (!dateStr) return fallback || new Date().toISOString();
   if (dateStr.includes('T')) return dateStr;
   return dateStr + 'T00:00:00Z';
 }

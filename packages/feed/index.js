@@ -97,6 +97,7 @@ module.exports = function generateFeeds(options) {
   }
 
   // Build feed data
+  const buildDate = new Date().toISOString();
   const feed = {
     url: url,
     title: title,
@@ -106,6 +107,7 @@ module.exports = function generateFeeds(options) {
     entries: entries,
     atomPath: atomPath,
     rssPath: rssPath,
+    buildDate: buildDate,
   };
 
   // Generate and write feeds

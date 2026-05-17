@@ -70,9 +70,14 @@ function extractEntries(dom) {
     dom,
   );
 
-  for (let i = 0; i < elements.length; i++) {
-    const published = elements[i].attribs['data-published-at'];
-    const links = DomUtils.getElementsByTagName('a', elements[i]);
+  // Skip elements that are descendants of other matched elements
+  const topLevel = elements.filter(
+    (el) => !elements.some((other) => other !== el && isAncestor(other, el)),
+  );
+
+  for (let i = 0; i < topLevel.length; i++) {
+    const published = topLevel[i].attribs['data-published-at'];
+    const links = DomUtils.getElementsByTagName('a', topLevel[i]);
     if (links.length > 0 && links[0].attribs && links[0].attribs.href) {
       entries.push({
         href: links[0].attribs.href,
@@ -84,6 +89,15 @@ function extractEntries(dom) {
 
   entries.sort((a, b) => (b.published || '').localeCompare(a.published || ''));
   return entries;
+}
+
+function isAncestor(ancestor, node) {
+  let current = node.parent;
+  while (current) {
+    if (current === ancestor) return true;
+    current = current.parent;
+  }
+  return false;
 }
 
 function extractKeywords(dom) {

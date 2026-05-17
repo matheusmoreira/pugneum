@@ -18720,6 +18720,15 @@ exports[`interpolation.escape.pg 1`] = `
 ]
 `;
 
+exports[`invalid-attribute-name.pg 1`] = `
+{
+  "msg": "Code points not allowed in HTML attribute names: >",
+  "code": "PUGNEUM:INVALID_ATTRIBUTE_NAME",
+  "line": 1,
+  "column": 6
+}
+`;
+
 exports[`invalid-class-name-1.pg 1`] = `
 {
   "msg": "Class names must contain at least one letter or underscore.",
@@ -18762,6 +18771,15 @@ exports[`invalid-mixin-param.pg 1`] = `
   "code": "PUGNEUM:INVALID_MIXIN_PARAM",
   "line": 1,
   "column": 1
+}
+`;
+
+exports[`invalid-ref-link.pg 1`] = `
+{
+  "msg": "Reference link @[] requires an identifier.",
+  "code": "PUGNEUM:INVALID_REF_LINK",
+  "line": 1,
+  "column": 3
 }
 `;
 
@@ -22603,6 +22621,15 @@ exports[`link-shorthand.pg 1`] = `
     }
   }
 ]
+`;
+
+exports[`malformed-extends.pg 1`] = `
+{
+  "msg": "missing path for extends",
+  "code": "PUGNEUM:NO_EXTENDS_PATH",
+  "line": 1,
+  "column": 8
+}
 `;
 
 exports[`malformed-include.pg 1`] = `
@@ -28817,6 +28844,15 @@ exports[`namespaces.pg 1`] = `
     }
   }
 ]
+`;
+
+exports[`nesting-too-deep.pg 1`] = `
+{
+  "msg": "Inline element nesting exceeds maximum depth of 256",
+  "code": "PUGNEUM:NESTING_TOO_DEEP",
+  "line": 1,
+  "column": 1029
+}
 `;
 
 exports[`nesting.pg 1`] = `
@@ -36143,6 +36179,15 @@ exports[`text.pg 1`] = `
     }
   }
 ]
+`;
+
+exports[`unexpected-text.pg 1`] = `
+{
+  "msg": "unexpected text \\"= foo\\"",
+  "code": "PUGNEUM:UNEXPECTED_TEXT",
+  "line": 1,
+  "column": 2
+}
 `;
 
 exports[`utf8bom.pg 1`] = `

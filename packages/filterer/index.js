@@ -60,13 +60,26 @@ function handleNestedFilters(node, filters, options) {
 
 function filterText(name, text, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
-  return resolved.filter(text, attrs);
+  return runFilter(resolved, name, text, attrs, node);
 }
 
 function filterFile(name, file, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
   const input = resolved.binary ? file.raw : file.str;
-  return resolved.filter(input, attrs);
+  return runFilter(resolved, name, input, attrs, node);
+}
+
+function runFilter(resolved, name, input, attrs, node) {
+  try {
+    return resolved.filter(input, attrs);
+  } catch (ex) {
+    if (ex.code && ex.code.startsWith('PUGNEUM:')) throw ex;
+    throw error('FILTER_ERROR', `Filter '${name}' failed: ${ex.message}`, {
+      line: node ? node.line : 0,
+      column: node ? node.column : 0,
+      filename: node ? node.filename : '',
+    });
+  }
 }
 
 function getBodyAsText(node) {

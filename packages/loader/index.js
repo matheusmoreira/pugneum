@@ -119,13 +119,13 @@ function resolve(filename, source, options) {
 }
 
 function resolveLibrary(filename) {
-  // Split @scope/package/sub/path.pg into package name and subpath
-  var parts = filename.split('/');
-  var pkg = parts.slice(0, 2).join('/');
-  var subpath = parts.slice(2).join('/');
+  const parts = filename.split('/');
+  const pkg = parts.slice(0, 2).join('/');
+  const subpath = parts.slice(2).join('/');
 
+  let pkgJson;
   try {
-    var pkgJson = require.resolve(pkg + '/package.json');
+    pkgJson = require.resolve(pkg + '/package.json');
   } catch (e) {
     throw makeError(
       'PACKAGE_NOT_FOUND',
@@ -134,9 +134,9 @@ function resolveLibrary(filename) {
     );
   }
 
-  var pkgDir = path.dirname(pkgJson);
-  var resolved = path.resolve(path.join(pkgDir, subpath));
-  var resolvedPkgDir = path.resolve(pkgDir);
+  const pkgDir = path.dirname(pkgJson);
+  const resolved = path.resolve(path.join(pkgDir, subpath));
+  const resolvedPkgDir = path.resolve(pkgDir);
   if (
     resolved !== resolvedPkgDir &&
     !resolved.startsWith(resolvedPkgDir + path.sep)

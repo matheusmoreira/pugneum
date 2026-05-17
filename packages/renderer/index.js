@@ -225,6 +225,7 @@ class Compiler {
     if (classes.length > 0) {
       const resolved = [];
       for (const attr of classes) {
+        if (attr.val === true) continue;
         const val = this.resolveAttrValue(String(attr.val), attr);
         if (val !== null) resolved.push(val);
       }

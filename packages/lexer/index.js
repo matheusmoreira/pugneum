@@ -692,9 +692,10 @@ class Lexer {
     escaped = escaped || 0;
 
     while (true) {
+      let earliest;
 
       for (;;) {
-        const earliest = this.findEarliestCandidate(value);
+        earliest = this.findEarliestCandidate(value);
 
         if (!earliest) {
           value = prefix + value;
@@ -707,11 +708,9 @@ class Lexer {
         if (earliest.kind !== 'escaped') break;
 
         prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
-        value = value.substring(earliest.pos + 3);
+        value = value.substring(earliest.pos + 1 + earliest.literal.length);
         escaped++;
       }
-
-      const earliest = this.findEarliestCandidate(value);
 
       if (earliest.kind === 'end') {
         if (prefix + value.substring(0, earliest.pos)) {

@@ -129,6 +129,26 @@ describe('error handling', () => {
     );
   });
 
+  test('LINK_DEPTH_EXCEEDED when inheritance chain exceeds limit', () => {
+    var dir = __dirname + '/cases';
+    var source = 'extends auxiliary/layout.pg\nblock content\n  p hello';
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+      maxLinkDepth: 1,
+    };
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    assert.throws(
+      () => link(loaded, options),
+      (err) => err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED',
+    );
+  });
+
   test('UNEXPECTED_NODES_IN_EXTENDING_ROOT for non-block content in extending template', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\np this is not allowed';

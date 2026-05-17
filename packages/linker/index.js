@@ -10,11 +10,24 @@ function error(code, message, node, source) {
   });
 }
 
+const DEFAULT_MAX_LINK_DEPTH = 256;
+
 module.exports = link;
 
 function link(ast, options) {
   options = options || {};
   const source = options.source;
+  const maxDepth = options.maxLinkDepth || DEFAULT_MAX_LINK_DEPTH;
+  const depth = options._linkDepth || 0;
+
+  if (depth >= maxDepth) {
+    error(
+      'LINK_DEPTH_EXCEEDED',
+      `Template inheritance/include chain exceeds maximum depth of ${maxDepth}`,
+      ast,
+      source,
+    );
+  }
 
   if (ast.type !== 'Block') {
     error('INVALID_AST', 'The top level element should always be a block', ast, source);
@@ -51,7 +64,7 @@ function link(ast, options) {
     });
 
     // Validate expected blocks BEFORE mutating parent via extend()
-    const parent = link(extendsNode.file.ast, options);
+    const parent = link(extendsNode.file.ast, Object.assign({}, options, {_linkDepth: depth + 1}));
     const parentBlockNames = [];
     walk(parent, function (node) {
       if (node.type === 'NamedBlock') {
@@ -158,7 +171,8 @@ function applyIncludes(ast, options) {
     },
     function after(node, replace) {
       if (node.type === 'Include') {
-        let childAST = link(node.file.ast, options);
+        const depth = options._linkDepth || 0;
+        let childAST = link(node.file.ast, Object.assign({}, options, {_linkDepth: depth + 1}));
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }

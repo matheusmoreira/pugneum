@@ -2,20 +2,42 @@ const makeError = require('pugneum-error');
 
 const MAX_MIXIN_DEPTH = 256;
 
-const selfClosing = // HTML void elements
-  // https://html.spec.whatwg.org/multipage/syntax.html#void-elements
-  (
-    'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr, ' +
-    // SVG elements that never have children
-    // https://developer.mozilla.org/en-US/docs/Web/SVG/Element
-    'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
-    'animate, animateMotion, animateTransform, set'
-  )
-    .split(', ')
-    .reduce(function (voidElements, element) {
-      voidElements[element] = true;
-      return voidElements;
-    }, Object.create(null));
+// HTML output context escaping.
+//
+// Pugneum templates are trusted source — the template author IS the HTML
+// author. Text content passes through raw so authors can embed inline HTML.
+// Escaping is applied only at syntactic boundaries where unescaped characters
+// produce structurally invalid HTML.
+//
+// Attribute values: & and " must be escaped to prevent entity corruption
+// and attribute breakout. < and > are legal in quoted attribute values
+// per the HTML spec and are preserved so authors can store markup in
+// data attributes.
+//
+// Comments: the HTML spec (§13.1.6) forbids the sequence -- inside
+// comments. Consecutive hyphens are separated.
+//
+// Tag and attribute names are validated by the lexer against the HTML
+// spec regex and are safe by construction.
+
+function escapeAttrValue(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sanitizeCommentContent(str) {
+  return str.replace(/-{2,}/g, (m) => m.split('').join(' '));
+}
+
+const selfClosing = (
+  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr, ' +
+  'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
+  'animate, animateMotion, animateTransform, set'
+)
+  .split(', ')
+  .reduce(function (voidElements, element) {
+    voidElements[element] = true;
+    return voidElements;
+  }, Object.create(null));
 
 module.exports = compileToHTML;
 
@@ -55,6 +77,15 @@ class Compiler {
 
   buffer(str) {
     this.buf.push(str);
+  }
+
+  renderToString(node) {
+    const saved = this.buf;
+    this.buf = [];
+    this.visit(node);
+    const result = this.buf.join('');
+    this.buf = saved;
+    return result;
   }
 
   visit(node, parent) {
@@ -98,7 +129,7 @@ class Compiler {
         case 'Extends':
         case 'Include':
         case 'NamedBlock':
-        case 'FileReference': // unlikely but for the sake of completeness
+        case 'FileReference':
           msg += '; use pugneum-linker';
           break;
       }
@@ -135,7 +166,6 @@ class Compiler {
     if (tag.selfClosing || selfClosing[tag.name]) {
       this.buffer('>');
 
-      // if it is non-empty throw an error
       if (
         tag.block &&
         !(tag.block.type === 'Block' && tag.block.nodes.length === 0) &&
@@ -167,19 +197,19 @@ class Compiler {
 
   visitComment(comment) {
     if (!comment.buffer) return;
-    this.buffer('<!--' + sanitizeComment(comment.val) + '-->');
+    this.buffer('<!--');
+    this.buffer(sanitizeCommentContent(comment.val));
+    this.buffer('-->');
   }
 
   visitYieldBlock(block) {}
 
   visitBlockComment(comment) {
     if (!comment.buffer) return;
-    const saved = this.buf;
-    this.buf = [];
-    this.visit(comment.block, comment);
-    const blockContent = this.buf.join('');
-    this.buf = saved;
-    this.buffer('<!--' + sanitizeComment((comment.val || '') + blockContent) + '-->');
+    const blockContent = this.renderToString(comment.block);
+    this.buffer('<!--');
+    this.buffer(sanitizeCommentContent((comment.val || '') + blockContent));
+    this.buffer('-->');
   }
 
   visitAttributes(attrs) {
@@ -193,7 +223,6 @@ class Compiler {
       }
     }
     if (classes.length > 0) {
-      // resolve each class contribution individually; skip null ones
       const resolved = [];
       for (const attr of classes) {
         const val = this.resolveAttrValue(String(attr.val), attr);
@@ -207,7 +236,6 @@ class Compiler {
     }
     for (const attr of others) {
       if (attr.val === true) {
-        // boolean attribute
         this.buffer(' ');
         this.buffer(attr.name);
       } else {
@@ -262,13 +290,11 @@ class Compiler {
 
   visitMixin(mixin) {
     if (mixin.call) {
-      // find defined mixin of same name
       const declared = this.mixins[mixin.name];
       if (!declared) {
         this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
 
-      // check arguments: allow fewer (optional), reject too many
       const args = mixin.args,
         len = declared.args.length;
 
@@ -280,7 +306,6 @@ class Compiler {
         );
       }
 
-      // cycle detection: error if this mixin is already on the call stack
       for (const frame of this.callStack) {
         if (frame.name === mixin.name) {
           this.error(
@@ -291,7 +316,6 @@ class Compiler {
         }
       }
 
-      // depth limit: prevent unbounded resource consumption
       if (this.callStack.length >= MAX_MIXIN_DEPTH) {
         this.error(
           'MIXIN_STACK_OVERFLOW',
@@ -300,7 +324,6 @@ class Compiler {
         );
       }
 
-      // bind arguments: provided → string, default → default, neither → null
       const frame = this.callStack.at(-1);
       const parentEnvironment = (frame && frame.environment) || null;
       const environment = Object.create(parentEnvironment);
@@ -316,15 +339,12 @@ class Compiler {
         }
       }
 
-      // bind caller's block
       const block = mixin.block;
 
-      // evaluate mixin block which may contain variable nodes
       this.callStack.push({name: mixin.name, environment, block});
       this.visit(declared.block);
       this.callStack.pop();
     } else {
-      // mixin declaration, save mixin
       this.mixins[mixin.name] = mixin;
     }
   }
@@ -354,12 +374,4 @@ class Compiler {
       this.callStack.push(current);
     }
   }
-}
-
-function escapeAttrValue(str) {
-  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-}
-
-function sanitizeComment(str) {
-  return str.replace(/-{2,}/g, (m) => m.split('').join(' '));
 }

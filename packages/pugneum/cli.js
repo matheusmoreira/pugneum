@@ -91,11 +91,9 @@ function isPugneum(file) {
 }
 
 function processDirectory(directory, f, visited) {
-  const firstCall = !visited;
   visited = visited || new Set();
   const stat = fs.lstatSync(directory);
-  if (stat.isSymbolicLink() && !firstCall) return;
-  if (stat.isSymbolicLink()) directory = fs.realpathSync(directory);
+  if (stat.isSymbolicLink()) return;
   const inode = stat.dev + ':' + stat.ino;
   if (visited.has(inode)) return;
   visited.add(inode);
@@ -150,8 +148,9 @@ try {
     readAndValidateInput('pugneum.json');
   const pgOptions = {basedir: baseDirectory};
 
+  const resolvedInputDir = fs.realpathSync(inputDirectory);
   const resolvedOutputDir = path.resolve(outputDirectory);
-  processDirectory(inputDirectory, function compilePugneumAndSave(input) {
+  processDirectory(resolvedInputDir, function compilePugneumAndSave(input) {
     const relative = path.relative(inputDirectory, input);
     const outputPath = path
       .join(outputDirectory, relative)

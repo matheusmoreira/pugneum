@@ -59,4 +59,43 @@ describe('error paths', () => {
       (err) => err.code === 'PUGNEUM:DUPLICATE_ID',
     );
   });
+
+  test('DUPLICATE_ATTRIBUTE when same attribute appears twice', () => {
+    assert.throws(
+      () => parseSource('div(id="a" id="b")'),
+      (err) => err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE',
+    );
+  });
+
+  test('INVALID_TOKEN for unexpected token in expression position', () => {
+    var lex = require('pugneum-lexer');
+    var tokens = lex('div', {filename: 'test.pg'});
+    tokens.splice(1, 0, {type: 'bogus', loc: {start: {line: 1, column: 4}}});
+    assert.throws(
+      () => parse(tokens, {filename: 'test.pg'}),
+      (err) => err.code === 'PUGNEUM:INVALID_TOKEN',
+    );
+  });
+
+  test('MIXIN_WITHOUT_BODY for mixin with no indented block', () => {
+    assert.throws(
+      () => parseSource('mixin foo'),
+      (err) => err.code === 'PUGNEUM:MIXIN_WITHOUT_BODY',
+    );
+  });
+
+  test('RAW_INCLUDE_BLOCK for raw include with block content', () => {
+    assert.throws(
+      () => parseSource('include:verbatim file.txt\n  p not allowed'),
+      (err) => err.code === 'PUGNEUM:RAW_INCLUDE_BLOCK',
+    );
+  });
+
+  test('NESTING_TOO_DEEP when recursion limit exceeded', () => {
+    var deep = Array(300).fill('div:').join(' ') + ' p end';
+    assert.throws(
+      () => parseSource(deep),
+      (err) => err.code === 'PUGNEUM:NESTING_TOO_DEEP',
+    );
+  });
 });

@@ -102,4 +102,43 @@ describe('error handling', () => {
       (err) => err.code === 'PUGNEUM:MISSING_YIELD',
     );
   });
+
+  test('EXTENDS_NOT_FIRST when extends is not the first statement', () => {
+    var dir = __dirname + '/cases';
+    var source = 'p hello\nextends auxiliary/layout.pg';
+    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    assert.throws(
+      () => link(loaded),
+      (err) => err.code === 'PUGNEUM:EXTENDS_NOT_FIRST',
+    );
+  });
+
+  test('UNEXPECTED_BLOCK for block not defined in parent', () => {
+    var dir = __dirname + '/cases';
+    var source = 'extends auxiliary/layout.pg\nblock nonexistent\n  p hello';
+    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    assert.throws(
+      () => link(loaded),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_BLOCK',
+    );
+  });
+
+  test('UNEXPECTED_NODES_IN_EXTENDING_ROOT for non-block content in extending template', () => {
+    var dir = __dirname + '/cases';
+    var source = 'extends auxiliary/layout.pg\np this is not allowed';
+    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    assert.throws(
+      () => link(loaded),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_NODES_IN_EXTENDING_ROOT',
+    );
+  });
 });

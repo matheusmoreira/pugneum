@@ -41,6 +41,13 @@ describe('basic rendering', () => {
     assert.strictEqual(render(block([text('hello')])), '<!DOCTYPE html>hello');
   });
 
+  test('doctype: false omits doctype', () => {
+    assert.strictEqual(
+      render(block([tag('p', [], [text('hi')])]), {doctype: false}),
+      '<p>hi</p>',
+    );
+  });
+
   test('tag with text', () => {
     assert.strictEqual(
       render(block([tag('p', [], [text('hi')])])),

@@ -68,3 +68,48 @@ test('RSS description is required', () => {
     (err) => err.code === 'PUGNEUM:FEED_MISSING_DESCRIPTION',
   );
 });
+
+test('CDATA content with ]]> is properly escaped', () => {
+  const feed = {
+    url: 'https://example.com/',
+    title: 'Test',
+    description: 'A test feed',
+    author: 'Author',
+    entries: [
+      {
+        url: 'https://example.com/post',
+        title: 'Post',
+        published: '2026-01-01',
+        author: 'Author',
+        content: '<pre>xml: ]]></pre>',
+      },
+    ],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+  const rss = generateRss(feed);
+  assert.ok(!rss.includes('<pre>xml: ]]></pre>'));
+  assert.ok(rss.includes(']]]]><![CDATA[>'));
+});
+
+test('null entry fields do not crash', () => {
+  const feed = {
+    url: 'https://example.com/',
+    title: null,
+    description: 'A feed',
+    author: null,
+    entries: [
+      {
+        url: 'https://example.com/post',
+        title: null,
+        published: '2026-01-01',
+        author: null,
+        content: '',
+      },
+    ],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+  const rss = generateRss(feed);
+  assert.ok(rss.includes('<title></title>'));
+});

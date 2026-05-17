@@ -263,7 +263,6 @@ function resolveReferences(ast, source) {
           line: node.line,
           column: node.column,
           filename: node.filename,
-          mustEscape: false,
         },
       ];
       if (node.attrs) {

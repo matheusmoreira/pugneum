@@ -66,7 +66,7 @@ describe('basic rendering', () => {
 describe('attributes', () => {
   test('string attribute', () => {
     var attrs = [
-      {name: 'href', val: '/home', line: 1, column: 1, mustEscape: false},
+      {name: 'href', val: '/home', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('a', attrs, [text('link')])])),
@@ -76,7 +76,7 @@ describe('attributes', () => {
 
   test('boolean attribute', () => {
     var attrs = [
-      {name: 'disabled', val: true, line: 1, column: 1, mustEscape: false},
+      {name: 'disabled', val: true, line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
@@ -86,8 +86,8 @@ describe('attributes', () => {
 
   test('multiple classes joined with spaces', () => {
     var attrs = [
-      {name: 'class', val: 'a', line: 1, column: 1, mustEscape: false},
-      {name: 'class', val: 'b', line: 1, column: 1, mustEscape: false},
+      {name: 'class', val: 'a', line: 1, column: 1},
+      {name: 'class', val: 'b', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
@@ -102,7 +102,6 @@ describe('attributes', () => {
         val: 'say "hello"',
         line: 1,
         column: 1,
-        mustEscape: false,
       },
     ];
     assert.strictEqual(
@@ -113,7 +112,7 @@ describe('attributes', () => {
 
   test('quotes in class values are escaped', () => {
     var attrs = [
-      {name: 'class', val: 'a"b', line: 1, column: 1, mustEscape: false},
+      {name: 'class', val: 'a"b', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
@@ -154,10 +153,10 @@ describe('void elements', () => {
 describe('SVG void elements', () => {
   test('rect is self-closing', () => {
     var attrs = [
-      {name: 'x', val: '0', line: 1, column: 1, mustEscape: false},
-      {name: 'y', val: '0', line: 1, column: 1, mustEscape: false},
-      {name: 'width', val: '100', line: 1, column: 1, mustEscape: false},
-      {name: 'height', val: '50', line: 1, column: 1, mustEscape: false},
+      {name: 'x', val: '0', line: 1, column: 1},
+      {name: 'y', val: '0', line: 1, column: 1},
+      {name: 'width', val: '100', line: 1, column: 1},
+      {name: 'height', val: '50', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('rect', attrs)])),
@@ -167,9 +166,9 @@ describe('SVG void elements', () => {
 
   test('circle is self-closing', () => {
     var attrs = [
-      {name: 'cx', val: '50', line: 1, column: 1, mustEscape: false},
-      {name: 'cy', val: '50', line: 1, column: 1, mustEscape: false},
-      {name: 'r', val: '25', line: 1, column: 1, mustEscape: false},
+      {name: 'cx', val: '50', line: 1, column: 1},
+      {name: 'cy', val: '50', line: 1, column: 1},
+      {name: 'r', val: '25', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('circle', attrs)])),
@@ -179,10 +178,10 @@ describe('SVG void elements', () => {
 
   test('line is self-closing', () => {
     var attrs = [
-      {name: 'x1', val: '0', line: 1, column: 1, mustEscape: false},
-      {name: 'y1', val: '0', line: 1, column: 1, mustEscape: false},
-      {name: 'x2', val: '100', line: 1, column: 1, mustEscape: false},
-      {name: 'y2', val: '100', line: 1, column: 1, mustEscape: false},
+      {name: 'x1', val: '0', line: 1, column: 1},
+      {name: 'y1', val: '0', line: 1, column: 1},
+      {name: 'x2', val: '100', line: 1, column: 1},
+      {name: 'y2', val: '100', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('line', attrs)])),
@@ -192,7 +191,7 @@ describe('SVG void elements', () => {
 
   test('path is self-closing', () => {
     var attrs = [
-      {name: 'd', val: 'M0 0 L100 100', line: 1, column: 1, mustEscape: false},
+      {name: 'd', val: 'M0 0 L100 100', line: 1, column: 1},
     ];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
@@ -224,7 +223,6 @@ describe('SVG void elements', () => {
                 val: '#icon',
                 line: 1,
                 column: 1,
-                mustEscape: false,
               },
             ],
             [text('')],
@@ -244,7 +242,6 @@ describe('SVG void elements', () => {
                 val: 'pic.png',
                 line: 1,
                 column: 1,
-                mustEscape: false,
               },
             ],
             [text('')],
@@ -592,7 +589,6 @@ describe('variables in attributes', () => {
               val: '#{url}',
               line: 1,
               column: 1,
-              mustEscape: false,
             },
           ],
           [text('click')],
@@ -631,7 +627,6 @@ describe('variables in attributes', () => {
             val: '#{a}-#{b}',
             line: 1,
             column: 1,
-            mustEscape: false,
           },
         ]),
       ]),
@@ -668,7 +663,6 @@ describe('variables in attributes', () => {
             val: '\\#{x}',
             line: 1,
             column: 1,
-            mustEscape: false,
           },
         ]),
       ]),
@@ -705,7 +699,6 @@ describe('variables in attributes', () => {
             val: 'item-#{cls}',
             line: 1,
             column: 1,
-            mustEscape: false,
           },
         ]),
       ]),
@@ -740,7 +733,6 @@ describe('variables in attributes', () => {
                 val: '#{oops}',
                 line: 1,
                 column: 1,
-                mustEscape: false,
               },
             ]),
           ]),
@@ -757,7 +749,7 @@ describe('variables in attributes', () => {
       args: [],
       block: block([
         tag('div', [
-          {name: 'x', val: '#{missing}', line: 1, column: 1, mustEscape: false},
+          {name: 'x', val: '#{missing}', line: 1, column: 1},
         ]),
       ]),
       line: 1,
@@ -792,7 +784,6 @@ describe('variables in attributes', () => {
                 val: '/static',
                 line: 1,
                 column: 1,
-                mustEscape: false,
               },
             ],
             [text('link')],
@@ -968,7 +959,7 @@ function variable(name) {
 
 // Helper: attribute
 function attr(name, val) {
-  return {name: name, val: val, line: 1, column: 1, mustEscape: false};
+  return {name: name, val: val, line: 1, column: 1};
 }
 
 describe('optional arguments', () => {

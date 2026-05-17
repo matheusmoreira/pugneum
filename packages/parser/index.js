@@ -827,7 +827,6 @@ class Parser {
             line: tok.loc.start.line,
             column: tok.loc.start.column,
             filename: this.filename,
-            mustEscape: false,
           });
           continue;
         case 'start-attributes':
@@ -929,7 +928,6 @@ class Parser {
         line: tok.loc.start.line,
         column: tok.loc.start.column,
         filename: this.filename,
-        mustEscape: tok.mustEscape !== false,
       });
       tok = this.advance();
     }

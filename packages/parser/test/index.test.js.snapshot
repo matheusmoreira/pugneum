@@ -17,8 +17,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "back\\\\slash",
           "line": 1,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -42,8 +41,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "line\\none",
           "line": 2,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -67,8 +65,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "col\\tone",
           "line": 3,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -92,8 +89,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "it's here",
           "line": 4,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -117,8 +113,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "say \\"hello\\"",
           "line": 5,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -142,8 +137,7 @@ exports[`attrs-escape.pg 1`] = `
           "val": "foo\\\\bar",
           "line": 6,
           "column": 5,
-          "filename": "attrs-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -177,8 +171,7 @@ exports[`attrs-unquoted-escape.pg 1`] = `
           "val": "/my path",
           "line": 1,
           "column": 3,
-          "filename": "attrs-unquoted-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-unquoted-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -202,8 +195,7 @@ exports[`attrs-unquoted-escape.pg 1`] = `
           "val": "/C:\\\\Windows\\\\system32",
           "line": 2,
           "column": 3,
-          "filename": "attrs-unquoted-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-unquoted-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -227,16 +219,14 @@ exports[`attrs-unquoted-escape.pg 1`] = `
           "val": "hello world",
           "line": 3,
           "column": 3,
-          "filename": "attrs-unquoted-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-unquoted-escape.pg"
         },
         {
           "name": "class",
           "val": "foo",
           "line": 3,
           "column": 23,
-          "filename": "attrs-unquoted-escape.pg",
-          "mustEscape": true
+          "filename": "attrs-unquoted-escape.pg"
         }
       ],
       "attributeBlocks": [],
@@ -278,8 +268,7 @@ exports[`attrs.pg 1`] = `
           "val": "/contact",
           "line": 1,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -311,16 +300,14 @@ exports[`attrs.pg 1`] = `
           "val": "/save",
           "line": 2,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "class",
           "val": "button",
           "line": 2,
           "column": 16,
-          "filename": "attrs.pg",
-          "mustEscape": false
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -344,24 +331,21 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 3,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": true,
           "line": 3,
           "column": 7,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "baz",
           "val": true,
           "line": 3,
           "column": 11,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -385,24 +369,21 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 4,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar,",
           "val": true,
           "line": 4,
           "column": 8,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "baz",
           "val": true,
           "line": 4,
           "column": 13,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -426,16 +407,14 @@ exports[`attrs.pg 1`] = `
           "val": "foo, bar, baz",
           "line": 5,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "1",
           "line": 5,
           "column": 23,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -459,16 +438,14 @@ exports[`attrs.pg 1`] = `
           "val": "((foo))",
           "line": 6,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "(1) ? 1 : 0",
           "line": 6,
           "column": 17,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -506,16 +483,14 @@ exports[`attrs.pg 1`] = `
                 "val": "foo",
                 "line": 8,
                 "column": 10,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               },
               {
                 "name": "selected",
                 "val": true,
                 "line": 8,
                 "column": 22,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               }
             ],
             "attributeBlocks": [],
@@ -547,16 +522,14 @@ exports[`attrs.pg 1`] = `
                 "val": true,
                 "line": 9,
                 "column": 10,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               },
               {
                 "name": "value",
                 "val": "bar",
                 "line": 9,
                 "column": 19,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               }
             ],
             "attributeBlocks": [],
@@ -591,8 +564,7 @@ exports[`attrs.pg 1`] = `
           "val": "class:",
           "line": 10,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -616,8 +588,7 @@ exports[`attrs.pg 1`] = `
           "val": "\\\\S+",
           "line": 11,
           "column": 7,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -649,8 +620,7 @@ exports[`attrs.pg 1`] = `
           "val": "/contact",
           "line": 13,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -682,16 +652,14 @@ exports[`attrs.pg 1`] = `
           "val": "/save",
           "line": 14,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "class",
           "val": "button",
           "line": 14,
           "column": 16,
-          "filename": "attrs.pg",
-          "mustEscape": false
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -715,24 +683,21 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 15,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": true,
           "line": 15,
           "column": 7,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "baz",
           "val": true,
           "line": 15,
           "column": 11,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -756,16 +721,14 @@ exports[`attrs.pg 1`] = `
           "val": "foo, bar, baz",
           "line": 16,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "1",
           "line": 16,
           "column": 23,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -789,16 +752,14 @@ exports[`attrs.pg 1`] = `
           "val": "((foo))",
           "line": 17,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "(1) ? 1 : 0",
           "line": 17,
           "column": 17,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -836,16 +797,14 @@ exports[`attrs.pg 1`] = `
                 "val": "foo",
                 "line": 19,
                 "column": 10,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               },
               {
                 "name": "selected",
                 "val": true,
                 "line": 19,
                 "column": 22,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               }
             ],
             "attributeBlocks": [],
@@ -877,16 +836,14 @@ exports[`attrs.pg 1`] = `
                 "val": true,
                 "line": 20,
                 "column": 10,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               },
               {
                 "name": "value",
                 "val": "bar",
                 "line": 20,
                 "column": 19,
-                "filename": "attrs.pg",
-                "mustEscape": true
+                "filename": "attrs.pg"
               }
             ],
             "attributeBlocks": [],
@@ -921,8 +878,7 @@ exports[`attrs.pg 1`] = `
           "val": "class:",
           "line": 21,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -946,8 +902,7 @@ exports[`attrs.pg 1`] = `
           "val": "\\\\S+",
           "line": 22,
           "column": 7,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -971,8 +926,7 @@ exports[`attrs.pg 1`] = `
           "val": "true",
           "line": 23,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -996,8 +950,7 @@ exports[`attrs.pg 1`] = `
           "val": "new Date(0)",
           "line": 24,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1021,16 +974,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 26,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "def",
           "val": true,
           "line": 27,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1054,16 +1005,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 28,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": ",def",
           "val": true,
           "line": 29,
           "column": 4,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1087,16 +1036,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 30,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "def",
           "val": true,
           "line": 31,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1120,16 +1067,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 32,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "def",
           "val": true,
           "line": 33,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1153,16 +1098,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 34,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": ",def",
           "val": true,
           "line": 35,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1186,16 +1129,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 36,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "def",
           "val": true,
           "line": 37,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1219,16 +1160,14 @@ exports[`attrs.pg 1`] = `
           "val": true,
           "line": 38,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "def",
           "val": true,
           "line": 39,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1252,16 +1191,14 @@ exports[`attrs.pg 1`] = `
           "val": "bar",
           "line": 41,
           "column": 5,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "<baz>",
           "line": 41,
           "column": 13,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1285,16 +1222,14 @@ exports[`attrs.pg 1`] = `
           "val": "foo",
           "line": 43,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "bar",
           "line": 43,
           "column": 13,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1318,16 +1253,14 @@ exports[`attrs.pg 1`] = `
           "val": "foo",
           "line": 44,
           "column": 3,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         },
         {
           "name": "bar",
           "val": "bar",
           "line": 44,
           "column": 13,
-          "filename": "attrs.pg",
-          "mustEscape": true
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1392,8 +1325,7 @@ exports[`attrs.unescaped.pg 1`] = `
                 "val": "user-<%= user.id %>",
                 "line": 2,
                 "column": 7,
-                "filename": "attrs.unescaped.pg",
-                "mustEscape": true
+                "filename": "attrs.unescaped.pg"
               }
             ],
             "attributeBlocks": [],
@@ -1412,8 +1344,7 @@ exports[`attrs.unescaped.pg 1`] = `
           "val": "text/x-template",
           "line": 1,
           "column": 8,
-          "filename": "attrs.unescaped.pg",
-          "mustEscape": true
+          "filename": "attrs.unescaped.pg"
         }
       ],
       "attributeBlocks": [],
@@ -1634,8 +1565,7 @@ exports[`block-expansion.pg 1`] = `
                       "val": "#",
                       "line": 2,
                       "column": 9,
-                      "filename": "block-expansion.pg",
-                      "mustEscape": true
+                      "filename": "block-expansion.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -1684,8 +1614,7 @@ exports[`block-expansion.pg 1`] = `
                       "val": "#",
                       "line": 3,
                       "column": 9,
-                      "filename": "block-expansion.pg",
-                      "mustEscape": true
+                      "filename": "block-expansion.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -1791,8 +1720,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                             "val": "bar",
                             "line": 2,
                             "column": 23,
-                            "filename": "block-expansion.shorthands.pg",
-                            "mustEscape": false
+                            "filename": "block-expansion.shorthands.pg"
                           }
                         ],
                         "attributeBlocks": [],
@@ -1811,8 +1739,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                       "val": "foo",
                       "line": 2,
                       "column": 17,
-                      "filename": "block-expansion.shorthands.pg",
-                      "mustEscape": false
+                      "filename": "block-expansion.shorthands.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -1831,8 +1758,7 @@ exports[`block-expansion.shorthands.pg 1`] = `
                 "val": "list-item",
                 "line": 2,
                 "column": 5,
-                "filename": "block-expansion.shorthands.pg",
-                "mustEscape": false
+                "filename": "block-expansion.shorthands.pg"
               }
             ],
             "attributeBlocks": [],
@@ -2009,8 +1935,7 @@ exports[`classes-empty.pg 1`] = `
           "val": "",
           "line": 1,
           "column": 3,
-          "filename": "classes-empty.pg",
-          "mustEscape": true
+          "filename": "classes-empty.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2044,8 +1969,7 @@ exports[`classes.pg 1`] = `
           "val": "foo bar baz",
           "line": 1,
           "column": 3,
-          "filename": "classes.pg",
-          "mustEscape": true
+          "filename": "classes.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2069,24 +1993,21 @@ exports[`classes.pg 1`] = `
           "val": "foo",
           "line": 2,
           "column": 2,
-          "filename": "classes.pg",
-          "mustEscape": false
+          "filename": "classes.pg"
         },
         {
           "name": "class",
           "val": "bar",
           "line": 2,
           "column": 7,
-          "filename": "classes.pg",
-          "mustEscape": true
+          "filename": "classes.pg"
         },
         {
           "name": "class",
           "val": "baz",
           "line": 2,
           "column": 17,
-          "filename": "classes.pg",
-          "mustEscape": false
+          "filename": "classes.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2110,8 +2031,7 @@ exports[`classes.pg 1`] = `
           "val": "foo-bar_baz",
           "line": 3,
           "column": 2,
-          "filename": "classes.pg",
-          "mustEscape": false
+          "filename": "classes.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2135,8 +2055,7 @@ exports[`classes.pg 1`] = `
           "val": "-foo",
           "line": 4,
           "column": 2,
-          "filename": "classes.pg",
-          "mustEscape": false
+          "filename": "classes.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2160,8 +2079,7 @@ exports[`classes.pg 1`] = `
           "val": "3foo",
           "line": 5,
           "column": 2,
-          "filename": "classes.pg",
-          "mustEscape": false
+          "filename": "classes.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2544,8 +2462,7 @@ exports[`comments.pg 1`] = `
           "val": "foo",
           "line": 29,
           "column": 1,
-          "filename": "comments.pg",
-          "mustEscape": false
+          "filename": "comments.pg"
         }
       ],
       "attributeBlocks": [],
@@ -2934,24 +2851,21 @@ exports[`escaped-tags.pg 1`] = `
           "val": "foo",
           "line": 10,
           "column": 9,
-          "filename": "escaped-tags.pg",
-          "mustEscape": false
+          "filename": "escaped-tags.pg"
         },
         {
           "name": "id",
           "val": "bar",
           "line": 10,
           "column": 13,
-          "filename": "escaped-tags.pg",
-          "mustEscape": false
+          "filename": "escaped-tags.pg"
         },
         {
           "name": "data-x",
           "val": "1",
           "line": 10,
           "column": 18,
-          "filename": "escaped-tags.pg",
-          "mustEscape": true
+          "filename": "escaped-tags.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3009,8 +2923,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %>",
           "line": 1,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3034,8 +2947,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %>",
           "line": 2,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3059,8 +2971,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %>",
           "line": 3,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3084,8 +2995,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %>",
           "line": 4,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3109,8 +3019,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %> lol rofl",
           "line": 5,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3134,8 +3043,7 @@ exports[`escaping-class-attribute.pg 1`] = `
           "val": "<%= bar %> lol rofl <%= lmao %>",
           "line": 6,
           "column": 5,
-          "filename": "escaping-class-attribute.pg",
-          "mustEscape": true
+          "filename": "escaping-class-attribute.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3248,8 +3156,7 @@ exports[`filters.coffeescript.pg 1`] = `
                 "val": "true",
                 "line": 4,
                 "column": 18,
-                "filename": "filters.coffeescript.pg",
-                "mustEscape": true
+                "filename": "filters.coffeescript.pg"
               }
             ],
             "line": 4,
@@ -3266,8 +3173,7 @@ exports[`filters.coffeescript.pg 1`] = `
           "val": "text/javascript",
           "line": 1,
           "column": 8,
-          "filename": "filters.coffeescript.pg",
-          "mustEscape": true
+          "filename": "filters.coffeescript.pg"
         }
       ],
       "attributeBlocks": [],
@@ -3363,16 +3269,14 @@ exports[`filters.custom.pg 1`] = `
                       "val": "val",
                       "line": 3,
                       "column": 13,
-                      "filename": "filters.custom.pg",
-                      "mustEscape": true
+                      "filename": "filters.custom.pg"
                     },
                     {
                       "name": "num",
                       "val": "2",
                       "line": 3,
                       "column": 23,
-                      "filename": "filters.custom.pg",
-                      "mustEscape": true
+                      "filename": "filters.custom.pg"
                     }
                   ],
                   "line": 3,
@@ -3451,16 +3355,14 @@ exports[`filters.include.custom.pg 1`] = `
                                 "val": "val",
                                 "line": 4,
                                 "column": 22,
-                                "filename": "filters.include.custom.pg",
-                                "mustEscape": true
+                                "filename": "filters.include.custom.pg"
                               },
                               {
                                 "name": "num",
                                 "val": "2",
                                 "line": 4,
                                 "column": 32,
-                                "filename": "filters.include.custom.pg",
-                                "mustEscape": true
+                                "filename": "filters.include.custom.pg"
                               }
                             ],
                             "line": 4,
@@ -3575,8 +3477,7 @@ exports[`filters.include.pg 1`] = `
                                 "val": "true",
                                 "line": 5,
                                 "column": 29,
-                                "filename": "filters.include.pg",
-                                "mustEscape": true
+                                "filename": "filters.include.pg"
                               }
                             ],
                             "line": 5,
@@ -3632,8 +3533,7 @@ exports[`filters.include.pg 1`] = `
                                 "val": "false",
                                 "line": 7,
                                 "column": 35,
-                                "filename": "filters.include.pg",
-                                "mustEscape": true
+                                "filename": "filters.include.pg"
                               }
                             ],
                             "line": 7,
@@ -3840,8 +3740,7 @@ exports[`filters.less.pg 1`] = `
                       "val": "text/css",
                       "line": 3,
                       "column": 11,
-                      "filename": "filters.less.pg",
-                      "mustEscape": true
+                      "filename": "filters.less.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -4215,8 +4114,7 @@ exports[`filters.stylus.pg 1`] = `
                       "val": "text/css",
                       "line": 3,
                       "column": 11,
-                      "filename": "filters.stylus.pg",
-                      "mustEscape": true
+                      "filename": "filters.stylus.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -4368,16 +4266,14 @@ exports[`html5.pg 1`] = `
           "val": "checkbox",
           "line": 1,
           "column": 7,
-          "filename": "html5.pg",
-          "mustEscape": true
+          "filename": "html5.pg"
         },
         {
           "name": "checked",
           "val": true,
           "line": 1,
           "column": 23,
-          "filename": "html5.pg",
-          "mustEscape": true
+          "filename": "html5.pg"
         }
       ],
       "attributeBlocks": [],
@@ -4424,16 +4320,14 @@ exports[`image-shorthand-multiline.pg 1`] = `
                 "val": "https://example.com/images/long-path.png",
                 "line": 2,
                 "column": 20,
-                "filename": "image-shorthand-multiline.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-multiline.pg"
               },
               {
                 "name": "alt",
                 "val": "the image",
                 "line": 2,
                 "column": 67,
-                "filename": "image-shorthand-multiline.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-multiline.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4503,16 +4397,14 @@ exports[`image-shorthand-multiline.pg 1`] = `
                 "val": "https://example.com/very/long/image/path.png",
                 "line": 6,
                 "column": 16,
-                "filename": "image-shorthand-multiline.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-multiline.pg"
               },
               {
                 "name": "alt",
                 "val": "alt text here",
                 "line": 6,
                 "column": 67,
-                "filename": "image-shorthand-multiline.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-multiline.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4578,16 +4470,14 @@ exports[`image-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/path with spaces.png",
                 "line": 1,
                 "column": 9,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 1,
                 "column": 56,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4642,16 +4532,14 @@ exports[`image-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/another path.png",
                 "line": 2,
                 "column": 9,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 2,
                 "column": 52,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4706,16 +4594,14 @@ exports[`image-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/it\\"s-here.png",
                 "line": 3,
                 "column": 9,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 3,
                 "column": 49,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4770,16 +4656,14 @@ exports[`image-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/it's-here.png",
                 "line": 4,
                 "column": 9,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 4,
                 "column": 49,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4834,16 +4718,14 @@ exports[`image-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/back\\\\slash.png",
                 "line": 5,
                 "column": 9,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 5,
                 "column": 51,
-                "filename": "image-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "image-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4908,16 +4790,14 @@ exports[`image-shorthand.pg 1`] = `
                 "val": "photo.jpg",
                 "line": 1,
                 "column": 9,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "alt",
                 "val": "a cat",
                 "line": 1,
                 "column": 25,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -4972,16 +4852,14 @@ exports[`image-shorthand.pg 1`] = `
                 "val": "https://example.com/logo.png",
                 "line": 2,
                 "column": 9,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "alt",
                 "val": "https://example.com/logo.png",
                 "line": 2,
                 "column": 44,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -5036,16 +4914,14 @@ exports[`image-shorthand.pg 1`] = `
                 "val": "icon.png",
                 "line": 3,
                 "column": 13,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "alt",
                 "val": "the icon",
                 "line": 3,
                 "column": 28,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -5137,16 +5013,14 @@ exports[`image-shorthand.pg 1`] = `
                       "val": "badge.svg",
                       "line": 5,
                       "column": 20,
-                      "filename": "image-shorthand.pg",
-                      "mustEscape": true
+                      "filename": "image-shorthand.pg"
                     },
                     {
                       "name": "alt",
                       "val": "badge",
                       "line": 5,
                       "column": 36,
-                      "filename": "image-shorthand.pg",
-                      "mustEscape": true
+                      "filename": "image-shorthand.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -5219,16 +5093,14 @@ exports[`image-shorthand.pg 1`] = `
                 "val": "photo.jpg",
                 "line": 7,
                 "column": 19,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 7,
                 "column": 35,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -5284,32 +5156,28 @@ exports[`image-shorthand.pg 1`] = `
                 "val": "/img/pic.jpg",
                 "line": 8,
                 "column": 9,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "alt",
                 "val": "a photo",
                 "line": 8,
                 "column": 28,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "class",
                 "val": "photo",
                 "line": 8,
                 "column": 42,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               },
               {
                 "name": "loading",
                 "val": "lazy",
                 "line": 8,
                 "column": 56,
-                "filename": "image-shorthand.pg",
-                "mustEscape": true
+                "filename": "image-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -5587,8 +5455,7 @@ exports[`include-with-text-head.pg 1`] = `
                 "val": "text/javascript",
                 "line": 2,
                 "column": 10,
-                "filename": "include-with-text-head.pg",
-                "mustEscape": true
+                "filename": "include-with-text-head.pg"
               }
             ],
             "attributeBlocks": [],
@@ -5661,8 +5528,7 @@ exports[`include-with-text.pg 1`] = `
                       "val": "/caustic.js",
                       "line": 3,
                       "column": 12,
-                      "filename": "include-with-text.pg",
-                      "mustEscape": true
+                      "filename": "include-with-text.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -5686,8 +5552,7 @@ exports[`include-with-text.pg 1`] = `
                       "val": "/app.js",
                       "line": 4,
                       "column": 12,
-                      "filename": "include-with-text.pg",
-                      "mustEscape": true
+                      "filename": "include-with-text.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -5757,16 +5622,14 @@ exports[`include.script.pg 1`] = `
           "val": "pet-template",
           "line": 1,
           "column": 7,
-          "filename": "include.script.pg",
-          "mustEscape": false
+          "filename": "include.script.pg"
         },
         {
           "name": "type",
           "val": "text/x-template",
           "line": 1,
           "column": 21,
-          "filename": "include.script.pg",
-          "mustEscape": true
+          "filename": "include.script.pg"
         }
       ],
       "attributeBlocks": [],
@@ -6025,8 +5888,7 @@ exports[`includes.pg 1`] = `
                 "val": "text/javascript",
                 "line": 9,
                 "column": 10,
-                "filename": "includes.pg",
-                "mustEscape": true
+                "filename": "includes.pg"
               }
             ],
             "attributeBlocks": [],
@@ -6167,8 +6029,7 @@ exports[`inheritance.defaults.pg 1`] = `
                           "val": "jquery.js",
                           "line": 4,
                           "column": 14,
-                          "filename": "inheritance.defaults.pg",
-                          "mustEscape": true
+                          "filename": "inheritance.defaults.pg"
                         }
                       ],
                       "attributeBlocks": [],
@@ -6192,8 +6053,7 @@ exports[`inheritance.defaults.pg 1`] = `
                           "val": "keymaster.js",
                           "line": 5,
                           "column": 14,
-                          "filename": "inheritance.defaults.pg",
-                          "mustEscape": true
+                          "filename": "inheritance.defaults.pg"
                         }
                       ],
                       "attributeBlocks": [],
@@ -6217,8 +6077,7 @@ exports[`inheritance.defaults.pg 1`] = `
                           "val": "caustic.js",
                           "line": 6,
                           "column": 14,
-                          "filename": "inheritance.defaults.pg",
-                          "mustEscape": true
+                          "filename": "inheritance.defaults.pg"
                         }
                       ],
                       "attributeBlocks": [],
@@ -6297,8 +6156,7 @@ exports[`inheritance.extend.include.pg 1`] = `
               "val": "jquery.js",
               "line": 5,
               "column": 10,
-              "filename": "inheritance.extend.include.pg",
-              "mustEscape": true
+              "filename": "inheritance.extend.include.pg"
             }
           ],
           "attributeBlocks": [],
@@ -6528,8 +6386,7 @@ exports[`inheritance.extend.pg 1`] = `
               "val": "jquery.js",
               "line": 5,
               "column": 10,
-              "filename": "inheritance.extend.pg",
-              "mustEscape": true
+              "filename": "inheritance.extend.pg"
             }
           ],
           "attributeBlocks": [],
@@ -6701,8 +6558,7 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
               "val": "jquery.js",
               "line": 6,
               "column": 10,
-              "filename": "inheritance.extend.whitespace.pg",
-              "mustEscape": true
+              "filename": "inheritance.extend.whitespace.pg"
             }
           ],
           "attributeBlocks": [],
@@ -6817,8 +6673,7 @@ exports[`inheritance.pg 1`] = `
               "val": "jquery.js",
               "line": 5,
               "column": 10,
-              "filename": "inheritance.pg",
-              "mustEscape": true
+              "filename": "inheritance.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7315,24 +7170,21 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 1,
                 "column": 6,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": false
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 1,
                 "column": 11,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 1,
                 "column": 20,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
@@ -7387,24 +7239,21 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 2,
                 "column": 16,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": false
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 2,
                 "column": 21,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 2,
                 "column": 30,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
@@ -7467,24 +7316,21 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 3,
                 "column": 16,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": false
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 3,
                 "column": 21,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 3,
                 "column": 30,
-                "filename": "intepolated-elements.pg",
-                "mustEscape": true
+                "filename": "intepolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
@@ -7614,8 +7460,7 @@ exports[`layout.append.pg 1`] = `
               "val": "foo.js",
               "line": 5,
               "column": 10,
-              "filename": "layout.append.pg",
-              "mustEscape": true
+              "filename": "layout.append.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7639,8 +7484,7 @@ exports[`layout.append.pg 1`] = `
               "val": "bar.js",
               "line": 6,
               "column": 10,
-              "filename": "layout.append.pg",
-              "mustEscape": true
+              "filename": "layout.append.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7697,8 +7541,7 @@ exports[`layout.append.without-block.pg 1`] = `
               "val": "foo.js",
               "line": 5,
               "column": 10,
-              "filename": "layout.append.without-block.pg",
-              "mustEscape": true
+              "filename": "layout.append.without-block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7722,8 +7565,7 @@ exports[`layout.append.without-block.pg 1`] = `
               "val": "bar.js",
               "line": 6,
               "column": 10,
-              "filename": "layout.append.without-block.pg",
-              "mustEscape": true
+              "filename": "layout.append.without-block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7788,16 +7630,14 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "first",
               "line": 4,
               "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             },
             {
               "name": "class",
               "val": "append",
               "line": 4,
               "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7839,16 +7679,14 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "first",
               "line": 7,
               "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             },
             {
               "name": "class",
               "val": "prepend",
               "line": 7,
               "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7890,16 +7728,14 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "last",
               "line": 10,
               "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             },
             {
               "name": "class",
               "val": "append",
               "line": 10,
               "column": 8,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7941,16 +7777,14 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "last",
               "line": 13,
               "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             },
             {
               "name": "class",
               "val": "prepend",
               "line": 13,
               "column": 8,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": false
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -7984,8 +7818,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "jquery.js",
               "line": 16,
               "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": true
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8019,8 +7852,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
               "val": "foo.js",
               "line": 19,
               "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg",
-              "mustEscape": true
+              "filename": "layout.multi.append.prepend.block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8077,8 +7909,7 @@ exports[`layout.prepend.pg 1`] = `
               "val": "foo.js",
               "line": 5,
               "column": 10,
-              "filename": "layout.prepend.pg",
-              "mustEscape": true
+              "filename": "layout.prepend.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8102,8 +7933,7 @@ exports[`layout.prepend.pg 1`] = `
               "val": "bar.js",
               "line": 6,
               "column": 10,
-              "filename": "layout.prepend.pg",
-              "mustEscape": true
+              "filename": "layout.prepend.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8160,8 +7990,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
               "val": "foo.js",
               "line": 5,
               "column": 10,
-              "filename": "layout.prepend.without-block.pg",
-              "mustEscape": true
+              "filename": "layout.prepend.without-block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8185,8 +8014,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
               "val": "bar.js",
               "line": 6,
               "column": 10,
-              "filename": "layout.prepend.without-block.pg",
-              "mustEscape": true
+              "filename": "layout.prepend.without-block.pg"
             }
           ],
           "attributeBlocks": [],
@@ -8248,8 +8076,7 @@ exports[`link-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/path with spaces",
                 "line": 1,
                 "column": 7,
-                "filename": "link-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "link-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8312,8 +8139,7 @@ exports[`link-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/another path",
                 "line": 2,
                 "column": 7,
-                "filename": "link-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "link-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8376,8 +8202,7 @@ exports[`link-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/it\\"s-here",
                 "line": 3,
                 "column": 7,
-                "filename": "link-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "link-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8440,8 +8265,7 @@ exports[`link-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/it's-here",
                 "line": 4,
                 "column": 7,
-                "filename": "link-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "link-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8504,8 +8328,7 @@ exports[`link-shorthand-quoted.pg 1`] = `
                 "val": "https://example.com/back\\\\slash",
                 "line": 5,
                 "column": 7,
-                "filename": "link-shorthand-quoted.pg",
-                "mustEscape": true
+                "filename": "link-shorthand-quoted.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8578,8 +8401,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "/contact",
                 "line": 1,
                 "column": 7,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8642,8 +8464,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "https://example.com",
                 "line": 2,
                 "column": 7,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8706,8 +8527,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "https://example.com",
                 "line": 3,
                 "column": 13,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8770,8 +8590,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "mailto:hi@example.com",
                 "line": 4,
                 "column": 7,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8834,8 +8653,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "/save",
                 "line": 5,
                 "column": 7,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -8898,8 +8716,7 @@ exports[`link-shorthand.pg 1`] = `
                 "val": "/about",
                 "line": 7,
                 "column": 17,
-                "filename": "link-shorthand.pg",
-                "mustEscape": true
+                "filename": "link-shorthand.pg"
               }
             ],
             "attributeBlocks": [],
@@ -9000,8 +8817,7 @@ exports[`link-shorthand.pg 1`] = `
                       "val": "/docs",
                       "line": 9,
                       "column": 18,
-                      "filename": "link-shorthand.pg",
-                      "mustEscape": true
+                      "filename": "link-shorthand.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -9338,8 +9154,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
                 "val": "#{target}",
                 "line": 2,
                 "column": 5,
-                "filename": "mixin-inline-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-inline-optional-args.pg"
               }
             ],
             "attributeBlocks": [],
@@ -9387,24 +9202,21 @@ exports[`mixin-inline-optional-args.pg 1`] = `
                 "val": "/icons/#{name}.svg",
                 "line": 5,
                 "column": 7,
-                "filename": "mixin-inline-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-inline-optional-args.pg"
               },
               {
                 "name": "width",
                 "val": "#{size}",
                 "line": 5,
                 "column": 32,
-                "filename": "mixin-inline-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-inline-optional-args.pg"
               },
               {
                 "name": "height",
                 "val": "#{size}",
                 "line": 5,
                 "column": 48,
-                "filename": "mixin-inline-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-inline-optional-args.pg"
               }
             ],
             "attributeBlocks": [],
@@ -9613,16 +9425,14 @@ exports[`mixin-optional-args.pg 1`] = `
                 "val": "#{href}",
                 "line": 2,
                 "column": 5,
-                "filename": "mixin-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-args.pg"
               },
               {
                 "name": "target",
                 "val": "#{target}",
                 "line": 2,
                 "column": 20,
-                "filename": "mixin-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-args.pg"
               }
             ],
             "attributeBlocks": [],
@@ -9793,24 +9603,21 @@ exports[`mixin-optional-args.pg 1`] = `
                 "val": "#{name}",
                 "line": 13,
                 "column": 8,
-                "filename": "mixin-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-args.pg"
               },
               {
                 "name": "content",
                 "val": "#{content}",
                 "line": 13,
                 "column": 23,
-                "filename": "mixin-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-args.pg"
               },
               {
                 "name": "lang",
                 "val": "#{lang}",
                 "line": 13,
                 "column": 44,
-                "filename": "mixin-optional-args.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-args.pg"
               }
             ],
             "attributeBlocks": [],
@@ -9916,16 +9723,14 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
                 "val": "#{href}",
                 "line": 2,
                 "column": 5,
-                "filename": "mixin-optional-attr-omission.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-attr-omission.pg"
               },
               {
                 "name": "target",
                 "val": "#{target}",
                 "line": 2,
                 "column": 20,
-                "filename": "mixin-optional-attr-omission.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-attr-omission.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10003,24 +9808,21 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
                 "val": "icon",
                 "line": 8,
                 "column": 6,
-                "filename": "mixin-optional-attr-omission.pg",
-                "mustEscape": false
+                "filename": "mixin-optional-attr-omission.pg"
               },
               {
                 "name": "src",
                 "val": "/icons/#{name}.svg",
                 "line": 8,
                 "column": 12,
-                "filename": "mixin-optional-attr-omission.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-attr-omission.pg"
               },
               {
                 "name": "class",
                 "val": "icon-#{size}",
                 "line": 8,
                 "column": 37,
-                "filename": "mixin-optional-attr-omission.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-attr-omission.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10124,16 +9926,14 @@ exports[`mixin-optional-question-mark.pg 1`] = `
                 "val": "#{href}",
                 "line": 2,
                 "column": 5,
-                "filename": "mixin-optional-question-mark.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-question-mark.pg"
               },
               {
                 "name": "target",
                 "val": "#{target?}",
                 "line": 2,
                 "column": 20,
-                "filename": "mixin-optional-question-mark.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-question-mark.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10319,24 +10119,21 @@ exports[`mixin-optional-question-mark.pg 1`] = `
                 "val": "#{name}",
                 "line": 14,
                 "column": 8,
-                "filename": "mixin-optional-question-mark.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-question-mark.pg"
               },
               {
                 "name": "content",
                 "val": "#{content}",
                 "line": 14,
                 "column": 23,
-                "filename": "mixin-optional-question-mark.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-question-mark.pg"
               },
               {
                 "name": "lang",
                 "val": "#{lang?}",
                 "line": 14,
                 "column": 44,
-                "filename": "mixin-optional-question-mark.pg",
-                "mustEscape": true
+                "filename": "mixin-optional-question-mark.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10646,8 +10443,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                 "val": "article",
                 "line": 3,
                 "column": 10,
-                "filename": "mixin.block-tag-behaviour.pg",
-                "mustEscape": false
+                "filename": "mixin.block-tag-behaviour.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10787,8 +10583,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                 "val": "article",
                 "line": 11,
                 "column": 10,
-                "filename": "mixin.block-tag-behaviour.pg",
-                "mustEscape": false
+                "filename": "mixin.block-tag-behaviour.pg"
               }
             ],
             "attributeBlocks": [],
@@ -10961,8 +10756,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "val": "bar",
                 "line": 2,
                 "column": 3,
-                "filename": "mixin.blocks.pg",
-                "mustEscape": false
+                "filename": "mixin.blocks.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11027,8 +10821,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "val": "foo",
                 "line": 6,
                 "column": 3,
-                "filename": "mixin.blocks.pg",
-                "mustEscape": false
+                "filename": "mixin.blocks.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11165,8 +10958,7 @@ exports[`mixin.blocks.pg 1`] = `
                 "val": "baz",
                 "line": 17,
                 "column": 5,
-                "filename": "mixin.blocks.pg",
-                "mustEscape": false
+                "filename": "mixin.blocks.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11250,8 +11042,7 @@ exports[`mixins-unused.pg 1`] = `
                 "val": "wtf",
                 "line": 2,
                 "column": 3,
-                "filename": "mixins-unused.pg",
-                "mustEscape": false
+                "filename": "mixins-unused.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11557,8 +11348,7 @@ exports[`multi-line-interpolation.pg 1`] = `
                 "val": "https://example.com/very/long/path",
                 "line": 7,
                 "column": 14,
-                "filename": "multi-line-interpolation.pg",
-                "mustEscape": true
+                "filename": "multi-line-interpolation.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11636,8 +11426,7 @@ exports[`multi-line-interpolation.pg 1`] = `
                 "val": "https://example.com/path",
                 "line": 11,
                 "column": 18,
-                "filename": "multi-line-interpolation.pg",
-                "mustEscape": true
+                "filename": "multi-line-interpolation.pg"
               }
             ],
             "attributeBlocks": [],
@@ -11714,8 +11503,7 @@ exports[`namespaces.pg 1`] = `
           "val": "bar",
           "line": 2,
           "column": 5,
-          "filename": "namespaces.pg",
-          "mustEscape": true
+          "filename": "namespaces.pg"
         }
       ],
       "attributeBlocks": [],
@@ -13099,8 +12887,7 @@ exports[`scripts.non-js.pg 1`] = `
                 "val": "user",
                 "line": 2,
                 "column": 3,
-                "filename": "scripts.non-js.pg",
-                "mustEscape": false
+                "filename": "scripts.non-js.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13119,16 +12906,14 @@ exports[`scripts.non-js.pg 1`] = `
           "val": "user-template",
           "line": 1,
           "column": 7,
-          "filename": "scripts.non-js.pg",
-          "mustEscape": false
+          "filename": "scripts.non-js.pg"
         },
         {
           "name": "type",
           "val": "text/template",
           "line": 1,
           "column": 22,
-          "filename": "scripts.non-js.pg",
-          "mustEscape": true
+          "filename": "scripts.non-js.pg"
         }
       ],
       "attributeBlocks": [],
@@ -13188,16 +12973,14 @@ exports[`scripts.non-js.pg 1`] = `
           "val": "user-template",
           "line": 6,
           "column": 7,
-          "filename": "scripts.non-js.pg",
-          "mustEscape": false
+          "filename": "scripts.non-js.pg"
         },
         {
           "name": "type",
           "val": "text/template",
           "line": 6,
           "column": 22,
-          "filename": "scripts.non-js.pg",
-          "mustEscape": true
+          "filename": "scripts.non-js.pg"
         }
       ],
       "attributeBlocks": [],
@@ -13457,8 +13240,7 @@ exports[`source.pg 1`] = `
                       "val": "foo",
                       "line": 3,
                       "column": 12,
-                      "filename": "source.pg",
-                      "mustEscape": true
+                      "filename": "source.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -13482,8 +13264,7 @@ exports[`source.pg 1`] = `
                       "val": "bar",
                       "line": 4,
                       "column": 12,
-                      "filename": "source.pg",
-                      "mustEscape": true
+                      "filename": "source.pg"
                     }
                   ],
                   "attributeBlocks": [],
@@ -13502,24 +13283,21 @@ exports[`source.pg 1`] = `
                 "val": "auto",
                 "line": 2,
                 "column": 9,
-                "filename": "source.pg",
-                "mustEscape": true
+                "filename": "source.pg"
               },
               {
                 "name": "autobuffer",
                 "val": true,
                 "line": 2,
                 "column": 22,
-                "filename": "source.pg",
-                "mustEscape": true
+                "filename": "source.pg"
               },
               {
                 "name": "controls",
                 "val": true,
                 "line": 2,
                 "column": 33,
-                "filename": "source.pg",
-                "mustEscape": true
+                "filename": "source.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13570,48 +13348,42 @@ exports[`svg-basic.pg 1`] = `
                 "val": "10",
                 "line": 2,
                 "column": 8,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "y",
                 "val": "10",
                 "line": 2,
                 "column": 15,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "width",
                 "val": "80",
                 "line": 2,
                 "column": 22,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "height",
                 "val": "30",
                 "line": 2,
                 "column": 33,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "fill",
                 "val": "none",
                 "line": 2,
                 "column": 45,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "stroke",
                 "val": "#333",
                 "line": 2,
                 "column": 57,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13643,24 +13415,21 @@ exports[`svg-basic.pg 1`] = `
                 "val": "50",
                 "line": 3,
                 "column": 8,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "y",
                 "val": "30",
                 "line": 3,
                 "column": 15,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "text-anchor",
                 "val": "middle",
                 "line": 3,
                 "column": 22,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13684,32 +13453,28 @@ exports[`svg-basic.pg 1`] = `
                 "val": "150",
                 "line": 4,
                 "column": 10,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "cy",
                 "val": "25",
                 "line": 4,
                 "column": 19,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "r",
                 "val": "20",
                 "line": 4,
                 "column": 27,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "fill",
                 "val": "blue",
                 "line": 4,
                 "column": 34,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13733,40 +13498,35 @@ exports[`svg-basic.pg 1`] = `
                 "val": "90",
                 "line": 5,
                 "column": 8,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "y1",
                 "val": "25",
                 "line": 5,
                 "column": 16,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "x2",
                 "val": "130",
                 "line": 5,
                 "column": 24,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "y2",
                 "val": "25",
                 "line": 5,
                 "column": 33,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               },
               {
                 "name": "stroke",
                 "val": "#333",
                 "line": 5,
                 "column": 41,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13790,8 +13550,7 @@ exports[`svg-basic.pg 1`] = `
                 "val": "M0 0 L10 10",
                 "line": 6,
                 "column": 8,
-                "filename": "svg-basic.pg",
-                "mustEscape": true
+                "filename": "svg-basic.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13810,16 +13569,14 @@ exports[`svg-basic.pg 1`] = `
           "val": "http://www.w3.org/2000/svg",
           "line": 1,
           "column": 5,
-          "filename": "svg-basic.pg",
-          "mustEscape": true
+          "filename": "svg-basic.pg"
         },
         {
           "name": "viewBox",
           "val": "0 0 200 100",
           "line": 1,
           "column": 40,
-          "filename": "svg-basic.pg",
-          "mustEscape": true
+          "filename": "svg-basic.pg"
         }
       ],
       "attributeBlocks": [],
@@ -13875,8 +13632,7 @@ exports[`tags.self-closing.pg 1`] = `
                 "val": "baz",
                 "line": 4,
                 "column": 7,
-                "filename": "tags.self-closing.pg",
-                "mustEscape": true
+                "filename": "tags.self-closing.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13916,8 +13672,7 @@ exports[`tags.self-closing.pg 1`] = `
                 "val": "baz",
                 "line": 6,
                 "column": 7,
-                "filename": "tags.self-closing.pg",
-                "mustEscape": true
+                "filename": "tags.self-closing.pg"
               }
             ],
             "attributeBlocks": [],
@@ -13957,8 +13712,7 @@ exports[`tags.self-closing.pg 1`] = `
                 "val": "baz",
                 "line": 8,
                 "column": 7,
-                "filename": "tags.self-closing.pg",
-                "mustEscape": true
+                "filename": "tags.self-closing.pg"
               }
             ],
             "attributeBlocks": [],
@@ -14133,8 +13887,7 @@ exports[`template.pg 1`] = `
           "val": "text/x-template",
           "line": 1,
           "column": 8,
-          "filename": "template.pg",
-          "mustEscape": true
+          "filename": "template.pg"
         }
       ],
       "attributeBlocks": [],
@@ -14194,8 +13947,7 @@ exports[`template.pg 1`] = `
           "val": "text/x-template",
           "line": 6,
           "column": 8,
-          "filename": "template.pg",
-          "mustEscape": true
+          "filename": "template.pg"
         }
       ],
       "attributeBlocks": [],
@@ -14243,16 +13995,14 @@ exports[`text-block.pg 1`] = `
                 "val": "text",
                 "line": 3,
                 "column": 9,
-                "filename": "text-block.pg",
-                "mustEscape": true
+                "filename": "text-block.pg"
               },
               {
                 "name": "name",
                 "val": "user[name]",
                 "line": 3,
                 "column": 21,
-                "filename": "text-block.pg",
-                "mustEscape": true
+                "filename": "text-block.pg"
               }
             ],
             "attributeBlocks": [],
@@ -14300,16 +14050,14 @@ exports[`text-block.pg 1`] = `
                 "val": "text",
                 "line": 6,
                 "column": 9,
-                "filename": "text-block.pg",
-                "mustEscape": true
+                "filename": "text-block.pg"
               },
               {
                 "name": "name",
                 "val": "user[pass]",
                 "line": 6,
                 "column": 21,
-                "filename": "text-block.pg",
-                "mustEscape": true
+                "filename": "text-block.pg"
               }
             ],
             "attributeBlocks": [],
@@ -14362,8 +14110,7 @@ exports[`text.pg 1`] = `
           "val": "",
           "line": 1,
           "column": 8,
-          "filename": "text.pg",
-          "mustEscape": true
+          "filename": "text.pg"
         }
       ],
       "attributeBlocks": [],
@@ -14918,8 +14665,7 @@ exports[`yield-head.pg 1`] = `
                 "val": "/jquery.js",
                 "line": 2,
                 "column": 10,
-                "filename": "yield-head.pg",
-                "mustEscape": true
+                "filename": "yield-head.pg"
               }
             ],
             "attributeBlocks": [],
@@ -14949,8 +14695,7 @@ exports[`yield-head.pg 1`] = `
                 "val": "/jquery.ui.js",
                 "line": 4,
                 "column": 10,
-                "filename": "yield-head.pg",
-                "mustEscape": true
+                "filename": "yield-head.pg"
               }
             ],
             "attributeBlocks": [],
@@ -15024,8 +14769,7 @@ exports[`yield-title-head.pg 1`] = `
                 "val": "/jquery.js",
                 "line": 4,
                 "column": 10,
-                "filename": "yield-title-head.pg",
-                "mustEscape": true
+                "filename": "yield-title-head.pg"
               }
             ],
             "attributeBlocks": [],
@@ -15049,8 +14793,7 @@ exports[`yield-title-head.pg 1`] = `
                 "val": "/jquery.ui.js",
                 "line": 5,
                 "column": 10,
-                "filename": "yield-title-head.pg",
-                "mustEscape": true
+                "filename": "yield-title-head.pg"
               }
             ],
             "attributeBlocks": [],
@@ -15193,8 +14936,7 @@ exports[`yield.pg 1`] = `
                             "val": "/caustic.js",
                             "line": 4,
                             "column": 14,
-                            "filename": "yield.pg",
-                            "mustEscape": true
+                            "filename": "yield.pg"
                           }
                         ],
                         "attributeBlocks": [],
@@ -15218,8 +14960,7 @@ exports[`yield.pg 1`] = `
                             "val": "/app.js",
                             "line": 5,
                             "column": 14,
-                            "filename": "yield.pg",
-                            "mustEscape": true
+                            "filename": "yield.pg"
                           }
                         ],
                         "attributeBlocks": [],

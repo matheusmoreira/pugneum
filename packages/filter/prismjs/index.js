@@ -10,6 +10,12 @@ const Prism = require('prism-minmaxed');
 
 exports.filter = function pugneum_filter_prismjs(text, attributes) {
   const {language} = attributes;
+  if (!language) {
+    return Prism.highlight(text, {}, '');
+  }
   const grammar = Prism.languages[language];
+  if (!grammar) {
+    throw new Error(`Unknown language: "${language}"`);
+  }
   return Prism.highlight(text, grammar, language);
 };

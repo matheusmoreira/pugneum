@@ -23264,7 +23264,11 @@ exports[`mixin-inline-optional-args.pg 1`] = `
         "line": 2,
         "column": 25
       },
-      "filename": "mixin-inline-optional-args.pg"
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 29
+      }
     },
     "val": "text"
   },
@@ -23945,7 +23949,11 @@ exports[`mixin-optional-args.pg 1`] = `
         "line": 2,
         "column": 42
       },
-      "filename": "mixin-optional-args.pg"
+      "filename": "mixin-optional-args.pg",
+      "end": {
+        "line": 2,
+        "column": 46
+      }
     },
     "val": "text"
   },
@@ -24115,7 +24123,11 @@ exports[`mixin-optional-args.pg 1`] = `
         "line": 7,
         "column": 14
       },
-      "filename": "mixin-optional-args.pg"
+      "filename": "mixin-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 19
+      }
     },
     "val": "title"
   },
@@ -24169,7 +24181,11 @@ exports[`mixin-optional-args.pg 1`] = `
         "line": 7,
         "column": 23
       },
-      "filename": "mixin-optional-args.pg"
+      "filename": "mixin-optional-args.pg",
+      "end": {
+        "line": 7,
+        "column": 27
+      }
     },
     "val": "name"
   },
@@ -24651,7 +24667,11 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
         "line": 2,
         "column": 42
       },
-      "filename": "mixin-optional-attr-omission.pg"
+      "filename": "mixin-optional-attr-omission.pg",
+      "end": {
+        "line": 2,
+        "column": 46
+      }
     },
     "val": "text"
   },
@@ -25128,7 +25148,11 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "line": 2,
         "column": 43
       },
-      "filename": "mixin-optional-question-mark.pg"
+      "filename": "mixin-optional-question-mark.pg",
+      "end": {
+        "line": 2,
+        "column": 47
+      }
     },
     "val": "text"
   },
@@ -25331,7 +25355,11 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "line": 8,
         "column": 14
       },
-      "filename": "mixin-optional-question-mark.pg"
+      "filename": "mixin-optional-question-mark.pg",
+      "end": {
+        "line": 8,
+        "column": 20
+      }
     },
     "val": "title?"
   },
@@ -25385,7 +25413,11 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "line": 8,
         "column": 24
       },
-      "filename": "mixin-optional-question-mark.pg"
+      "filename": "mixin-optional-question-mark.pg",
+      "end": {
+        "line": 8,
+        "column": 28
+      }
     },
     "val": "name"
   },
@@ -25801,7 +25833,11 @@ exports[`mixin-variables.pg 1`] = `
         "line": 2,
         "column": 8
       },
-      "filename": "mixin-variables.pg"
+      "filename": "mixin-variables.pg",
+      "end": {
+        "line": 2,
+        "column": 16
+      }
     },
     "val": "contents"
   },
@@ -26089,7 +26125,11 @@ exports[`mixin-variables.pg 1`] = `
         "line": 11,
         "column": 18
       },
-      "filename": "mixin-variables.pg"
+      "filename": "mixin-variables.pg",
+      "end": {
+        "line": 11,
+        "column": 22
+      }
     },
     "val": "name"
   },

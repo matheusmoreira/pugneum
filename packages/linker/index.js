@@ -1,29 +1,34 @@
+const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
 
-function error(code, message, node) {
-  throw require('pugneum-error')(code, message, {
+function error(code, message, node, source) {
+  throw makeError(code, message, {
     line: node.line,
     column: node.column,
     filename: node.filename,
+    source: source,
   });
 }
 
 module.exports = link;
 
-function link(ast) {
+function link(ast, options) {
+  options = options || {};
+  const source = options.source;
+
   if (ast.type !== 'Block') {
-    error('INVALID_AST', 'The top level element should always be a block', ast);
+    error('INVALID_AST', 'The top level element should always be a block', ast, source);
   }
   let extendsNode = null;
   if (ast.nodes.length) {
     const hasExtends = ast.nodes[0].type === 'Extends';
-    checkExtendPosition(ast, hasExtends);
+    checkExtendPosition(ast, hasExtends, source);
     if (hasExtends) {
       extendsNode = ast.nodes.shift();
     }
   }
-  ast = applyIncludes(ast);
-  ast = resolveReferences(ast);
+  ast = applyIncludes(ast, options);
+  ast = resolveReferences(ast, source);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -40,26 +45,31 @@ function link(ast) {
           'UNEXPECTED_NODES_IN_EXTENDING_ROOT',
           'Only named blocks and mixins can appear at the top level of an extending template',
           node,
+          source,
         );
       }
     });
-    const parent = link(extendsNode.file.ast);
-    extend(parent.declaredBlocks, ast);
-    const foundBlockNames = [];
+
+    // Validate expected blocks BEFORE mutating parent via extend()
+    const parent = link(extendsNode.file.ast, options);
+    const parentBlockNames = [];
     walk(parent, function (node) {
       if (node.type === 'NamedBlock') {
-        foundBlockNames.push(node.name);
+        parentBlockNames.push(node.name);
       }
     });
-    expectedBlocks.forEach(function (expectedBlock) {
-      if (foundBlockNames.indexOf(expectedBlock.name) === -1) {
+    for (const expectedBlock of expectedBlocks) {
+      if (!parentBlockNames.includes(expectedBlock.name)) {
         error(
           'UNEXPECTED_BLOCK',
           'Unexpected block ' + expectedBlock.name,
           expectedBlock,
+          source,
         );
       }
-    });
+    }
+
+    extend(parent.declaredBlocks, ast, source);
     Object.keys(ast.declaredBlocks).forEach(function (name) {
       parent.declaredBlocks[name] = ast.declaredBlocks[name];
     });
@@ -70,8 +80,8 @@ function link(ast) {
   return ast;
 }
 
-function findDeclaredBlocks(ast) /*: {[name: string]: Array<BlockNode>}*/ {
-  const definitions = {};
+function findDeclaredBlocks(ast) {
+  const definitions = Object.create(null);
   walk(ast, function before(node) {
     if (node.type === 'NamedBlock' && node.mode === 'replace') {
       definitions[node.name] = definitions[node.name] || [];
@@ -92,16 +102,16 @@ function flattenParentBlocks(parentBlocks, accumulator) {
   return accumulator;
 }
 
-function extend(parentBlocks, ast) {
-  const stack = {};
+function extend(parentBlocks, ast, source) {
+  const stack = new Set();
   walk(
     ast,
     function before(node) {
       if (node.type === 'NamedBlock') {
-        if (stack[node.name] === node.name) {
+        if (stack.has(node.name)) {
           return (node.ignore = true);
         }
-        stack[node.name] = node.name;
+        stack.add(node.name);
         const parentBlockList = parentBlocks[node.name]
           ? flattenParentBlocks(parentBlocks[node.name])
           : [];
@@ -123,6 +133,7 @@ function extend(parentBlocks, ast) {
                   'UNKNOWN_BLOCK_MODE',
                   "Unknown block mode '" + node.mode + "'",
                   node,
+                  source,
                 );
             }
           });
@@ -131,13 +142,13 @@ function extend(parentBlocks, ast) {
     },
     function after(node) {
       if (node.type === 'NamedBlock' && !node.ignore) {
-        delete stack[node.name];
+        stack.delete(node.name);
       }
     },
   );
 }
 
-function applyIncludes(ast) {
+function applyIncludes(ast, options) {
   return walk(
     ast,
     function before(node, replace) {
@@ -147,27 +158,31 @@ function applyIncludes(ast) {
     },
     function after(node, replace) {
       if (node.type === 'Include') {
-        let childAST = link(node.file.ast);
+        let childAST = link(node.file.ast, options);
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }
-        replace(applyYield(childAST, node.block, node));
+        replace(applyYield(childAST, node.block, node, options));
       }
     },
   );
 }
+
 function removeBlocks(ast) {
   return walk(ast, function (node, replace) {
     if (node.type === 'NamedBlock') {
       replace({
         type: 'Block',
         nodes: node.nodes,
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
       });
     }
   });
 }
 
-function applyYield(ast, block, includeNode) {
+function applyYield(ast, block, includeNode, options) {
   if (!block || !block.nodes.length) return ast;
   let replaced = false;
   ast = walk(ast, null, function (node, replace) {
@@ -182,14 +197,14 @@ function applyYield(ast, block, includeNode) {
       'MISSING_YIELD',
       'Included template has no yield block but the include passes a block into it',
       includeNode,
+      options && options.source,
     );
   }
   return ast;
 }
 
-function resolveReferences(ast) {
-  // First pass: collect all reference definitions
-  const definitions = {};
+function resolveReferences(ast, source) {
+  const definitions = Object.create(null);
   walk(ast, function (node) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
@@ -198,6 +213,7 @@ function resolveReferences(ast) {
             'DUPLICATE_REFERENCE',
             `Duplicate reference '${def.name}'`,
             def,
+            source,
           );
         }
         definitions[def.name] = def.url;
@@ -205,10 +221,8 @@ function resolveReferences(ast) {
     }
   });
 
-  // Second pass: replace ReferenceLink nodes with Tag nodes, remove References nodes
   return walk(ast, function before(node, replace) {
     if (node.type === 'References') {
-      // Remove definitions from AST — they produce no output
       replace([]);
       return false;
     }
@@ -219,10 +233,10 @@ function resolveReferences(ast) {
           'UNDEFINED_REFERENCE',
           "Undefined reference '" + node.name + "'",
           node,
+          source,
         );
       }
 
-      // If the block is empty, generate default text from the reference name
       let block = node.block;
       if (!block || block.nodes.length === 0) {
         block = {
@@ -237,6 +251,7 @@ function resolveReferences(ast) {
             },
           ],
           line: node.line,
+          column: node.column,
           filename: node.filename,
         };
       }
@@ -270,7 +285,7 @@ function resolveReferences(ast) {
   });
 }
 
-function checkExtendPosition(ast, hasExtends) {
+function checkExtendPosition(ast, hasExtends, source) {
   let legitExtendsReached = false;
   walk(ast, function (node) {
     if (node.type === 'Extends') {
@@ -281,6 +296,7 @@ function checkExtendPosition(ast, hasExtends) {
           'EXTENDS_NOT_FIRST',
           'Declaration of template inheritance ("extends") should be the first thing in the file. There can only be one extends statement per file.',
           node,
+          source,
         );
       }
     }

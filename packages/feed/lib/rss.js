@@ -1,15 +1,16 @@
-var makeError = require('pugneum-error');
+const makeError = require('pugneum-error');
+const {escapeXml, escapeCdata} = require('./xml');
 
 module.exports = function generateRss(feed) {
   if (!feed.description) {
     throw makeError(
       'FEED_MISSING_DESCRIPTION',
       'RSS requires a channel description. Add a <meta name="description"> to your index page or set feeds.description in pugneum.json.',
-      {line: 0},
+      {line: 0, column: 0, filename: ''},
     );
   }
 
-  var items = feed.entries.map((entry) => {
+  const items = feed.entries.map((entry) => {
     return [
       '    <item>',
       '      <title>' + escapeXml(entry.title) + '</title>',
@@ -20,7 +21,7 @@ module.exports = function generateRss(feed) {
         ? '      <description>' + escapeXml(entry.summary) + '</description>'
         : null,
       '      <content:encoded><![CDATA[' +
-        entry.content +
+        escapeCdata(entry.content) +
         ']]></content:encoded>',
       '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
       '    </item>',
@@ -29,7 +30,7 @@ module.exports = function generateRss(feed) {
       .join('\n');
   });
 
-  var lines = [
+  const lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
     '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">',
     '  <channel>',
@@ -50,7 +51,7 @@ module.exports = function generateRss(feed) {
       '" rel="self" type="application/rss+xml"/>',
   );
 
-  for (var i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     lines.push(items[i]);
   }
 
@@ -70,15 +71,7 @@ function feedLastBuildDate(feed) {
 }
 
 function toRFC822(dateStr) {
-  var date = new Date(dateStr + 'T00:00:00Z');
-  return date.toUTCString();
-}
-
-function escapeXml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+  if (!dateStr) return new Date().toUTCString();
+  const normalized = dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00Z';
+  return new Date(normalized).toUTCString();
 }

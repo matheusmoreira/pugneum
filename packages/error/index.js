@@ -1,6 +1,6 @@
 module.exports = makeError;
 
-function makeError(code, message, options) {
+function makeError(code, message, options = {}) {
   const line = options.line;
   const column = options.column;
   const filename = options.filename;
@@ -16,7 +16,7 @@ function makeError(code, message, options) {
       .slice(start, end)
       .map(function (text, i) {
         const curr = i + start + 1;
-        const preamble = (curr == line ? '  > ' : '    ') + curr + '| ';
+        const preamble = (curr === line ? '  > ' : '    ') + curr + '| ';
         let out = preamble + text;
         if (curr === line && column > 0) {
           out += '\n';

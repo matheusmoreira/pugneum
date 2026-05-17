@@ -48,15 +48,15 @@ function walkAST(ast, before, after, options) {
       }
       break;
     case 'Include':
-      walkAST(ast.block, before, after, options);
-      walkAST(ast.file, before, after, options);
+      ast.block = walkAST(ast.block, before, after, options);
+      ast.file = walkAST(ast.file, before, after, options);
       break;
     case 'Extends':
-      walkAST(ast.file, before, after, options);
+      ast.file = walkAST(ast.file, before, after, options);
       break;
     case 'RawInclude':
       ast.filters = walkAndMergeNodes(ast.filters);
-      walkAST(ast.file, before, after, options);
+      ast.file = walkAST(ast.file, before, after, options);
       break;
     case 'ReferenceLink':
       if (ast.block) {
@@ -86,13 +86,15 @@ function walkAST(ast, before, after, options) {
   return ast;
 
   function walkAndMergeNodes(nodes) {
-    return nodes.reduce(function (nodes, node) {
+    const merged = [];
+    for (const node of nodes) {
       const result = walkAST(node, before, after, options);
       if (Array.isArray(result)) {
-        return nodes.concat(result);
+        merged.push(...result);
       } else {
-        return nodes.concat([result]);
+        merged.push(result);
       }
-    }, []);
+    }
+    return merged;
   }
 }

@@ -1,6 +1,6 @@
-'use strict';
-
 const error = require('pugneum-error');
+
+const MAX_PARSE_DEPTH = 256;
 
 class TokenStream {
   constructor(tokens) {
@@ -34,8 +34,7 @@ module.exports = parse;
 
 function parse(tokens, options) {
   const parser = new Parser(tokens, options);
-  const ast = parser.parse();
-  return structuredClone(ast);
+  return parser.parse();
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
@@ -94,6 +93,7 @@ class Parser {
     this.filename = options.filename;
     this.source = options.source;
     this.inMixin = 0;
+    this.depth = 0;
   }
 
   error(code, message, token) {
@@ -186,6 +186,21 @@ class Parser {
    */
 
   parseExpr() {
+    if (++this.depth > MAX_PARSE_DEPTH) {
+      this.error(
+        'NESTING_TOO_DEEP',
+        `Template nesting exceeds maximum depth of ${MAX_PARSE_DEPTH}`,
+        this.peek(),
+      );
+    }
+    try {
+      return this._parseExpr();
+    } finally {
+      this.depth--;
+    }
+  }
+
+  _parseExpr() {
     switch (this.peek().type) {
       case 'tag':
         return this.parseTag();
@@ -238,8 +253,8 @@ class Parser {
   }
 
   parseDot() {
-    this.advance();
-    return this.parseTextBlock();
+    const tok = this.advance();
+    return this.parseTextBlock() || this.emptyBlock(tok.loc.start.line);
   }
 
   /**
@@ -632,10 +647,6 @@ class Parser {
     };
 
     this.tag(mixin);
-    if (mixin.code) {
-      mixin.block.nodes.push(mixin.code);
-      delete mixin.code;
-    }
     if (mixin.block.nodes.length === 0) mixin.block = null;
     return mixin;
   }

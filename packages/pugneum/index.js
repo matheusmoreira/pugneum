@@ -10,10 +10,11 @@ const filter = require('pugneum-filterer');
 const render = require('pugneum-renderer');
 
 function renderPugneum(string, options) {
-  options ||= {};
-  options.source = string;
-  options.lex = lex;
-  options.parse = parse;
+  options = Object.assign({}, options, {
+    source: string,
+    lex: lex,
+    parse: parse,
+  });
 
   let tokens = lex(string, options);
   let ast = parse(tokens, options);
@@ -27,9 +28,8 @@ function renderPugneum(string, options) {
 
 function renderPugneumFile(filename, options) {
   filename = resolve(filename);
-  let source = fs.readFileSync(filename, 'utf8');
-  options ||= {};
-  options.filename = filename;
+  const source = fs.readFileSync(filename, 'utf8');
+  options = Object.assign({}, options, {filename: filename});
   return renderPugneum(source, options);
 }
 

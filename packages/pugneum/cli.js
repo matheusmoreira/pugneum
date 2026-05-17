@@ -90,14 +90,24 @@ function isPugneum(file) {
   return pgExtension.test(file);
 }
 
-function processDirectory(directory, f) {
+function processDirectory(directory, f, visited) {
+  visited = visited || new Set();
+  const stat = fs.lstatSync(directory);
+  if (stat.isSymbolicLink()) return;
+  const inode = stat.dev + ':' + stat.ino;
+  if (visited.has(inode)) return;
+  visited.add(inode);
+
   const entries = fs.readdirSync(directory);
 
   for (let i = 0; i < entries.length; ++i) {
     const entry = path.join(directory, entries[i]);
+    const entryStat = fs.lstatSync(entry);
 
-    if (fs.statSync(entry).isDirectory()) {
-      processDirectory(entry, f);
+    if (entryStat.isSymbolicLink()) continue;
+
+    if (entryStat.isDirectory()) {
+      processDirectory(entry, f, visited);
     } else {
       if (isPugneum(entry)) {
         f(entry);
@@ -138,11 +148,17 @@ try {
     readAndValidateInput('pugneum.json');
   const pgOptions = {basedir: baseDirectory};
 
+  const resolvedOutputDir = path.resolve(outputDirectory);
   processDirectory(inputDirectory, function compilePugneumAndSave(input) {
     const relative = path.relative(inputDirectory, input);
     const outputPath = path
       .join(outputDirectory, relative)
       .replace(pgExtension, '.html');
+    const resolvedOutput = path.resolve(outputPath);
+    if (!resolvedOutput.startsWith(resolvedOutputDir + path.sep)) {
+      console.error(`Output path escapes output directory: ${relative}`);
+      process.exit(EXIT_CODES.INVALID_INPUT);
+    }
     const directory = path.dirname(outputPath);
     const output = pg.renderFile(input, pgOptions);
     fs.mkdirSync(directory, {recursive: true});
@@ -151,7 +167,7 @@ try {
 
   if (feeds) {
     try {
-      var generateFeeds = require('pugneum-feed');
+      const generateFeeds = require('pugneum-feed');
       generateFeeds({
         outputDirectory: outputDirectory,
         feeds: feeds,

@@ -1,39 +1,39 @@
-var path = require('path');
-var fs = require('fs');
-var makeError = require('pugneum-error');
-var extract = require('./lib/extract');
-var generateAtom = require('./lib/atom');
-var generateRss = require('./lib/rss');
+const path = require('path');
+const fs = require('fs');
+const makeError = require('pugneum-error');
+const extract = require('./lib/extract');
+const generateAtom = require('./lib/atom');
+const generateRss = require('./lib/rss');
 
 module.exports = function generateFeeds(options) {
-  var feedsConfig = options.feeds || {};
+  const feedsConfig = options.feeds || {};
 
   if (feedsConfig.enabled === false) {
     return;
   }
 
-  var outputDir = options.outputDirectory;
-  var writeDir = options.writeDirectory || outputDir;
-  var indexFile = feedsConfig.index || 'index.html';
-  var selector = feedsConfig.selector || 'article';
-  var atomPath = feedsConfig.atom || 'atom.xml';
-  var rssPath = feedsConfig.rss || 'rss.xml';
+  const outputDir = options.outputDirectory;
+  const writeDir = options.writeDirectory || outputDir;
+  const indexFile = feedsConfig.index || 'index.html';
+  const tagName = feedsConfig.selector || 'article';
+  const atomPath = feedsConfig.atom || 'atom.xml';
+  const rssPath = feedsConfig.rss || 'rss.xml';
 
   // Phase 1: Extract feed-level metadata from index page
-  var indexData = extract.indexPage(path.join(outputDir, indexFile));
+  const indexData = extract.indexPage(path.join(outputDir, indexFile));
 
   // Resolve metadata: config overrides HTML
-  var url = feedsConfig.url || indexData.url;
-  var title = feedsConfig.title || indexData.title;
-  var author = feedsConfig.author || indexData.author;
-  var description = feedsConfig.description || indexData.description;
-  var language = indexData.language;
+  let url = feedsConfig.url || indexData.url;
+  const title = feedsConfig.title || indexData.title;
+  const author = feedsConfig.author || indexData.author;
+  const description = feedsConfig.description || indexData.description;
+  const language = indexData.language;
 
   if (!url) {
     throw makeError(
       'FEED_MISSING_URL',
       'Could not determine site base URL. Add a <base href="..."> tag to your index page or set feeds.url in pugneum.json.',
-      {line: 0},
+      {line: 0, column: 0, filename: ''},
     );
   }
 
@@ -43,22 +43,19 @@ module.exports = function generateFeeds(options) {
   }
 
   // Phase 2: Enrich entries from article pages
-  var resolvedOutputDir = path.resolve(outputDir);
-  var entries = [];
-  for (var i = 0; i < indexData.entries.length; i++) {
-    var entry = indexData.entries[i];
-    var articlePath = path.join(outputDir, entry.href);
+  const resolvedOutputDir = path.resolve(outputDir);
+  const entries = [];
+  for (let i = 0; i < indexData.entries.length; i++) {
+    const entry = indexData.entries[i];
+    let articlePath = path.join(outputDir, entry.href);
 
     // Prevent path traversal: article path must stay within output directory
-    var resolvedArticle = path.resolve(articlePath);
-    if (
-      resolvedArticle !== resolvedOutputDir &&
-      !resolvedArticle.startsWith(resolvedOutputDir + path.sep)
-    ) {
+    const resolvedArticle = path.resolve(articlePath);
+    if (!resolvedArticle.startsWith(resolvedOutputDir + path.sep)) {
       throw makeError(
         'FEED_PATH_TRAVERSAL',
         'Article href escapes output directory: ' + entry.href,
-        {line: 0},
+        {line: 0, column: 0, filename: ''},
       );
     }
 
@@ -73,11 +70,20 @@ module.exports = function generateFeeds(options) {
           entry.href +
           '\n    resolved to: ' +
           articlePath,
-        {line: 0},
+        {line: 0, column: 0, filename: ''},
       );
     }
 
-    var articleData = extract.articlePage(articlePath, selector);
+    // Guard against directories
+    if (!fs.statSync(articlePath).isFile()) {
+      throw makeError(
+        'FEED_ARTICLE_NOT_FOUND',
+        'Article path is not a file: ' + entry.href,
+        {line: 0, column: 0, filename: ''},
+      );
+    }
+
+    const articleData = extract.articlePage(articlePath, tagName);
 
     entries.push({
       url: url + entry.href.replace(/^\//, ''),
@@ -91,7 +97,7 @@ module.exports = function generateFeeds(options) {
   }
 
   // Build feed data
-  var feed = {
+  const feed = {
     url: url,
     title: title,
     description: description,
@@ -103,15 +109,15 @@ module.exports = function generateFeeds(options) {
   };
 
   // Generate and write feeds
-  var atom = generateAtom(feed);
-  var rss = generateRss(feed);
+  const atom = generateAtom(feed);
+  const rss = generateRss(feed);
 
   fs.mkdirSync(writeDir, {recursive: true});
 
   // Prevent path traversal: feed output paths must stay within write directory
-  var resolvedWriteDir = path.resolve(writeDir);
-  var resolvedAtom = path.resolve(path.join(writeDir, atomPath));
-  var resolvedRss = path.resolve(path.join(writeDir, rssPath));
+  const resolvedWriteDir = path.resolve(writeDir);
+  const resolvedAtom = path.resolve(path.join(writeDir, atomPath));
+  const resolvedRss = path.resolve(path.join(writeDir, rssPath));
   if (
     !resolvedAtom.startsWith(resolvedWriteDir + path.sep) ||
     !resolvedRss.startsWith(resolvedWriteDir + path.sep)
@@ -119,7 +125,7 @@ module.exports = function generateFeeds(options) {
     throw makeError(
       'FEED_PATH_TRAVERSAL',
       'Feed output path escapes write directory',
-      {line: 0},
+      {line: 0, column: 0, filename: ''},
     );
   }
 
@@ -128,8 +134,9 @@ module.exports = function generateFeeds(options) {
 };
 
 function resolveRelativeUrls(html, baseUrl) {
+  const escaped = baseUrl.replace(/\$/g, '$$$$');
   return html
-    .replace(/(<a\s[^>]*href=")\/([^"]*")/g, '$1' + baseUrl + '$2')
-    .replace(/(<img\s[^>]*src=")\/([^"]*")/g, '$1' + baseUrl + '$2')
-    .replace(/(<source\s[^>]*src=")\/([^"]*")/g, '$1' + baseUrl + '$2');
+    .replace(/(<a\s[^>]*href=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2')
+    .replace(/(<img\s[^>]*src=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2')
+    .replace(/(<source\s[^>]*src=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2');
 }

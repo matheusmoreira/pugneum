@@ -54,14 +54,17 @@ function load(ast, options, visiting) {
             );
           }
           visiting.add(canonical);
-          const opts = Object.assign({}, options, {
-            filename: filePath,
-            source: str,
-          });
-          const tokens = options.lex(str, opts);
-          const fileAst = options.parse(tokens, opts);
-          file.ast = load(fileAst, opts, visiting);
-          visiting.delete(canonical);
+          try {
+            const opts = Object.assign({}, options, {
+              filename: filePath,
+              source: str,
+            });
+            const tokens = options.lex(str, opts);
+            const fileAst = options.parse(tokens, opts);
+            file.ast = load(fileAst, opts, visiting);
+          } finally {
+            visiting.delete(canonical);
+          }
         }
       }
     }

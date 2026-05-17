@@ -1,12 +1,14 @@
+const {escapeXml} = require('./xml');
+
 module.exports = function generateAtom(feed) {
-  var entries = feed.entries.map((entry) => {
+  const entries = feed.entries.map((entry) => {
     return [
       '  <entry>',
       '    <title>' + escapeXml(entry.title) + '</title>',
       '    <link href="' + escapeXml(entry.url) + '" rel="alternate"/>',
       '    <id>' + escapeXml(entry.url) + '</id>',
-      '    <published>' + toISO8601(entry.published) + '</published>',
-      '    <updated>' + toISO8601(entry.published) + '</updated>',
+      '    <published>' + escapeXml(toISO8601(entry.published)) + '</published>',
+      '    <updated>' + escapeXml(toISO8601(entry.published)) + '</updated>',
       entry.summary
         ? '    <summary>' + escapeXml(entry.summary) + '</summary>'
         : null,
@@ -20,7 +22,7 @@ module.exports = function generateAtom(feed) {
       .join('\n');
   });
 
-  var lines = [
+  const lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
     '<feed xmlns="http://www.w3.org/2005/Atom">',
     '  <title>' + escapeXml(feed.title) + '</title>',
@@ -41,7 +43,7 @@ module.exports = function generateAtom(feed) {
     '  <generator>pugneum-feed</generator>',
   );
 
-  for (var i = 0; i < entries.length; i++) {
+  for (let i = 0; i < entries.length; i++) {
     lines.push(entries[i]);
   }
 
@@ -52,23 +54,16 @@ module.exports = function generateAtom(feed) {
 
 function feedUpdated(feed) {
   if (feed.entries.length > 0) {
-    return toISO8601(feed.entries[0].published);
+    return escapeXml(toISO8601(feed.entries[0].published));
   }
   if (feed.updated) {
-    return toISO8601(feed.updated);
+    return escapeXml(toISO8601(feed.updated));
   }
   return new Date().toISOString();
 }
 
 function toISO8601(dateStr) {
+  if (!dateStr) return new Date().toISOString();
+  if (dateStr.includes('T')) return dateStr;
   return dateStr + 'T00:00:00Z';
-}
-
-function escapeXml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
 }

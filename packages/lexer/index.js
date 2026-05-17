@@ -4,7 +4,7 @@ module.exports = lex;
 
 function lex(str, options) {
   const lexer = new Lexer(str, options);
-  return structuredClone(lexer.getTokens());
+  return lexer.getTokens();
 }
 
 // https://infra.spec.whatwg.org/#c0-control
@@ -17,22 +17,22 @@ const control = c0 + '\u007F-\u009F';
 const noncharacter =
   '\uFDD0-\uFDEF' +
   '\uFFFE\uFFFF' +
-  '\u1FFFE\u1FFFF' +
-  '\u2FFFE\u2FFFF' +
-  '\u3FFFE\u3FFFF' +
-  '\u4FFFE\u4FFFF' +
-  '\u5FFFE\u5FFFF' +
-  '\u6FFFE\u6FFFF' +
-  '\u7FFFE\u7FFFF' +
-  '\u8FFFE\u8FFFF' +
-  '\u9FFFE\u9FFFF' +
-  '\uAFFFE\uAFFFF' +
-  '\uBFFFE\uBFFFF' +
-  '\uCFFFE\uCFFFF' +
-  '\uDFFFE\uDFFFF' +
-  '\uEFFFE\uEFFFF' +
-  '\uFFFFE\uFFFFF' +
-  '\u10FFFE\u10FFFF';
+  '\u{1FFFE}\u{1FFFF}' +
+  '\u{2FFFE}\u{2FFFF}' +
+  '\u{3FFFE}\u{3FFFF}' +
+  '\u{4FFFE}\u{4FFFF}' +
+  '\u{5FFFE}\u{5FFFF}' +
+  '\u{6FFFE}\u{6FFFF}' +
+  '\u{7FFFE}\u{7FFFF}' +
+  '\u{8FFFE}\u{8FFFF}' +
+  '\u{9FFFE}\u{9FFFF}' +
+  '\u{AFFFE}\u{AFFFF}' +
+  '\u{BFFFE}\u{BFFFF}' +
+  '\u{CFFFE}\u{CFFFF}' +
+  '\u{DFFFE}\u{DFFFF}' +
+  '\u{EFFFE}\u{EFFFF}' +
+  '\u{FFFFE}\u{FFFFF}' +
+  '\u{10FFFE}\u{10FFFF}';
 
 // https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
 const attributeNamePunctuation = ' \'">/=';
@@ -556,7 +556,7 @@ class Lexer {
     if ((captures = /^\/\/(-)?([^\n]*)/.exec(this.input))) {
       this.consume(captures[0].length);
       const tok = this.tok('comment', captures[2]);
-      tok.buffer = '-' != captures[1];
+      tok.buffer = '-' !== captures[1];
       this.interpolationAllowed = tok.buffer;
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
@@ -1082,9 +1082,12 @@ class Lexer {
     if (afterLink.startsWith('(')) {
       const savedInput = this.input;
       this.input = afterLink;
-      this.attrs();
-      afterLink = this.input;
-      this.input = savedInput;
+      try {
+        this.attrs();
+        afterLink = this.input;
+      } finally {
+        this.input = savedInput;
+      }
     }
 
     this.addText(type, afterLink);
@@ -1105,8 +1108,8 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     tok = this.tok('variable', match[2]);
-    this.tokens.push(tok);
     this.incrementColumn(match[2].length);
+    this.tokens.push(this.tokEnd(tok));
 
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
@@ -1675,7 +1678,7 @@ class Lexer {
   attrs() {
     let tok;
 
-    if ('(' == this.input.charAt(0)) {
+    if ('(' === this.input.charAt(0)) {
       tok = this.tok('start-attributes');
       const index = this.bracketExpression().end;
       let str = this.input.slice(1, index);
@@ -1710,7 +1713,7 @@ class Lexer {
       this.incrementLine(1);
       this.consume(indents + 1);
 
-      if (' ' == this.input[0] || '\t' == this.input[0]) {
+      if (' ' === this.input[0] || '\t' === this.input[0]) {
         this.error(
           'INVALID_INDENTATION',
           'Invalid indentation, you can use tabs or spaces but not both',
@@ -1718,7 +1721,7 @@ class Lexer {
       }
 
       // blank line
-      if ('\n' == this.input[0]) {
+      if ('\n' === this.input[0]) {
         this.interpolationAllowed = true;
         return this.tokEnd(this.tok('newline'));
       }
@@ -1747,7 +1750,7 @@ class Lexer {
           this.tokens.push(this.tokEnd(tok));
         }
         // indent
-      } else if (indents && indents != this.indentStack[0]) {
+      } else if (indents && indents !== this.indentStack[0]) {
         tok = this.tok('indent', indents);
         this.colno = 1 + indents;
         this.tokens.push(this.tokEnd(tok));
@@ -1781,7 +1784,7 @@ class Lexer {
       do {
         // text has `\n` as a prefix
         let i = this.input.slice(stringPtr + 1).indexOf('\n');
-        if (-1 == i) i = this.input.length - stringPtr - 1;
+        if (-1 === i) i = this.input.length - stringPtr - 1;
         const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
         const lineCaptures = this.indentRe.exec('\n' + str);
         const lineIndents = lineCaptures && lineCaptures[1].length;

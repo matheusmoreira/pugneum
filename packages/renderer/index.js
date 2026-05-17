@@ -1,6 +1,5 @@
 const makeError = require('pugneum-error');
 
-// Map of self-closing void elements.
 const MAX_MIXIN_DEPTH = 256;
 
 const selfClosing = // HTML void elements
@@ -28,7 +27,7 @@ class Compiler {
   constructor(node, options) {
     this.options = options = options || {};
     this.node = node;
-    this.mixins = {};
+    this.mixins = Object.create(null);
     this.callStack = [];
   }
 
@@ -37,6 +36,7 @@ class Compiler {
       line: node.line,
       column: node.column,
       filename: node.filename,
+      source: this.options.source,
     });
     throw err;
   }
@@ -127,7 +127,7 @@ class Compiler {
     }
   }
 
-  visitTag(tag, interpolated) {
+  visitTag(tag) {
     this.buffer('<');
     this.buffer(tag.name);
     this.visitAttributes(tag.attrs);
@@ -167,23 +167,14 @@ class Compiler {
 
   visitComment(comment) {
     if (!comment.buffer) return;
-    this.buffer('<!--' + comment.val + '-->');
+    this.buffer('<!--' + sanitizeComment(comment.val) + '-->');
   }
-
-  /**
-   * Visit a `YieldBlock`.
-   *
-   * This is necessary since we allow compiling a file with `yield`.
-   *
-   * @param {YieldBlock} block
-   * @api public
-   */
 
   visitYieldBlock(block) {}
 
   visitBlockComment(comment) {
     if (!comment.buffer) return;
-    this.buffer('<!--' + (comment.val || ''));
+    this.buffer('<!--' + sanitizeComment(comment.val || ''));
     this.visit(comment.block, comment);
     this.buffer('-->');
   }
@@ -207,7 +198,7 @@ class Compiler {
       }
       if (resolved.length > 0) {
         this.buffer(' class="');
-        this.buffer(resolved.join(' ').replace(/"/g, '&quot;'));
+        this.buffer(escapeAttrValue(resolved.join(' ')));
         this.buffer('"');
       }
     }
@@ -218,14 +209,34 @@ class Compiler {
         this.buffer(attr.name);
       } else {
         const val = this.resolveAttrValue(String(attr.val), attr);
-        if (val === null) continue; // null variable — omit entire attribute
+        if (val === null) continue;
         this.buffer(' ');
         this.buffer(attr.name);
         this.buffer('="');
-        this.buffer(val.replace(/"/g, '&quot;'));
+        this.buffer(escapeAttrValue(val));
         this.buffer('"');
       }
     }
+  }
+
+  resolveVariable(name, node) {
+    if (this.callStack.length === 0) {
+      this.error(
+        'CALL_STACK_UNDERFLOW',
+        `Variable '${name}' used outside mixin`,
+        node,
+      );
+    }
+    const frame = this.callStack.at(-1);
+    const value = frame.environment[name];
+    if (value === undefined) {
+      this.error(
+        'UNDEFINED_VARIABLE',
+        `Variable '${name}' is undefined`,
+        node,
+      );
+    }
+    return value;
   }
 
   resolveAttrValue(str, attr) {
@@ -235,22 +246,7 @@ class Compiler {
       /\\#\{([-a-zA-Z_?]+)\}|#\{([-a-zA-Z_?]+)\}/g,
       (match, escapedName, name) => {
         if (escapedName) return '#{' + escapedName + '}';
-        if (this.callStack.length === 0) {
-          this.error(
-            'CALL_STACK_UNDERFLOW',
-            `Variable '${name}' used outside mixin in attribute`,
-            attr,
-          );
-        }
-        const frame = this.callStack.at(-1);
-        const value = frame.environment[name];
-        if (value === undefined) {
-          this.error(
-            'UNDEFINED_VARIABLE',
-            `Variable '${name}' is undefined`,
-            attr,
-          );
-        }
+        const value = this.resolveVariable(name, attr);
         if (value === null) {
           hasNull = true;
           return '';
@@ -331,34 +327,36 @@ class Compiler {
   }
 
   visitVariable(variable) {
-    if (this.callStack.length === 0) {
-      this.error(
-        'CALL_STACK_UNDERFLOW',
-        `Variable '${variable.name}' used outside mixin`,
-        variable,
-      );
-    }
-
-    const frame = this.callStack.at(-1);
-    const value = frame.environment[variable.name];
-
-    if (value === undefined) {
-      this.error(
-        'UNDEFINED_VARIABLE',
-        `Variable '${variable.name}' is undefined`,
-        variable,
-      );
-    }
-
-    // null means declared but not provided — emit nothing
+    const value = this.resolveVariable(variable.name, variable);
     if (value === null) return;
-
     this.buffer(value);
   }
 
   visitMixinBlock(mixinBlock) {
+    if (this.callStack.length === 0) {
+      this.error(
+        'CALL_STACK_UNDERFLOW',
+        'MixinBlock used outside mixin call',
+        mixinBlock,
+      );
+    }
     const current = this.callStack.pop();
-    this.visit(current.block);
-    this.callStack.push(current);
+    if (!current.block || !current.block.nodes || !current.block.nodes.length) {
+      this.callStack.push(current);
+      return;
+    }
+    try {
+      this.visit(current.block);
+    } finally {
+      this.callStack.push(current);
+    }
   }
+}
+
+function escapeAttrValue(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+
+function sanitizeComment(str) {
+  return str.replace(/--/g, '- -');
 }

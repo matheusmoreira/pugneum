@@ -870,68 +870,74 @@ class Lexer {
     return child.input;
   }
 
+  parseShorthandContent(rest, errorPrefix, errorCode) {
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error('NO_END_BRACKET', errorPrefix);
+      }
+      throw ex;
+    }
+    const content = range.src;
+    const after = rest.substring(range.end + 1);
+
+    let url, text;
+    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
+      const quote = content[0];
+      const endQuote = findClosingQuote(content, quote, 1);
+      if (endQuote === -1) {
+        this.error(errorCode, `Unclosed quote in ${errorPrefix} URL.`);
+      }
+      url = content.substring(1, endQuote);
+      text = content.substring(endQuote + 1).trimStart() || url;
+    } else {
+      const spaceIdx = content.indexOf(' ');
+      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
+        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
+        text = url;
+      } else {
+        url = content.substring(0, spaceIdx);
+        text = content.substring(spaceIdx + 1);
+      }
+    }
+    return {url: unescapeShorthand(url), text: unescapeShorthand(text), content, after};
+  }
+
+  escapeForAttr(value) {
+    const quote = value.includes("'") ? '"' : "'";
+    const escaped = value.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    return {quote, escaped};
+  }
+
+  desugarAsInterpolation(childInput, contentLen) {
+    let tok = this.tok('start-interpolation');
+    this.incrementColumn(2);
+    this.tokens.push(this.tokEnd(tok));
+    const child = this.spawnChildLexer(childInput);
+    this.incrementColumn(contentLen);
+    this.tokens = this.tokens.concat(child.tokens);
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+    return child.input;
+  }
+
   handleLinkShorthand(type, value, prefix, escaped, pos) {
     let tok = this.tok(type, prefix + value.substring(0, pos));
     this.incrementColumn(prefix.length + pos + escaped);
     this.tokens.push(this.tokEnd(tok));
 
-    const linkRest = value.substring(pos + 1); // from ( onwards
-    let range;
-    try {
-      range = parseUntil(linkRest, ')', 1);
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for @() link shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = range.src;
-    const afterLink = linkRest.substring(range.end + 1);
-
-    let url, linkText;
-    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
-      const quote = content[0];
-      const endQuote = findClosingQuote(content, quote, 1);
-      if (endQuote === -1) {
-        this.error('INVALID_LINK', 'Unclosed quote in @() link URL.');
-      }
-      url = content.substring(1, endQuote);
-      const after = content.substring(endQuote + 1).trimStart();
-      linkText = after || url;
-    } else {
-      const spaceIdx = content.indexOf(' ');
-      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
-        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
-        linkText = url;
-      } else {
-        url = content.substring(0, spaceIdx);
-        linkText = content.substring(spaceIdx + 1);
-      }
-    }
-    url = unescapeShorthand(url);
-    linkText = unescapeShorthand(linkText);
-
-    // Desugar @(url text) to equivalent #[a(href='url') text] and use child lexer
-    const quote = url.includes("'") ? '"' : "'";
-    const escapedUrl = url
-      .replaceAll('\\', '\\\\')
-      .replaceAll(quote, '\\' + quote);
-    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${linkText}]${afterLink}`;
-
-    tok = this.tok('start-interpolation');
-    this.incrementColumn(2); // @(
-    this.tokens.push(this.tokEnd(tok));
-    const child = this.spawnChildLexer(childInput);
-    // Correct column to actual source position (synthesized input has different length)
-    this.incrementColumn(content.length);
-    this.tokens = this.tokens.concat(child.tokens);
-    tok = this.tok('end-interpolation');
-    this.incrementColumn(1); // )
-    this.tokens.push(this.tokEnd(tok));
-    return child.input;
+    const rest = value.substring(pos + 1);
+    const parsed = this.parseShorthandContent(
+      rest,
+      'End of line reached with no closing ) for @() link shorthand.',
+      'INVALID_LINK',
+    );
+    const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
+    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${parsed.text}]${parsed.after}`;
+    return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
   handleImageShorthand(type, value, prefix, escaped, pos) {
@@ -939,55 +945,16 @@ class Lexer {
     this.incrementColumn(prefix.length + pos + escaped);
     this.tokens.push(this.tokEnd(tok));
 
-    const imageRest = value.substring(pos + 1); // from ( onwards
-    let range;
-    try {
-      range = parseUntil(imageRest, ')', 1);
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for !() image shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = range.src;
-    let afterImage = imageRest.substring(range.end + 1);
+    const rest = value.substring(pos + 1);
+    const parsed = this.parseShorthandContent(
+      rest,
+      'End of line reached with no closing ) for !() image shorthand.',
+      'INVALID_IMAGE',
+    );
+    let afterImage = parsed.after;
+    const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
+    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(parsed.text);
 
-    let url, altText;
-    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
-      const quote = content[0];
-      const endQuote = findClosingQuote(content, quote, 1);
-      if (endQuote === -1) {
-        this.error('INVALID_IMAGE', 'Unclosed quote in !() image URL.');
-      }
-      url = content.substring(1, endQuote);
-      altText = content.substring(endQuote + 1).trimStart() || url;
-    } else {
-      const spaceIdx = content.indexOf(' ');
-      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
-        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
-        altText = url;
-      } else {
-        url = content.substring(0, spaceIdx);
-        altText = content.substring(spaceIdx + 1);
-      }
-    }
-    url = unescapeShorthand(url);
-    altText = unescapeShorthand(altText);
-
-    // Build attribute string: src='url' alt='alt text'
-    const quote = url.includes("'") ? '"' : "'";
-    const escapedUrl = url
-      .replaceAll('\\', '\\\\')
-      .replaceAll(quote, '\\' + quote);
-    const altQuote = altText.includes("'") ? '"' : "'";
-    const escapedAlt = altText
-      .replaceAll('\\', '\\\\')
-      .replaceAll(altQuote, '\\' + altQuote);
-
-    // Check for optional trailing (attrs) and include them in the tag
     let extraAttrs = '';
     if (afterImage.startsWith('(')) {
       let attrRange;
@@ -1006,19 +973,8 @@ class Lexer {
       afterImage = afterImage.substring(attrRange.end + 1);
     }
 
-    // Desugar !(url alt) to equivalent #[img(src='url' alt='alt text')] and use child lexer
     const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs})]${afterImage}`;
-
-    tok = this.tok('start-interpolation');
-    this.incrementColumn(2); // !(
-    this.tokens.push(this.tokEnd(tok));
-    const child = this.spawnChildLexer(childInput);
-    this.incrementColumn(content.length);
-    this.tokens = this.tokens.concat(child.tokens);
-    tok = this.tok('end-interpolation');
-    this.incrementColumn(1); // )
-    this.tokens.push(this.tokEnd(tok));
-    return child.input;
+    return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
   handleRefLink(type, value, prefix, escaped, pos) {
@@ -1792,15 +1748,27 @@ class Lexer {
 
     indents = indents || (captures && captures[1].length);
     if (indents > this.indentStack[0]) {
+      // First pass: find the minimum indent among non-blank indented lines
+      let minIndent = indents;
+      let scanPtr = 0;
+      while (scanPtr < this.input.length) {
+        let i = this.input.indexOf('\n', scanPtr + 1);
+        if (i === -1) i = this.input.length;
+        const str = this.input.slice(scanPtr + 1, i);
+        const lineCaptures = this.indentRe.exec('\n' + str);
+        const lineIndents = lineCaptures && lineCaptures[1].length;
+        if (str.trim() && lineIndents <= this.indentStack[0]) break;
+        if (str.trim() && lineIndents < minIndent) minIndent = lineIndents;
+        scanPtr = i;
+      }
+      indents = minIndent;
+
       this.tokens.push(this.tokEnd(this.tok('start-pipeless-text')));
       const tokens = [];
       const token_indent = [];
       let isMatch;
-      // Index in this.input. Can't use this.consume because we might need to
-      // retry lexing the block.
       let stringPtr = 0;
       do {
-        // text has `\n` as a prefix
         let i = this.input.slice(stringPtr + 1).indexOf('\n');
         if (-1 === i) i = this.input.length - stringPtr - 1;
         const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
@@ -1810,14 +1778,8 @@ class Lexer {
         token_indent.push(isMatch);
         isMatch = isMatch || !str.trim();
         if (isMatch) {
-          // consume test along with `\n` prefix if match
           stringPtr += str.length + 1;
           tokens.push(str.slice(indents));
-        } else if (lineIndents > this.indentStack[0]) {
-          // line is indented less than the first line but is still indented
-          // need to retry lexing the text block
-          this.tokens.pop();
-          return this.pipelessText(lineCaptures[1].length);
         }
       } while (this.input.length - stringPtr && isMatch);
       this.consume(stringPtr);

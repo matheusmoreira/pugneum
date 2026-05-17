@@ -220,7 +220,7 @@ Feed generation hooks into the existing CLI after HTML compilation:
 |-----------|----------|
 | `pugneum-feed` not installed, `feeds` config present | Warning, skip feed generation |
 | Base URL unresolvable (no `<base>`, no `feeds.url`) | Error with guidance on what to add |
-| Article page not found for a discovered link | Warning, skip that entry, continue |
+| Article page not found for a discovered link | Error identifying the missing file |
 | No `data-published-at` entries found on index page | Empty feed (valid XML, zero entries) |
 | RSS description missing (no `<meta name="description">`, no config) | Error with guidance |
 

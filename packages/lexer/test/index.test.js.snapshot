@@ -22623,15 +22623,6 @@ exports[`link-shorthand.pg 1`] = `
 ]
 `;
 
-exports[`malformed-extends.pg 1`] = `
-{
-  "msg": "missing path for extends",
-  "code": "PUGNEUM:NO_EXTENDS_PATH",
-  "line": 1,
-  "column": 8
-}
-`;
-
 exports[`malformed-include.pg 1`] = `
 {
   "msg": "malformed include",
@@ -29196,6 +29187,15 @@ exports[`nesting.pg 1`] = `
     }
   }
 ]
+`;
+
+exports[`no-extends-path.pg 1`] = `
+{
+  "msg": "missing path for extends",
+  "code": "PUGNEUM:NO_EXTENDS_PATH",
+  "line": 1,
+  "column": 8
+}
 `;
 
 exports[`open-interpolation.pg 1`] = `

@@ -54,8 +54,7 @@ console.log(JSON.stringify(ast, null, '  '))
           "val": "bar",
           "line": 1,
           "column": 5,
-          "filename": "my-file.pg",
-          "mustEscape": true
+          "filename": "my-file.pg"
         }
       ],
       "attributeBlocks": [],

@@ -5949,7 +5949,7 @@ exports[`includes.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 4,
-      "column": 5,
+      "column": 1,
       "filename": "includes.pg"
     },
     {
@@ -9114,7 +9114,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 3,
-      "column": 7,
+      "column": 1,
       "filename": "mixin-at-end-of-file.pg"
     }
   ],
@@ -9192,7 +9192,7 @@ exports[`mixin-block-with-space.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 5,
-      "column": 3,
+      "column": 1,
       "filename": "mixin-block-with-space.pg"
     }
   ],
@@ -9258,7 +9258,7 @@ exports[`mixin-hoist.pg 1`] = `
                   "attrs": [],
                   "attributeBlocks": [],
                   "line": 7,
-                  "column": 9,
+                  "column": 5,
                   "filename": "mixin-hoist.pg"
                 }
               ],
@@ -9446,7 +9446,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 7,
-            "column": 15,
+            "column": 11,
             "filename": "mixin-inline-optional-args.pg"
           },
           {
@@ -9468,7 +9468,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 7,
-            "column": 32,
+            "column": 28,
             "filename": "mixin-inline-optional-args.pg"
           },
           {
@@ -9513,7 +9513,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 9,
-            "column": 17,
+            "column": 12,
             "filename": "mixin-inline-optional-args.pg"
           },
           {
@@ -9535,7 +9535,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 9,
-            "column": 36,
+            "column": 31,
             "filename": "mixin-inline-optional-args.pg"
           },
           {
@@ -9652,7 +9652,7 @@ exports[`mixin-optional-args.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 4,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-args.pg"
     },
     {
@@ -9742,7 +9742,7 @@ exports[`mixin-optional-args.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 9,
-      "column": 10,
+      "column": 1,
       "filename": "mixin-optional-args.pg"
     },
     {
@@ -9757,7 +9757,7 @@ exports[`mixin-optional-args.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 10,
-      "column": 10,
+      "column": 1,
       "filename": "mixin-optional-args.pg"
     },
     {
@@ -9840,7 +9840,7 @@ exports[`mixin-optional-args.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 15,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-args.pg"
     },
     {
@@ -9856,7 +9856,7 @@ exports[`mixin-optional-args.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 16,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-args.pg"
     }
   ],
@@ -9955,7 +9955,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 4,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
     },
     {
@@ -9971,7 +9971,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 5,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
     },
     {
@@ -10049,7 +10049,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 10,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
     },
     {
@@ -10064,7 +10064,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 11,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
     }
   ],
@@ -10163,7 +10163,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 4,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     },
     {
@@ -10179,7 +10179,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 5,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     },
     {
@@ -10268,7 +10268,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 10,
-      "column": 10,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     },
     {
@@ -10283,7 +10283,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 11,
-      "column": 10,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     },
     {
@@ -10366,7 +10366,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 16,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     },
     {
@@ -10382,7 +10382,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 17,
-      "column": 6,
+      "column": 1,
       "filename": "mixin-optional-question-mark.pg"
     }
   ],
@@ -10463,7 +10463,7 @@ exports[`mixin-variables.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 5,
-            "column": 6,
+            "column": 3,
             "filename": "mixin-variables.pg"
           },
           {
@@ -10477,7 +10477,7 @@ exports[`mixin-variables.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 6,
-            "column": 7,
+            "column": 3,
             "filename": "mixin-variables.pg"
           },
           {
@@ -10492,7 +10492,7 @@ exports[`mixin-variables.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 7,
-            "column": 8,
+            "column": 3,
             "filename": "mixin-variables.pg"
           }
         ],
@@ -10604,7 +10604,7 @@ exports[`mixin-variables.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 14,
-      "column": 11,
+      "column": 1,
       "filename": "mixin-variables.pg"
     }
   ],
@@ -10716,7 +10716,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                   "attrs": [],
                   "attributeBlocks": [],
                   "line": 8,
-                  "column": 13,
+                  "column": 5,
                   "filename": "mixin.block-tag-behaviour.pg"
                 }
               ],
@@ -10896,7 +10896,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                   "attrs": [],
                   "attributeBlocks": [],
                   "line": 17,
-                  "column": 13,
+                  "column": 5,
                   "filename": "mixin.block-tag-behaviour.pg",
                   "textOnly": true
                 }
@@ -11014,7 +11014,7 @@ exports[`mixin.blocks.pg 1`] = `
                   "attrs": [],
                   "attributeBlocks": [],
                   "line": 7,
-                  "column": 9,
+                  "column": 5,
                   "filename": "mixin.blocks.pg"
                 }
               ],
@@ -11133,7 +11133,7 @@ exports[`mixin.blocks.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 10,
-      "column": 5,
+      "column": 1,
       "filename": "mixin.blocks.pg"
     },
     {
@@ -11206,7 +11206,7 @@ exports[`mixin.blocks.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 20,
-      "column": 5,
+      "column": 1,
       "filename": "mixin.blocks.pg",
       "textOnly": true
     }
@@ -11415,7 +11415,7 @@ exports[`mixins.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 8,
-            "column": 8,
+            "column": 3,
             "filename": "mixins.pg"
           },
           {
@@ -11427,7 +11427,7 @@ exports[`mixins.pg 1`] = `
             "attrs": [],
             "attributeBlocks": [],
             "line": 9,
-            "column": 9,
+            "column": 3,
             "filename": "mixins.pg"
           }
         ],

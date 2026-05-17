@@ -14611,7 +14611,7 @@ exports[`includes.pg 1`] = `
     "loc": {
       "start": {
         "line": 4,
-        "column": 5
+        "column": 1
       },
       "filename": "includes.pg",
       "end": {
@@ -22673,7 +22673,7 @@ exports[`mixin-at-end-of-file.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 7
+        "column": 1
       },
       "filename": "mixin-at-end-of-file.pg",
       "end": {
@@ -22874,7 +22874,7 @@ exports[`mixin-block-with-space.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 3
+        "column": 1
       },
       "filename": "mixin-block-with-space.pg",
       "end": {
@@ -23087,7 +23087,7 @@ exports[`mixin-hoist.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 9
+        "column": 5
       },
       "filename": "mixin-hoist.pg",
       "end": {
@@ -23508,7 +23508,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 15
+        "column": 11
       },
       "filename": "mixin-inline-optional-args.pg",
       "end": {
@@ -23569,7 +23569,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 32
+        "column": 28
       },
       "filename": "mixin-inline-optional-args.pg",
       "end": {
@@ -23675,7 +23675,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 17
+        "column": 12
       },
       "filename": "mixin-inline-optional-args.pg",
       "end": {
@@ -23736,7 +23736,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 36
+        "column": 31
       },
       "filename": "mixin-inline-optional-args.pg",
       "end": {
@@ -24005,7 +24005,7 @@ exports[`mixin-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 4,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -24237,7 +24237,7 @@ exports[`mixin-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 10
+        "column": 1
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -24269,7 +24269,7 @@ exports[`mixin-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 10,
-        "column": 10
+        "column": 1
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -24449,7 +24449,7 @@ exports[`mixin-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 15,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -24482,7 +24482,7 @@ exports[`mixin-optional-args.pg 1`] = `
     "loc": {
       "start": {
         "line": 16,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-args.pg",
       "end": {
@@ -24723,7 +24723,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     "loc": {
       "start": {
         "line": 4,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
@@ -24756,7 +24756,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
@@ -24932,7 +24932,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     "loc": {
       "start": {
         "line": 10,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
@@ -24964,7 +24964,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     "loc": {
       "start": {
         "line": 11,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
@@ -25204,7 +25204,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 4,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25237,7 +25237,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25469,7 +25469,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 10,
-        "column": 10
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25501,7 +25501,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 11,
-        "column": 10
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25681,7 +25681,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 16,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25714,7 +25714,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
     "loc": {
       "start": {
         "line": 17,
-        "column": 6
+        "column": 1
       },
       "filename": "mixin-optional-question-mark.pg",
       "end": {
@@ -25919,7 +25919,7 @@ exports[`mixin-variables.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 6
+        "column": 3
       },
       "filename": "mixin-variables.pg",
       "end": {
@@ -25951,7 +25951,7 @@ exports[`mixin-variables.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 7
+        "column": 3
       },
       "filename": "mixin-variables.pg",
       "end": {
@@ -25983,7 +25983,7 @@ exports[`mixin-variables.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 8
+        "column": 3
       },
       "filename": "mixin-variables.pg",
       "end": {
@@ -26253,7 +26253,7 @@ exports[`mixin-variables.pg 1`] = `
     "loc": {
       "start": {
         "line": 14,
-        "column": 11
+        "column": 1
       },
       "filename": "mixin-variables.pg",
       "end": {
@@ -26496,7 +26496,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "loc": {
       "start": {
         "line": 8,
-        "column": 13
+        "column": 5
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
@@ -26806,7 +26806,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "loc": {
       "start": {
         "line": 17,
-        "column": 13
+        "column": 5
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
@@ -27206,7 +27206,7 @@ exports[`mixin.blocks.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 9
+        "column": 5
       },
       "filename": "mixin.blocks.pg",
       "end": {
@@ -27293,7 +27293,7 @@ exports[`mixin.blocks.pg 1`] = `
     "loc": {
       "start": {
         "line": 10,
-        "column": 5
+        "column": 1
       },
       "filename": "mixin.blocks.pg",
       "end": {
@@ -27559,7 +27559,7 @@ exports[`mixin.blocks.pg 1`] = `
     "loc": {
       "start": {
         "line": 20,
-        "column": 5
+        "column": 1
       },
       "filename": "mixin.blocks.pg",
       "end": {
@@ -27997,7 +27997,7 @@ exports[`mixins.pg 1`] = `
     "loc": {
       "start": {
         "line": 8,
-        "column": 8
+        "column": 3
       },
       "filename": "mixins.pg",
       "end": {
@@ -28027,7 +28027,7 @@ exports[`mixins.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 9
+        "column": 3
       },
       "filename": "mixins.pg",
       "end": {

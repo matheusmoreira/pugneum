@@ -337,6 +337,7 @@ class Lexer {
     this.originalInput = this.input;
     this.filename = options.filename;
     this.interpolated = options.interpolated || false;
+    this.depth = options.depth || 0;
     this.lineno = options.startingLine || 1;
     this.colno = options.startingColumn || 1;
     this.indentStack = [0];
@@ -460,16 +461,15 @@ class Lexer {
     } catch (ex) {
       if (ex.index !== undefined) {
         let idx = ex.index;
-        // starting from this.input[skip]
         let tmp = this.input.slice(skip).indexOf('\n');
-        // starting from this.input[0]
         let nextNewline = tmp + skip;
         let ptr = 0;
         while (idx > nextNewline && tmp !== -1) {
           this.incrementLine(1);
           idx -= nextNewline + 1;
           ptr += nextNewline + 1;
-          tmp = nextNewline = this.input.slice(ptr).indexOf('\n');
+          tmp = this.input.slice(ptr).indexOf('\n');
+          nextNewline = tmp === -1 ? -1 : tmp + ptr;
         }
 
         this.incrementColumn(idx);
@@ -688,33 +688,56 @@ class Lexer {
   }
   addText(type, value, prefix, escaped) {
     let tok;
-    if (value + prefix === '') return;
     prefix = prefix || '';
     escaped = escaped || 0;
 
-    // Process leading escape sequences iteratively instead of recursing.
-    // Each iteration consumes one \#[, \@(, or \#{ and accumulates the
-    // literal characters into prefix.
-    for (;;) {
+    while (true) {
+
+      for (;;) {
+        const earliest = this.findEarliestCandidate(value);
+
+        if (!earliest) {
+          value = prefix + value;
+          tok = this.tok(type, value);
+          this.incrementColumn(value.length + escaped);
+          this.tokens.push(this.tokEnd(tok));
+          return;
+        }
+
+        if (earliest.kind !== 'escaped') break;
+
+        prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
+        value = value.substring(earliest.pos + 3);
+        escaped++;
+      }
+
       const earliest = this.findEarliestCandidate(value);
 
-      if (!earliest) {
-        value = prefix + value;
-        tok = this.tok(type, value);
-        this.incrementColumn(value.length + escaped);
-        this.tokens.push(this.tokEnd(tok));
+      if (earliest.kind === 'end') {
+        if (prefix + value.substring(0, earliest.pos)) {
+          const tok = this.tok(type, prefix + value.substring(0, earliest.pos));
+          this.incrementColumn(prefix.length + earliest.pos + escaped);
+          this.tokens.push(this.tokEnd(tok));
+        }
+        this.ended = true;
+        this.input = value.slice(earliest.pos + 1) + this.input;
         return;
       }
 
-      if (earliest.kind !== 'escaped') break;
-
-      prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
-      value = value.substring(earliest.pos + 3);
-      escaped++;
+      const remainder = this._processInlineElement(
+        type,
+        value,
+        prefix,
+        escaped,
+        earliest,
+      );
+      value = remainder;
+      prefix = '';
+      escaped = 0;
     }
+  }
 
-    const earliest = this.findEarliestCandidate(value);
-
+  _processInlineElement(type, value, prefix, escaped, earliest) {
     switch (earliest.kind) {
       case 'interpolation':
         return this.handleInterpolation(
@@ -745,14 +768,6 @@ class Lexer {
 
       case 'reference':
         return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
-
-      case 'end':
-        if (prefix + value.substring(0, earliest.pos)) {
-          this.addText(type, value.substring(0, earliest.pos), prefix);
-        }
-        this.ended = true;
-        this.input = value.slice(earliest.pos + 1) + this.input;
-        return;
 
       case 'variable':
         return this.handleVariableRef(
@@ -817,9 +832,13 @@ class Lexer {
   }
 
   spawnChildLexer(input) {
+    if (this.depth >= 256) {
+      this.error('NESTING_TOO_DEEP', 'Inline element nesting exceeds maximum depth of 256');
+    }
     const child = new this.constructor(input, {
       filename: this.filename,
       interpolated: true,
+      depth: this.depth + 1,
       startingLine: this.lineno,
       startingColumn: this.colno,
     });
@@ -848,7 +867,7 @@ class Lexer {
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
-    this.addText(type, child.input);
+    return child.input;
   }
 
   handleLinkShorthand(type, value, prefix, escaped, pos) {
@@ -912,7 +931,7 @@ class Lexer {
     tok = this.tok('end-interpolation');
     this.incrementColumn(1); // )
     this.tokens.push(this.tokEnd(tok));
-    this.addText(type, child.input);
+    return child.input;
   }
 
   handleImageShorthand(type, value, prefix, escaped, pos) {
@@ -999,7 +1018,7 @@ class Lexer {
     tok = this.tok('end-interpolation');
     this.incrementColumn(1); // )
     this.tokens.push(this.tokEnd(tok));
-    this.addText(type, child.input);
+    return child.input;
   }
 
   handleRefLink(type, value, prefix, escaped, pos) {
@@ -1090,7 +1109,7 @@ class Lexer {
       }
     }
 
-    this.addText(type, afterLink);
+    return afterLink;
   }
 
   handleVariableRef(type, value, prefix, escaped, match) {
@@ -1115,7 +1134,7 @@ class Lexer {
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
 
-    this.addText(type, value.slice(match.index + match[0].length));
+    return value.slice(match.index + match[0].length);
   }
 
   text() {
@@ -1288,11 +1307,10 @@ class Lexer {
   call() {
     let tok, captures, increment;
     if ((captures = /^\+\s*([a-zA-Z][-\w]*)/.exec(this.input))) {
-      // found mixin call syntax: +name
       increment = captures[0].length;
+      tok = this.tok('call', captures[1]);
       this.consume(increment);
       this.incrementColumn(increment);
-      tok = this.tok('call', captures[1]);
 
       tok.args = [];
       // Check for args (not attributes)

@@ -1731,7 +1731,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
       "attrs": [],
       "attributeBlocks": [],
       "line": 4,
-      "column": 5,
+      "column": 1,
       "filename": "includes.pg"
     },
     {

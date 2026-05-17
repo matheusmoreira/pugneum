@@ -96,6 +96,21 @@ class Parser {
     this.depth = 0;
   }
 
+  node(type, tok, props) {
+    const n = {
+      type: type,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+    if (props) Object.assign(n, props);
+    return n;
+  }
+
+  textNode(tok, val) {
+    return this.node('Text', tok, {val: val !== undefined ? val : tok.val});
+  }
+
   error(code, message, token) {
     const err = error(code, message, {
       line: token.loc.start.line,
@@ -261,51 +276,40 @@ class Parser {
    * Text
    */
 
-  parseText(options) {
-    const tags = [];
-    const lineno = this.peek().loc.start.line;
+  collectInlineContent(nodes, options) {
     let nextTok = this.peek();
     loop: while (true) {
       switch (nextTok.type) {
-        case 'text': {
-          const tok = this.advance();
-          tags.push({
-            type: 'Text',
-            val: tok.val,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
-            filename: this.filename,
-          });
+        case 'text':
+          nodes.push(this.textNode(this.advance()));
           break;
-        }
         case 'newline': {
           if (!options || !options.block) break loop;
           const tok = this.advance();
-          const nextType = this.peek().type;
-          if (nextType === 'text') {
-            tags.push({
-              type: 'Text',
-              val: '\n',
-              line: tok.loc.start.line,
-              column: tok.loc.start.column,
-              filename: this.filename,
-            });
+          if (this.peek().type === 'text') {
+            nodes.push(this.textNode(tok, '\n'));
           }
           break;
         }
         case 'start-interpolation':
           this.advance();
-          tags.push(this.parseExpr());
+          nodes.push(this.parseExpr());
           this.expect('end-interpolation');
           break;
         case 'start-ref-link':
-          tags.push(this.parseRefLink());
+          nodes.push(this.parseRefLink());
           break;
         default:
           break loop;
       }
       nextTok = this.peek();
     }
+  }
+
+  parseText(options) {
+    const lineno = this.peek().loc.start.line;
+    const tags = [];
+    this.collectInlineContent(tags, options);
     if (tags.length === 1) return tags[0];
     else return this.initBlock(lineno, tags);
   }
@@ -390,13 +394,7 @@ class Parser {
     if (this.peek().type === 'text') {
       const textToken = this.advance();
       block = this.initBlock(textToken.loc.start.line, [
-        {
-          type: 'Text',
-          val: textToken.val,
-          line: textToken.loc.start.line,
-          column: textToken.loc.start.column,
-          filename: this.filename,
-        },
+        this.textNode(textToken),
       ]);
     } else if (this.peek().type === 'filter') {
       block = this.initBlock(tok.loc.start.line, [this.parseFilter()]);
@@ -533,21 +531,12 @@ class Parser {
     const name = tok.val;
     const block = this.emptyBlock(tok.loc.start.line);
 
-    // Collect link text content until end-ref-link
     while (this.peek().type !== 'end-ref-link') {
       const next = this.peek();
       switch (next.type) {
-        case 'text': {
-          const textTok = this.advance();
-          block.nodes.push({
-            type: 'Text',
-            val: textTok.val,
-            line: textTok.loc.start.line,
-            column: textTok.loc.start.column,
-            filename: this.filename,
-          });
+        case 'text':
+          block.nodes.push(this.textNode(this.advance()));
           break;
-        }
         case 'start-interpolation':
           this.advance();
           block.nodes.push(this.parseExpr());
@@ -697,22 +686,10 @@ class Parser {
       const currentTok = this.advance();
       switch (currentTok.type) {
         case 'text':
-          block.nodes.push({
-            type: 'Text',
-            val: currentTok.val,
-            line: currentTok.loc.start.line,
-            column: currentTok.loc.start.column,
-            filename: this.filename,
-          });
+          block.nodes.push(this.textNode(currentTok));
           break;
         case 'newline':
-          block.nodes.push({
-            type: 'Text',
-            val: '\n',
-            line: currentTok.loc.start.line,
-            column: currentTok.loc.start.column,
-            filename: this.filename,
-          });
+          block.nodes.push(this.textNode(currentTok, '\n'));
           break;
         case 'start-interpolation':
           block.nodes.push(this.parseExpr());

@@ -253,10 +253,10 @@ exports[`attrs.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "contact",
             "line": 1,
             "column": 20,
-            "filename": "attrs.pg"
+            "filename": "attrs.pg",
+            "val": "contact"
           }
         ],
         "line": 1,
@@ -285,10 +285,10 @@ exports[`attrs.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "save",
             "line": 2,
             "column": 24,
-            "filename": "attrs.pg"
+            "filename": "attrs.pg",
+            "val": "save"
           }
         ],
         "line": 2,
@@ -468,10 +468,10 @@ exports[`attrs.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Foo",
                   "line": 8,
                   "column": 32,
-                  "filename": "attrs.pg"
+                  "filename": "attrs.pg",
+                  "val": "Foo"
                 }
               ],
               "line": 8,
@@ -507,10 +507,10 @@ exports[`attrs.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Bar",
                   "line": 9,
                   "column": 32,
-                  "filename": "attrs.pg"
+                  "filename": "attrs.pg",
+                  "val": "Bar"
                 }
               ],
               "line": 9,
@@ -605,10 +605,10 @@ exports[`attrs.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "contact",
             "line": 13,
             "column": 20,
-            "filename": "attrs.pg"
+            "filename": "attrs.pg",
+            "val": "contact"
           }
         ],
         "line": 13,
@@ -637,10 +637,10 @@ exports[`attrs.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "save",
             "line": 14,
             "column": 24,
-            "filename": "attrs.pg"
+            "filename": "attrs.pg",
+            "val": "save"
           }
         ],
         "line": 14,
@@ -782,10 +782,10 @@ exports[`attrs.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Foo",
                   "line": 19,
                   "column": 32,
-                  "filename": "attrs.pg"
+                  "filename": "attrs.pg",
+                  "val": "Foo"
                 }
               ],
               "line": 19,
@@ -821,10 +821,10 @@ exports[`attrs.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Bar",
                   "line": 20,
                   "column": 32,
-                  "filename": "attrs.pg"
+                  "filename": "attrs.pg",
+                  "val": "Bar"
                 }
               ],
               "line": 20,
@@ -1299,10 +1299,10 @@ exports[`attrs.unescaped.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "<%= user.title %>",
                         "line": 3,
                         "column": 8,
-                        "filename": "attrs.unescaped.pg"
+                        "filename": "attrs.unescaped.pg",
+                        "val": "<%= user.title %>"
                       }
                     ],
                     "line": 3,
@@ -1383,10 +1383,10 @@ exports[`basic.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Title",
                         "line": 3,
                         "column": 8,
-                        "filename": "basic.pg"
+                        "filename": "basic.pg",
+                        "val": "Title"
                       }
                     ],
                     "line": 3,
@@ -1445,10 +1445,10 @@ exports[`blanks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "foo",
                   "line": 4,
                   "column": 6,
-                  "filename": "blanks.pg"
+                  "filename": "blanks.pg",
+                  "val": "foo"
                 }
               ],
               "line": 4,
@@ -1469,10 +1469,10 @@ exports[`blanks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "bar",
                   "line": 6,
                   "column": 6,
-                  "filename": "blanks.pg"
+                  "filename": "blanks.pg",
+                  "val": "bar"
                 }
               ],
               "line": 6,
@@ -1493,10 +1493,10 @@ exports[`blanks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "baz",
                   "line": 8,
                   "column": 6,
-                  "filename": "blanks.pg"
+                  "filename": "blanks.pg",
+                  "val": "baz"
                 }
               ],
               "line": 8,
@@ -1550,10 +1550,10 @@ exports[`block-expansion.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "foo",
                         "line": 2,
                         "column": 19,
-                        "filename": "block-expansion.pg"
+                        "filename": "block-expansion.pg",
+                        "val": "foo"
                       }
                     ],
                     "line": 2,
@@ -1599,10 +1599,10 @@ exports[`block-expansion.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "bar",
                         "line": 3,
                         "column": 19,
-                        "filename": "block-expansion.pg"
+                        "filename": "block-expansion.pg",
+                        "val": "bar"
                       }
                     ],
                     "line": 3,
@@ -1653,10 +1653,10 @@ exports[`block-expansion.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "baz",
             "line": 5,
             "column": 3,
-            "filename": "block-expansion.pg"
+            "filename": "block-expansion.pg",
+            "val": "baz"
           }
         ],
         "line": 5,
@@ -1705,10 +1705,10 @@ exports[`block-expansion.shorthands.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "baz",
                               "line": 2,
                               "column": 28,
-                              "filename": "block-expansion.shorthands.pg"
+                              "filename": "block-expansion.shorthands.pg",
+                              "val": "baz"
                             }
                           ],
                           "line": 2,
@@ -1802,10 +1802,10 @@ exports[`blockquote.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Try to define yourself by what you do, and you&#8217;ll burnout every time. You are. That is enough. I rest in that.",
                   "line": 3,
                   "column": 7,
-                  "filename": "blockquote.pg"
+                  "filename": "blockquote.pg",
+                  "val": "Try to define yourself by what you do, and you&#8217;ll burnout every time. You are. That is enough. I rest in that."
                 }
               ],
               "line": 2,
@@ -1826,10 +1826,10 @@ exports[`blockquote.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "from @thefray at 1:43pm on May 10",
                   "line": 4,
                   "column": 14,
-                  "filename": "blockquote.pg"
+                  "filename": "blockquote.pg",
+                  "val": "from @thefray at 1:43pm on May 10"
                 }
               ],
               "line": 4,
@@ -1887,10 +1887,10 @@ exports[`blocks-in-blocks.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Page 2",
                 "line": 4,
                 "column": 6,
-                "filename": "blocks-in-blocks.pg"
+                "filename": "blocks-in-blocks.pg",
+                "val": "Page 2"
               }
             ],
             "line": 4,
@@ -2128,10 +2128,10 @@ exports[`comments.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "one",
                   "line": 5,
                   "column": 6,
-                  "filename": "comments.pg"
+                  "filename": "comments.pg",
+                  "val": "one"
                 }
               ],
               "line": 5,
@@ -2160,10 +2160,10 @@ exports[`comments.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "two",
                   "line": 7,
                   "column": 6,
-                  "filename": "comments.pg"
+                  "filename": "comments.pg",
+                  "val": "two"
                 }
               ],
               "line": 7,
@@ -2195,38 +2195,38 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "ul",
             "line": 10,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "ul"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 11,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  li foo",
             "line": 11,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "  li foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 12,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 12,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": ""
           }
         ],
         "line": 9,
@@ -2245,38 +2245,38 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "// inline follow",
             "line": 14,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "// inline follow"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 15,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "li three",
             "line": 15,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "li three"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 16,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 16,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": ""
           }
         ],
         "line": 13,
@@ -2295,52 +2295,52 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "// inline followed by tags",
             "line": 18,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "// inline followed by tags"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 19,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "ul",
             "line": 19,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "ul"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 20,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  li four",
             "line": 20,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "  li four"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 21,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 21,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": ""
           }
         ],
         "line": 17,
@@ -2359,52 +2359,52 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "// inline",
             "line": 23,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "// inline"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 24,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "script(src='/lame.js')",
             "line": 24,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "script(src='/lame.js')"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 25,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "// end-inline",
             "line": 25,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "// end-inline"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 26,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 26,
             "column": 1,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": ""
           }
         ],
         "line": 22,
@@ -2423,10 +2423,10 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "five",
             "line": 27,
             "column": 3,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "five"
           }
         ],
         "line": 27,
@@ -2447,10 +2447,10 @@ exports[`comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "// not a comment",
             "line": 29,
             "column": 6,
-            "filename": "comments.pg"
+            "filename": "comments.pg",
+            "val": "// not a comment"
           }
         ],
         "line": 29,
@@ -2489,24 +2489,24 @@ exports[`comments.source.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "s/s.",
             "line": 2,
             "column": 3,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "s/s."
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 1,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -2533,38 +2533,38 @@ exports[`comments.source.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "test/cases/comments.source.pg",
             "line": 7,
             "column": 3,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "test/cases/comments.source.pg"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 8,
             "column": 1,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "when",
             "line": 8,
             "column": 3,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "when"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 9,
             "column": 1,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "()",
             "line": 9,
             "column": 3,
-            "filename": "comments.source.pg"
+            "filename": "comments.source.pg",
+            "val": "()"
           }
         ],
         "line": 6,
@@ -2593,10 +2593,10 @@ exports[`escape-chars.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "var re = /\\\\d+/;",
             "line": 2,
             "column": 3,
-            "filename": "escape-chars.pg"
+            "filename": "escape-chars.pg",
+            "val": "var re = /\\\\d+/;"
           }
         ],
         "line": 1,
@@ -2628,10 +2628,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 1,
             "column": 10,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 1,
@@ -2668,10 +2668,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "content",
             "line": 3,
             "column": 8,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "content"
           }
         ],
         "line": 3,
@@ -2692,10 +2692,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 4,
             "column": 13,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 4,
@@ -2716,10 +2716,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 5,
             "column": 10,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 5,
@@ -2740,10 +2740,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 6,
             "column": 8,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 6,
@@ -2764,10 +2764,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 7,
             "column": 9,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 7,
@@ -2788,10 +2788,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 8,
             "column": 10,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 8,
@@ -2812,10 +2812,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 9,
             "column": 6,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 9,
@@ -2836,10 +2836,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 10,
             "column": 30,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 10,
@@ -2882,10 +2882,10 @@ exports[`escaped-tags.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "hello",
             "line": 11,
             "column": 8,
-            "filename": "escaped-tags.pg"
+            "filename": "escaped-tags.pg",
+            "val": "hello"
           }
         ],
         "line": 11,
@@ -3105,10 +3105,10 @@ exports[`filters.coffeescript.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "regexp = /\\\\n/",
                   "line": 3,
                   "column": 5,
-                  "filename": "filters.coffeescript.pg"
+                  "filename": "filters.coffeescript.pg",
+                  "val": "regexp = /\\\\n/"
                 }
               ],
               "line": 2,
@@ -3127,24 +3127,24 @@ exports[`filters.coffeescript.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "math =",
                   "line": 5,
                   "column": 5,
-                  "filename": "filters.coffeescript.pg"
+                  "filename": "filters.coffeescript.pg",
+                  "val": "math ="
                 },
                 {
                   "type": "Text",
-                  "val": "\\n",
                   "line": 6,
                   "column": 1,
-                  "filename": "filters.coffeescript.pg"
+                  "filename": "filters.coffeescript.pg",
+                  "val": "\\n"
                 },
                 {
                   "type": "Text",
-                  "val": "  square: (value) -> value * value",
                   "line": 6,
                   "column": 5,
-                  "filename": "filters.coffeescript.pg"
+                  "filename": "filters.coffeescript.pg",
+                  "val": "  square: (value) -> value * value"
                 }
               ],
               "line": 4,
@@ -3212,52 +3212,52 @@ exports[`filters.custom.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Line 1",
                         "line": 4,
                         "column": 7,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "Line 1"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 5,
                         "column": 1,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "Line 2",
                         "line": 5,
                         "column": 7,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "Line 2"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 6,
                         "column": 1,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "",
                         "line": 6,
                         "column": 1,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": ""
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 7,
                         "column": 1,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "Line 4",
                         "line": 7,
                         "column": 7,
-                        "filename": "filters.custom.pg"
+                        "filename": "filters.custom.pg",
+                        "val": "Line 4"
                       }
                     ],
                     "line": 3,
@@ -3593,10 +3593,10 @@ exports[`filters.inline.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "before ",
             "line": 1,
             "column": 3,
-            "filename": "filters.inline.pg"
+            "filename": "filters.inline.pg",
+            "val": "before "
           },
           {
             "type": "Filter",
@@ -3606,10 +3606,10 @@ exports[`filters.inline.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "inside",
                   "line": 1,
                   "column": 19,
-                  "filename": "filters.inline.pg"
+                  "filename": "filters.inline.pg",
+                  "val": "inside"
                 }
               ],
               "line": 1,
@@ -3622,10 +3622,10 @@ exports[`filters.inline.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " after",
             "line": 1,
             "column": 26,
-            "filename": "filters.inline.pg"
+            "filename": "filters.inline.pg",
+            "val": " after"
           }
         ],
         "line": 1,
@@ -3674,52 +3674,52 @@ exports[`filters.less.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "@pad: 15px;",
                               "line": 5,
                               "column": 9,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "@pad: 15px;"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 6,
                               "column": 1,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": "body {",
                               "line": 6,
                               "column": 9,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "body {"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 7,
                               "column": 1,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": "  padding: @pad;",
                               "line": 7,
                               "column": 9,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "  padding: @pad;"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 8,
                               "column": 1,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": "}",
                               "line": 8,
                               "column": 9,
-                              "filename": "filters.less.pg"
+                              "filename": "filters.less.pg",
+                              "val": "}"
                             }
                           ],
                           "line": 4,
@@ -3801,24 +3801,24 @@ exports[`filters.markdown.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "This is _some_ awesome **markdown**",
                         "line": 4,
                         "column": 7,
-                        "filename": "filters.markdown.pg"
+                        "filename": "filters.markdown.pg",
+                        "val": "This is _some_ awesome **markdown**"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 5,
                         "column": 1,
-                        "filename": "filters.markdown.pg"
+                        "filename": "filters.markdown.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "whoop.",
                         "line": 5,
                         "column": 7,
-                        "filename": "filters.markdown.pg"
+                        "filename": "filters.markdown.pg",
+                        "val": "whoop."
                       }
                     ],
                     "line": 3,
@@ -3881,38 +3881,38 @@ exports[`filters.nested.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "(function() {",
                         "line": 3,
                         "column": 5,
-                        "filename": "filters.nested.pg"
+                        "filename": "filters.nested.pg",
+                        "val": "(function() {"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 4,
                         "column": 1,
-                        "filename": "filters.nested.pg"
+                        "filename": "filters.nested.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "  console.log('test')",
                         "line": 4,
                         "column": 5,
-                        "filename": "filters.nested.pg"
+                        "filename": "filters.nested.pg",
+                        "val": "  console.log('test')"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 5,
                         "column": 1,
-                        "filename": "filters.nested.pg"
+                        "filename": "filters.nested.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "})()",
                         "line": 5,
                         "column": 5,
-                        "filename": "filters.nested.pg"
+                        "filename": "filters.nested.pg",
+                        "val": "})()"
                       }
                     ],
                     "line": 2,
@@ -3969,38 +3969,38 @@ exports[`filters.nested.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "(->",
                               "line": 8,
                               "column": 5,
-                              "filename": "filters.nested.pg"
+                              "filename": "filters.nested.pg",
+                              "val": "(->"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 9,
                               "column": 1,
-                              "filename": "filters.nested.pg"
+                              "filename": "filters.nested.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": "  console.log 'test'",
                               "line": 9,
                               "column": 5,
-                              "filename": "filters.nested.pg"
+                              "filename": "filters.nested.pg",
+                              "val": "  console.log 'test'"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 10,
                               "column": 1,
-                              "filename": "filters.nested.pg"
+                              "filename": "filters.nested.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": ")()",
                               "line": 10,
                               "column": 5,
-                              "filename": "filters.nested.pg"
+                              "filename": "filters.nested.pg",
+                              "val": ")()"
                             }
                           ],
                           "line": 7,
@@ -4076,24 +4076,24 @@ exports[`filters.stylus.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "body",
                               "line": 5,
                               "column": 9,
-                              "filename": "filters.stylus.pg"
+                              "filename": "filters.stylus.pg",
+                              "val": "body"
                             },
                             {
                               "type": "Text",
-                              "val": "\\n",
                               "line": 6,
                               "column": 1,
-                              "filename": "filters.stylus.pg"
+                              "filename": "filters.stylus.pg",
+                              "val": "\\n"
                             },
                             {
                               "type": "Text",
-                              "val": "  padding: 50px",
                               "line": 6,
                               "column": 9,
-                              "filename": "filters.stylus.pg"
+                              "filename": "filters.stylus.pg",
+                              "val": "  padding: 50px"
                             }
                           ],
                           "line": 4,
@@ -4191,24 +4191,24 @@ exports[`filters.verbatim.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "filters are applied at compile time",
                         "line": 4,
                         "column": 5,
-                        "filename": "filters.verbatim.pg"
+                        "filename": "filters.verbatim.pg",
+                        "val": "filters are applied at compile time"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 5,
                         "column": 1,
-                        "filename": "filters.verbatim.pg"
+                        "filename": "filters.verbatim.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "with no #[b interpolation] at #{all}",
                         "line": 5,
                         "column": 5,
-                        "filename": "filters.verbatim.pg"
+                        "filename": "filters.verbatim.pg",
+                        "val": "with no #[b interpolation] at #{all}"
                       }
                     ],
                     "line": 3,
@@ -4300,10 +4300,10 @@ exports[`image-shorthand-multiline.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Multi-line ",
             "line": 2,
             "column": 3,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": "Multi-line "
           },
           {
             "type": "Tag",
@@ -4338,24 +4338,24 @@ exports[`image-shorthand-multiline.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " in text block.",
             "line": 2,
             "column": 67,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": " in text block."
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 1,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -4377,10 +4377,10 @@ exports[`image-shorthand-multiline.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Before ",
             "line": 6,
             "column": 3,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": "Before "
           },
           {
             "type": "Tag",
@@ -4415,10 +4415,10 @@ exports[`image-shorthand-multiline.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " after.",
             "line": 6,
             "column": 71,
-            "filename": "image-shorthand-multiline.pg"
+            "filename": "image-shorthand-multiline.pg",
+            "val": " after."
           }
         ],
         "line": 5,
@@ -4450,10 +4450,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4488,10 +4488,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 56,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -4512,10 +4512,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 3,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4550,10 +4550,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 52,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 2,
@@ -4574,10 +4574,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 3,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4612,10 +4612,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 50,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 3,
@@ -4636,10 +4636,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 3,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4674,10 +4674,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 50,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 4,
@@ -4698,10 +4698,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4736,10 +4736,10 @@ exports[`image-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 51,
-            "filename": "image-shorthand-quoted.pg"
+            "filename": "image-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 5,
@@ -4770,10 +4770,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4808,10 +4808,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 21,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -4832,10 +4832,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4870,10 +4870,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 34,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 2,
@@ -4894,10 +4894,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "See ",
             "line": 3,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": "See "
           },
           {
             "type": "Tag",
@@ -4932,10 +4932,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " here.",
             "line": 3,
             "column": 27,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": " here."
           }
         ],
         "line": 3,
@@ -4956,10 +4956,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "!(not an image)",
             "line": 4,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": "!(not an image)"
           }
         ],
         "line": 4,
@@ -4980,10 +4980,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -4993,10 +4993,10 @@ exports[`image-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "check ",
                   "line": 5,
                   "column": 8,
-                  "filename": "image-shorthand.pg"
+                  "filename": "image-shorthand.pg",
+                  "val": "check "
                 },
                 {
                   "type": "Tag",
@@ -5031,10 +5031,10 @@ exports[`image-shorthand.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": " out",
                   "line": 5,
                   "column": 32,
-                  "filename": "image-shorthand.pg"
+                  "filename": "image-shorthand.pg",
+                  "val": " out"
                 }
               ],
               "line": 5,
@@ -5049,10 +5049,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 37,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 5,
@@ -5073,10 +5073,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Text with ",
             "line": 7,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": "Text with "
           },
           {
             "type": "Tag",
@@ -5111,10 +5111,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " inside.",
             "line": 7,
             "column": 33,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": " inside."
           }
         ],
         "line": 6,
@@ -5136,10 +5136,10 @@ exports[`image-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 8,
             "column": 3,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -5188,10 +5188,10 @@ exports[`image-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 8,
             "column": 26,
-            "filename": "image-shorthand.pg"
+            "filename": "image-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 8,
@@ -5293,10 +5293,10 @@ exports[`include-only-text-body.pg 1`] = `
   "nodes": [
     {
       "type": "Text",
-      "val": "The message is \\"",
       "line": 1,
       "column": 3,
-      "filename": "include-only-text-body.pg"
+      "filename": "include-only-text-body.pg",
+      "val": "The message is \\""
     },
     {
       "type": "YieldBlock",
@@ -5306,10 +5306,10 @@ exports[`include-only-text-body.pg 1`] = `
     },
     {
       "type": "Text",
-      "val": "\\"",
       "line": 3,
       "column": 3,
-      "filename": "include-only-text-body.pg"
+      "filename": "include-only-text-body.pg",
+      "val": "\\""
     }
   ],
   "line": 0,
@@ -5362,10 +5362,10 @@ exports[`include-only-text.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "hello world",
                                     "line": 5,
                                     "column": 12,
-                                    "filename": "include-only-text.pg"
+                                    "filename": "include-only-text.pg",
+                                    "val": "hello world"
                                   }
                                 ],
                                 "line": 5,
@@ -5440,10 +5440,10 @@ exports[`include-with-text-head.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "alert('hello world');",
                   "line": 3,
                   "column": 5,
-                  "filename": "include-with-text-head.pg"
+                  "filename": "include-with-text-head.pg",
+                  "val": "alert('hello world');"
                 }
               ],
               "line": 2,
@@ -5671,10 +5671,10 @@ exports[`include.yield.nested.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "some content",
                   "line": 3,
                   "column": 5,
-                  "filename": "include.yield.nested.pg"
+                  "filename": "include.yield.nested.pg",
+                  "val": "some content"
                 }
               ],
               "line": 3,
@@ -5695,10 +5695,10 @@ exports[`include.yield.nested.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "and some more",
                   "line": 4,
                   "column": 5,
-                  "filename": "include.yield.nested.pg"
+                  "filename": "include.yield.nested.pg",
+                  "val": "and some more"
                 }
               ],
               "line": 4,
@@ -5942,10 +5942,10 @@ exports[`inheritance.alert-dialog.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Alert!",
                 "line": 5,
                 "column": 6,
-                "filename": "inheritance.alert-dialog.pg"
+                "filename": "inheritance.alert-dialog.pg",
+                "val": "Alert!"
               }
             ],
             "line": 5,
@@ -5966,10 +5966,10 @@ exports[`inheritance.alert-dialog.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "I'm an alert!",
                 "line": 6,
                 "column": 5,
-                "filename": "inheritance.alert-dialog.pg"
+                "filename": "inheritance.alert-dialog.pg",
+                "val": "I'm an alert!"
               }
             ],
             "line": 6,
@@ -6183,10 +6183,10 @@ exports[`inheritance.extend.include.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Page",
                 "line": 8,
                 "column": 6,
-                "filename": "inheritance.extend.include.pg"
+                "filename": "inheritance.extend.include.pg",
+                "val": "Page"
               }
             ],
             "line": 8,
@@ -6207,10 +6207,10 @@ exports[`inheritance.extend.include.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Some content",
                 "line": 9,
                 "column": 5,
-                "filename": "inheritance.extend.include.pg"
+                "filename": "inheritance.extend.include.pg",
+                "val": "Some content"
               }
             ],
             "line": 9,
@@ -6241,10 +6241,10 @@ exports[`inheritance.extend.include.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Awesome",
                 "line": 12,
                 "column": 6,
-                "filename": "inheritance.extend.include.pg"
+                "filename": "inheritance.extend.include.pg",
+                "val": "Awesome"
               }
             ],
             "line": 12,
@@ -6265,10 +6265,10 @@ exports[`inheritance.extend.include.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Now we can extend included blocks!",
                 "line": 13,
                 "column": 5,
-                "filename": "inheritance.extend.include.pg"
+                "filename": "inheritance.extend.include.pg",
+                "val": "Now we can extend included blocks!"
               }
             ],
             "line": 13,
@@ -6322,10 +6322,10 @@ exports[`inheritance.extend.mixins.block.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Hello World!",
                 "line": 4,
                 "column": 5,
-                "filename": "inheritance.extend.mixins.block.pg"
+                "filename": "inheritance.extend.mixins.block.pg",
+                "val": "Hello World!"
               }
             ],
             "line": 4,
@@ -6413,10 +6413,10 @@ exports[`inheritance.extend.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Page",
                 "line": 8,
                 "column": 6,
-                "filename": "inheritance.extend.pg"
+                "filename": "inheritance.extend.pg",
+                "val": "Page"
               }
             ],
             "line": 8,
@@ -6437,10 +6437,10 @@ exports[`inheritance.extend.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Some content",
                 "line": 9,
                 "column": 5,
-                "filename": "inheritance.extend.pg"
+                "filename": "inheritance.extend.pg",
+                "val": "Some content"
               }
             ],
             "line": 9,
@@ -6494,10 +6494,10 @@ exports[`inheritance.extend.recursive.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "child",
                 "line": 4,
                 "column": 8,
-                "filename": "inheritance.extend.recursive.pg"
+                "filename": "inheritance.extend.recursive.pg",
+                "val": "child"
               }
             ],
             "line": 4,
@@ -6585,10 +6585,10 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Page",
                 "line": 12,
                 "column": 6,
-                "filename": "inheritance.extend.whitespace.pg"
+                "filename": "inheritance.extend.whitespace.pg",
+                "val": "Page"
               }
             ],
             "line": 12,
@@ -6609,10 +6609,10 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Some content",
                 "line": 13,
                 "column": 5,
-                "filename": "inheritance.extend.whitespace.pg"
+                "filename": "inheritance.extend.whitespace.pg",
+                "val": "Some content"
               }
             ],
             "line": 13,
@@ -6700,10 +6700,10 @@ exports[`inheritance.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Page",
                 "line": 8,
                 "column": 6,
-                "filename": "inheritance.pg"
+                "filename": "inheritance.pg",
+                "val": "Page"
               }
             ],
             "line": 8,
@@ -6724,10 +6724,10 @@ exports[`inheritance.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Some content",
                 "line": 9,
                 "column": 5,
-                "filename": "inheritance.pg"
+                "filename": "inheritance.pg",
+                "val": "Some content"
               }
             ],
             "line": 9,
@@ -6826,10 +6826,10 @@ exports[`inline-tag.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "bing ",
             "line": 1,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "bing "
           },
           {
             "type": "Tag",
@@ -6839,10 +6839,10 @@ exports[`inline-tag.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "foo",
                   "line": 1,
                   "column": 17,
-                  "filename": "inline-tag.pg"
+                  "filename": "inline-tag.pg",
+                  "val": "foo"
                 }
               ],
               "line": 1,
@@ -6857,10 +6857,10 @@ exports[`inline-tag.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " bong",
             "line": 1,
             "column": 21,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": " bong"
           }
         ],
         "line": 1,
@@ -6881,24 +6881,24 @@ exports[`inline-tag.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "bing",
             "line": 4,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "bing"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 5,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -6908,10 +6908,10 @@ exports[`inline-tag.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "foo",
                   "line": 5,
                   "column": 12,
-                  "filename": "inline-tag.pg"
+                  "filename": "inline-tag.pg",
+                  "val": "foo"
                 }
               ],
               "line": 5,
@@ -6926,38 +6926,38 @@ exports[`inline-tag.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 16,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 6,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "bong",
             "line": 6,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "bong"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 7,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 7,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           }
         ],
         "line": 3,
@@ -6979,24 +6979,24 @@ exports[`inline-tag.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "bing",
             "line": 9,
             "column": 5,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "bing"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 10,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 10,
             "column": 5,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -7006,10 +7006,10 @@ exports[`inline-tag.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "foo",
                   "line": 10,
                   "column": 14,
-                  "filename": "inline-tag.pg"
+                  "filename": "inline-tag.pg",
+                  "val": "foo"
                 }
               ],
               "line": 10,
@@ -7024,24 +7024,24 @@ exports[`inline-tag.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 10,
             "column": 18,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 11,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "bong",
             "line": 11,
             "column": 5,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "bong"
           }
         ],
         "line": 8,
@@ -7062,24 +7062,24 @@ exports[`inline-tag.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "#[strong escaped]",
             "line": 14,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "#[strong escaped]"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 15,
             "column": 1,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "#[",
             "line": 15,
             "column": 3,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": "#["
           },
           {
             "type": "Tag",
@@ -7089,10 +7089,10 @@ exports[`inline-tag.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "escaped",
                   "line": 15,
                   "column": 15,
-                  "filename": "inline-tag.pg"
+                  "filename": "inline-tag.pg",
+                  "val": "escaped"
                 }
               ],
               "line": 15,
@@ -7107,10 +7107,10 @@ exports[`inline-tag.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 15,
             "column": 23,
-            "filename": "inline-tag.pg"
+            "filename": "inline-tag.pg",
+            "val": ""
           }
         ],
         "line": 13,
@@ -7142,10 +7142,10 @@ exports[`intepolated-elements.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -7155,10 +7155,10 @@ exports[`intepolated-elements.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "with inline link",
                   "line": 1,
                   "column": 43,
-                  "filename": "intepolated-elements.pg"
+                  "filename": "intepolated-elements.pg",
+                  "val": "with inline link"
                 }
               ],
               "line": 1,
@@ -7195,10 +7195,10 @@ exports[`intepolated-elements.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 60,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -7219,10 +7219,10 @@ exports[`intepolated-elements.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Some text ",
             "line": 2,
             "column": 3,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": "Some text "
           },
           {
             "type": "Tag",
@@ -7264,10 +7264,10 @@ exports[`intepolated-elements.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 53,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": ""
           }
         ],
         "line": 2,
@@ -7288,10 +7288,10 @@ exports[`intepolated-elements.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Some text ",
             "line": 3,
             "column": 3,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": "Some text "
           },
           {
             "type": "Tag",
@@ -7301,10 +7301,10 @@ exports[`intepolated-elements.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "with inline link",
                   "line": 3,
                   "column": 53,
-                  "filename": "intepolated-elements.pg"
+                  "filename": "intepolated-elements.pg",
+                  "val": "with inline link"
                 }
               ],
               "line": 3,
@@ -7341,10 +7341,10 @@ exports[`intepolated-elements.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 70,
-            "filename": "intepolated-elements.pg"
+            "filename": "intepolated-elements.pg",
+            "val": ""
           }
         ],
         "line": 3,
@@ -7375,38 +7375,38 @@ exports[`interpolation.escape.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "some",
             "line": 2,
             "column": 5,
-            "filename": "interpolation.escape.pg"
+            "filename": "interpolation.escape.pg",
+            "val": "some"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "interpolation.escape.pg"
+            "filename": "interpolation.escape.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "#[text]",
             "line": 3,
             "column": 5,
-            "filename": "interpolation.escape.pg"
+            "filename": "interpolation.escape.pg",
+            "val": "#[text]"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "interpolation.escape.pg"
+            "filename": "interpolation.escape.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "here",
             "line": 4,
             "column": 5,
-            "filename": "interpolation.escape.pg"
+            "filename": "interpolation.escape.pg",
+            "val": "here"
           }
         ],
         "line": 1,
@@ -7615,10 +7615,10 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Something appended to content",
                 "line": 4,
                 "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Something appended to content"
               }
             ],
             "line": 4,
@@ -7664,10 +7664,10 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Something prepended to content",
                 "line": 7,
                 "column": 18,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Something prepended to content"
               }
             ],
             "line": 7,
@@ -7713,10 +7713,10 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Last append must be most last",
                 "line": 10,
                 "column": 16,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Last append must be most last"
               }
             ],
             "line": 10,
@@ -7762,10 +7762,10 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": "Last prepend must appear at top",
                 "line": 13,
                 "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Last prepend must appear at top"
               }
             ],
             "line": 13,
@@ -8048,10 +8048,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8061,10 +8061,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "click here",
                   "line": 1,
                   "column": 52,
-                  "filename": "link-shorthand-quoted.pg"
+                  "filename": "link-shorthand-quoted.pg",
+                  "val": "click here"
                 }
               ],
               "line": 1,
@@ -8087,10 +8087,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 55,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -8111,10 +8111,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 3,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8124,10 +8124,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "visit",
                   "line": 2,
                   "column": 48,
-                  "filename": "link-shorthand-quoted.pg"
+                  "filename": "link-shorthand-quoted.pg",
+                  "val": "visit"
                 }
               ],
               "line": 2,
@@ -8150,10 +8150,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 46,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 2,
@@ -8174,10 +8174,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 3,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8187,10 +8187,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "the page",
                   "line": 3,
                   "column": 45,
-                  "filename": "link-shorthand-quoted.pg"
+                  "filename": "link-shorthand-quoted.pg",
+                  "val": "the page"
                 }
               ],
               "line": 3,
@@ -8213,10 +8213,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 47,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 3,
@@ -8237,10 +8237,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 3,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8250,10 +8250,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "the page",
                   "line": 4,
                   "column": 45,
-                  "filename": "link-shorthand-quoted.pg"
+                  "filename": "link-shorthand-quoted.pg",
+                  "val": "the page"
                 }
               ],
               "line": 4,
@@ -8276,10 +8276,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 47,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 4,
@@ -8300,10 +8300,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8313,10 +8313,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "the page",
                   "line": 5,
                   "column": 47,
-                  "filename": "link-shorthand-quoted.pg"
+                  "filename": "link-shorthand-quoted.pg",
+                  "val": "the page"
                 }
               ],
               "line": 5,
@@ -8339,10 +8339,10 @@ exports[`link-shorthand-quoted.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 48,
-            "filename": "link-shorthand-quoted.pg"
+            "filename": "link-shorthand-quoted.pg",
+            "val": ""
           }
         ],
         "line": 5,
@@ -8373,10 +8373,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8386,10 +8386,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "contact us",
                   "line": 1,
                   "column": 24,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "contact us"
                 }
               ],
               "line": 1,
@@ -8412,10 +8412,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 25,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -8436,10 +8436,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8449,10 +8449,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "https://example.com",
                   "line": 2,
                   "column": 35,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "https://example.com"
                 }
               ],
               "line": 2,
@@ -8475,10 +8475,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 25,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 2,
@@ -8499,10 +8499,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Visit ",
             "line": 3,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": "Visit "
           },
           {
             "type": "Tag",
@@ -8512,10 +8512,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "our site",
                   "line": 3,
                   "column": 41,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "our site"
                 }
               ],
               "line": 3,
@@ -8538,10 +8538,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " today.",
             "line": 3,
             "column": 40,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": " today."
           }
         ],
         "line": 3,
@@ -8562,10 +8562,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8575,10 +8575,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Email us",
                   "line": 4,
                   "column": 37,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "Email us"
                 }
               ],
               "line": 4,
@@ -8601,10 +8601,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 4,
             "column": 36,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 4,
@@ -8625,10 +8625,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8638,10 +8638,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "/save",
                   "line": 5,
                   "column": 21,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "/save"
                 }
               ],
               "line": 5,
@@ -8664,10 +8664,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": ".button save",
             "line": 5,
             "column": 11,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ".button save"
           }
         ],
         "line": 5,
@@ -8688,10 +8688,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Text with ",
             "line": 7,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": "Text with "
           },
           {
             "type": "Tag",
@@ -8701,10 +8701,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "the about page",
                   "line": 7,
                   "column": 32,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "the about page"
                 }
               ],
               "line": 7,
@@ -8727,10 +8727,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " inside.",
             "line": 7,
             "column": 37,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": " inside."
           }
         ],
         "line": 6,
@@ -8752,10 +8752,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "@(not a link)",
             "line": 8,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": "@(not a link)"
           }
         ],
         "line": 8,
@@ -8776,10 +8776,10 @@ exports[`link-shorthand.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 9,
             "column": 3,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -8789,10 +8789,10 @@ exports[`link-shorthand.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "check ",
                   "line": 9,
                   "column": 8,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": "check "
                 },
                 {
                   "type": "Tag",
@@ -8802,10 +8802,10 @@ exports[`link-shorthand.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "the docs",
                         "line": 9,
                         "column": 32,
-                        "filename": "link-shorthand.pg"
+                        "filename": "link-shorthand.pg",
+                        "val": "the docs"
                       }
                     ],
                     "line": 9,
@@ -8828,10 +8828,10 @@ exports[`link-shorthand.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": " out",
                   "line": 9,
                   "column": 31,
-                  "filename": "link-shorthand.pg"
+                  "filename": "link-shorthand.pg",
+                  "val": " out"
                 }
               ],
               "line": 9,
@@ -8846,10 +8846,10 @@ exports[`link-shorthand.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 9,
             "column": 36,
-            "filename": "link-shorthand.pg"
+            "filename": "link-shorthand.pg",
+            "val": ""
           }
         ],
         "line": 9,
@@ -8906,10 +8906,10 @@ exports[`mixin-at-end-of-file.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "some awesome content",
                   "line": 4,
                   "column": 5,
-                  "filename": "mixin-at-end-of-file.pg"
+                  "filename": "mixin-at-end-of-file.pg",
+                  "val": "some awesome content"
                 }
               ],
               "line": 4,
@@ -8995,10 +8995,10 @@ exports[`mixin-block-with-space.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "This text should appear",
             "line": 6,
             "column": 5,
-            "filename": "mixin-block-with-space.pg"
+            "filename": "mixin-block-with-space.pg",
+            "val": "This text should appear"
           }
         ],
         "line": 5,
@@ -9139,10 +9139,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 2,
                   "column": 30,
-                  "filename": "mixin-inline-optional-args.pg"
+                  "filename": "mixin-inline-optional-args.pg",
+                  "val": ""
                 }
               ],
               "line": 2,
@@ -9242,10 +9242,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Click ",
             "line": 7,
             "column": 3,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": "Click "
           },
           {
             "type": "Mixin",
@@ -9263,10 +9263,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " or ",
             "line": 7,
             "column": 22,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": " or "
           },
           {
             "type": "Mixin",
@@ -9285,10 +9285,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 7,
             "column": 46,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": ""
           }
         ],
         "line": 7,
@@ -9309,10 +9309,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Icons: ",
             "line": 9,
             "column": 3,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": "Icons: "
           },
           {
             "type": "Mixin",
@@ -9330,10 +9330,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " and ",
             "line": 9,
             "column": 24,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": " and "
           },
           {
             "type": "Mixin",
@@ -9352,10 +9352,10 @@ exports[`mixin-inline-optional-args.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 9,
             "column": 47,
-            "filename": "mixin-inline-optional-args.pg"
+            "filename": "mixin-inline-optional-args.pg",
+            "val": ""
           }
         ],
         "line": 9,
@@ -9410,10 +9410,10 @@ exports[`mixin-optional-args.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 2,
                   "column": 47,
-                  "filename": "mixin-optional-args.pg"
+                  "filename": "mixin-optional-args.pg",
+                  "val": ""
                 }
               ],
               "line": 2,
@@ -9488,10 +9488,10 @@ exports[`mixin-optional-args.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Hello, ",
                   "line": 7,
                   "column": 5,
-                  "filename": "mixin-optional-args.pg"
+                  "filename": "mixin-optional-args.pg",
+                  "val": "Hello, "
                 },
                 {
                   "type": "Variable",
@@ -9502,10 +9502,10 @@ exports[`mixin-optional-args.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": " ",
                   "line": 7,
                   "column": 20,
-                  "filename": "mixin-optional-args.pg"
+                  "filename": "mixin-optional-args.pg",
+                  "val": " "
                 },
                 {
                   "type": "Variable",
@@ -9516,10 +9516,10 @@ exports[`mixin-optional-args.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "!",
                   "line": 7,
                   "column": 28,
-                  "filename": "mixin-optional-args.pg"
+                  "filename": "mixin-optional-args.pg",
+                  "val": "!"
                 }
               ],
               "line": 7,
@@ -9708,10 +9708,10 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 2,
                   "column": 47,
-                  "filename": "mixin-optional-attr-omission.pg"
+                  "filename": "mixin-optional-attr-omission.pg",
+                  "val": ""
                 }
               ],
               "line": 2,
@@ -9911,10 +9911,10 @@ exports[`mixin-optional-question-mark.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 2,
                   "column": 48,
-                  "filename": "mixin-optional-question-mark.pg"
+                  "filename": "mixin-optional-question-mark.pg",
+                  "val": ""
                 }
               ],
               "line": 2,
@@ -10004,10 +10004,10 @@ exports[`mixin-optional-question-mark.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Hello, ",
                   "line": 8,
                   "column": 5,
-                  "filename": "mixin-optional-question-mark.pg"
+                  "filename": "mixin-optional-question-mark.pg",
+                  "val": "Hello, "
                 },
                 {
                   "type": "Variable",
@@ -10018,10 +10018,10 @@ exports[`mixin-optional-question-mark.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": " ",
                   "line": 8,
                   "column": 21,
-                  "filename": "mixin-optional-question-mark.pg"
+                  "filename": "mixin-optional-question-mark.pg",
+                  "val": " "
                 },
                 {
                   "type": "Variable",
@@ -10032,10 +10032,10 @@ exports[`mixin-optional-question-mark.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "!",
                   "line": 8,
                   "column": 29,
-                  "filename": "mixin-optional-question-mark.pg"
+                  "filename": "mixin-optional-question-mark.pg",
+                  "val": "!"
                 }
               ],
               "line": 8,
@@ -10218,10 +10218,10 @@ exports[`mixin-variables.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 2,
                   "column": 17,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": ""
                 }
               ],
               "line": 2,
@@ -10322,10 +10322,10 @@ exports[`mixin-variables.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Hello from ",
                   "line": 11,
                   "column": 5,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": "Hello from "
                 },
                 {
                   "type": "Variable",
@@ -10336,38 +10336,38 @@ exports[`mixin-variables.pg 1`] = `
                 },
                 {
                   "type": "Text",
-                  "val": " and welcome.",
                   "line": 11,
                   "column": 23,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": " and welcome."
                 },
                 {
                   "type": "Text",
-                  "val": "\\n",
                   "line": 12,
                   "column": 1,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": "\\n"
                 },
                 {
                   "type": "Text",
-                  "val": "This #{reference} should be escaped.",
                   "line": 12,
                   "column": 5,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": "This #{reference} should be escaped."
                 },
                 {
                   "type": "Text",
-                  "val": "\\n",
                   "line": 13,
                   "column": 1,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": "\\n"
                 },
                 {
                   "type": "Text",
-                  "val": "",
                   "line": 13,
                   "column": 1,
-                  "filename": "mixin-variables.pg"
+                  "filename": "mixin-variables.pg",
+                  "val": ""
                 }
               ],
               "line": 10,
@@ -10488,10 +10488,10 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "I'm article foo",
                               "line": 8,
                               "column": 17,
-                              "filename": "mixin.block-tag-behaviour.pg"
+                              "filename": "mixin.block-tag-behaviour.pg",
+                              "val": "I'm article foo"
                             }
                           ],
                           "line": 8,
@@ -10622,66 +10622,66 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "I'm a much longer",
                         "line": 18,
                         "column": 7,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "I'm a much longer"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 19,
                         "column": 1,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "text-only article,",
                         "line": 19,
                         "column": 7,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "text-only article,"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 20,
                         "column": 1,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "but you can still",
                         "line": 20,
                         "column": 7,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "but you can still"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 21,
                         "column": 1,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "inline html tags",
                         "line": 21,
                         "column": 7,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "inline html tags"
                       },
                       {
                         "type": "Text",
-                        "val": "\\n",
                         "line": 22,
                         "column": 1,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "\\n"
                       },
                       {
                         "type": "Text",
-                        "val": "in me if you want.",
                         "line": 22,
                         "column": 7,
-                        "filename": "mixin.block-tag-behaviour.pg"
+                        "filename": "mixin.block-tag-behaviour.pg",
+                        "val": "in me if you want."
                       }
                     ],
                     "line": 17,
@@ -10854,10 +10854,10 @@ exports[`mixin.blocks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "one",
                   "line": 11,
                   "column": 5,
-                  "filename": "mixin.blocks.pg"
+                  "filename": "mixin.blocks.pg",
+                  "val": "one"
                 }
               ],
               "line": 11,
@@ -10878,10 +10878,10 @@ exports[`mixin.blocks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "two",
                   "line": 12,
                   "column": 5,
-                  "filename": "mixin.blocks.pg"
+                  "filename": "mixin.blocks.pg",
+                  "val": "two"
                 }
               ],
               "line": 12,
@@ -10902,10 +10902,10 @@ exports[`mixin.blocks.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "three",
                   "line": 13,
                   "column": 5,
-                  "filename": "mixin.blocks.pg"
+                  "filename": "mixin.blocks.pg",
+                  "val": "three"
                 }
               ],
               "line": 13,
@@ -10985,10 +10985,10 @@ exports[`mixin.blocks.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "'123'",
             "line": 21,
             "column": 3,
-            "filename": "mixin.blocks.pg"
+            "filename": "mixin.blocks.pg",
+            "val": "'123'"
           }
         ],
         "line": 20,
@@ -11027,10 +11027,10 @@ exports[`mixins-unused.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "This isn't something we ever want to output",
                   "line": 2,
                   "column": 8,
-                  "filename": "mixins-unused.pg"
+                  "filename": "mixins-unused.pg",
+                  "val": "This isn't something we ever want to output"
                 }
               ],
               "line": 2,
@@ -11107,10 +11107,10 @@ exports[`mixins.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "foo",
                         "line": 3,
                         "column": 8,
-                        "filename": "mixins.pg"
+                        "filename": "mixins.pg",
+                        "val": "foo"
                       }
                     ],
                     "line": 3,
@@ -11131,10 +11131,10 @@ exports[`mixins.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "bar",
                         "line": 4,
                         "column": 8,
-                        "filename": "mixins.pg"
+                        "filename": "mixins.pg",
+                        "val": "bar"
                       }
                     ],
                     "line": 4,
@@ -11155,10 +11155,10 @@ exports[`mixins.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "baz",
                         "line": 5,
                         "column": 8,
-                        "filename": "mixins.pg"
+                        "filename": "mixins.pg",
+                        "val": "baz"
                       }
                     ],
                     "line": 5,
@@ -11250,10 +11250,10 @@ exports[`multi-line-interpolation.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 5,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
           },
           {
             "type": "Tag",
@@ -11263,10 +11263,10 @@ exports[`multi-line-interpolation.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "This strong text is really really long. This strong text is really really long. This strong text is really really long.",
                   "line": 2,
                   "column": 14,
-                  "filename": "multi-line-interpolation.pg"
+                  "filename": "multi-line-interpolation.pg",
+                  "val": "This strong text is really really long. This strong text is really really long. This strong text is really really long."
                 }
               ],
               "line": 2,
@@ -11281,24 +11281,24 @@ exports[`multi-line-interpolation.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 2,
             "column": 134,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 5,
             "column": 1,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 1,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -11320,10 +11320,10 @@ exports[`multi-line-interpolation.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Before ",
             "line": 7,
             "column": 3,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": "Before "
           },
           {
             "type": "Tag",
@@ -11333,10 +11333,10 @@ exports[`multi-line-interpolation.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "link text here",
                   "line": 7,
                   "column": 57,
-                  "filename": "multi-line-interpolation.pg"
+                  "filename": "multi-line-interpolation.pg",
+                  "val": "link text here"
                 }
               ],
               "line": 7,
@@ -11359,24 +11359,24 @@ exports[`multi-line-interpolation.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " after.",
             "line": 7,
             "column": 72,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": " after."
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 9,
             "column": 1,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 9,
             "column": 1,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
           }
         ],
         "line": 6,
@@ -11398,10 +11398,10 @@ exports[`multi-line-interpolation.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Multi-line ",
             "line": 11,
             "column": 3,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": "Multi-line "
           },
           {
             "type": "Tag",
@@ -11411,10 +11411,10 @@ exports[`multi-line-interpolation.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "link text",
                   "line": 11,
                   "column": 51,
-                  "filename": "multi-line-interpolation.pg"
+                  "filename": "multi-line-interpolation.pg",
+                  "val": "link text"
                 }
               ],
               "line": 11,
@@ -11437,10 +11437,10 @@ exports[`multi-line-interpolation.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " in text block.",
             "line": 11,
             "column": 51,
-            "filename": "multi-line-interpolation.pg"
+            "filename": "multi-line-interpolation.pg",
+            "val": " in text block."
           }
         ],
         "line": 10,
@@ -11472,10 +11472,10 @@ exports[`namespaces.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Something",
             "line": 1,
             "column": 14,
-            "filename": "namespaces.pg"
+            "filename": "namespaces.pg",
+            "val": "Something"
           }
         ],
         "line": 1,
@@ -11536,10 +11536,10 @@ exports[`nesting.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "a",
                   "line": 2,
                   "column": 6,
-                  "filename": "nesting.pg"
+                  "filename": "nesting.pg",
+                  "val": "a"
                 }
               ],
               "line": 2,
@@ -11560,10 +11560,10 @@ exports[`nesting.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "b",
                   "line": 3,
                   "column": 6,
-                  "filename": "nesting.pg"
+                  "filename": "nesting.pg",
+                  "val": "b"
                 }
               ],
               "line": 3,
@@ -11596,10 +11596,10 @@ exports[`nesting.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "c",
                               "line": 6,
                               "column": 12,
-                              "filename": "nesting.pg"
+                              "filename": "nesting.pg",
+                              "val": "c"
                             }
                           ],
                           "line": 6,
@@ -11620,10 +11620,10 @@ exports[`nesting.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "d",
                               "line": 7,
                               "column": 12,
-                              "filename": "nesting.pg"
+                              "filename": "nesting.pg",
+                              "val": "d"
                             }
                           ],
                           "line": 7,
@@ -11666,10 +11666,10 @@ exports[`nesting.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "e",
                   "line": 8,
                   "column": 6,
-                  "filename": "nesting.pg"
+                  "filename": "nesting.pg",
+                  "val": "e"
                 }
               ],
               "line": 8,
@@ -11711,38 +11711,38 @@ exports[`pipeless-comments.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "     .foo",
             "line": 2,
             "column": 3,
-            "filename": "pipeless-comments.pg"
+            "filename": "pipeless-comments.pg",
+            "val": "     .foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "pipeless-comments.pg"
+            "filename": "pipeless-comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "\\t.bar",
             "line": 3,
             "column": 3,
-            "filename": "pipeless-comments.pg"
+            "filename": "pipeless-comments.pg",
+            "val": "\\t.bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "pipeless-comments.pg"
+            "filename": "pipeless-comments.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": ".hey",
             "line": 4,
             "column": 3,
-            "filename": "pipeless-comments.pg"
+            "filename": "pipeless-comments.pg",
+            "val": ".hey"
           }
         ],
         "line": 1,
@@ -11771,38 +11771,38 @@ exports[`pipeless-filters.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "    code sample",
             "line": 2,
             "column": 3,
-            "filename": "pipeless-filters.pg"
+            "filename": "pipeless-filters.pg",
+            "val": "    code sample"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "pipeless-filters.pg"
+            "filename": "pipeless-filters.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 1,
-            "filename": "pipeless-filters.pg"
+            "filename": "pipeless-filters.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "pipeless-filters.pg"
+            "filename": "pipeless-filters.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "# Heading",
             "line": 4,
             "column": 3,
-            "filename": "pipeless-filters.pg"
+            "filename": "pipeless-filters.pg",
+            "val": "# Heading"
           }
         ],
         "line": 1,
@@ -11831,38 +11831,38 @@ exports[`pipeless-tag.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "  what",
             "line": 2,
             "column": 3,
-            "filename": "pipeless-tag.pg"
+            "filename": "pipeless-tag.pg",
+            "val": "  what"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "pipeless-tag.pg"
+            "filename": "pipeless-tag.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "is #{'going'} ",
             "line": 3,
             "column": 3,
-            "filename": "pipeless-tag.pg"
+            "filename": "pipeless-tag.pg",
+            "val": "is #{'going'} "
           },
           {
             "type": "Text",
-            "val": "#{'on'}",
             "line": 3,
             "column": 21,
-            "filename": "pipeless-tag.pg"
+            "filename": "pipeless-tag.pg",
+            "val": "#{'on'}"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 3,
             "column": 29,
-            "filename": "pipeless-tag.pg"
+            "filename": "pipeless-tag.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -11894,52 +11894,52 @@ exports[`pre.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo",
             "line": 2,
             "column": 3,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "bar",
             "line": 3,
             "column": 3,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "baz",
             "line": 4,
             "column": 3,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "baz"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 5,
             "column": 1,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 1,
-            "filename": "pre.pg"
+            "filename": "pre.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -11967,38 +11967,38 @@ exports[`pre.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "foo",
                   "line": 8,
                   "column": 5,
-                  "filename": "pre.pg"
+                  "filename": "pre.pg",
+                  "val": "foo"
                 },
                 {
                   "type": "Text",
-                  "val": "\\n",
                   "line": 9,
                   "column": 1,
-                  "filename": "pre.pg"
+                  "filename": "pre.pg",
+                  "val": "\\n"
                 },
                 {
                   "type": "Text",
-                  "val": "bar",
                   "line": 9,
                   "column": 5,
-                  "filename": "pre.pg"
+                  "filename": "pre.pg",
+                  "val": "bar"
                 },
                 {
                   "type": "Text",
-                  "val": "\\n",
                   "line": 10,
                   "column": 1,
-                  "filename": "pre.pg"
+                  "filename": "pre.pg",
+                  "val": "\\n"
                 },
                 {
                   "type": "Text",
-                  "val": "baz",
                   "line": 10,
                   "column": 5,
-                  "filename": "pre.pg"
+                  "filename": "pre.pg",
+                  "val": "baz"
                 }
               ],
               "line": 7,
@@ -12053,10 +12053,10 @@ exports[`quoted-filters.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Totally supported.",
                         "line": 4,
                         "column": 7,
-                        "filename": "quoted-filters.pg"
+                        "filename": "quoted-filters.pg",
+                        "val": "Totally supported."
                       }
                     ],
                     "line": 3,
@@ -12075,10 +12075,10 @@ exports[`quoted-filters.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Not even npm wants to deal with that.",
                         "line": 6,
                         "column": 7,
-                        "filename": "quoted-filters.pg"
+                        "filename": "quoted-filters.pg",
+                        "val": "Not even npm wants to deal with that."
                       }
                     ],
                     "line": 5,
@@ -12097,10 +12097,10 @@ exports[`quoted-filters.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Now the lexer won't ignore the dot anymore.",
                         "line": 8,
                         "column": 7,
-                        "filename": "quoted-filters.pg"
+                        "filename": "quoted-filters.pg",
+                        "val": "Now the lexer won't ignore the dot anymore."
                       }
                     ],
                     "line": 7,
@@ -12151,10 +12151,10 @@ exports[`quotes.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "\\"foo\\"",
             "line": 1,
             "column": 3,
-            "filename": "quotes.pg"
+            "filename": "quotes.pg",
+            "val": "\\"foo\\""
           }
         ],
         "line": 1,
@@ -12175,10 +12175,10 @@ exports[`quotes.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "'foo'",
             "line": 2,
             "column": 3,
-            "filename": "quotes.pg"
+            "filename": "quotes.pg",
+            "val": "'foo'"
           }
         ],
         "line": 2,
@@ -12209,10 +12209,10 @@ exports[`reference-links-escape.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "@[not a ref]",
             "line": 1,
             "column": 3,
-            "filename": "reference-links-escape.pg"
+            "filename": "reference-links-escape.pg",
+            "val": "@[not a ref]"
           }
         ],
         "line": 1,
@@ -12233,10 +12233,10 @@ exports[`reference-links-escape.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "text @[also not] more",
             "line": 2,
             "column": 3,
-            "filename": "reference-links-escape.pg"
+            "filename": "reference-links-escape.pg",
+            "val": "text @[also not] more"
           }
         ],
         "line": 2,
@@ -12267,10 +12267,10 @@ exports[`reference-links-forward.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 3,
-            "filename": "reference-links-forward.pg"
+            "filename": "reference-links-forward.pg",
+            "val": ""
           },
           {
             "type": "ReferenceLink",
@@ -12280,10 +12280,10 @@ exports[`reference-links-forward.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "click here",
                   "line": 1,
                   "column": 5,
-                  "filename": "reference-links-forward.pg"
+                  "filename": "reference-links-forward.pg",
+                  "val": "click here"
                 }
               ],
               "line": 1,
@@ -12296,10 +12296,10 @@ exports[`reference-links-forward.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 1,
             "column": 24,
-            "filename": "reference-links-forward.pg"
+            "filename": "reference-links-forward.pg",
+            "val": ""
           }
         ],
         "line": 1,
@@ -12367,10 +12367,10 @@ exports[`reference-links-text-block.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "I read ",
             "line": 6,
             "column": 3,
-            "filename": "reference-links-text-block.pg"
+            "filename": "reference-links-text-block.pg",
+            "val": "I read "
           },
           {
             "type": "ReferenceLink",
@@ -12380,10 +12380,10 @@ exports[`reference-links-text-block.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Baby's First Garbage Collector",
                   "line": 6,
                   "column": 12,
-                  "filename": "reference-links-text-block.pg"
+                  "filename": "reference-links-text-block.pg",
+                  "val": "Baby's First Garbage Collector"
                 }
               ],
               "line": 6,
@@ -12396,10 +12396,10 @@ exports[`reference-links-text-block.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " and it changed my life. ",
             "line": 6,
             "column": 51,
-            "filename": "reference-links-text-block.pg"
+            "filename": "reference-links-text-block.pg",
+            "val": " and it changed my life. "
           }
         ],
         "line": 5,
@@ -12421,10 +12421,10 @@ exports[`reference-links-text-block.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "See also ",
             "line": 10,
             "column": 3,
-            "filename": "reference-links-text-block.pg"
+            "filename": "reference-links-text-block.pg",
+            "val": "See also "
           },
           {
             "type": "ReferenceLink",
@@ -12434,10 +12434,10 @@ exports[`reference-links-text-block.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Structure and Interpretation of Computer Programs",
                   "line": 10,
                   "column": 14,
-                  "filename": "reference-links-text-block.pg"
+                  "filename": "reference-links-text-block.pg",
+                  "val": "Structure and Interpretation of Computer Programs"
                 }
               ],
               "line": 10,
@@ -12450,10 +12450,10 @@ exports[`reference-links-text-block.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " for the classic treatment.",
             "line": 10,
             "column": 69,
-            "filename": "reference-links-text-block.pg"
+            "filename": "reference-links-text-block.pg",
+            "val": " for the classic treatment."
           }
         ],
         "line": 9,
@@ -12507,10 +12507,10 @@ exports[`reference-links.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": ""
           },
           {
             "type": "ReferenceLink",
@@ -12528,10 +12528,10 @@ exports[`reference-links.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 13,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": ""
           }
         ],
         "line": 5,
@@ -12552,10 +12552,10 @@ exports[`reference-links.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "",
             "line": 6,
             "column": 3,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": ""
           },
           {
             "type": "ReferenceLink",
@@ -12565,10 +12565,10 @@ exports[`reference-links.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Baby's First Garbage Collector",
                   "line": 6,
                   "column": 5,
-                  "filename": "reference-links.pg"
+                  "filename": "reference-links.pg",
+                  "val": "Baby's First Garbage Collector"
                 }
               ],
               "line": 6,
@@ -12581,10 +12581,10 @@ exports[`reference-links.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": "",
             "line": 6,
             "column": 44,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": ""
           }
         ],
         "line": 6,
@@ -12605,10 +12605,10 @@ exports[`reference-links.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "I read ",
             "line": 7,
             "column": 3,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": "I read "
           },
           {
             "type": "ReferenceLink",
@@ -12618,10 +12618,10 @@ exports[`reference-links.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "the article",
                   "line": 7,
                   "column": 12,
-                  "filename": "reference-links.pg"
+                  "filename": "reference-links.pg",
+                  "val": "the article"
                 }
               ],
               "line": 7,
@@ -12634,10 +12634,10 @@ exports[`reference-links.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " and it changed my life.",
             "line": 7,
             "column": 32,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": " and it changed my life."
           }
         ],
         "line": 7,
@@ -12658,10 +12658,10 @@ exports[`reference-links.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "See ",
             "line": 8,
             "column": 3,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": "See "
           },
           {
             "type": "ReferenceLink",
@@ -12679,10 +12679,10 @@ exports[`reference-links.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " and ",
             "line": 8,
             "column": 17,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": " and "
           },
           {
             "type": "ReferenceLink",
@@ -12700,10 +12700,10 @@ exports[`reference-links.pg 1`] = `
           },
           {
             "type": "Text",
-            "val": " for more.",
             "line": 8,
             "column": 29,
-            "filename": "reference-links.pg"
+            "filename": "reference-links.pg",
+            "val": " for more."
           }
         ],
         "line": 8,
@@ -12734,66 +12734,66 @@ exports[`script.whitespace.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "if (foo) {",
             "line": 2,
             "column": 3,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "if (foo) {"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  ",
             "line": 3,
             "column": 3,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "  "
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  bar();",
             "line": 4,
             "column": 3,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "  bar();"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 5,
             "column": 1,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 5,
             "column": 3,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 6,
             "column": 1,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "}",
             "line": 6,
             "column": 3,
-            "filename": "script.whitespace.pg"
+            "filename": "script.whitespace.pg",
+            "val": "}"
           }
         ],
         "line": 1,
@@ -12837,10 +12837,10 @@ exports[`scripts.non-js.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "<%= user.name %>",
                         "line": 3,
                         "column": 8,
-                        "filename": "scripts.non-js.pg"
+                        "filename": "scripts.non-js.pg",
+                        "val": "<%= user.name %>"
                       }
                     ],
                     "line": 3,
@@ -12861,10 +12861,10 @@ exports[`scripts.non-js.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "<%= user.description %>",
                         "line": 4,
                         "column": 7,
-                        "filename": "scripts.non-js.pg"
+                        "filename": "scripts.non-js.pg",
+                        "val": "<%= user.description %>"
                       }
                     ],
                     "line": 4,
@@ -12930,38 +12930,38 @@ exports[`scripts.non-js.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "if (foo) {",
             "line": 7,
             "column": 3,
-            "filename": "scripts.non-js.pg"
+            "filename": "scripts.non-js.pg",
+            "val": "if (foo) {"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 8,
             "column": 1,
-            "filename": "scripts.non-js.pg"
+            "filename": "scripts.non-js.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  bar();",
             "line": 8,
             "column": 3,
-            "filename": "scripts.non-js.pg"
+            "filename": "scripts.non-js.pg",
+            "val": "  bar();"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 9,
             "column": 1,
-            "filename": "scripts.non-js.pg"
+            "filename": "scripts.non-js.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "}",
             "line": 9,
             "column": 3,
-            "filename": "scripts.non-js.pg"
+            "filename": "scripts.non-js.pg",
+            "val": "}"
           }
         ],
         "line": 6,
@@ -13008,38 +13008,38 @@ exports[`scripts.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "if (foo) {",
             "line": 2,
             "column": 3,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "if (foo) {"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 3,
             "column": 1,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  bar();",
             "line": 3,
             "column": 3,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "  bar();"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
             "column": 1,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "}",
             "line": 4,
             "column": 3,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "}"
           }
         ],
         "line": 1,
@@ -13061,10 +13061,10 @@ exports[`scripts.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo()",
             "line": 5,
             "column": 8,
-            "filename": "scripts.pg"
+            "filename": "scripts.pg",
+            "val": "foo()"
           }
         ],
         "line": 5,
@@ -13187,10 +13187,10 @@ exports[`single-period.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": ".",
             "line": 1,
             "column": 6,
-            "filename": "single-period.pg"
+            "filename": "single-period.pg",
+            "val": "."
           }
         ],
         "line": 1,
@@ -13400,10 +13400,10 @@ exports[`svg-basic.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Lexer",
                   "line": 3,
                   "column": 44,
-                  "filename": "svg-basic.pg"
+                  "filename": "svg-basic.pg",
+                  "val": "Lexer"
                 }
               ],
               "line": 3,
@@ -13737,10 +13737,10 @@ exports[`tags.self-closing.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": " ",
                   "line": 10,
                   "column": 6,
-                  "filename": "tags.self-closing.pg"
+                  "filename": "tags.self-closing.pg",
+                  "val": " "
                 }
               ],
               "line": 10,
@@ -13769,10 +13769,10 @@ exports[`tags.self-closing.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "   ",
                   "line": 12,
                   "column": 7,
-                  "filename": "tags.self-closing.pg"
+                  "filename": "tags.self-closing.pg",
+                  "val": "   "
                 }
               ],
               "line": 12,
@@ -13826,10 +13826,10 @@ exports[`template.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "{{title}}",
                         "line": 3,
                         "column": 8,
-                        "filename": "template.pg"
+                        "filename": "template.pg",
+                        "val": "{{title}}"
                       }
                     ],
                     "line": 3,
@@ -13850,10 +13850,10 @@ exports[`template.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "{{description}}",
                         "line": 4,
                         "column": 7,
-                        "filename": "template.pg"
+                        "filename": "template.pg",
+                        "val": "{{description}}"
                       }
                     ],
                     "line": 4,
@@ -13904,38 +13904,38 @@ exports[`template.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "article",
             "line": 7,
             "column": 3,
-            "filename": "template.pg"
+            "filename": "template.pg",
+            "val": "article"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 8,
             "column": 1,
-            "filename": "template.pg"
+            "filename": "template.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  h2 {{title}}",
             "line": 8,
             "column": 3,
-            "filename": "template.pg"
+            "filename": "template.pg",
+            "val": "  h2 {{title}}"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 9,
             "column": 1,
-            "filename": "template.pg"
+            "filename": "template.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  p {{description}}",
             "line": 9,
             "column": 3,
-            "filename": "template.pg"
+            "filename": "template.pg",
+            "val": "  p {{description}}"
           }
         ],
         "line": 6,
@@ -13975,10 +13975,10 @@ exports[`text-block.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Username:",
             "line": 2,
             "column": 7,
-            "filename": "text-block.pg"
+            "filename": "text-block.pg",
+            "val": "Username:"
           },
           {
             "type": "Tag",
@@ -14030,10 +14030,10 @@ exports[`text-block.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Password:",
             "line": 5,
             "column": 7,
-            "filename": "text-block.pg"
+            "filename": "text-block.pg",
+            "val": "Password:"
           },
           {
             "type": "Tag",
@@ -14095,10 +14095,10 @@ exports[`text.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "-- (selected) --",
             "line": 1,
             "column": 18,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "-- (selected) --"
           }
         ],
         "line": 1,
@@ -14160,66 +14160,66 @@ exports[`text.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo",
             "line": 8,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 9,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "bar",
             "line": 9,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 10,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 10,
             "column": 4,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 11,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": " ",
             "line": 11,
             "column": 4,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": " "
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 12,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "baz",
             "line": 12,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "baz"
           }
         ],
         "line": 7,
@@ -14240,80 +14240,80 @@ exports[`text.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo",
             "line": 15,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 16,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 16,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 17,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 17,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": ""
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 18,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "bar",
             "line": 18,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 19,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "baz",
             "line": 19,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "baz"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 20,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 20,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": ""
           }
         ],
         "line": 14,
@@ -14329,80 +14329,80 @@ exports[`text.pg 1`] = `
     },
     {
       "type": "Text",
-      "val": "foo",
       "line": 24,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "foo"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 25,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "",
       "line": 25,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": ""
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 26,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "",
       "line": 26,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": ""
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 27,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "bar",
       "line": 27,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "bar"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 28,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "baz",
       "line": 28,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "baz"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 29,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "",
       "line": 29,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": ""
     },
     {
       "type": "Tag",
@@ -14412,52 +14412,52 @@ exports[`text.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo",
             "line": 31,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 32,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  bar",
             "line": 32,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "  bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 33,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "    baz",
             "line": 33,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "    baz"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 34,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": ".",
             "line": 34,
             "column": 5,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "."
           }
         ],
         "line": 30,
@@ -14478,66 +14478,66 @@ exports[`text.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "foo",
             "line": 37,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "foo"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 38,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "  bar",
             "line": 38,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "  bar"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 39,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "    baz",
             "line": 39,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "    baz"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 40,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": ".",
             "line": 40,
             "column": 3,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "."
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 41,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "",
             "line": 41,
             "column": 1,
-            "filename": "text.pg"
+            "filename": "text.pg",
+            "val": ""
           }
         ],
         "line": 36,
@@ -14553,52 +14553,52 @@ exports[`text.pg 1`] = `
     },
     {
       "type": "Text",
-      "val": "foo",
       "line": 43,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "foo"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 44,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "  bar",
       "line": 44,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "  bar"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 45,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": "    baz",
       "line": 45,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "    baz"
     },
     {
       "type": "Text",
-      "val": "\\n",
       "line": 46,
       "column": 1,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "\\n"
     },
     {
       "type": "Text",
-      "val": ".",
       "line": 46,
       "column": 3,
-      "filename": "text.pg"
+      "filename": "text.pg",
+      "val": "."
     }
   ],
   "line": 0,
@@ -14618,10 +14618,10 @@ exports[`utf8bom.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "\\"foo\\"",
             "line": 1,
             "column": 3,
-            "filename": "utf8bom.pg"
+            "filename": "utf8bom.pg",
+            "val": "\\"foo\\""
           }
         ],
         "line": 1,
@@ -14852,10 +14852,10 @@ exports[`yield-title.pg 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "My Title",
                         "line": 4,
                         "column": 9,
-                        "filename": "yield-title.pg"
+                        "filename": "yield-title.pg",
+                        "val": "My Title"
                       }
                     ],
                     "line": 4,

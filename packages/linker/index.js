@@ -17,7 +17,7 @@ module.exports = link;
 function link(ast, options) {
   options = options || {};
   const source = options.source;
-  const maxDepth = options.maxLinkDepth || DEFAULT_MAX_LINK_DEPTH;
+  const maxDepth = options.maxLinkDepth != null ? options.maxLinkDepth : DEFAULT_MAX_LINK_DEPTH;
   const depth = options._linkDepth || 0;
 
   if (depth >= maxDepth) {

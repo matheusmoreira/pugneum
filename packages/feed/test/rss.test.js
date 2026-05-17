@@ -112,4 +112,5 @@ test('null entry fields do not crash', () => {
   };
   const rss = generateRss(feed);
   assert.ok(rss.includes('<title></title>'));
+  assert.ok(rss.includes('<dc:creator></dc:creator>'));
 });

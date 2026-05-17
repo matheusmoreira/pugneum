@@ -73,7 +73,7 @@ function walkAST(ast, before, after, options) {
       break;
     case 'FileReference':
       if (options.includeDependencies && ast.ast) {
-        walkAST(ast.ast, before, after, options);
+        ast.ast = walkAST(ast.ast, before, after, options);
       }
       break;
     default:

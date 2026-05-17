@@ -59,7 +59,7 @@ function feedUpdated(feed) {
   if (feed.updated) {
     return escapeXml(toISO8601(feed.updated, feed.buildDate));
   }
-  return feed.buildDate;
+  return escapeXml(feed.buildDate);
 }
 
 function toISO8601(dateStr, fallback) {

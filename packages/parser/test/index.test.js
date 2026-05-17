@@ -68,7 +68,6 @@ describe('error paths', () => {
   });
 
   test('INVALID_TOKEN for unexpected token in expression position', () => {
-    var lex = require('pugneum-lexer');
     var tokens = lex('div', {filename: 'test.pg'});
     tokens.splice(1, 0, {type: 'bogus', loc: {start: {line: 1, column: 4}}});
     assert.throws(

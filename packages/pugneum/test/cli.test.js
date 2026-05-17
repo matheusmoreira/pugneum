@@ -21,7 +21,7 @@ function runExpectFail(args, opts) {
     run(args, opts);
     throw new Error('Expected CLI to exit non-zero');
   } catch (err) {
-    if (err.status === null) throw err;
+    if (err.status == null) throw err;
     return {status: err.status, stderr: err.stderr, stdout: err.stdout};
   }
 }

@@ -91,9 +91,11 @@ function isPugneum(file) {
 }
 
 function processDirectory(directory, f, visited) {
+  const firstCall = !visited;
   visited = visited || new Set();
   const stat = fs.lstatSync(directory);
-  if (stat.isSymbolicLink()) return;
+  if (stat.isSymbolicLink() && !firstCall) return;
+  if (stat.isSymbolicLink()) directory = fs.realpathSync(directory);
   const inode = stat.dev + ':' + stat.ino;
   if (visited.has(inode)) return;
   visited.add(inode);

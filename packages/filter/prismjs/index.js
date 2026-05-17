@@ -14,7 +14,7 @@ exports.filter = function pugneum_filter_prismjs(text, attributes) {
     return Prism.highlight(text, {}, '');
   }
   const grammar = Prism.languages[language];
-  if (!grammar) {
+  if (!grammar || typeof grammar !== 'object') {
     throw new Error(`Unknown language: "${language}"`);
   }
   return Prism.highlight(text, grammar, language);

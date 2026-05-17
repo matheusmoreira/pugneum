@@ -15,7 +15,7 @@ const selfClosing = // HTML void elements
     .reduce(function (voidElements, element) {
       voidElements[element] = true;
       return voidElements;
-    }, {});
+    }, Object.create(null));
 
 module.exports = compileToHTML;
 
@@ -174,9 +174,12 @@ class Compiler {
 
   visitBlockComment(comment) {
     if (!comment.buffer) return;
-    this.buffer('<!--' + sanitizeComment(comment.val || ''));
+    const saved = this.buf;
+    this.buf = [];
     this.visit(comment.block, comment);
-    this.buffer('-->');
+    const blockContent = this.buf.join('');
+    this.buf = saved;
+    this.buffer('<!--' + sanitizeComment((comment.val || '') + blockContent) + '-->');
   }
 
   visitAttributes(attrs) {
@@ -358,5 +361,5 @@ function escapeAttrValue(str) {
 }
 
 function sanitizeComment(str) {
-  return str.replace(/--/g, '- -');
+  return str.replace(/-{2,}/g, (m) => m.split('').join(' '));
 }

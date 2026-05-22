@@ -19,34 +19,90 @@ Convert pugneum string to array of tokens.
 `options` can contain the following properties:
 
  - `filename` (string): name of the pugneum file; used in error reporting.
- - `plugins` (array): array of plugins in the order they should be applied.
 
 ```js
-console.log(JSON.stringify(lex('div(data-foo="bar")', {filename: 'my-file.pg'}), null, '  '))
+console.log(JSON.stringify(lex('div(data-foo="bar")\n  p Hello', {filename: 'my-file.pg'}), null, 2))
 ```
 
 ```json
 [
   {
     "type": "tag",
-    "line": 1,
-    "val": "div",
-    "selfClosing": false
+    "loc": {
+      "start": { "line": 1, "column": 1 },
+      "filename": "my-file.pg",
+      "end": { "line": 1, "column": 4 }
+    },
+    "val": "div"
   },
   {
-    "type": "attrs",
-    "line": 1,
-    "attrs": [
-      {
-        "name": "data-foo",
-        "val": "\"bar\"",
-        "escaped": true
-      }
-    ]
+    "type": "start-attributes",
+    "loc": {
+      "start": { "line": 1, "column": 4 },
+      "filename": "my-file.pg",
+      "end": { "line": 1, "column": 5 }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": { "line": 1, "column": 5 },
+      "filename": "my-file.pg",
+      "end": { "line": 1, "column": 19 }
+    },
+    "name": "data-foo",
+    "val": "bar"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": { "line": 1, "column": 19 },
+      "filename": "my-file.pg",
+      "end": { "line": 1, "column": 20 }
+    }
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": { "line": 2, "column": 1 },
+      "filename": "my-file.pg",
+      "end": { "line": 2, "column": 3 }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": { "line": 2, "column": 3 },
+      "filename": "my-file.pg",
+      "end": { "line": 2, "column": 4 }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": { "line": 2, "column": 5 },
+      "filename": "my-file.pg",
+      "end": { "line": 2, "column": 10 }
+    },
+    "val": "Hello"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": { "line": 2, "column": 10 },
+      "filename": "my-file.pg",
+      "end": { "line": 2, "column": 10 }
+    }
   },
   {
     "type": "eos",
-    "line": 1
+    "loc": {
+      "start": { "line": 2, "column": 10 },
+      "filename": "my-file.pg",
+      "end": { "line": 2, "column": 10 }
+    }
   }
 ]
 ```

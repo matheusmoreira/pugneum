@@ -12,9 +12,13 @@ Code for processing filters in pugneum templates
 var filter = require('pugneum-filterer');
 ```
 
-### `filter(ast, filters)`
+### `applyFilters(ast, filters, options)`
 
 Renders all `Filter` nodes in a pugneum abstract syntax tree.
+
+`options` is an optional object whose keys are filter names
+and whose values are objects merged into the attributes
+passed to that filter.
 
 `filters` is an object mapping names to filter descriptor objects:
 
@@ -39,10 +43,14 @@ If `binary` is specified as true, the filter receives a raw input buffer
 containing binary data instead of already decoded text.
 Support for more metadata will probably be added later.
 
+The built-in `verbatim` filter passes text through unchanged.
+It is always available without any configuration.
+
 When a filter is used in a pugneum template but is not present
-in the custom filters map, the filterer will require a package
-named `pugneum-filter-${name}` which is expected to return the
-filter descriptor object. If not found, the result is an error.
+in the custom filters map or built-in filters, the filterer will
+require a package named `pugneum-filter-${name}` which is expected
+to return the filter descriptor object. If not found, the result
+is an error.
 
 ## License
 

@@ -26,7 +26,7 @@ var parse = require('pugneum-parser');
 var render = require('pugneum-renderer');
 
 let html = render(parse(lex('p Hello, world!')));
-//=> '<p>Hello, world!</p>'
+//=> '<!DOCTYPE html><p>Hello, world!</p>'
 ```
 
 ## License

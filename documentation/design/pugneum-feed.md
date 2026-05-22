@@ -19,6 +19,7 @@ packages/feed/
     extract.js      — HTML parsing and metadata extraction
     atom.js         — Atom XML generation
     rss.js          — RSS 2.0 XML generation
+    xml.js          — shared XML utilities (escaping, serialization)
   test/
     index.test.js   — snapshot tests for generated feeds
     fixtures/       — mock HTML files for testing
@@ -40,7 +41,7 @@ Feed generation is controlled by the `feeds` key in `pugneum.json`:
 
 ### Schema
 
-All fields except `enabled` are optional. Values are extracted from HTML first, with JSON config serving as fallback/override.
+All fields except `enabled` are optional. JSON config values take priority over values extracted from HTML.
 
 ```json
 {
@@ -71,24 +72,24 @@ All fields except `enabled` are optional. Values are extracted from HTML first, 
 
 ### Metadata Resolution Order
 
-Each piece of metadata follows the same pattern: extract from HTML first, fall back to JSON config.
+Each piece of metadata follows the same pattern: use JSON config if present, fall back to HTML extraction.
 
 **Base URL:**
-1. `<base href="...">` in the index page
-2. `feeds.url` in `pugneum.json`
+1. `feeds.url` in `pugneum.json`
+2. `<base href="...">` in the index page
 3. Error with guidance if neither found
 
 **Feed title:**
-1. `<title>` of the index page
-2. `feeds.title` in `pugneum.json`
+1. `feeds.title` in `pugneum.json`
+2. `<title>` of the index page
 
 **Feed author:**
-1. `<meta name="author">` on the index page
-2. `feeds.author` in `pugneum.json`
+1. `feeds.author` in `pugneum.json`
+2. `<meta name="author">` on the index page
 
 **Feed description:**
-1. `<meta name="description">` on the index page
-2. `feeds.description` in `pugneum.json`
+1. `feeds.description` in `pugneum.json`
+2. `<meta name="description">` on the index page
 
 **Language:**
 1. `<html lang="...">` attribute
@@ -169,7 +170,7 @@ For each discovered entry:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>{feed title}</title>
     <link>{base url}</link>
@@ -186,7 +187,7 @@ For each discovered entry:
       <pubDate>{data-published-at, RFC 822}</pubDate>
       <description>{meta description}</description>
       <content:encoded><![CDATA[{article innerHTML}]]></content:encoded>
-      <author>{entry author}</author>
+      <dc:creator>{entry author}</dc:creator>
     </item>
   </channel>
 </rss>
@@ -240,7 +241,7 @@ A small set of HTML files simulating compiled pugneum output:
 2. **Atom generation** — Verify Atom XML output from extracted data. Snapshot.
 3. **RSS generation** — Verify RSS XML output from extracted data. Snapshot.
 4. **End-to-end** — Full pipeline from fixtures directory + config to feed files. Snapshot both outputs.
-5. **Config overrides** — JSON config values take precedence over HTML-extracted values.
+5. **Config priority** — JSON config values take precedence over HTML-extracted values.
 6. **Error cases** — No base URL, missing article files, no entries found, missing RSS description.
 
 No integration with the full pugneum compilation pipeline. The feed tool reads HTML, so fixtures are just HTML files. Clean separation.

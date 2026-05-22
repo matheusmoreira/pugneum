@@ -19,7 +19,6 @@ Convert pugneum tokens into an abstract syntax tree (AST).
 `options` can contain the following properties:
 
  - `filename` (string): pugneum file name; included in AST nodes and used in error handling
- - `plugins` (array): array of plugins in the order they should be applied
  - `source` (string): pugneum source code before tokenization; used in error handling
 
 ```js

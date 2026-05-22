@@ -12,7 +12,7 @@ Link multiple pugneum ASTs together using include/extends
 var link = require('pugneum-linker');
 ```
 
-### `link(ast)`
+### `link(ast, options)`
 
 Flatten the pugneum AST of inclusion and inheritance.
 
@@ -23,6 +23,11 @@ Thus, the main AST must already have the ASTs
 of the included and extended files embedded
 in the `FileReference` nodes.
 `pugneum-loader` is designed to do that.
+
+`options` can contain the following properties:
+
+ - `source` (string): pugneum source code; used for error context
+ - `maxLinkDepth` (number): maximum template inheritance/include chain depth; default `256`
 
 ## License
 

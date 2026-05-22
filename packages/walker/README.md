@@ -35,7 +35,7 @@ nodes in the specified array. This way, you can remove and add
 new nodes adjacent to the current node.
 Whether the parent node allows array operation is indicated
 by the property `replace.arrayAllowed`, which is set to true
-when the parent is a Block and when the parent is a Include
+when the parent is a Block and when the parent is a RawInclude
 and the node is an IncludeFilter.
 
 If `before` returns `false`, the children of this node

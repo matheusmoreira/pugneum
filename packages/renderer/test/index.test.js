@@ -65,9 +65,7 @@ describe('basic rendering', () => {
 
 describe('attributes', () => {
   test('string attribute', () => {
-    var attrs = [
-      {name: 'href', val: '/home', line: 1, column: 1},
-    ];
+    var attrs = [{name: 'href', val: '/home', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('a', attrs, [text('link')])])),
       '<!DOCTYPE html><a href="/home">link</a>',
@@ -75,9 +73,7 @@ describe('attributes', () => {
   });
 
   test('boolean attribute', () => {
-    var attrs = [
-      {name: 'disabled', val: true, line: 1, column: 1},
-    ];
+    var attrs = [{name: 'disabled', val: true, line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
       '<!DOCTYPE html><input disabled>',
@@ -111,9 +107,7 @@ describe('attributes', () => {
   });
 
   test('quotes in class values are escaped', () => {
-    var attrs = [
-      {name: 'class', val: 'a"b', line: 1, column: 1},
-    ];
+    var attrs = [{name: 'class', val: 'a"b', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
       '<!DOCTYPE html><div class="a&quot;b"></div>',
@@ -190,9 +184,7 @@ describe('SVG void elements', () => {
   });
 
   test('path is self-closing', () => {
-    var attrs = [
-      {name: 'd', val: 'M0 0 L100 100', line: 1, column: 1},
-    ];
+    var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
       '<!DOCTYPE html><path d="M0 0 L100 100">',
@@ -320,6 +312,29 @@ describe('comments', () => {
       filename: 'test',
     };
     assert.strictEqual(render(block([node])), '<!DOCTYPE html><!--content-->');
+  });
+
+  test('comment with null val renders empty comment', () => {
+    var node = {
+      type: 'Comment',
+      val: null,
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!---->');
+  });
+
+  test('block comment with null val uses body only', () => {
+    var node = {
+      type: 'BlockComment',
+      val: null,
+      buffer: true,
+      block: block([text('body')]),
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!--body-->');
   });
 });
 
@@ -748,9 +763,7 @@ describe('variables in attributes', () => {
       call: false,
       args: [],
       block: block([
-        tag('div', [
-          {name: 'x', val: '#{missing}', line: 1, column: 1},
-        ]),
+        tag('div', [{name: 'x', val: '#{missing}', line: 1, column: 1}]),
       ]),
       line: 1,
       column: 1,
@@ -829,6 +842,24 @@ describe('interpolated tags', () => {
       filename: 'test',
     };
     assert.strictEqual(render(block([node])), '<!DOCTYPE html><br>');
+  });
+
+  test('does not mutate the input AST node', () => {
+    var node = {
+      type: 'InterpolatedTag',
+      expr: 'em',
+      attrs: [],
+      attributeBlocks: [],
+      block: block([text('x')]),
+      selfClosing: false,
+      isInline: true,
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual('name' in node, false);
+    render(block([node]), {doctype: false});
+    assert.strictEqual('name' in node, false);
   });
 });
 

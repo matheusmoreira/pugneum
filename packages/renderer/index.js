@@ -86,10 +86,12 @@ class Compiler {
   renderToString(node) {
     const saved = this.buf;
     this.buf = [];
-    this.visit(node);
-    const result = this.buf.join('');
-    this.buf = saved;
-    return result;
+    try {
+      this.visit(node);
+      return this.buf.join('');
+    } finally {
+      this.buf = saved;
+    }
   }
 
   visit(node, parent) {
@@ -146,9 +148,8 @@ class Compiler {
     return this['visit' + node.type](node);
   }
 
-  visitInterpolatedTag(tag) {
-    tag.name = tag.expr;
-    return this.visitTag(tag);
+  visitInterpolatedTag(interp) {
+    return this.visitTag(Object.assign({}, interp, {name: interp.expr}));
   }
 
   visitNamedBlock(block) {
@@ -201,7 +202,7 @@ class Compiler {
   visitComment(comment) {
     if (!comment.buffer) return;
     this.buffer('<!--');
-    this.buffer(sanitizeCommentContent(comment.val));
+    this.buffer(sanitizeCommentContent(comment.val || ''));
     this.buffer('-->');
   }
 
@@ -265,11 +266,7 @@ class Compiler {
     const frame = this.callStack.at(-1);
     const value = frame.environment[name];
     if (value === undefined) {
-      this.error(
-        'UNDEFINED_VARIABLE',
-        `Variable '${name}' is undefined`,
-        node,
-      );
+      this.error('UNDEFINED_VARIABLE', `Variable '${name}' is undefined`, node);
     }
     return value;
   }
@@ -346,8 +343,11 @@ class Compiler {
       const block = mixin.block;
 
       this.callStack.push({name: mixin.name, environment, block});
-      this.visit(declared.block);
-      this.callStack.pop();
+      try {
+        this.visit(declared.block);
+      } finally {
+        this.callStack.pop();
+      }
     } else {
       this.mixins[mixin.name] = mixin;
     }

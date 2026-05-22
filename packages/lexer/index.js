@@ -66,7 +66,7 @@ function scanChar(str, i, quote) {
 
   if (c === '\\') return {i: i + 2, quote: null};
 
-  if (c === "'" || c === '"' || c === '`') {
+  if (c === "'" || c === '"') {
     return {i: i + 1, quote: c};
   }
 
@@ -91,7 +91,7 @@ function parseUntil(str, end, start) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quote || c === "'" || c === '"' || c === '`') {
+    if (quote || c === "'" || c === '"') {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -130,7 +130,7 @@ function isNesting(str) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quote || c === "'" || c === '"' || c === '`') {
+    if (quote || c === "'" || c === '"') {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -481,8 +481,6 @@ class Lexer {
             end +
             ' found.',
         );
-      } else if (ex.code === 'CHARACTER_PARSER:MISMATCHED_BRACKET') {
-        this.error('BRACKET_MISMATCH', ex.message);
       }
       throw ex;
     }

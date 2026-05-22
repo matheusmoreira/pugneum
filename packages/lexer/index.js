@@ -860,7 +860,9 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
     const child = this.spawnChildLexer(value.slice(pos + 2));
     this.colno = child.colno;
-    this.tokens.push(...child.tokens);
+    for (let ti = 0; ti < child.tokens.length; ti++) {
+      this.tokens.push(child.tokens[ti]);
+    }
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
@@ -914,7 +916,9 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
     const child = this.spawnChildLexer(childInput);
     this.incrementColumn(contentLen);
-    this.tokens.push(...child.tokens);
+    for (let ti = 0; ti < child.tokens.length; ti++) {
+      this.tokens.push(child.tokens[ti]);
+    }
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));

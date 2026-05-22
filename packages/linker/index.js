@@ -166,7 +166,13 @@ function applyIncludes(ast, options) {
     ast,
     function before(node, replace) {
       if (node.type === 'RawInclude' && node.filters.length === 0) {
-        replace({type: 'Text', val: node.file.str.replace(/\r/g, '')});
+        replace({
+          type: 'Text',
+          val: node.file.str.replace(/\r/g, ''),
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        });
       }
     },
     function after(node, replace) {

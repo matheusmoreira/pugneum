@@ -1732,7 +1732,10 @@ exports[`cases from pugneum sources > includes-with-ext-js.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "var x = '\\\\n here is some \\\\n new lined text';\\n"
+                  "val": "var x = '\\\\n here is some \\\\n new lined text';\\n",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "includes-with-ext-js.pg"
                 }
               ],
               "line": 2,
@@ -1835,11 +1838,17 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "<p>:)</p>\\n"
+            "val": "<p>:)</p>\\n",
+            "line": 7,
+            "column": 3,
+            "filename": "includes.pg"
           },
           {
             "type": "Text",
-            "val": "<script>\\n  console.log(\\"foo\\\\nbar\\")\\n</script>\\n"
+            "val": "<script>\\n  console.log(\\"foo\\\\nbar\\")\\n</script>\\n",
+            "line": 8,
+            "column": 3,
+            "filename": "includes.pg"
           },
           {
             "type": "Tag",

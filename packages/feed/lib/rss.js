@@ -72,6 +72,10 @@ function feedLastBuildDate(feed) {
 
 function toRFC822(dateStr, fallback) {
   if (!dateStr) return new Date(fallback || Date.now()).toUTCString();
-  const normalized = dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00Z';
-  return new Date(normalized).toUTCString();
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
+    ? dateStr + 'T00:00:00Z'
+    : dateStr;
+  const d = new Date(normalized);
+  if (isNaN(d.getTime())) return new Date(fallback || Date.now()).toUTCString();
+  return d.toUTCString();
 }

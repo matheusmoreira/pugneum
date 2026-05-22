@@ -139,7 +139,9 @@ class Parser {
         const expr = this.parseExpr();
         if (expr) {
           if (expr.type === 'Block') {
-            block.nodes = block.nodes.concat(expr.nodes);
+            for (let ni = 0; ni < expr.nodes.length; ni++) {
+              block.nodes.push(expr.nodes[ni]);
+            }
           } else {
             block.nodes.push(expr);
           }
@@ -380,7 +382,7 @@ class Parser {
         this.textNode(textToken),
       ]);
     } else if (this.peek().type === 'filter') {
-      block = this.initBlock(tok.loc.start.line, [this.parseFilter()]);
+      block = this.initBlock(tok.loc.start.line, [this.parseExpr()]);
     } else {
       block = this.parseTextBlock() || this.emptyBlock(tok.loc.start.line);
     }
@@ -762,7 +764,7 @@ class Parser {
    * Parse tag.
    */
 
-  tag(tag, options) {
+  tag(tag) {
     let seenAttrs = false;
     const attributeNames = new Set();
     // (attrs | class | id)*

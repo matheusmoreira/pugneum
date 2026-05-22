@@ -64,6 +64,10 @@ function feedUpdated(feed) {
 
 function toISO8601(dateStr, fallback) {
   if (!dateStr) return fallback || new Date().toISOString();
-  if (dateStr.includes('T')) return dateStr;
-  return dateStr + 'T00:00:00Z';
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
+    ? dateStr + 'T00:00:00Z'
+    : dateStr;
+  const d = new Date(normalized);
+  if (isNaN(d.getTime())) return fallback || new Date().toISOString();
+  return d.toISOString();
 }

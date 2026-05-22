@@ -1,3 +1,4 @@
+var assert = require('node:assert/strict');
 var {test} = require('node:test');
 var generateAtom = require('../lib/atom');
 
@@ -31,6 +32,32 @@ test('generates valid Atom feed', (t) => {
   var xml = generateAtom(feed);
 
   t.assert.snapshot(xml);
+});
+
+test('invalid date string falls back to buildDate', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Test',
+    description: 'desc',
+    author: 'Author',
+    entries: [
+      {
+        url: 'https://example.com/post',
+        title: 'Post',
+        published: 'not-a-date',
+        author: 'Author',
+        content: '<p>Content</p>',
+      },
+    ],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-15T12:00:00.000Z',
+  };
+
+  var xml = generateAtom(feed);
+
+  // The invalid date must fall back to buildDate, not produce "Invalid Date"
+  assert.ok(!xml.includes('Invalid Date'));
+  assert.ok(xml.includes('2026-01-15T12:00:00.000Z'));
 });
 
 test('generates valid Atom feed with no entries', (t) => {

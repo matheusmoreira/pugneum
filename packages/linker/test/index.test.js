@@ -67,6 +67,39 @@ describe('duplicate reference definitions', () => {
   });
 });
 
+describe('RawInclude with filters', () => {
+  test('RawInclude with filters is preserved for the filterer', () => {
+    var dir = __dirname + '/cases';
+    var source = 'include:markdown-it some.md';
+    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    var linked = link(loaded);
+
+    // The linker must NOT replace RawInclude nodes that have filters.
+    // Those are left for the filterer to process.
+    var rawInclude = linked.nodes[0];
+    assert.strictEqual(rawInclude.type, 'RawInclude');
+    assert.ok(rawInclude.filters.length > 0);
+    assert.strictEqual(rawInclude.filters[0].name, 'markdown-it');
+  });
+
+  test('RawInclude without filters is replaced with Text', () => {
+    var dir = __dirname + '/cases';
+    var source = 'include some.md';
+    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var tokens = lex(source, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+    var linked = link(loaded);
+
+    // Without filters, the linker replaces RawInclude with a Text node
+    var textNode = linked.nodes[0];
+    assert.strictEqual(textNode.type, 'Text');
+  });
+});
+
 describe('error handling', () => {
   test('top level must be a Block', () => {
     assert.throws(() => link({type: 'Tag', name: 'div'}), /top level.*block/i);

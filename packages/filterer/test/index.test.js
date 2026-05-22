@@ -76,6 +76,43 @@ p
   );
 });
 
+test('filter that throws raw Error is wrapped as FILTER_ERROR', () => {
+  var exploding = {
+    filter: function () {
+      throw new Error('kaboom');
+    },
+  };
+
+  const source = `
+p
+  :exploding
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {exploding}),
+    (err) =>
+      err.code === 'PUGNEUM:FILTER_ERROR' && /kaboom/.test(err.message),
+  );
+});
+
+test('verbatim filter passes text through unchanged', () => {
+  const source = `
+p
+  :verbatim
+    <strong>raw html</strong>
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {});
+
+  // Find the text node produced by the verbatim filter
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(textNode.val, '<strong>raw html</strong>');
+});
+
 test('filters can be used with options', () => {
   const source = `
 p

@@ -135,6 +135,8 @@ module.exports = function generateFeeds(options) {
   fs.writeFileSync(path.join(writeDir, rssPath), rss, {encoding: 'utf8'});
 };
 
+module.exports.resolveRelativeUrls = resolveRelativeUrls;
+
 function resolveRelativeUrls(html, baseUrl) {
   const escaped = baseUrl.replace(/\$/g, '$$$$');
   const resolve = (attr) =>

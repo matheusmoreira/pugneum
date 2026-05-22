@@ -338,6 +338,93 @@ describe('comments', () => {
   });
 });
 
+describe('comment sanitization', () => {
+  test('-- in comment is separated with spaces', () => {
+    var node = {
+      type: 'Comment',
+      val: 'foo--bar',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!--foo- -bar-->',
+    );
+  });
+
+  test('--- (odd-length dashes) are all separated', () => {
+    var node = {
+      type: 'Comment',
+      val: 'foo---bar',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!--foo- - -bar-->',
+    );
+  });
+
+  test('comment starting with > has space prepended', () => {
+    var node = {
+      type: 'Comment',
+      val: '>dangerous',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!-- >dangerous-->',
+    );
+  });
+
+  test('comment starting with -> has space prepended', () => {
+    var node = {
+      type: 'Comment',
+      val: '->dangerous',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!-- ->dangerous-->',
+    );
+  });
+
+  test('comment ending with - has space appended', () => {
+    var node = {
+      type: 'Comment',
+      val: 'trailing-',
+      buffer: true,
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!--trailing- -->',
+    );
+  });
+
+  test('block comment with -- in body text is sanitized', () => {
+    var node = {
+      type: 'BlockComment',
+      val: ' start ',
+      buffer: true,
+      block: block([text('has--dashes')]),
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(
+      render(block([node]), {doctype: false}),
+      '<!-- start has- -dashes-->',
+    );
+  });
+});
+
 describe('mixins', () => {
   test('declaration and call', () => {
     var declaration = {

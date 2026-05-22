@@ -76,6 +76,55 @@ describe('extract.indexPage robustness', () => {
   });
 });
 
+describe('resolveRelativeUrls', () => {
+  var resolveRelativeUrls = generateFeeds.resolveRelativeUrls;
+
+  test('/path is resolved to absolute URL', () => {
+    var html = '<a href="/articles/post.html">link</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<a href="https://example.com/articles/post.html">link</a>',
+    );
+  });
+
+  test('protocol-relative //cdn.example.com is unchanged', () => {
+    var html = '<a href="//cdn.example.com/file.js">link</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<a href="//cdn.example.com/file.js">link</a>',
+    );
+  });
+
+  test('absolute https://other.com is unchanged', () => {
+    var html = '<a href="https://other.com/page">link</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<a href="https://other.com/page">link</a>',
+    );
+  });
+
+  test('base URL with $ is not corrupted', () => {
+    var html = '<a href="/path">link</a>';
+    var result = resolveRelativeUrls(html, 'https://ca$h.example.com/');
+    assert.strictEqual(
+      result,
+      '<a href="https://ca$h.example.com/path">link</a>',
+    );
+  });
+
+  test('img src is resolved', () => {
+    var html = '<img src="/images/photo.jpg">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img src="https://example.com/images/photo.jpg">',
+    );
+  });
+});
+
 describe('end-to-end feed generation', () => {
   test('generates atom.xml and rss.xml from fixtures', (t) => {
     fs.mkdirSync(outputDir, {recursive: true});

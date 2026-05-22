@@ -25,10 +25,10 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "My Application",
                             "line": 3,
                             "column": 11,
-                            "filename": "layout.pg"
+                            "filename": "layout.pg",
+                            "val": "My Application"
                           }
                         ],
                         "line": 3,
@@ -79,10 +79,10 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "hello",
                                     "line": 1,
                                     "column": 4,
-                                    "filename": "include-from-root.pg"
+                                    "filename": "include-from-root.pg",
+                                    "val": "hello"
                                   }
                                 ],
                                 "line": 1,
@@ -157,10 +157,10 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                       "nodes": [
                         {
                           "type": "Text",
-                          "val": "hello",
                           "line": 1,
                           "column": 4,
-                          "filename": "include-from-root.pg"
+                          "filename": "include-from-root.pg",
+                          "val": "hello"
                         }
                       ],
                       "line": 1,
@@ -199,10 +199,10 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "hello",
                               "line": 1,
                               "column": 4,
-                              "filename": "include-from-root.pg"
+                              "filename": "include-from-root.pg",
+                              "val": "hello"
                             }
                           ],
                           "line": 1,
@@ -258,10 +258,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                 "nodes": [
                   {
                     "type": "Text",
-                    "val": "test1",
                     "line": 4,
                     "column": 9,
-                    "filename": "extends-empty-block-1.pg"
+                    "filename": "extends-empty-block-1.pg",
+                    "val": "test1"
                   }
                 ],
                 "line": 4,
@@ -295,10 +295,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "test1",
                       "line": 4,
                       "column": 9,
-                      "filename": "extends-empty-block-1.pg"
+                      "filename": "extends-empty-block-1.pg",
+                      "val": "test1"
                     }
                   ],
                   "line": 4,
@@ -329,10 +329,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                       "nodes": [
                         {
                           "type": "Text",
-                          "val": "test1",
                           "line": 4,
                           "column": 9,
-                          "filename": "extends-empty-block-1.pg"
+                          "filename": "extends-empty-block-1.pg",
+                          "val": "test1"
                         }
                       ],
                       "line": 4,
@@ -372,10 +372,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                 "nodes": [
                   {
                     "type": "Text",
-                    "val": "test2",
                     "line": 4,
                     "column": 9,
-                    "filename": "extends-empty-block-2.pg"
+                    "filename": "extends-empty-block-2.pg",
+                    "val": "test2"
                   }
                 ],
                 "line": 4,
@@ -409,10 +409,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "test2",
                       "line": 4,
                       "column": 9,
-                      "filename": "extends-empty-block-2.pg"
+                      "filename": "extends-empty-block-2.pg",
+                      "val": "test2"
                     }
                   ],
                   "line": 4,
@@ -443,10 +443,10 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                       "nodes": [
                         {
                           "type": "Text",
-                          "val": "test2",
                           "line": 4,
                           "column": 9,
-                          "filename": "extends-empty-block-2.pg"
+                          "filename": "extends-empty-block-2.pg",
+                          "val": "test2"
                         }
                       ],
                       "line": 4,
@@ -506,10 +506,10 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "My Application",
                             "line": 3,
                             "column": 11,
-                            "filename": "layout.pg"
+                            "filename": "layout.pg",
+                            "val": "My Application"
                           }
                         ],
                         "line": 3,
@@ -560,10 +560,10 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "hello",
                                     "line": 1,
                                     "column": 4,
-                                    "filename": "include-from-root.pg"
+                                    "filename": "include-from-root.pg",
+                                    "val": "hello"
                                   }
                                 ],
                                 "line": 1,
@@ -638,10 +638,10 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                       "nodes": [
                         {
                           "type": "Text",
-                          "val": "hello",
                           "line": 1,
                           "column": 4,
-                          "filename": "include-from-root.pg"
+                          "filename": "include-from-root.pg",
+                          "val": "hello"
                         }
                       ],
                       "line": 1,
@@ -680,10 +680,10 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "val": "hello",
                               "line": 1,
                               "column": 4,
-                              "filename": "include-from-root.pg"
+                              "filename": "include-from-root.pg",
+                              "val": "hello"
                             }
                           ],
                           "line": 1,
@@ -732,8 +732,30 @@ exports[`cases from pugneum sources > include-filter-stylus.pg 1`] = `
         "type": "Block",
         "nodes": [
           {
-            "type": "Text",
-            "val": "@import \\"some-included\\"\\n"
+            "type": "RawInclude",
+            "file": {
+              "type": "FileReference",
+              "filename": "include-filter-stylus.pg",
+              "path": "some.styl",
+              "line": 2,
+              "column": 18,
+              "fullPath": "some.styl",
+              "str": "@import \\"some-included\\"\\n",
+              "raw": "@import \\"some-included\\"\\n"
+            },
+            "line": 2,
+            "column": 3,
+            "filename": "include-filter-stylus.pg",
+            "filters": [
+              {
+                "type": "IncludeFilter",
+                "name": "stylus",
+                "attrs": [],
+                "line": 2,
+                "column": 10,
+                "filename": "include-filter-stylus.pg"
+              }
+            ]
           }
         ],
         "line": 1,
@@ -778,8 +800,30 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
               "type": "Block",
               "nodes": [
                 {
-                  "type": "Text",
-                  "val": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n"
+                  "type": "RawInclude",
+                  "file": {
+                    "type": "FileReference",
+                    "filename": "include-filter.pg",
+                    "path": "some.md",
+                    "line": 3,
+                    "column": 25,
+                    "fullPath": "some.md",
+                    "str": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n",
+                    "raw": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n"
+                  },
+                  "line": 3,
+                  "column": 5,
+                  "filename": "include-filter.pg",
+                  "filters": [
+                    {
+                      "type": "IncludeFilter",
+                      "name": "markdown-it",
+                      "attrs": [],
+                      "line": 3,
+                      "column": 12,
+                      "filename": "include-filter.pg"
+                    }
+                  ]
                 },
                 {
                   "type": "Tag",
@@ -788,8 +832,38 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                     "type": "Block",
                     "nodes": [
                       {
-                        "type": "Text",
-                        "val": "math =\\n  square: (value) -> value * value\\n"
+                        "type": "RawInclude",
+                        "file": {
+                          "type": "FileReference",
+                          "filename": "include-filter.pg",
+                          "path": "include-filter-coffee.coffee",
+                          "line": 5,
+                          "column": 42,
+                          "fullPath": "include-filter-coffee.coffee",
+                          "str": "math =\\n  square: (value) -> value * value\\n",
+                          "raw": "math =\\n  square: (value) -> value * value\\n"
+                        },
+                        "line": 5,
+                        "column": 7,
+                        "filename": "include-filter.pg",
+                        "filters": [
+                          {
+                            "type": "IncludeFilter",
+                            "name": "coffee-script",
+                            "attrs": [
+                              {
+                                "name": "minify",
+                                "val": "true",
+                                "line": 5,
+                                "column": 29,
+                                "filename": "include-filter.pg"
+                              }
+                            ],
+                            "line": 5,
+                            "column": 14,
+                            "filename": "include-filter.pg"
+                          }
+                        ]
                       }
                     ],
                     "line": 4,
@@ -809,8 +883,38 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                     "type": "Block",
                     "nodes": [
                       {
-                        "type": "Text",
-                        "val": "math =\\n  square: (value) -> value * value\\n"
+                        "type": "RawInclude",
+                        "file": {
+                          "type": "FileReference",
+                          "filename": "include-filter.pg",
+                          "path": "include-filter-coffee.coffee",
+                          "line": 7,
+                          "column": 43,
+                          "fullPath": "include-filter-coffee.coffee",
+                          "str": "math =\\n  square: (value) -> value * value\\n",
+                          "raw": "math =\\n  square: (value) -> value * value\\n"
+                        },
+                        "line": 7,
+                        "column": 7,
+                        "filename": "include-filter.pg",
+                        "filters": [
+                          {
+                            "type": "IncludeFilter",
+                            "name": "coffee-script",
+                            "attrs": [
+                              {
+                                "name": "minify",
+                                "val": "false",
+                                "line": 7,
+                                "column": 29,
+                                "filename": "include-filter.pg"
+                              }
+                            ],
+                            "line": 7,
+                            "column": 14,
+                            "filename": "include-filter.pg"
+                          }
+                        ]
                       }
                     ],
                     "line": 6,
@@ -858,10 +962,10 @@ exports[`cases from pugneum sources > include-only-text-body.pg 1`] = `
   "nodes": [
     {
       "type": "Text",
-      "val": "The message is \\"",
       "line": 1,
       "column": 3,
-      "filename": "include-only-text-body.pg"
+      "filename": "include-only-text-body.pg",
+      "val": "The message is \\""
     },
     {
       "type": "YieldBlock",
@@ -871,10 +975,10 @@ exports[`cases from pugneum sources > include-only-text-body.pg 1`] = `
     },
     {
       "type": "Text",
-      "val": "\\"",
       "line": 3,
       "column": 3,
-      "filename": "include-only-text-body.pg"
+      "filename": "include-only-text-body.pg",
+      "val": "\\""
     }
   ],
   "line": 0,
@@ -910,10 +1014,10 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "The message is \\"",
                             "line": 1,
                             "column": 3,
-                            "filename": "include-only-text-body.pg"
+                            "filename": "include-only-text-body.pg",
+                            "val": "The message is \\""
                           },
                           {
                             "type": "Block",
@@ -932,10 +1036,10 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                                       "nodes": [
                                         {
                                           "type": "Text",
-                                          "val": "hello world",
                                           "line": 5,
                                           "column": 12,
-                                          "filename": "include-only-text.pg"
+                                          "filename": "include-only-text.pg",
+                                          "val": "hello world"
                                         }
                                       ],
                                       "line": 5,
@@ -956,10 +1060,10 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                           },
                           {
                             "type": "Text",
-                            "val": "\\"",
                             "line": 3,
                             "column": 3,
-                            "filename": "include-only-text-body.pg"
+                            "filename": "include-only-text-body.pg",
+                            "val": "\\""
                           }
                         ],
                         "line": 0,
@@ -1024,10 +1128,10 @@ exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "alert('hello world');",
                   "line": 3,
                   "column": 5,
-                  "filename": "include-with-text-head.pg"
+                  "filename": "include-with-text-head.pg",
+                  "val": "alert('hello world');"
                 }
               ],
               "line": 2,
@@ -1100,10 +1204,10 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "alert('hello world');",
                             "line": 3,
                             "column": 5,
-                            "filename": "include-with-text-head.pg"
+                            "filename": "include-with-text-head.pg",
+                            "val": "alert('hello world');"
                           }
                         ],
                         "line": 2,
@@ -1249,10 +1353,10 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "{{name}}",
                             "line": 2,
                             "column": 6,
-                            "filename": "pet.pg"
+                            "filename": "pet.pg",
+                            "val": "{{name}}"
                           }
                         ],
                         "line": 2,
@@ -1273,10 +1377,10 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "{{name}} is a {{species}} that is {{age}} old",
                             "line": 3,
                             "column": 5,
-                            "filename": "pet.pg"
+                            "filename": "pet.pg",
+                            "val": "{{name}} is a {{species}} that is {{age}} old"
                           }
                         ],
                         "line": 3,
@@ -1406,10 +1510,10 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "val": "Page",
                             "line": 5,
                             "column": 8,
-                            "filename": "yield-nested.pg"
+                            "filename": "yield-nested.pg",
+                            "val": "Page"
                           }
                         ],
                         "line": 5,
@@ -1451,10 +1555,10 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                                             "nodes": [
                                               {
                                                 "type": "Text",
-                                                "val": "some content",
                                                 "line": 3,
                                                 "column": 5,
-                                                "filename": "include.yield.nested.pg"
+                                                "filename": "include.yield.nested.pg",
+                                                "val": "some content"
                                               }
                                             ],
                                             "line": 3,
@@ -1475,10 +1579,10 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                                             "nodes": [
                                               {
                                                 "type": "Text",
-                                                "val": "and some more",
                                                 "line": 4,
                                                 "column": 5,
-                                                "filename": "include.yield.nested.pg"
+                                                "filename": "include.yield.nested.pg",
+                                                "val": "and some more"
                                               }
                                             ],
                                             "line": 4,
@@ -1681,10 +1785,10 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "bar",
                       "line": 3,
                       "column": 5,
-                      "filename": "mixins.pg"
+                      "filename": "mixins.pg",
+                      "val": "bar"
                     }
                   ],
                   "line": 3,
@@ -1744,8 +1848,30 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
               "type": "Block",
               "nodes": [
                 {
-                  "type": "Text",
-                  "val": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n"
+                  "type": "RawInclude",
+                  "file": {
+                    "type": "FileReference",
+                    "filename": "includes.pg",
+                    "path": "auxiliary/includable.js",
+                    "line": 10,
+                    "column": 22,
+                    "fullPath": "includable.js",
+                    "str": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n",
+                    "raw": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n"
+                  },
+                  "line": 10,
+                  "column": 5,
+                  "filename": "includes.pg",
+                  "filters": [
+                    {
+                      "type": "IncludeFilter",
+                      "name": "verbatim",
+                      "attrs": [],
+                      "line": 10,
+                      "column": 12,
+                      "filename": "includes.pg"
+                    }
+                  ]
                 }
               ],
               "line": 9,
@@ -2457,10 +2583,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "val": "Last prepend must appear at top",
                 "line": 13,
                 "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Last prepend must appear at top"
               }
             ],
             "line": 13,
@@ -2496,10 +2622,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "val": "Something prepended to content",
                 "line": 7,
                 "column": 18,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Something prepended to content"
               }
             ],
             "line": 7,
@@ -2535,10 +2661,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "val": "Defined content",
                 "line": 5,
                 "column": 5,
-                "filename": "redefine.pg"
+                "filename": "redefine.pg",
+                "val": "Defined content"
               }
             ],
             "line": 4,
@@ -2567,10 +2693,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "val": "Something appended to content",
                 "line": 4,
                 "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Something appended to content"
               }
             ],
             "line": 4,
@@ -2606,10 +2732,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "val": "Last append must be most last",
                 "line": 10,
                 "column": 16,
-                "filename": "layout.multi.append.prepend.block.pg"
+                "filename": "layout.multi.append.prepend.block.pg",
+                "val": "Last append must be most last"
               }
             ],
             "line": 10,
@@ -2742,10 +2868,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Last prepend must appear at top",
                   "line": 13,
                   "column": 17,
-                  "filename": "layout.multi.append.prepend.block.pg"
+                  "filename": "layout.multi.append.prepend.block.pg",
+                  "val": "Last prepend must appear at top"
                 }
               ],
               "line": 13,
@@ -2781,10 +2907,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Something prepended to content",
                   "line": 7,
                   "column": 18,
-                  "filename": "layout.multi.append.prepend.block.pg"
+                  "filename": "layout.multi.append.prepend.block.pg",
+                  "val": "Something prepended to content"
                 }
               ],
               "line": 7,
@@ -2820,10 +2946,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Defined content",
                   "line": 5,
                   "column": 5,
-                  "filename": "redefine.pg"
+                  "filename": "redefine.pg",
+                  "val": "Defined content"
                 }
               ],
               "line": 4,
@@ -2852,10 +2978,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Something appended to content",
                   "line": 4,
                   "column": 17,
-                  "filename": "layout.multi.append.prepend.block.pg"
+                  "filename": "layout.multi.append.prepend.block.pg",
+                  "val": "Something appended to content"
                 }
               ],
               "line": 4,
@@ -2891,10 +3017,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Last append must be most last",
                   "line": 10,
                   "column": 16,
-                  "filename": "layout.multi.append.prepend.block.pg"
+                  "filename": "layout.multi.append.prepend.block.pg",
+                  "val": "Last append must be most last"
                 }
               ],
               "line": 10,
@@ -2940,10 +3066,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "Last prepend must appear at top",
                       "line": 13,
                       "column": 17,
-                      "filename": "layout.multi.append.prepend.block.pg"
+                      "filename": "layout.multi.append.prepend.block.pg",
+                      "val": "Last prepend must appear at top"
                     }
                   ],
                   "line": 13,
@@ -2979,10 +3105,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "Something prepended to content",
                       "line": 7,
                       "column": 18,
-                      "filename": "layout.multi.append.prepend.block.pg"
+                      "filename": "layout.multi.append.prepend.block.pg",
+                      "val": "Something prepended to content"
                     }
                   ],
                   "line": 7,
@@ -3018,10 +3144,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "Defined content",
                       "line": 5,
                       "column": 5,
-                      "filename": "redefine.pg"
+                      "filename": "redefine.pg",
+                      "val": "Defined content"
                     }
                   ],
                   "line": 4,
@@ -3050,10 +3176,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "Something appended to content",
                       "line": 4,
                       "column": 17,
-                      "filename": "layout.multi.append.prepend.block.pg"
+                      "filename": "layout.multi.append.prepend.block.pg",
+                      "val": "Something appended to content"
                     }
                   ],
                   "line": 4,
@@ -3089,10 +3215,10 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
                   "nodes": [
                     {
                       "type": "Text",
-                      "val": "Last append must be most last",
                       "line": 10,
                       "column": 16,
-                      "filename": "layout.multi.append.prepend.block.pg"
+                      "filename": "layout.multi.append.prepend.block.pg",
+                      "val": "Last append must be most last"
                     }
                   ],
                   "line": 10,

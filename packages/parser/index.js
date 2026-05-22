@@ -315,23 +315,6 @@ class Parser {
   }
 
   /**
-   *   ':' expr
-   * | block
-   */
-
-  parseBlockExpansion() {
-    const tok = this.accept(':');
-    if (tok) {
-      const expr = this.parseExpr();
-      return expr.type === 'Block'
-        ? expr
-        : this.initBlock(tok.loc.start.line, [expr]);
-    } else {
-      return this.block();
-    }
-  }
-
-  /**
    * comment
    */
 
@@ -781,7 +764,7 @@ class Parser {
 
   tag(tag, options) {
     let seenAttrs = false;
-    const attributeNames = [];
+    const attributeNames = new Set();
     // (attrs | class | id)*
     out: while (true) {
       switch (this.peek().type) {
@@ -789,14 +772,14 @@ class Parser {
         case 'class':
           const tok = this.advance();
           if (tok.type === 'id') {
-            if (attributeNames.indexOf('id') !== -1) {
+            if (attributeNames.has('id')) {
               this.error(
                 'DUPLICATE_ID',
                 'Duplicate attribute "id" is not allowed.',
                 tok,
               );
             }
-            attributeNames.push('id');
+            attributeNames.add('id');
           }
           tag.attrs.push({
             name: tok.type,
@@ -890,14 +873,14 @@ class Parser {
     let tok = this.advance();
     while (tok.type === 'attribute') {
       if (tok.name !== 'class' && attributeNames) {
-        if (attributeNames.indexOf(tok.name) !== -1) {
+        if (attributeNames.has(tok.name)) {
           this.error(
             'DUPLICATE_ATTRIBUTE',
             'Duplicate attribute "' + tok.name + '" is not allowed.',
             tok,
           );
         }
-        attributeNames.push(tok.name);
+        attributeNames.add(tok.name);
       }
       attrs.push({
         name: tok.name,

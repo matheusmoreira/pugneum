@@ -34,94 +34,94 @@ exports[`language-argument.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "(define (double x)",
                                     "line": 6,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "(define (double x)"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 7,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "  (* 2 x))",
                                     "line": 7,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "  (* 2 x))"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 8,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "(define (square x)",
                                     "line": 8,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "(define (square x)"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 9,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "  (* x x))",
                                     "line": 9,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "  (* x x))"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 10,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "(define (double-square x)",
                                     "line": 10,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "(define (double-square x)"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 11,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "  (double (square x)))",
                                     "line": 11,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "  (double (square x)))"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 12,
                                     "column": 1,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "(display (double-square 10))",
                                     "line": 12,
                                     "column": 11,
-                                    "filename": "language-argument.pg"
+                                    "filename": "language-argument.pg",
+                                    "val": "(display (double-square 10))"
                                   }
                                 ],
                                 "line": 5,
@@ -133,8 +133,7 @@ exports[`language-argument.pg 1`] = `
                                   "val": "scheme",
                                   "line": 5,
                                   "column": 20,
-                                  "filename": "language-argument.pg",
-                                  "mustEscape": true
+                                  "filename": "language-argument.pg"
                                 }
                               ],
                               "line": 5,
@@ -228,66 +227,66 @@ exports[`language-subset-argument.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "#include <stdio.h>",
                                     "line": 6,
                                     "column": 11,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "#include <stdio.h>"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 7,
                                     "column": 1,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "",
                                     "line": 7,
                                     "column": 1,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": ""
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 8,
                                     "column": 1,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "int main(int argc, char **argv) {",
                                     "line": 8,
                                     "column": 11,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "int main(int argc, char **argv) {"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 9,
                                     "column": 1,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\tputs(\\"Pugneum!\\");",
                                     "line": 9,
                                     "column": 11,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "\\tputs(\\"Pugneum!\\");"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 10,
                                     "column": 1,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "}",
                                     "line": 10,
                                     "column": 11,
-                                    "filename": "language-subset-argument.pg"
+                                    "filename": "language-subset-argument.pg",
+                                    "val": "}"
                                   }
                                 ],
                                 "line": 5,
@@ -299,8 +298,7 @@ exports[`language-subset-argument.pg 1`] = `
                                   "val": "c,c++",
                                   "line": 5,
                                   "column": 20,
-                                  "filename": "language-subset-argument.pg",
-                                  "mustEscape": true
+                                  "filename": "language-subset-argument.pg"
                                 }
                               ],
                               "line": 5,
@@ -394,38 +392,38 @@ exports[`syntax-highlighting-works.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "val": "function thisShouldBeHighlighted(syntax) {",
                                     "line": 6,
                                     "column": 11,
-                                    "filename": "syntax-highlighting-works.pg"
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "val": "function thisShouldBeHighlighted(syntax) {"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 7,
                                     "column": 1,
-                                    "filename": "syntax-highlighting-works.pg"
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "  return with('highlight', { extension: 'js' });",
                                     "line": 7,
                                     "column": 11,
-                                    "filename": "syntax-highlighting-works.pg"
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "val": "  return with('highlight', { extension: 'js' });"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "\\n",
                                     "line": 8,
                                     "column": 1,
-                                    "filename": "syntax-highlighting-works.pg"
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "val": "\\n"
                                   },
                                   {
                                     "type": "Text",
-                                    "val": "}",
                                     "line": 8,
                                     "column": 11,
-                                    "filename": "syntax-highlighting-works.pg"
+                                    "filename": "syntax-highlighting-works.pg",
+                                    "val": "}"
                                   }
                                 ],
                                 "line": 5,

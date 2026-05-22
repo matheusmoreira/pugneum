@@ -100,9 +100,15 @@ function getAttributes(node, options) {
   return attrs;
 }
 
+const builtinFilters = Object.create(null);
+builtinFilters.verbatim = {filter: (text) => text};
+
 function resolveFilter(name, filters, node) {
   if (filters && Object.prototype.hasOwnProperty.call(filters, name)) {
     return filters[name];
+  }
+  if (name in builtinFilters) {
+    return builtinFilters[name];
   }
 
   // Validate filter name before require() — only allow safe package name characters

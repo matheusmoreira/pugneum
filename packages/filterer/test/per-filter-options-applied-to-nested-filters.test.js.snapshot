@@ -22,10 +22,10 @@ exports[`per filter options are applied, even to nested filters 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "Will be wrapped in second.",
                         "line": 4,
                         "column": 5,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js"
+                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
+                        "val": "Will be wrapped in second."
                       }
                     ],
                     "line": 3,

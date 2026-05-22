@@ -16,10 +16,10 @@ exports[`filters can be used 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "Filters can be used.",
                   "line": 4,
                   "column": 5,
-                  "filename": "index.test.js"
+                  "filename": "index.test.js",
+                  "val": "Filters can be used."
                 }
               ],
               "line": 3,

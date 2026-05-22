@@ -22,10 +22,10 @@ exports[`installed filter packages can be used implicitly 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "puts 'This should be', :syntax_highlighted",
                         "line": 5,
                         "column": 7,
-                        "filename": "resolution.test.js"
+                        "filename": "resolution.test.js",
+                        "val": "puts 'This should be', :syntax_highlighted"
                       }
                     ],
                     "line": 4,
@@ -37,8 +37,7 @@ exports[`installed filter packages can be used implicitly 1`] = `
                       "val": "ruby",
                       "line": 4,
                       "column": 21,
-                      "filename": "resolution.test.js",
-                      "mustEscape": true
+                      "filename": "resolution.test.js"
                     }
                   ],
                   "line": 4,

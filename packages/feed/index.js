@@ -137,8 +137,10 @@ module.exports = function generateFeeds(options) {
 
 function resolveRelativeUrls(html, baseUrl) {
   const escaped = baseUrl.replace(/\$/g, '$$$$');
+  const resolve = (attr) =>
+    new RegExp('(<(?:a|img|source|video|audio|iframe)\\s[^>]*' + attr + '=")\/(?!\/)([^"]*")', 'g');
   return html
-    .replace(/(<a\s[^>]*href=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2')
-    .replace(/(<img\s[^>]*src=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2')
-    .replace(/(<source\s[^>]*src=")\/(?!\/)([^"]*")/g, '$1' + escaped + '$2');
+    .replace(resolve('href'), '$1' + escaped + '$2')
+    .replace(resolve('src'), '$1' + escaped + '$2')
+    .replace(resolve('poster'), '$1' + escaped + '$2');
 }

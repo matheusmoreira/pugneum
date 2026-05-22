@@ -16,7 +16,7 @@ module.exports = function generateRss(feed) {
       '      <title>' + escapeXml(entry.title) + '</title>',
       '      <link>' + escapeXml(entry.url) + '</link>',
       '      <guid isPermaLink="true">' + escapeXml(entry.url) + '</guid>',
-      '      <pubDate>' + escapeXml(toRFC822(entry.published)) + '</pubDate>',
+      '      <pubDate>' + escapeXml(toRFC822(entry.published, feed.buildDate)) + '</pubDate>',
       entry.summary
         ? '      <description>' + escapeXml(entry.summary) + '</description>'
         : null,

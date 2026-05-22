@@ -50,7 +50,7 @@ function load(ast, options, visiting) {
               'Circular dependency detected: ' +
                 filePath +
                 ' is already being loaded',
-              {line: node.line, column: node.column, filename: node.filename},
+              {line: node.line, column: node.column, filename: node.filename, source: options.source},
             );
           }
           visiting.add(canonical);

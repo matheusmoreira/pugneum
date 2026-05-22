@@ -15,7 +15,8 @@ const MAX_MIXIN_DEPTH = 256;
 // data attributes.
 //
 // Comments: the HTML spec (§13.1.6) forbids the sequence -- inside
-// comments. Consecutive hyphens are separated.
+// comments, starting with > or ->, and ending with -. Consecutive
+// hyphens are separated, and leading/trailing padding is applied.
 //
 // Tag and attribute names are validated by the lexer against the HTML
 // spec regex and are safe by construction.
@@ -25,7 +26,10 @@ function escapeAttrValue(str) {
 }
 
 function sanitizeCommentContent(str) {
-  return str.replace(/-{2,}/g, (m) => m.split('').join(' '));
+  let result = str.replace(/-{2,}/g, (m) => m.split('').join(' '));
+  if (result.startsWith('>') || result.startsWith('->')) result = ' ' + result;
+  if (result.endsWith('-')) result += ' ';
+  return result;
 }
 
 const selfClosing = (
@@ -128,7 +132,6 @@ class Compiler {
           break;
         case 'Extends':
         case 'Include':
-        case 'NamedBlock':
         case 'FileReference':
           msg += '; use pugneum-linker';
           break;

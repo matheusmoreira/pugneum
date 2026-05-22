@@ -59,10 +59,10 @@ exports[`pugneum-loader 1`] = `
                     "nodes": [
                       {
                         "type": "Text",
-                        "val": "bong",
                         "line": 1,
                         "column": 7,
-                        "filename": "bing.pg"
+                        "filename": "bing.pg",
+                        "val": "bong"
                       }
                     ],
                     "line": 1,
@@ -74,8 +74,7 @@ exports[`pugneum-loader 1`] = `
                       "val": "bing",
                       "line": 1,
                       "column": 1,
-                      "filename": "bing.pg",
-                      "mustEscape": false
+                      "filename": "bing.pg"
                     }
                   ],
                   "attributeBlocks": [],

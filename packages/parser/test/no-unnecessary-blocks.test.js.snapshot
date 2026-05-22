@@ -10,21 +10,21 @@ exports[`no unnecessary blocks should be added 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "Hello",
             "line": 3,
-            "column": 5
+            "column": 5,
+            "val": "Hello"
           },
           {
             "type": "Text",
-            "val": "\\n",
             "line": 4,
-            "column": 1
+            "column": 1,
+            "val": "\\n"
           },
           {
             "type": "Text",
-            "val": "World",
             "line": 4,
-            "column": 5
+            "column": 5,
+            "val": "World"
           }
         ],
         "line": 2

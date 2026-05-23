@@ -1,0 +1,5 @@
+:table
+  | Feature    | Status |
+  | ---        | ---    |
+  | *(Strong)  | done   |
+  | _(Emphasis) | done   |

@@ -1,10 +1,8 @@
-'use strict';
-
-var parseCell = require('./parse').parseCell;
+const parseCell = require('./parse').parseCell;
 
 // Render a col element line given {align, attrs} and an indent string.
 function renderCol(seg, indent) {
-  var parts = [];
+  let parts = [];
   if (seg.align) {
     parts.push('style="text-align:' + seg.align + '"');
   }
@@ -20,14 +18,14 @@ function renderCol(seg, indent) {
 // Format filter attributes (excluding filename) as a Pugneum attribute string.
 // Returns '' if no relevant attrs, or '(key="value" ...)' otherwise.
 function formatAttrs(attrs) {
-  var pairs = [];
+  let pairs = [];
   Object.keys(attrs).forEach(function (key) {
     if (key === 'filename') return;
-    var val = attrs[key];
+    let val = attrs[key];
     if (val === true) {
       pairs.push(key);
     } else {
-      pairs.push(key + '="' + String(val) + '"');
+      pairs.push(key + '="' + String(val).replace(/"/g, '\\"') + '"');
     }
   });
   if (pairs.length === 0) return '';
@@ -39,17 +37,17 @@ function formatAttrs(attrs) {
 // rows is an array of {trAttrs, cells} objects.
 // sectionAttrs is an optional attribute string like '(class="x")' or ''.
 function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
-  var lines = [];
+  let lines = [];
   lines.push(indent + sectionTag + (sectionAttrs || ''));
   rows.forEach(function (row) {
-    var trLine = indent + '  tr';
+    let trLine = indent + '  tr';
     if (row.trAttrs !== null && row.trAttrs !== '') {
       trLine = indent + '  tr' + row.trAttrs;
     }
     lines.push(trLine);
     row.cells.forEach(function (cell) {
-      var parsed = parseCell(cell, defaultCellTag);
-      var cellLine = indent + '    ' + parsed.tag + parsed.attrStr;
+      let parsed = parseCell(cell, defaultCellTag);
+      let cellLine = indent + '    ' + parsed.tag + parsed.attrStr;
       if (parsed.text !== '') {
         cellLine += ' ' + parsed.text;
       }
@@ -63,13 +61,13 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
 // parsed is {captionLine, sections, colgroups, hasSeparatorOrMarker}.
 // attrs is the raw filter attributes object.
 function generate(parsed, attrs) {
-  var captionLine = parsed.captionLine;
-  var sections = parsed.sections;
-  var colgroups = parsed.colgroups;
-  var hasSeparatorOrMarker = parsed.hasSeparatorOrMarker;
+  let captionLine = parsed.captionLine;
+  let sections = parsed.sections;
+  let colgroups = parsed.colgroups;
+  let hasSeparatorOrMarker = parsed.hasSeparatorOrMarker;
 
-  var attrStr = formatAttrs(attrs);
-  var lines = [];
+  let attrStr = formatAttrs(attrs);
+  let lines = [];
   lines.push('table' + attrStr);
 
   // Emit caption if present.
@@ -79,8 +77,7 @@ function generate(parsed, attrs) {
 
   if (!hasSeparatorOrMarker) {
     // No separators or markers: all rows go in tbody with td.
-    // sections[0] has the rows (flushed in the post-loop block above).
-    var allRows = sections.length > 0 ? sections[0].rows : [];
+    let allRows = sections.length > 0 ? sections[0].rows : [];
     renderSection('tbody', allRows, 'td', '  ', '').forEach(function (l) {
       lines.push(l);
     });
@@ -98,7 +95,7 @@ function generate(parsed, attrs) {
     // Emit each section.
     sections.forEach(function (section) {
       if (section.rows.length === 0) return;
-      var defaultCellTag = section.tag === 'thead' ? 'th' : 'td';
+      let defaultCellTag = section.tag === 'thead' ? 'th' : 'td';
       renderSection(
         section.tag,
         section.rows,

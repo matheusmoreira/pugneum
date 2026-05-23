@@ -41076,6 +41076,170 @@ exports[`table-basic.pg 1`] = `
 ]
 `;
 
+exports[`table-shorthands.pg 1`] = `
+[
+  {
+    "type": "filter",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    },
+    "val": "table"
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 2,
+        "column": 26
+      }
+    },
+    "val": "| Feature    | Status |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 3,
+        "column": 26
+      }
+    },
+    "val": "| ---        | ---    |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 4,
+        "column": 26
+      }
+    },
+    "val": "| *(Strong)  | done   |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 27
+      }
+    },
+    "val": "| _(Emphasis) | done   |"
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 27
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 27
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 27
+      },
+      "filename": "table-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 27
+      }
+    }
+  }
+]
+`;
+
 exports[`table-structure.pg 1`] = `
 [
   {

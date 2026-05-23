@@ -168,7 +168,22 @@ describe('table structure', () => {
   test('=== separator starts tfoot', () => {
     var input = '| a |\n| --- |\n| b |\n| === |\n| c |';
     var result = tableFilter.filter(input, {});
-    assert.match(result, /tfoot/);
+    assert.match(result, /tfoot\n\s+tr\n\s+td c/);
+  });
+
+  test('=== without --- produces tbody and tfoot, not thead', () => {
+    var input = '| a |\n| === |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.doesNotMatch(result, /thead/);
+    assert.match(result, /tbody\n\s+tr\n\s+td a/);
+    assert.match(result, /tfoot\n\s+tr\n\s+td b/);
+  });
+
+  test('second --- creates only one colgroup', () => {
+    var input = '| a |\n| --- |\n| b |\n| --- |\n| c |';
+    var result = tableFilter.filter(input, {});
+    var colgroups = result.match(/colgroup/g);
+    assert.strictEqual(colgroups.length, 1);
   });
 
   test('multiple === throws error', () => {
@@ -245,8 +260,11 @@ describe('section markers', () => {
     var input = 'thead\n| a |\ntbody\n| b |\ntfoot\n| c |';
     var result = tableFilter.filter(input, {});
     assert.match(result, /thead\n/);
+    assert.match(result, /th a/);
     assert.match(result, /tbody\n/);
+    assert.match(result, /td b/);
     assert.match(result, /tfoot\n/);
+    assert.match(result, /td c/);
   });
 });
 
@@ -254,9 +272,10 @@ describe('edge cases', () => {
   test('empty cells', () => {
     var input = '| a |  | c |\n| --- | --- | --- |\n|  | b |  |';
     var result = tableFilter.filter(input, {});
-    // Empty cells should produce tags with no text
     assert.match(result, /th a\n/);
     assert.match(result, /th\n/);
+    assert.match(result, /td\n/);
+    assert.match(result, /td b\n/);
   });
 
   test('single column table', () => {
@@ -296,5 +315,20 @@ describe('errors', () => {
       () => tableFilter.filter('   \n   \n', {}),
       /empty|no.*rows|no.*cells/i,
     );
+  });
+
+  test('separator-only table throws error', () => {
+    assert.throws(
+      () => tableFilter.filter('| --- | --- |', {}),
+      /no.*data.*rows/i,
+    );
+  });
+
+  test('section marker after untagged rows uses tbody, not thead', () => {
+    var input = '| a |\ntbody\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.doesNotMatch(result, /thead/);
+    assert.match(result, /td a/);
+    assert.match(result, /td b/);
   });
 });

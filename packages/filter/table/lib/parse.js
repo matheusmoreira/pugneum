@@ -1,14 +1,12 @@
-'use strict';
-
 // Parse an optional tr(attrs) prefix before the first | on a line.
 // Returns {trAttrs: string|null, rest: string}.
 function parseTrPrefix(line) {
   // Match tr(...) or bare tr before first pipe
-  var m = line.match(/^(tr(?:\([^)]*\))?)\s*(\|.*)$/);
+  let m = line.match(/^(tr(?:\([^)]*\))?)\s*(\|.*)$/);
   if (!m) return {trAttrs: null, rest: line};
-  var trToken = m[1]; // e.g. "tr" or "tr(class="x")"
-  var trAttrs = '';
-  var attrMatch = trToken.match(/^tr(\(.*\))$/);
+  let trToken = m[1]; // e.g. "tr" or "tr(class="x")"
+  let trAttrs = '';
+  let attrMatch = trToken.match(/^tr(\(.*\))$/);
   if (attrMatch) {
     trAttrs = attrMatch[1]; // includes parens
   }
@@ -21,19 +19,20 @@ function parseTrPrefix(line) {
 // Returns {trAttrs: string|null, cells: string[]} or null.
 // In data rows, || is treated as | (normalized before splitting).
 function parseRow(line) {
-  var parsed = parseTrPrefix(line.trim());
-  var rowLine = parsed.rest;
+  let parsed = parseTrPrefix(line.trim());
+  let rowLine = parsed.rest;
   if (!rowLine.includes('|')) return null;
   // Normalize || to | for data rows (separator rows handle || separately)
-  var normalizedLine = rowLine.replace(/\|\|/g, '|');
-  var parts = normalizedLine.split('|');
+  let normalizedLine = rowLine.replace(/\|\|/g, '|');
+  let parts = normalizedLine.split('|');
   // Trim leading and trailing empty segments (from leading/trailing pipes)
-  var start = parts[0].trim() === '' ? 1 : 0;
-  var end =
+  let start = parts[0].trim() === '' ? 1 : 0;
+  let end =
     parts[parts.length - 1].trim() === '' ? parts.length - 1 : parts.length;
-  var cells = parts.slice(start, end).map(function (cell) {
+  let cells = parts.slice(start, end).map(function (cell) {
     return cell.trim();
   });
+  if (cells.length === 0) return null;
   return {trAttrs: parsed.trAttrs, cells: cells};
 }
 
@@ -42,15 +41,15 @@ function parseRow(line) {
 // || marks colgroup boundaries; | separates cols within a colgroup.
 function parseSeparatorLine(rowLine) {
   // Split on || first to get colgroup chunks
-  var cgChunks = rowLine.split('||');
+  let cgChunks = rowLine.split('||');
   return cgChunks
     .map(function (chunk) {
       // Each chunk is a pipe-delimited list of separator segments
-      var parts = chunk.split('|');
-      var start = parts[0].trim() === '' ? 1 : 0;
-      var end =
+      let parts = chunk.split('|');
+      let start = parts[0].trim() === '' ? 1 : 0;
+      let end =
         parts[parts.length - 1].trim() === '' ? parts.length - 1 : parts.length;
-      var segs = parts.slice(start, end).map(function (seg) {
+      let segs = parts.slice(start, end).map(function (seg) {
         return parseSepSegment(seg.trim());
       });
       return {segs: segs};
@@ -65,7 +64,7 @@ function parseSeparatorLine(rowLine) {
 // Examples: ---, :---, ---:, :---:, ---(class="x")---, :---(class="x")---:
 function isDashSepSegment(cell) {
   // Strip leading colon
-  var s = cell;
+  let s = cell;
   if (s[0] === ':') s = s.slice(1);
   // Strip trailing colon
   if (s[s.length - 1] === ':') s = s.slice(0, -1);
@@ -87,10 +86,10 @@ function isEqualsSepSegment(cell) {
 // or null if it is not a separator row at all.
 function classifySeparatorRow(row) {
   if (row.cells.length === 0) return null;
-  var hasDash = row.cells.some(isDashSepSegment);
-  var hasEquals = row.cells.some(isEqualsSepSegment);
+  let hasDash = row.cells.some(isDashSepSegment);
+  let hasEquals = row.cells.some(isEqualsSepSegment);
   // A cell that is neither type means this is not a separator row
-  var allKnown = row.cells.every(function (cell) {
+  let allKnown = row.cells.every(function (cell) {
     return isDashSepSegment(cell) || isEqualsSepSegment(cell);
   });
   if (!allKnown) return null;
@@ -105,11 +104,11 @@ function classifySeparatorRow(row) {
 // attrs is the raw content inside parens, or ''
 function parseSepSegment(seg) {
   seg = seg.trim();
-  var left = seg[0] === ':';
-  var right = seg[seg.length - 1] === ':';
-  var attrsMatch = seg.match(/\(([^)]*)\)/);
-  var attrs = attrsMatch ? attrsMatch[1] : '';
-  var align = left && right ? 'center' : left ? 'left' : right ? 'right' : '';
+  let left = seg[0] === ':';
+  let right = seg[seg.length - 1] === ':';
+  let attrsMatch = seg.match(/\(([^)]*)\)/);
+  let attrs = attrsMatch ? attrsMatch[1] : '';
+  let align = left && right ? 'center' : left ? 'left' : right ? 'right' : '';
   return {align: align, attrs: attrs};
 }
 
@@ -129,12 +128,12 @@ function parseCell(cell, defaultTag) {
     return {tag: defaultTag, attrStr: '', text: cell.slice(1)};
   }
   // Tagged cell with attrs: th(attrs) text or td(attrs) text
-  var withAttrs = cell.match(/^(t[hd])(\([^)]*\))\s*(.*)/);
+  let withAttrs = cell.match(/^(t[hd])(\([^)]*\))\s*(.*)/);
   if (withAttrs) {
     return {tag: withAttrs[1], attrStr: withAttrs[2], text: withAttrs[3]};
   }
   // Tagged cell without attrs: th text or td text (must be followed by space)
-  var noAttrs = cell.match(/^(t[hd])\s+(.*)/);
+  let noAttrs = cell.match(/^(t[hd])\s+(.*)/);
   if (noAttrs) {
     return {tag: noAttrs[1], attrStr: '', text: noAttrs[2]};
   }
@@ -148,20 +147,20 @@ function parseCell(cell, defaultTag) {
 // "caption(attrs) text") and rest is the remaining trimmed non-empty lines.
 function parseCaption(lines) {
   if (lines.length === 0) return {captionLine: null, rest: lines};
-  var first = lines[0];
+  let first = lines[0];
   // Match: caption(attrs) text  OR  caption text
-  var m = first.match(/^caption(\([^)]*\))?\s+(.*)/);
+  let m = first.match(/^caption(\([^)]*\))?\s+(.*)/);
   if (!m) return {captionLine: null, rest: lines};
-  var attrStr = m[1] || '';
-  var text = m[2];
-  var captionLine = 'caption' + attrStr + ' ' + text;
+  let attrStr = m[1] || '';
+  let text = m[2];
+  let captionLine = 'caption' + attrStr + ' ' + text;
   return {captionLine: captionLine, rest: lines.slice(1)};
 }
 
 // Try to parse a section marker line: thead, tbody, or tfoot, optionally with attrs.
 // Returns {tag: 'thead'|'tbody'|'tfoot', attrStr: string} or null.
 function parseSectionMarker(line) {
-  var m = line.match(/^(thead|tbody|tfoot)(\([^)]*\))?\s*$/);
+  let m = line.match(/^(thead|tbody|tfoot)(\([^)]*\))?\s*$/);
   if (!m) return null;
   return {tag: m[1], attrStr: m[2] || ''};
 }
@@ -174,36 +173,36 @@ function parseSectionMarker(line) {
 //   hasSeparatorOrMarker: boolean
 function parse(lines) {
   // Check for caption on the first non-empty line.
-  var captionResult = parseCaption(lines);
-  var captionLine = captionResult.captionLine;
-  var dataLines = captionResult.rest;
+  let captionResult = parseCaption(lines);
+  let captionLine = captionResult.captionLine;
+  let dataLines = captionResult.rest;
 
   // Parse each data line as: section marker, pipe row, or ignored non-pipe line.
   // Build a sequence of events: 'marker', 'row', 'dash-sep', 'equals-sep'.
   // Each event carries its payload.
-  var events = [];
+  let events = [];
   for (var li = 0; li < dataLines.length; li++) {
-    var line = dataLines[li];
+    let line = dataLines[li];
 
     // Check for section marker (thead/tbody/tfoot on its own line)
-    var marker = parseSectionMarker(line);
+    let marker = parseSectionMarker(line);
     if (marker) {
       events.push({type: 'marker', tag: marker.tag, attrStr: marker.attrStr});
       continue;
     }
 
     // Check for pipe row
-    var row = parseRow(line);
+    let row = parseRow(line);
     if (row === null) continue; // non-pipe, non-marker line: skip
 
     // Classify the row
-    var sepType = classifySeparatorRow(row);
+    let sepType = classifySeparatorRow(row);
     if (sepType === 'mixed') {
       throw new Error('Mixed separator: a row cannot mix --- and === segments');
     } else if (sepType === 'dash') {
       // Capture colgroup info from the raw separator line
-      var sepParsed = parseTrPrefix(line.trim());
-      var colgroups = parseSeparatorLine(sepParsed.rest);
+      let sepParsed = parseTrPrefix(line.trim());
+      let colgroups = parseSeparatorLine(sepParsed.rest);
       events.push({type: 'dash-sep', colgroups: colgroups});
     } else if (sepType === 'equals') {
       events.push({type: 'equals-sep'});
@@ -223,19 +222,19 @@ function parse(lines) {
   //   - Section markers: explicitly declare the section tag/attrs for rows that follow.
   //     They override the implicit logic for the following rows.
 
-  var sections = []; // [{tag, attrStr, rows}]
-  var colgroups = null; // set from the first dash-sep
-  var currentRows = [];
-  var currentTag = null; // null = implicit, 'thead'/'tbody'/'tfoot' = explicit via marker
-  var currentAttrs = '';
-  var seenFirstDashSep = false;
-  var seenEqualsSep = false;
-  var hasSeparatorOrMarker = false;
+  let sections = []; // [{tag, attrStr, rows}]
+  let colgroups = null; // set from the first dash-sep
+  let currentRows = [];
+  let currentTag = null; // null = implicit, 'thead'/'tbody'/'tfoot' = explicit via marker
+  let currentAttrs = '';
+  let seenFirstDashSep = false;
+  let seenEqualsSep = false;
+  let hasSeparatorOrMarker = false;
 
   function flushCurrentRows(newTag, newAttrs) {
     if (currentRows.length > 0) {
-      var tag = currentTag !== null ? currentTag : newTag;
-      var attrStr = currentTag !== null ? currentAttrs : newAttrs || '';
+      let tag = currentTag !== null ? currentTag : newTag;
+      let attrStr = currentTag !== null ? currentAttrs : newAttrs || '';
       sections.push({tag: tag, attrStr: attrStr, rows: currentRows.slice()});
       currentRows = [];
     }
@@ -244,7 +243,7 @@ function parse(lines) {
   }
 
   for (var ei = 0; ei < events.length; ei++) {
-    var ev = events[ei];
+    let ev = events[ei];
 
     if (ev.type === 'marker') {
       hasSeparatorOrMarker = true;
@@ -252,7 +251,7 @@ function parse(lines) {
       // If there are no rows yet, just update currentTag.
       if (currentRows.length > 0) {
         // Flush rows with current tag (or implicit default)
-        var implicitTag = seenFirstDashSep ? 'tbody' : 'thead';
+        var implicitTag = 'tbody';
         flushCurrentRows(implicitTag);
       }
       currentTag = ev.tag;
@@ -275,7 +274,7 @@ function parse(lines) {
       }
       seenEqualsSep = true;
       // Flush current rows as tbody (or thead if no dash-sep seen)
-      var preFootTag = seenFirstDashSep ? 'tbody' : 'thead';
+      let preFootTag = 'tbody';
       flushCurrentRows(preFootTag);
       // Next rows will go into tfoot (set currentTag to 'tfoot')
       currentTag = 'tfoot';
@@ -287,7 +286,7 @@ function parse(lines) {
 
   // Flush remaining rows
   if (currentRows.length > 0) {
-    var finalTag;
+    let finalTag;
     if (currentTag !== null) {
       finalTag = currentTag;
     } else if (seenEqualsSep) {

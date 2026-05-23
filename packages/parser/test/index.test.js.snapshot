@@ -16823,6 +16823,80 @@ exports[`table-basic.pg 1`] = `
 }
 `;
 
+exports[`table-shorthands.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Filter",
+      "name": "table",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "table-shorthands.pg",
+            "val": "| Feature    | Status |"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 1,
+            "filename": "table-shorthands.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "table-shorthands.pg",
+            "val": "| ---        | ---    |"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "table-shorthands.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "table-shorthands.pg",
+            "val": "| *(Strong)  | done   |"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 1,
+            "filename": "table-shorthands.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "table-shorthands.pg",
+            "val": "| _(Emphasis) | done   |"
+          }
+        ],
+        "line": 1,
+        "filename": "table-shorthands.pg"
+      },
+      "attrs": [],
+      "line": 1,
+      "column": 1,
+      "filename": "table-shorthands.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "table-shorthands.pg"
+}
+`;
+
 exports[`table-structure.pg 1`] = `
 {
   "type": "Block",

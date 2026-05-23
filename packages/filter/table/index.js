@@ -1,16 +1,14 @@
-'use strict';
-
-var normalize = require('./lib/normalize');
-var parse = require('./lib/parse');
-var generate = require('./lib/generate');
+const normalize = require('./lib/normalize');
+const parse = require('./lib/parse');
+const generate = require('./lib/generate');
 
 exports.type = 'pugneum';
 
-exports.filter = function pugneum_filter_table(text, attrs) {
+exports.filter = function pugneum_filter_table(text, attributes) {
   text = normalize(text);
 
   // Split into non-empty trimmed lines.
-  var lines = text
+  const lines = text
     .split('\n')
     .map(function (line) {
       return line.trim();
@@ -23,14 +21,14 @@ exports.filter = function pugneum_filter_table(text, attrs) {
     throw new Error('Table filter: empty table body');
   }
 
-  var parsed = parse(lines);
+  const parsed = parse(lines);
 
-  var hasRows = parsed.sections.some(function (s) {
+  const hasRows = parsed.sections.some(function (s) {
     return s.rows.length > 0;
   });
   if (!hasRows) {
     throw new Error('Table filter: no data rows found');
   }
 
-  return generate(parsed, attrs);
+  return generate(parsed, attributes);
 };

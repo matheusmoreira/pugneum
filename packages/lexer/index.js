@@ -330,6 +330,26 @@ function interpolationsAreClosed(str, state) {
   );
 }
 
+function resetInterpolationState(state) {
+  state.interp = 0;
+  state.interpParen = 0;
+  state.link = 0;
+  state.linkParen = 0;
+  state.ref = 0;
+  state.refImage = 0;
+  state.image = 0;
+  state.imageParen = 0;
+  state.strong = 0;
+  state.strongParen = 0;
+  state.emphasis = 0;
+  state.emphasisParen = 0;
+  state.code = 0;
+  state.codeParen = 0;
+  state.sq = false;
+  state.dq = false;
+  return state;
+}
+
 /**
  * Merge consecutive lines that have unclosed inline shorthand constructs
  * into single entries so multi-line inline elements are handled as one unit.
@@ -341,24 +361,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
   let pendingText = null;
   let pendingLines = 0;
   let pendingIndentIdx = 0;
-  const state = {
-    interp: 0,
-    interpParen: 0,
-    link: 0,
-    linkParen: 0,
-    ref: 0,
-    refImage: 0,
-    image: 0,
-    imageParen: 0,
-    strong: 0,
-    strongParen: 0,
-    emphasis: 0,
-    emphasisParen: 0,
-    code: 0,
-    codeParen: 0,
-    sq: false,
-    dq: false,
-  };
+  const state = resetInterpolationState({});
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
@@ -377,22 +380,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       });
       pendingText = null;
       pendingLines = 0;
-      state.interp = 0;
-      state.interpParen = 0;
-      state.link = 0;
-      state.linkParen = 0;
-      state.ref = 0;
-      state.refImage = 0;
-      state.image = 0;
-      state.imageParen = 0;
-      state.strong = 0;
-      state.strongParen = 0;
-      state.emphasis = 0;
-      state.emphasisParen = 0;
-      state.code = 0;
-      state.codeParen = 0;
-      state.sq = false;
-      state.dq = false;
+      resetInterpolationState(state);
     }
   }
   if (pendingText !== null) {

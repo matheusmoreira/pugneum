@@ -12,11 +12,13 @@ var filename = path.basename(__filename);
 
 var customFilters = {
   custom: {
+    type: 'html',
     filter: function (str, options) {
       return 'BEGIN' + str + 'END';
     },
   },
   'custom-with-options': {
+    type: 'html',
     filter: function (str, options) {
       return (
         'option=' + options.option + ' number=' + options.number + ' ' + str
@@ -40,6 +42,7 @@ p
 
 test('__proto__ attribute does not pollute Object.prototype', () => {
   const inspecting = {
+    type: 'html',
     filter: function (str, options) {
       // The __proto__ attr should be a regular property on the null-prototype
       // attrs object, not trigger prototype pollution
@@ -78,6 +81,7 @@ p
 
 test('filter that throws raw Error is wrapped as FILTER_ERROR', () => {
   var exploding = {
+    type: 'html',
     filter: function () {
       throw new Error('kaboom');
     },
@@ -97,7 +101,7 @@ p
   );
 });
 
-test('verbatim filter passes text through unchanged', () => {
+test('verbatim filter escapes HTML entities', () => {
   const source = `
 p
   :verbatim
@@ -107,10 +111,10 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
   const output = filter(ast, {});
 
-  // Find the text node produced by the verbatim filter
+  // verbatim is type 'text' so output is HTML-escaped
   const textNode = output.nodes[0].block.nodes[0];
   assert.strictEqual(textNode.type, 'Text');
-  assert.strictEqual(textNode.val, '<strong>raw html</strong>');
+  assert.strictEqual(textNode.val, '&lt;strong&gt;raw html&lt;/strong&gt;');
 });
 
 test('filters can be used with options', () => {
@@ -132,4 +136,237 @@ p
     textNode.val,
     "option=value number=2 Filters can be used with options.\nThe values aren't parsed though.\nThey're just strings.",
   );
+});
+
+test('text type filter escapes HTML entities', () => {
+  const textFilter = {
+    type: 'text',
+    filter: function (str) {
+      return '<script>alert("xss")</script> & "quotes"';
+    },
+  };
+
+  const source = `
+p
+  :textFilter
+    input
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {textFilter});
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(
+    textNode.val,
+    '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &amp; &quot;quotes&quot;',
+  );
+});
+
+test('html type filter outputs raw HTML', () => {
+  const htmlFilter = {
+    type: 'html',
+    filter: function (str) {
+      return '<strong>' + str.trim() + '</strong>';
+    },
+  };
+
+  const source = `
+p
+  :htmlFilter
+    bold text
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {htmlFilter});
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(textNode.val, '<strong>bold text</strong>');
+});
+
+test('pugneum type filter output is lexed and parsed into AST nodes', () => {
+  const pugneumFilter = {
+    type: 'pugneum',
+    filter: function (str) {
+      return 'strong hello';
+    },
+  };
+
+  const source = `
+p
+  :pugneumFilter
+    ignored input
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {pugneumFilter});
+
+  const block = output.nodes[0].block.nodes[0];
+  assert.strictEqual(block.type, 'Block');
+  assert.strictEqual(block.nodes[0].type, 'Tag');
+  assert.strictEqual(block.nodes[0].name, 'strong');
+});
+
+test('syntax type filter inserts AST nodes directly', () => {
+  const syntaxFilter = {
+    type: 'syntax',
+    filter: function (str) {
+      return [
+        {
+          type: 'Tag',
+          name: 'em',
+          attrs: [],
+          attributeBlocks: [],
+          isInline: true,
+          block: {
+            type: 'Block',
+            nodes: [
+              {
+                type: 'Text',
+                val: 'direct',
+                line: 1,
+                column: 1,
+                filename: '',
+              },
+            ],
+            line: 1,
+            filename: '',
+          },
+          line: 1,
+          column: 1,
+          filename: '',
+        },
+      ];
+    },
+  };
+
+  const source = `
+p
+  :syntaxFilter
+    ignored
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {syntaxFilter});
+
+  const block = output.nodes[0].block.nodes[0];
+  assert.strictEqual(block.type, 'Block');
+  assert.strictEqual(block.nodes[0].type, 'Tag');
+  assert.strictEqual(block.nodes[0].name, 'em');
+});
+
+test('MISSING_FILTER_TYPE when filter has no type', () => {
+  const untyped = {
+    filter: function (str) {
+      return str;
+    },
+  };
+
+  const source = `
+p
+  :untyped
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {untyped}),
+    (err) =>
+      err.code === 'PUGNEUM:MISSING_FILTER_TYPE' &&
+      /must declare a type/.test(err.message),
+  );
+});
+
+test('INVALID_FILTER_TYPE when filter has unknown type', () => {
+  const badType = {
+    type: 'markdown',
+    filter: function (str) {
+      return str;
+    },
+  };
+
+  const source = `
+p
+  :badType
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {badType}),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_TYPE' &&
+      /unknown type/.test(err.message),
+  );
+});
+
+test('INVALID_FILTER_OUTPUT when syntax filter returns non-array', () => {
+  const badSyntax = {
+    type: 'syntax',
+    filter: function (str) {
+      return 'not an array';
+    },
+  };
+
+  const source = `
+p
+  :badSyntax
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {badSyntax}),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /must return an array/.test(err.message),
+  );
+});
+
+test('INVALID_FILTER_OUTPUT when pugneum filter returns non-string', () => {
+  const badPugneum = {
+    type: 'pugneum',
+    filter: function (str) {
+      return 42;
+    },
+  };
+
+  const source = `
+p
+  :badPugneum
+    test
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {badPugneum}),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /must return a string/.test(err.message),
+  );
+});
+
+test('pugneum type filter supports inline shorthands in output', () => {
+  const pugneumFilter = {
+    type: 'pugneum',
+    filter: function (str) {
+      return 'p This is *(bold) and _(italic) text.';
+    },
+  };
+
+  const source = `
+div
+  :pugneumFilter
+    ignored
+`;
+
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, {pugneumFilter});
+
+  const block = output.nodes[0].block.nodes[0];
+  assert.strictEqual(block.type, 'Block');
+  const pTag = block.nodes[0];
+  assert.strictEqual(pTag.type, 'Tag');
+  assert.strictEqual(pTag.name, 'p');
 });

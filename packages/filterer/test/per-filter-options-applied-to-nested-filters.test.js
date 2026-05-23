@@ -7,11 +7,13 @@ var filename = require('path').basename(__filename);
 
 var customFilters = {
   first: {
+    type: 'html',
     filter: function (str, options) {
       return options.wrap ? 'FIRST\n' + str + '\nEND FIRST' : str;
     },
   },
   second: {
+    type: 'html',
     filter: function (str, options) {
       return options.wrap ? 'SECOND\n' + str + '\nEND SECOND' : str;
     },

@@ -156,3 +156,58 @@ describe('colgroup boundaries', () => {
     assert.strictEqual(tds.length, 4);
   });
 });
+
+describe('table structure', () => {
+  test('second --- separator starts new tbody', () => {
+    var input = '| a |\n| --- |\n| b |\n| --- |\n| c |';
+    var result = tableFilter.filter(input, {});
+    var tbodies = result.match(/tbody/g);
+    assert.strictEqual(tbodies.length, 2);
+  });
+
+  test('=== separator starts tfoot', () => {
+    var input = '| a |\n| --- |\n| b |\n| === |\n| c |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tfoot/);
+  });
+
+  test('multiple === throws error', () => {
+    var input = '| a |\n| --- |\n| b |\n| === |\n| c |\n| === |\n| d |';
+    assert.throws(() => tableFilter.filter(input, {}), /===.*once/i);
+  });
+
+  test('mixed --- and === in same row throws error', () => {
+    assert.throws(
+      () => tableFilter.filter('| --- | === |', {}),
+      /[Mm]ixed separator/,
+    );
+  });
+});
+
+describe('section markers', () => {
+  test('thead(attrs) applies attrs to thead', () => {
+    var input = 'thead(class="sticky")\n| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead\(class="sticky"\)/);
+  });
+
+  test('tbody(attrs) applies attrs to tbody', () => {
+    var input = '| a |\n| --- |\ntbody(class="primary")\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tbody\(class="primary"\)/);
+  });
+
+  test('tfoot(attrs) applies attrs to tfoot', () => {
+    var input = '| a |\n| --- |\n| b |\ntfoot(class="totals")\n| c |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tfoot\(class="totals"\)/);
+  });
+
+  test('section markers without separators', () => {
+    var input = 'thead\n| a |\ntbody\n| b |\ntfoot\n| c |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead\n/);
+    assert.match(result, /tbody\n/);
+    assert.match(result, /tfoot\n/);
+  });
+});

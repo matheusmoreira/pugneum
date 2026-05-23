@@ -1,0 +1,9 @@
+:table
+  | Category | Item  | Count |
+  | ---      | ---   | ---   |
+  | Fruit    | Apple |    10 |
+  | Fruit    | Pear  |     5 |
+  | ---      | ---   | ---   |
+  | Veg      | Bean  |    20 |
+  | ===      | ===   | ===   |
+  | td(colspan="2") Total    |    35 |

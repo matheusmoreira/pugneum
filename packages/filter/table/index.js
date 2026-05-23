@@ -66,7 +66,7 @@ function parseSeparatorLine(rowLine) {
 // A separator segment is dashes with optional leading/trailing colons
 // and an optional (attrs) group between dashes.
 // Examples: ---, :---, ---:, :---:, ---(class="x")---, :---(class="x")---:
-function isSepSegment(cell) {
+function isDashSepSegment(cell) {
   // Strip leading colon
   var s = cell;
   if (s[0] === ':') s = s.slice(1);
@@ -78,14 +78,29 @@ function isSepSegment(cell) {
   return /^-+$/.test(s);
 }
 
-// A separator row has all cells matching the separator segment pattern.
-function isSeparatorRow(row) {
-  return (
-    row.cells.length > 0 &&
-    row.cells.every(function (cell) {
-      return isSepSegment(cell);
-    })
-  );
+// An equals separator segment is only equals signs (at least one).
+function isEqualsSepSegment(cell) {
+  return /^=+$/.test(cell);
+}
+
+// Classify a pipe-delimited row by its separator type:
+// Returns 'dash' if all cells are dash-separator segments,
+// 'equals' if all cells are equals-separator segments,
+// 'mixed' if some are dash and some are equals,
+// or null if it is not a separator row at all.
+function classifySeparatorRow(row) {
+  if (row.cells.length === 0) return null;
+  var hasDash = row.cells.some(isDashSepSegment);
+  var hasEquals = row.cells.some(isEqualsSepSegment);
+  // A cell that is neither type means this is not a separator row
+  var allKnown = row.cells.every(function (cell) {
+    return isDashSepSegment(cell) || isEqualsSepSegment(cell);
+  });
+  if (!allKnown) return null;
+  if (hasDash && hasEquals) return 'mixed';
+  if (hasDash) return 'dash';
+  if (hasEquals) return 'equals';
+  return null;
 }
 
 // Parse a separator segment into {align, attrs}.
@@ -162,12 +177,13 @@ function parseCell(cell, defaultTag) {
   return {tag: defaultTag, attrStr: '', text: cell};
 }
 
-// Generate indented Pugneum lines for a section (thead or tbody),
+// Generate indented Pugneum lines for a section (thead, tbody, or tfoot),
 // with the given default cell tag (th or td).
 // rows is an array of {trAttrs, cells} objects.
-function renderSection(sectionTag, rows, defaultCellTag, indent) {
+// sectionAttrs is an optional attribute string like '(class="x")' or ''.
+function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
   var lines = [];
-  lines.push(indent + sectionTag);
+  lines.push(indent + sectionTag + (sectionAttrs || ''));
   rows.forEach(function (row) {
     var trLine = indent + '  tr';
     if (row.trAttrs !== null && row.trAttrs !== '') {
@@ -200,6 +216,14 @@ function parseCaption(lines) {
   return {captionLine: captionLine, rest: lines.slice(1)};
 }
 
+// Try to parse a section marker line: thead, tbody, or tfoot, optionally with attrs.
+// Returns {tag: 'thead'|'tbody'|'tfoot', attrStr: string} or null.
+function parseSectionMarker(line) {
+  var m = line.match(/^(thead|tbody|tfoot)(\([^)]*\))?\s*$/);
+  if (!m) return null;
+  return {tag: m[1], attrStr: m[2] || ''};
+}
+
 exports.filter = function pugneum_filter_table(text, attrs) {
   // Split into non-empty trimmed lines.
   var trimmedLines = text
@@ -216,20 +240,133 @@ exports.filter = function pugneum_filter_table(text, attrs) {
   var captionLine = captionResult.captionLine;
   var dataLines = captionResult.rest;
 
-  // Parse data lines as rows (skip non-pipe lines).
-  var rows = dataLines.map(parseRow).filter(function (row) {
-    return row !== null;
-  });
+  // Parse each data line as: section marker, pipe row, or ignored non-pipe line.
+  // Build a sequence of events: 'marker', 'row', 'dash-sep', 'equals-sep'.
+  // Each event carries its payload.
+  var events = [];
+  for (var li = 0; li < dataLines.length; li++) {
+    var line = dataLines[li];
 
-  // Find first separator row index.
-  var sepIndex = -1;
-  for (var i = 0; i < rows.length; i++) {
-    if (isSeparatorRow(rows[i])) {
-      sepIndex = i;
-      break;
+    // Check for section marker (thead/tbody/tfoot on its own line)
+    var marker = parseSectionMarker(line);
+    if (marker) {
+      events.push({type: 'marker', tag: marker.tag, attrStr: marker.attrStr});
+      continue;
+    }
+
+    // Check for pipe row
+    var row = parseRow(line);
+    if (row === null) continue; // non-pipe, non-marker line: skip
+
+    // Classify the row
+    var sepType = classifySeparatorRow(row);
+    if (sepType === 'mixed') {
+      throw new Error('Mixed separator: a row cannot mix --- and === segments');
+    } else if (sepType === 'dash') {
+      // Capture colgroup info from the raw separator line
+      var sepParsed = parseTrPrefix(line.trim());
+      var colgroups = parseSeparatorLine(sepParsed.rest);
+      events.push({type: 'dash-sep', colgroups: colgroups});
+    } else if (sepType === 'equals') {
+      events.push({type: 'equals-sep'});
+    } else {
+      events.push({type: 'row', row: row});
     }
   }
 
+  // Now build sections from the event stream.
+  // A section is: {tag: 'thead'|'tbody'|'tfoot', attrStr: string, rows: [...]}
+  // Rules:
+  //   - If no separators/markers appear, all rows go into a single tbody.
+  //   - The first dash-sep: rows before it become thead, rows after start a new tbody.
+  //     The colgroup info from the first dash-sep is used for colgroups.
+  //   - Subsequent dash-seps: rows since the last section boundary start a new tbody.
+  //   - equals-sep: rows since the last section boundary start tfoot. Only once.
+  //   - Section markers: explicitly declare the section tag/attrs for rows that follow.
+  //     They override the implicit logic for the following rows.
+
+  var sections = []; // [{tag, attrStr, rows}]
+  var colgroups = null; // set from the first dash-sep
+  var currentRows = [];
+  var currentTag = null; // null = implicit, 'thead'/'tbody'/'tfoot' = explicit via marker
+  var currentAttrs = '';
+  var seenFirstDashSep = false;
+  var seenEqualsSep = false;
+  var hasSeparatorOrMarker = false;
+
+  function flushCurrentRows(newTag, newAttrs) {
+    if (currentRows.length > 0) {
+      var tag = currentTag !== null ? currentTag : newTag;
+      var attrStr = currentTag !== null ? currentAttrs : newAttrs || '';
+      sections.push({tag: tag, attrStr: attrStr, rows: currentRows.slice()});
+      currentRows = [];
+    }
+    currentTag = null;
+    currentAttrs = '';
+  }
+
+  for (var ei = 0; ei < events.length; ei++) {
+    var ev = events[ei];
+
+    if (ev.type === 'marker') {
+      hasSeparatorOrMarker = true;
+      // Flush accumulated rows with their implicit tag, then set the new tag.
+      // If there are no rows yet, just update currentTag.
+      if (currentRows.length > 0) {
+        // Flush rows with current tag (or implicit default)
+        var implicitTag = seenFirstDashSep ? 'tbody' : 'thead';
+        flushCurrentRows(implicitTag);
+      }
+      currentTag = ev.tag;
+      currentAttrs = ev.attrStr;
+    } else if (ev.type === 'dash-sep') {
+      hasSeparatorOrMarker = true;
+      if (!seenFirstDashSep) {
+        // First dash-sep: flush current rows as thead
+        colgroups = ev.colgroups;
+        flushCurrentRows('thead');
+        seenFirstDashSep = true;
+      } else {
+        // Subsequent dash-seps: flush current rows as tbody
+        flushCurrentRows('tbody');
+      }
+    } else if (ev.type === 'equals-sep') {
+      hasSeparatorOrMarker = true;
+      if (seenEqualsSep) {
+        throw new Error('=== separator can only appear once in a table');
+      }
+      seenEqualsSep = true;
+      // Flush current rows as tbody (or thead if no dash-sep seen)
+      var preFootTag = seenFirstDashSep ? 'tbody' : 'thead';
+      flushCurrentRows(preFootTag);
+      // Next rows will go into tfoot (set currentTag to 'tfoot')
+      currentTag = 'tfoot';
+      currentAttrs = '';
+    } else if (ev.type === 'row') {
+      currentRows.push(ev.row);
+    }
+  }
+
+  // Flush remaining rows
+  if (currentRows.length > 0) {
+    var finalTag;
+    if (currentTag !== null) {
+      finalTag = currentTag;
+    } else if (seenEqualsSep) {
+      finalTag = 'tfoot';
+    } else if (seenFirstDashSep) {
+      finalTag = 'tbody';
+    } else {
+      finalTag = 'tbody';
+    }
+    sections.push({
+      tag: finalTag,
+      attrStr: currentAttrs,
+      rows: currentRows.slice(),
+    });
+  }
+
+  // Build output Pugneum lines.
   var attrStr = formatAttrs(attrs);
   var lines = [];
   lines.push('table' + attrStr);
@@ -239,69 +376,38 @@ exports.filter = function pugneum_filter_table(text, attrs) {
     lines.push('  ' + captionLine);
   }
 
-  if (sepIndex === -1) {
-    // No separator: all rows go in tbody with td.
-    renderSection('tbody', rows, 'td', '  ').forEach(function (l) {
+  if (!hasSeparatorOrMarker) {
+    // No separators or markers: all rows go in tbody with td.
+    // sections[0] has the rows (flushed in the post-loop block above).
+    var allRows = sections.length > 0 ? sections[0].rows : [];
+    renderSection('tbody', allRows, 'td', '  ', '').forEach(function (l) {
       lines.push(l);
     });
   } else {
-    // Separator found: rows before it are thead (th), rows after are tbody (td).
-    var headRows = rows.slice(0, sepIndex);
-    var tailRows = rows.slice(sepIndex + 1);
-
-    // Parse the separator line to extract colgroup/alignment/attrs info.
-    // We need the raw separator line; re-derive it from dataLines at sepIndex.
-    // (rows[sepIndex] has already been parsed; we parse the separator specially.)
-    // Find the original separator line among dataLines.
-    var sepLineRaw = null;
-    var rowCount = 0;
-    for (var li = 0; li < dataLines.length; li++) {
-      var parsedLine = parseRow(dataLines[li]);
-      if (parsedLine !== null) {
-        if (rowCount === sepIndex) {
-          sepLineRaw = dataLines[li];
-          break;
-        }
-        rowCount++;
-      }
+    // Emit colgroups (from first dash-sep, if any).
+    if (colgroups !== null) {
+      colgroups.forEach(function (cg) {
+        lines.push('  colgroup');
+        cg.segs.forEach(function (seg) {
+          lines.push(renderCol(seg, '    '));
+        });
+      });
     }
 
-    // Parse colgroups from separator line.
-    var colgroups;
-    if (sepLineRaw !== null) {
-      var sepParsed = parseTrPrefix(sepLineRaw.trim());
-      colgroups = parseSeparatorLine(sepParsed.rest);
-    } else {
-      // Fallback: single colgroup, no alignment
-      var colCount = rows[sepIndex].cells.length;
-      var segs = [];
-      for (var c = 0; c < colCount; c++) {
-        segs.push({align: '', attrs: ''});
-      }
-      colgroups = [{segs: segs}];
-    }
-
-    // Emit colgroups.
-    colgroups.forEach(function (cg) {
-      lines.push('  colgroup');
-      cg.segs.forEach(function (seg) {
-        lines.push(renderCol(seg, '    '));
+    // Emit each section.
+    sections.forEach(function (section) {
+      if (section.rows.length === 0) return;
+      var defaultCellTag = section.tag === 'thead' ? 'th' : 'td';
+      renderSection(
+        section.tag,
+        section.rows,
+        defaultCellTag,
+        '  ',
+        section.attrStr,
+      ).forEach(function (l) {
+        lines.push(l);
       });
     });
-
-    // Emit thead if there are header rows.
-    if (headRows.length > 0) {
-      renderSection('thead', headRows, 'th', '  ').forEach(function (l) {
-        lines.push(l);
-      });
-    }
-
-    // Emit tbody if there are body rows.
-    if (tailRows.length > 0) {
-      renderSection('tbody', tailRows, 'td', '  ').forEach(function (l) {
-        lines.push(l);
-      });
-    }
   }
 
   return lines.join('\n');

@@ -246,6 +246,15 @@ describe('reference links', () => {
       '<!DOCTYPE html><p><a href="https://example.com">text \\</a></p>',
     );
   });
+
+  it('should handle #(...) interpolation inside ref link text', () => {
+    var input =
+      'references\n  docs https://docs.com\n\np @[docs text with #(em emphasis) end]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><a href="https://docs.com">text with #(em emphasis) end</a></p>',
+    );
+  });
 });
 
 describe('image shorthand', () => {
@@ -432,6 +441,15 @@ describe('inline mixin calls', () => {
         'mixin link(url text)\n  a(href="#{url}") #{text}\n\np Go #(+link(/x here))',
       ),
       '<!DOCTYPE html><p>Go <a href="/x">here</a></p>',
+    );
+  });
+});
+
+describe('interpolated tags', () => {
+  it('should handle balanced parentheses in text content', () => {
+    assert.strictEqual(
+      pg.render('p #(strong text (with parens) more)'),
+      '<!DOCTYPE html><p><strong>text (with parens) more</strong></p>',
     );
   });
 });

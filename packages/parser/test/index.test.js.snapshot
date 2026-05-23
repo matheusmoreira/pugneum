@@ -11363,6 +11363,20 @@ exports[`multi-line-interpolation.pg 1`] = `
             "column": 51,
             "filename": "multi-line-interpolation.pg",
             "val": " in text block."
+          },
+          {
+            "type": "Text",
+            "line": 13,
+            "column": 1,
+            "filename": "multi-line-interpolation.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 13,
+            "column": 1,
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
           }
         ],
         "line": 10,
@@ -11372,6 +11386,62 @@ exports[`multi-line-interpolation.pg 1`] = `
       "attributeBlocks": [],
       "isInline": false,
       "line": 10,
+      "column": 1,
+      "filename": "multi-line-interpolation.pg",
+      "textOnly": true
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 15,
+            "column": 3,
+            "filename": "multi-line-interpolation.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 15,
+                  "column": 12,
+                  "filename": "multi-line-interpolation.pg",
+                  "val": "text (with parens) end"
+                }
+              ],
+              "line": 15,
+              "filename": "multi-line-interpolation.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 15,
+            "column": 5,
+            "filename": "multi-line-interpolation.pg"
+          },
+          {
+            "type": "Text",
+            "line": 15,
+            "column": 35,
+            "filename": "multi-line-interpolation.pg",
+            "val": " after."
+          }
+        ],
+        "line": 14,
+        "filename": "multi-line-interpolation.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 14,
       "column": 1,
       "filename": "multi-line-interpolation.pg",
       "textOnly": true

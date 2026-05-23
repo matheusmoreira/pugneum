@@ -10,3 +10,7 @@ p.
 p.
   Multi-line @(https://example.com/path
   link text) in text block.
+
+p.
+  #(strong text (with
+  parens) end) after.

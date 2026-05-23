@@ -7434,6 +7434,643 @@ exports[`inline-block-comment.pg 1`] = `
 }
 `;
 
+exports[`inline-shorthands-combined.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "References",
+      "definitions": [
+        {
+          "name": "docs",
+          "url": "/docs",
+          "line": 2,
+          "column": 3,
+          "filename": "inline-shorthands-combined.pg"
+        },
+        {
+          "name": "logo",
+          "url": "/logo.png",
+          "line": 3,
+          "column": 3,
+          "filename": "inline-shorthands-combined.pg"
+        }
+      ],
+      "line": 1,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "All shorthands: "
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 36,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "link"
+                }
+              ],
+              "line": 5,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "/url",
+                "line": 5,
+                "column": 23,
+                "filename": "inline-shorthands-combined.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 21,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 31,
+            "filename": "inline-shorthands-combined.pg",
+            "val": ", "
+          },
+          {
+            "type": "Tag",
+            "name": "img",
+            "block": {
+              "type": "Block",
+              "nodes": [],
+              "line": 5,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [
+              {
+                "name": "src",
+                "val": "photo.jpg",
+                "line": 5,
+                "column": 39,
+                "filename": "inline-shorthands-combined.pg"
+              },
+              {
+                "name": "alt",
+                "val": "alt",
+                "line": 5,
+                "column": 55,
+                "filename": "inline-shorthands-combined.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 35,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 49,
+            "filename": "inline-shorthands-combined.pg",
+            "val": ", "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 60,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "bold"
+                }
+              ],
+              "line": 5,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 53,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 58,
+            "filename": "inline-shorthands-combined.pg",
+            "val": ", "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 65,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "italic"
+                }
+              ],
+              "line": 5,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 62,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 69,
+            "filename": "inline-shorthands-combined.pg",
+            "val": ", "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 73,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "code"
+                }
+              ],
+              "line": 5,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 73,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 78,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "."
+          }
+        ],
+        "line": 5,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "References: "
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 17,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "documentation"
+                }
+              ],
+              "line": 6,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "line": 6,
+            "column": 15,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 36,
+            "filename": "inline-shorthands-combined.pg",
+            "val": " and "
+          },
+          {
+            "type": "ReferenceImage",
+            "name": "logo",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 43,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "the logo"
+                }
+              ],
+              "line": 6,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "line": 6,
+            "column": 41,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 57,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "."
+          }
+        ],
+        "line": 6,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "Nesting: "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 7,
+                  "column": 21,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "strongly "
+                },
+                {
+                  "type": "Tag",
+                  "name": "em",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 7,
+                        "column": 35,
+                        "filename": "inline-shorthands-combined.pg",
+                        "val": "emphasized "
+                      },
+                      {
+                        "type": "Tag",
+                        "name": "code",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "line": 7,
+                              "column": 48,
+                              "filename": "inline-shorthands-combined.pg",
+                              "val": "code"
+                            }
+                          ],
+                          "line": 7,
+                          "filename": "inline-shorthands-combined.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 7,
+                        "column": 48,
+                        "filename": "inline-shorthands-combined.pg"
+                      }
+                    ],
+                    "line": 7,
+                    "filename": "inline-shorthands-combined.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 7,
+                  "column": 32,
+                  "filename": "inline-shorthands-combined.pg"
+                }
+              ],
+              "line": 7,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 7,
+            "column": 14,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 45,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "."
+          }
+        ],
+        "line": 7,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "Mixed refs: see "
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 8,
+                  "column": 21,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "the docs"
+                }
+              ],
+              "line": 8,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "ref",
+                "line": 8,
+                "column": 36,
+                "filename": "inline-shorthands-combined.pg"
+              }
+            ],
+            "line": 8,
+            "column": 19,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 48,
+            "filename": "inline-shorthands-combined.pg",
+            "val": " and "
+          },
+          {
+            "type": "ReferenceImage",
+            "name": "logo",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 8,
+                  "column": 55,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "logo"
+                }
+              ],
+              "line": 8,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [
+              {
+                "name": "loading",
+                "val": "lazy",
+                "line": 8,
+                "column": 66,
+                "filename": "inline-shorthands-combined.pg"
+              }
+            ],
+            "line": 8,
+            "column": 53,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 81,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "."
+          }
+        ],
+        "line": 8,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 8,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg",
+            "val": "Tag interp: "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 9,
+                  "column": 20,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "emphasized"
+                }
+              ],
+              "line": 9,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 9,
+            "column": 17,
+            "filename": "inline-shorthands-combined.pg"
+          },
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 31,
+            "filename": "inline-shorthands-combined.pg",
+            "val": " text."
+          }
+        ],
+        "line": 9,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "show",
+      "args": [
+        {
+          "name": "var"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 11,
+                  "column": 5,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "Variables: "
+                },
+                {
+                  "type": "Variable",
+                  "name": "var",
+                  "line": 11,
+                  "column": 18,
+                  "filename": "inline-shorthands-combined.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 11,
+                  "column": 22,
+                  "filename": "inline-shorthands-combined.pg",
+                  "val": "."
+                }
+              ],
+              "line": 11,
+              "filename": "inline-shorthands-combined.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 11,
+            "column": 3,
+            "filename": "inline-shorthands-combined.pg"
+          }
+        ],
+        "line": 11,
+        "filename": "inline-shorthands-combined.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": false,
+      "line": 10,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "show",
+      "args": [
+        "value"
+      ],
+      "block": null,
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 12,
+      "column": 1,
+      "filename": "inline-shorthands-combined.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "inline-shorthands-combined.pg"
+}
+`;
+
 exports[`inline-tag.pg 1`] = `
 {
   "type": "Block",

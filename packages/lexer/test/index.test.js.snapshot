@@ -18580,6 +18580,1514 @@ exports[`inline-reflink-at-line-start.pg 1`] = `
 }
 `;
 
+exports[`inline-shorthands-combined.pg 1`] = `
+[
+  {
+    "type": "references",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    }
+  },
+  {
+    "type": "ref-def",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 2,
+        "column": 13
+      }
+    },
+    "name": "docs",
+    "url": "/docs"
+  },
+  {
+    "type": "ref-def",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 3,
+        "column": 17
+      }
+    },
+    "name": "logo",
+    "url": "/logo.png"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 19
+      }
+    },
+    "val": "All shorthands: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 19
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 21
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 23
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 34
+      }
+    },
+    "name": "href",
+    "val": "/url"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 34
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 36
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 40
+      }
+    },
+    "val": "link"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 30
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 31
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 33
+      }
+    },
+    "val": ", "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 33
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 35
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 38
+      }
+    },
+    "val": "img"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 38
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 39
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 39
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 54
+      }
+    },
+    "name": "src",
+    "val": "photo.jpg"
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 55
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 64
+      }
+    },
+    "name": "alt",
+    "val": "alt"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 64
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 65
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 48
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 49
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 49
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 51
+      }
+    },
+    "val": ", "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 51
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 53
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 53
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 59
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 60
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 64
+      }
+    },
+    "val": "bold"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 57
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 58
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 58
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 60
+      }
+    },
+    "val": ", "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 60
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 62
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 62
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 64
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 65
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 71
+      }
+    },
+    "val": "italic"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 68
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 69
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 69
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 71
+      }
+    },
+    "val": ", "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 71
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 73
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 73
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 73
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 73
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 77
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 77
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 78
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 78
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 5,
+        "column": 79
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "References: "
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 15
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 17
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 17
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 35
+      }
+    },
+    "val": "documentation"
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 35
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 36
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 41
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-ref-image",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 41
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 43
+      }
+    },
+    "val": "logo"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 43
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 56
+      }
+    },
+    "val": "the logo"
+  },
+  {
+    "type": "end-ref-image",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 56
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 57
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 57
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 6,
+        "column": 58
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 12
+      }
+    },
+    "val": "Nesting: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 12
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 14
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 20
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 21
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 30
+      }
+    },
+    "val": "strongly "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 30
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 32
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 32
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 34
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 35
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 46
+      }
+    },
+    "val": "emphasized "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 46
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 48
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 48
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 48
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 52
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 52
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 53
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 50
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 51
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 44
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 45
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 45
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 7,
+        "column": 46
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 19
+      }
+    },
+    "val": "Mixed refs: see "
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 19
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 21
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 21
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 34
+      }
+    },
+    "val": "the docs"
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 34
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 35
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 36
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 47
+      }
+    },
+    "name": "class",
+    "val": "ref"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 47
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 48
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 53
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-ref-image",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 53
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 55
+      }
+    },
+    "val": "logo"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 55
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 64
+      }
+    },
+    "val": "logo"
+  },
+  {
+    "type": "end-ref-image",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 64
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 65
+      }
+    }
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 65
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 66
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 66
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 80
+      }
+    },
+    "name": "loading",
+    "val": "lazy"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 80
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 81
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 81
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 8,
+        "column": 82
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 15
+      }
+    },
+    "val": "Tag interp: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 15
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 17
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 19
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 20
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 30
+      }
+    },
+    "val": "emphasized"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 30
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 31
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 9,
+        "column": 37
+      }
+    },
+    "val": " text."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 10,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 10,
+        "column": 16
+      }
+    },
+    "val": "show",
+    "args": [
+      {
+        "name": "var"
+      }
+    ]
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 3
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 4
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 5
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 16
+      }
+    },
+    "val": "Variables: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 16
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "variable",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 18
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 21
+      }
+    },
+    "val": "var"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 21
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 22
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 11,
+        "column": 23
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 12,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 12,
+        "column": 13
+      }
+    },
+    "val": "show",
+    "args": [
+      "value"
+    ]
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 13,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 13,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 13,
+        "column": 1
+      },
+      "filename": "inline-shorthands-combined.pg",
+      "end": {
+        "line": 13,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`inline-strong-at-line-start.pg 1`] = `
 {
   "msg": "*(...) inline strong can only appear inside text content, not at the start of a line.",

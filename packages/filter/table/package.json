@@ -1,0 +1,22 @@
+{
+  "name": "pugneum-filter-table",
+  "version": "1.0.0",
+  "description": "Pugneum table filter",
+  "keywords": ["pugneum", "filter", "table"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusmoreira/pugneum.git",
+    "directory": "packages/filter/table"
+  },
+  "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
+  "license": "MIT",
+  "peerDependencies": {
+    "pugneum-filterer": "^1.0.0"
+  },
+  "devDependencies": {
+    "pugneum-filterer": "^1.0.0",
+    "pugneum-lexer": "^1.0.0",
+    "pugneum-parser": "^1.0.0"
+  },
+  "funding": "https://github.com/sponsors/matheusmoreira"
+}

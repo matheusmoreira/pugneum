@@ -40409,6 +40409,272 @@ exports[`svg-basic.pg 1`] = `
 ]
 `;
 
+exports[`table-basic.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    },
+    "val": "before"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "filter",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    },
+    "val": "table"
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 7
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 20
+      }
+    },
+    "val": "| Name  | Count |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 4,
+        "column": 20
+      }
+    },
+    "val": "| ---   | ---   |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    },
+    "val": "| Alice |    42 |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 20
+      }
+    },
+    "val": "| Bob   |     7 |"
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 20
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 6,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 7,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 7,
+        "column": 8
+      }
+    },
+    "val": "after"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "table-basic.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`tags.self-closing.pg 1`] = `
 [
   {

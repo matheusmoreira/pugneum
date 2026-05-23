@@ -27,6 +27,7 @@
     "packages/pugneum",
     "packages/filter/highlight.js",
     "packages/filter/prismjs",
+    "packages/filter/table",
     "packages/feed"
   ],
   "engines": {

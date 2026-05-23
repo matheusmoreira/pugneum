@@ -16531,6 +16531,128 @@ exports[`svg-basic.pg 1`] = `
 }
 `;
 
+exports[`table-basic.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "before"
+          }
+        ],
+        "line": 1,
+        "filename": "table-basic.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "table-basic.pg"
+    },
+    {
+      "type": "Filter",
+      "name": "table",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "| Name  | Count |"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "table-basic.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "| ---   | ---   |"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 1,
+            "filename": "table-basic.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "| Alice |    42 |"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 1,
+            "filename": "table-basic.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "| Bob   |     7 |"
+          }
+        ],
+        "line": 2,
+        "filename": "table-basic.pg"
+      },
+      "attrs": [],
+      "line": 2,
+      "column": 1,
+      "filename": "table-basic.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 3,
+            "filename": "table-basic.pg",
+            "val": "after"
+          }
+        ],
+        "line": 7,
+        "filename": "table-basic.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 1,
+      "filename": "table-basic.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "table-basic.pg"
+}
+`;
+
 exports[`tags.self-closing.pg 1`] = `
 {
   "type": "Block",

@@ -1,0 +1,7 @@
+p before
+:table
+  | Name  | Count |
+  | ---   | ---   |
+  | Alice |    42 |
+  | Bob   |     7 |
+p after

@@ -22173,6 +22173,215 @@ exports[`inline-tag.pg 1`] = `
 ]
 `;
 
+exports[`ins-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 19
+      }
+    },
+    "val": "The API returns "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 19
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 21
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 24
+      }
+    },
+    "val": "del"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 25
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 29
+      }
+    },
+    "val": "NULL"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 25
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 26
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 27
+      }
+    },
+    "val": " "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 27
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 29
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 32
+      }
+    },
+    "val": "ins"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 33
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 40
+      }
+    },
+    "val": "nullptr"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 36
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 37
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 37
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 42
+      }
+    },
+    "val": " now."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "ins-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`intepolated-elements.pg 1`] = `
 [
   {

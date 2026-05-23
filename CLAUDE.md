@@ -84,6 +84,7 @@ Self-contained shorthands (`sigil(content)`):
 - `*(text)` — inline strong → `<strong>text</strong>`
 - `_(text)` — inline emphasis → `<em>text</em>`
 - `~(text)` — inline del → `<del>text</del>`
+- `&(text)` — inline ins → `<ins>text</ins>`
 - `^(text)` — inline sup → `<sup>text</sup>`
 - `%(text)` — inline kbd → `<kbd>text</kbd>`
 - `,(text)` — inline sub → `<sub>text</sub>`

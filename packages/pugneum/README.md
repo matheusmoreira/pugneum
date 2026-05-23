@@ -232,6 +232,19 @@ p This feature is ~(deprecated).
 <p>This feature is <del>deprecated</del>.</p>
 ```
 
+## Ins shorthand
+
+The `&()` shorthand generates `<ins>` tags for inserted text,
+complementing `~()` for deletions:
+
+```pugneum
+p Returns ~(NULL) &(nullptr) now.
+```
+
+```html
+<p>Returns <del>NULL</del> <ins>nullptr</ins> now.</p>
+```
+
 ## Abbr shorthand
 
 The `?()` shorthand generates `<abbr>` tags with title expansion:

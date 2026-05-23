@@ -306,6 +306,22 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === '&' && str[i + 1] === '(') {
+      state.ins++;
+      i++;
+      continue;
+    }
+    if (state.ins > 0) {
+      if (ch === '(') {
+        state.insParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.insParen > 0) state.insParen--;
+        else state.ins--;
+        continue;
+      }
+    }
     if (ch === '^' && str[i + 1] === '(') {
       state.sup++;
       i++;
@@ -424,6 +440,7 @@ function interpolationsAreClosed(str, state) {
     state.strong <= 0 &&
     state.emphasis <= 0 &&
     state.del <= 0 &&
+    state.ins <= 0 &&
     state.sup <= 0 &&
     state.kbd <= 0 &&
     state.sub <= 0 &&
@@ -449,6 +466,8 @@ function resetInterpolationState(state) {
   state.emphasisParen = 0;
   state.del = 0;
   state.delParen = 0;
+  state.ins = 0;
+  state.insParen = 0;
   state.sup = 0;
   state.supParen = 0;
   state.kbd = 0;
@@ -1002,6 +1021,15 @@ class Lexer {
           earliest.pos,
         );
 
+      case 'ins':
+        return this.handleInsShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'sup':
         return this.handleSupShorthand(
           type,
@@ -1115,6 +1143,9 @@ class Lexer {
       i = value.indexOf('\\~(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '~('});
 
+      i = value.indexOf('\\&(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '&('});
+
       i = value.indexOf('\\^(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^('});
 
@@ -1156,6 +1187,9 @@ class Lexer {
 
       i = value.indexOf('~(');
       if (i !== -1) candidates.push({pos: i, kind: 'del'});
+
+      i = value.indexOf('&(');
+      if (i !== -1) candidates.push({pos: i, kind: 'ins'});
 
       i = value.indexOf('^(');
       if (i !== -1) candidates.push({pos: i, kind: 'sup'});
@@ -1443,6 +1477,30 @@ class Lexer {
     const content = unescapeShorthand(range.src);
     const afterShorthand = rest.substring(range.end + 1);
     const childInput = `del ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleInsShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for &() ins shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `ins ${content})${afterShorthand}`;
     return this.desugarAsInterpolation(childInput, range.src.length);
   }
 
@@ -2683,6 +2741,7 @@ class Lexer {
       [/^!\(/, '!(...) inline images'],
       [/^\*\(/, '*(...) inline strong'],
       [/^~\(/, '~(...) inline del'],
+      [/^&\(/, '&(...) inline ins'],
       [/^\^\(/, '^(...) inline sup'],
       [/^\^\[/, '^[...] footnote references'],
       [/^%\(/, '%(...) inline kbd'],

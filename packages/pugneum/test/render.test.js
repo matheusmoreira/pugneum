@@ -612,11 +612,32 @@ describe('interpolated tags', () => {
   });
 });
 
-describe('del/sup/kbd/sub shorthands', () => {
+describe('del/ins/sup/kbd/sub shorthands', () => {
   it('should render ~(del) shorthand', () => {
     assert.strictEqual(
       pg.render('p ~(deleted)'),
       '<!DOCTYPE html><p><del>deleted</del></p>',
+    );
+  });
+
+  it('should render &(ins) shorthand', () => {
+    assert.strictEqual(
+      pg.render('p &(inserted)'),
+      '<!DOCTYPE html><p><ins>inserted</ins></p>',
+    );
+  });
+
+  it('should render ~(del) and &(ins) together', () => {
+    assert.strictEqual(
+      pg.render('p Returns ~(NULL) &(nullptr).'),
+      '<!DOCTYPE html><p>Returns <del>NULL</del> <ins>nullptr</ins>.</p>',
+    );
+  });
+
+  it('should render escaped \\&( as literal', () => {
+    assert.strictEqual(
+      pg.render('p \\&(not ins)'),
+      '<!DOCTYPE html><p>&(not ins)</p>',
     );
   });
 

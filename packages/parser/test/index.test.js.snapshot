@@ -8958,6 +8958,102 @@ exports[`inline-tag.pg 1`] = `
 }
 `;
 
+exports[`ins-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "ins-shorthand.pg",
+            "val": "The API returns "
+          },
+          {
+            "type": "Tag",
+            "name": "del",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 25,
+                  "filename": "ins-shorthand.pg",
+                  "val": "NULL"
+                }
+              ],
+              "line": 1,
+              "filename": "ins-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 1,
+            "column": 21,
+            "filename": "ins-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 26,
+            "filename": "ins-shorthand.pg",
+            "val": " "
+          },
+          {
+            "type": "Tag",
+            "name": "ins",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 33,
+                  "filename": "ins-shorthand.pg",
+                  "val": "nullptr"
+                }
+              ],
+              "line": 1,
+              "filename": "ins-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 1,
+            "column": 29,
+            "filename": "ins-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 37,
+            "filename": "ins-shorthand.pg",
+            "val": " now."
+          }
+        ],
+        "line": 1,
+        "filename": "ins-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "ins-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "ins-shorthand.pg"
+}
+`;
+
 exports[`intepolated-elements.pg 1`] = `
 {
   "type": "Block",

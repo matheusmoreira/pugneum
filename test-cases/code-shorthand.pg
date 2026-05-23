@@ -1,0 +1,6 @@
+p Use `(git status) to check.
+p Call `(printf("hello")) carefully.
+p Balanced: `(a(b(c))) works.
+p Not a link: `(@(not a link)) literal.
+p Not strong: `(*(not strong)) literal.
+p \`(not code)

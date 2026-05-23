@@ -941,6 +941,27 @@ describe('table of contents', () => {
     const result = pg.render('h2#first First\np Text.\n\ntoc');
     assert.match(result, /href="#first"/);
   });
+
+  it('should not include footnote markers in toc text', () => {
+    const result = pg.render(
+      'toc\n\nh2#intro Introduction^[fn1]\np Text.\n\nfootnotes\n  fn1 A note.',
+    );
+    // ToC link should have clean text without [1]
+    assert.match(result, /<a href="#intro">Introduction<\/a>/);
+    assert.doesNotMatch(result, /<a href="#intro">Introduction\[1\]<\/a>/);
+    // Heading itself should have the footnote marker
+    assert.match(result, /<h2 id="intro">Introduction<sup>/);
+    // Footnote section should still render
+    assert.match(result, /role="doc-endnotes"/);
+  });
+
+  it('should work with footnotes block before toc', () => {
+    const result = pg.render(
+      'footnotes\n  fn1 A note.\n\ntoc\n\nh2#sec Section^[fn1]',
+    );
+    assert.match(result, /<a href="#sec">Section<\/a>/);
+    assert.match(result, /\[1\]<\/a><\/sup>/);
+  });
 });
 
 describe('abbr shorthand', () => {

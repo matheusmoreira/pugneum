@@ -191,6 +191,14 @@ describe('table structure', () => {
     assert.throws(() => tableFilter.filter(input, {}), /===.*once/i);
   });
 
+  test('--- after === throws error', () => {
+    var input = '| a |\n| --- |\n| b |\n| === |\n| c |\n| --- |\n| d |';
+    assert.throws(
+      () => tableFilter.filter(input, {}),
+      /---.*after.*===/i,
+    );
+  });
+
   test('mixed --- and === in same row throws error', () => {
     assert.throws(
       () => tableFilter.filter('| --- | === |', {}),

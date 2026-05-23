@@ -181,7 +181,7 @@ function parse(lines) {
   // Build a sequence of events: 'marker', 'row', 'dash-sep', 'equals-sep'.
   // Each event carries its payload.
   let events = [];
-  for (var li = 0; li < dataLines.length; li++) {
+  for (let li = 0; li < dataLines.length; li++) {
     let line = dataLines[li];
 
     // Check for section marker (thead/tbody/tfoot on its own line)
@@ -242,7 +242,7 @@ function parse(lines) {
     currentAttrs = '';
   }
 
-  for (var ei = 0; ei < events.length; ei++) {
+  for (let ei = 0; ei < events.length; ei++) {
     let ev = events[ei];
 
     if (ev.type === 'marker') {
@@ -251,13 +251,16 @@ function parse(lines) {
       // If there are no rows yet, just update currentTag.
       if (currentRows.length > 0) {
         // Flush rows with current tag (or implicit default)
-        var implicitTag = 'tbody';
+        let implicitTag = 'tbody';
         flushCurrentRows(implicitTag);
       }
       currentTag = ev.tag;
       currentAttrs = ev.attrStr;
     } else if (ev.type === 'dash-sep') {
       hasSeparatorOrMarker = true;
+      if (seenEqualsSep) {
+        throw new Error('--- separator cannot appear after ===');
+      }
       if (!seenFirstDashSep) {
         // First dash-sep: flush current rows as thead
         colgroups = ev.colgroups;

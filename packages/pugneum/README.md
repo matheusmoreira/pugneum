@@ -135,6 +135,79 @@ p @[docs](class="external" target="_blank")
 If no link text is given, the reference name is used.
 References can be defined anywhere in the file, including via `include`.
 
+## Reference images
+
+Like reference links, but for images. Uses `![ref alt]` with URLs from a `references` block:
+
+```pugneum
+references
+  logo /images/logo.png
+  photo /images/sunset.jpg
+
+p Our logo: ![logo Pugneum logo]
+p ![photo sunset](loading="lazy" class="hero")
+```
+
+```html
+<p>Our logo: <img src="/images/logo.png" alt="Pugneum logo"></p>
+<p><img class="hero" src="/images/sunset.jpg" alt="sunset" loading="lazy"></p>
+```
+
+If no alt text is given, the reference name is used.
+Custom attributes can be appended after the shorthand in parentheses.
+Escape with `\![` to output a literal `![`.
+
+## Strong shorthand
+
+The `*()` shorthand generates `<strong>` tags inline:
+
+```pugneum
+p This is *(important) information.
+p Nested: *(click @(/url here) now)
+```
+
+```html
+<p>This is <strong>important</strong> information.</p>
+<p>Nested: <strong>click <a href="/url">here</a> now</strong></p>
+```
+
+Balanced parentheses in content are handled by depth tracking.
+Escape with `\*(` to output a literal `*(`.
+
+## Emphasis shorthand
+
+The `_()` shorthand generates `<em>` tags inline:
+
+```pugneum
+p Please use _(caution) here.
+p Combined: *(really _(very) important)
+```
+
+```html
+<p>Please use <em>caution</em> here.</p>
+<p>Combined: <strong>really <em>very</em> important</strong></p>
+```
+
+Escape with `\_(` to output a literal `_(`.
+
+## Code shorthand
+
+The `` `() `` shorthand generates `<code>` tags inline.
+Content is literal — no inner shorthand processing:
+
+```pugneum
+p Use `(git status) to check.
+p Call `(printf("hello")) carefully.
+```
+
+```html
+<p>Use <code>git status</code> to check.</p>
+<p>Call <code>printf("hello")</code> carefully.</p>
+```
+
+Balanced parentheses in code work via depth tracking.
+Escape with `` \`( `` to output a literal `` `( ``.
+
 ## Mixins
 
 Mixins define reusable template fragments with parameters:

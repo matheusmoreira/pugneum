@@ -1,3 +1,115 @@
+exports[`abbr-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "abbr-shorthand.pg",
+            "val": "The "
+          },
+          {
+            "type": "Tag",
+            "name": "abbr",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 49,
+                  "filename": "abbr-shorthand.pg",
+                  "val": "HTML"
+                }
+              ],
+              "line": 1,
+              "filename": "abbr-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "title",
+                "val": "Hypertext Markup Language",
+                "line": 1,
+                "column": 14,
+                "filename": "abbr-shorthand.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 9,
+            "filename": "abbr-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 40,
+            "filename": "abbr-shorthand.pg",
+            "val": " standard defines "
+          },
+          {
+            "type": "Tag",
+            "name": "abbr",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 97,
+                  "filename": "abbr-shorthand.pg",
+                  "val": "CSS"
+                }
+              ],
+              "line": 1,
+              "filename": "abbr-shorthand.pg"
+            },
+            "attrs": [
+              {
+                "name": "title",
+                "val": "Cascading Style Sheets",
+                "line": 1,
+                "column": 65,
+                "filename": "abbr-shorthand.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 60,
+            "filename": "abbr-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 87,
+            "filename": "abbr-shorthand.pg",
+            "val": "."
+          }
+        ],
+        "line": 1,
+        "filename": "abbr-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "abbr-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "abbr-shorthand.pg"
+}
+`;
+
 exports[`attrs-escape.pg 1`] = `
 {
   "type": "Block",

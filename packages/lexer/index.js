@@ -354,6 +354,22 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === '?' && str[i + 1] === '(') {
+      state.abbr++;
+      i++;
+      continue;
+    }
+    if (state.abbr > 0) {
+      if (ch === '(') {
+        state.abbrParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.abbrParen > 0) state.abbrParen--;
+        else state.abbr--;
+        continue;
+      }
+    }
     if (ch === '^' && str[i + 1] === '[') {
       state.footnoteRef++;
       i++;
@@ -411,6 +427,7 @@ function interpolationsAreClosed(str, state) {
     state.sup <= 0 &&
     state.kbd <= 0 &&
     state.sub <= 0 &&
+    state.abbr <= 0 &&
     state.code <= 0
   );
 }
@@ -438,6 +455,8 @@ function resetInterpolationState(state) {
   state.kbdParen = 0;
   state.sub = 0;
   state.subParen = 0;
+  state.abbr = 0;
+  state.abbrParen = 0;
   state.code = 0;
   state.codeParen = 0;
   state.sq = false;
@@ -1010,6 +1029,15 @@ class Lexer {
           earliest.pos,
         );
 
+      case 'abbr':
+        return this.handleAbbrShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'code':
         return this.handleCodeShorthand(
           type,
@@ -1096,6 +1124,9 @@ class Lexer {
       i = value.indexOf('\\,(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ',('});
 
+      i = value.indexOf('\\?(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '?('});
+
       i = value.indexOf('`(');
       if (i !== -1) candidates.push({pos: i, kind: 'code'});
 
@@ -1134,6 +1165,9 @@ class Lexer {
 
       i = value.indexOf(',(');
       if (i !== -1) candidates.push({pos: i, kind: 'sub'});
+
+      i = value.indexOf('?(');
+      if (i !== -1) candidates.push({pos: i, kind: 'abbr'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
@@ -1309,6 +1343,34 @@ class Lexer {
     }
 
     const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs}))${afterImage}`;
+    return this.desugarAsInterpolation(childInput, parsed.content.length);
+  }
+
+  handleAbbrShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    const parsed = this.parseShorthandContent(
+      rest,
+      'End of line reached with no closing ) for ?() abbr shorthand.',
+      'INVALID_ABBR',
+    );
+    const afterAbbr = parsed.after;
+
+    // parsed.url = first word (the abbreviation)
+    // parsed.text = rest (the expansion), or same as url if no space
+    const abbreviation = parsed.url;
+    const expansion = parsed.text === parsed.url ? '' : parsed.text;
+
+    let childInput;
+    if (expansion) {
+      const {quote, escaped: escapedExpansion} = this.escapeForAttr(expansion);
+      childInput = `abbr(title=${quote}${escapedExpansion}${quote}) ${abbreviation})${afterAbbr}`;
+    } else {
+      childInput = `abbr ${abbreviation})${afterAbbr}`;
+    }
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
@@ -2626,6 +2688,7 @@ class Lexer {
       [/^%\(/, '%(...) inline kbd'],
       [/^,\(/, ',(...) inline sub'],
       [/^`\(/, '`(...) inline code'],
+      [/^\?\(/, '?(...) inline abbr'],
     ];
     for (const [re, name] of inlinePatterns) {
       if (re.test(this.input)) {

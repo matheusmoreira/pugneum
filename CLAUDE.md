@@ -88,6 +88,7 @@ Self-contained shorthands (`sigil(content)`):
 - `%(text)` — inline kbd → `<kbd>text</kbd>`
 - `,(text)` — inline sub → `<sub>text</sub>`
 - `` `(code) `` — inline code → `<code>code</code>`; content is literal (no inner shorthand processing)
+- `?(abbr expansion)` — inline abbr → `<abbr title="expansion">abbr</abbr>`; without expansion: `<abbr>abbr</abbr>`
 - `#(tag text)` — inline tag interpolation → `<tag>text</tag>`
 - `#(+mixin(args))` — inline mixin call
 

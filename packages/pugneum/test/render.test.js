@@ -879,6 +879,36 @@ describe('footnotes', () => {
   });
 });
 
+describe('abbr shorthand', () => {
+  it('should render ?(abbr expansion) as <abbr>', () => {
+    assert.strictEqual(
+      pg.render('p ?(HTML Hypertext Markup Language)'),
+      '<!DOCTYPE html><p><abbr title="Hypertext Markup Language">HTML</abbr></p>',
+    );
+  });
+
+  it('should render ?(abbr) without expansion', () => {
+    assert.strictEqual(
+      pg.render('p ?(CPU)'),
+      '<!DOCTYPE html><p><abbr>CPU</abbr></p>',
+    );
+  });
+
+  it('should render escaped \\?( as literal', () => {
+    assert.strictEqual(
+      pg.render('p \\?(not abbr)'),
+      '<!DOCTYPE html><p>?(not abbr)</p>',
+    );
+  });
+
+  it('should nest inside other shorthands', () => {
+    assert.strictEqual(
+      pg.render('p The *(?(API Application Programming Interface)) is stable.'),
+      '<!DOCTYPE html><p>The <strong><abbr title="Application Programming Interface">API</abbr></strong> is stable.</p>',
+    );
+  });
+});
+
 describe('renderFile()', () => {
   var filePath = path.join(testCasesDir, 'basic.pg');
 

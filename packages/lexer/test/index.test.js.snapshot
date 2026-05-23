@@ -1,3 +1,300 @@
+exports[`abbr-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    },
+    "val": "The "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    },
+    "val": "abbr"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 14
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 47
+      }
+    },
+    "name": "title",
+    "val": "Hypertext Markup Language"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 47
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 49
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 53
+      }
+    },
+    "val": "HTML"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 39
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 40
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 40
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 58
+      }
+    },
+    "val": " standard defines "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 58
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 60
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 60
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 64
+      }
+    },
+    "val": "abbr"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 64
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 65
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 65
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 95
+      }
+    },
+    "name": "title",
+    "val": "Cascading Style Sheets"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 95
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 96
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 97
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 100
+      }
+    },
+    "val": "CSS"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 86
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 87
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 87
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 88
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "abbr-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`attrs-escape.pg 1`] = `
 [
   {

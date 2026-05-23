@@ -193,6 +193,7 @@ describe('table structure', () => {
     var input = '| a |\n| === |\n| b |';
     var result = tableFilter.filter(input, {});
     assert.doesNotMatch(result, /thead/);
+    assert.doesNotMatch(result, /colgroup/);
     assert.match(result, /tbody\n\s+tr\n\s+td a/);
     assert.match(result, /tfoot\n\s+tr\n\s+td b/);
   });
@@ -289,6 +290,26 @@ describe('section markers', () => {
     assert.match(result, /tfoot\n/);
     assert.match(result, /td c/);
   });
+
+  test('section marker after untagged rows uses tbody, not thead', () => {
+    var input = '| a |\ntbody\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.doesNotMatch(result, /thead/);
+    assert.match(result, /td a/);
+    assert.match(result, /td b/);
+  });
+
+  test('thead marker followed by --- preserves thead', () => {
+    var input = 'thead\n| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead\n\s+tr\n\s+th a/);
+    assert.match(result, /tbody\n\s+tr\n\s+td b/);
+  });
+
+  test('tfoot marker then === throws error', () => {
+    var input = '| a |\n| --- |\ntfoot\n| b |\n| === |\n| c |';
+    assert.throws(() => tableFilter.filter(input, {}), /===.*once/i);
+  });
 });
 
 describe('edge cases', () => {
@@ -345,13 +366,5 @@ describe('errors', () => {
       () => tableFilter.filter('| --- | --- |', {}),
       /no.*data.*rows/i,
     );
-  });
-
-  test('section marker after untagged rows uses tbody, not thead', () => {
-    var input = '| a |\ntbody\n| b |';
-    var result = tableFilter.filter(input, {});
-    assert.doesNotMatch(result, /thead/);
-    assert.match(result, /td a/);
-    assert.match(result, /td b/);
   });
 });

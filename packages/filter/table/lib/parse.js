@@ -217,6 +217,7 @@ function parse(lines) {
   let currentAttrs = '';
   let seenFirstDashSep = false;
   let seenEqualsSep = false;
+  let seenTfoot = false;
   let hasSeparatorOrMarker = false;
 
   function flushCurrentRows(newTag, newAttrs) {
@@ -225,9 +226,9 @@ function parse(lines) {
       let attrStr = currentTag !== null ? currentAttrs : newAttrs || '';
       sections.push({tag: tag, attrStr: attrStr, rows: currentRows.slice()});
       currentRows = [];
+      currentTag = null;
+      currentAttrs = '';
     }
-    currentTag = null;
-    currentAttrs = '';
   }
 
   for (let ei = 0; ei < events.length; ei++) {
@@ -244,6 +245,7 @@ function parse(lines) {
       }
       currentTag = ev.tag;
       currentAttrs = ev.attrStr;
+      if (ev.tag === 'tfoot') seenTfoot = true;
     } else if (ev.type === 'dash-sep') {
       hasSeparatorOrMarker = true;
       if (seenEqualsSep) {
@@ -260,10 +262,11 @@ function parse(lines) {
       }
     } else if (ev.type === 'equals-sep') {
       hasSeparatorOrMarker = true;
-      if (seenEqualsSep) {
+      if (seenEqualsSep || seenTfoot) {
         throw new Error('=== separator can only appear once in a table');
       }
       seenEqualsSep = true;
+      seenTfoot = true;
       // Flush current rows as tbody (or thead if no dash-sep seen)
       let preFootTag = 'tbody';
       flushCurrentRows(preFootTag);

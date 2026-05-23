@@ -182,7 +182,7 @@ function unescapeShorthand(str) {
 }
 
 /**
- * Check whether a line has unclosed #[...], @(...) or !(...) interpolation constructs.
+ * Check whether a line has unclosed #(...), @(...) or !(...) interpolation constructs.
  * Returns true if all interpolations are closed (line is complete).
  */
 function interpolationsAreClosed(str, state) {
@@ -201,7 +201,7 @@ function interpolationsAreClosed(str, state) {
       continue;
     }
     if (state.sq || state.dq) continue;
-    if (ch === '#' && str[i + 1] === '[') {
+    if (ch === '#' && str[i + 1] === '(') {
       state.interp++;
       i++;
       continue;
@@ -214,10 +214,6 @@ function interpolationsAreClosed(str, state) {
     if (ch === ']') {
       if (state.ref > 0) {
         state.ref--;
-        continue;
-      }
-      if (state.interp > 0) {
-        state.interp--;
         continue;
       }
     }
@@ -253,6 +249,17 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (state.interp > 0) {
+      if (ch === '(') {
+        state.interpParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.interpParen > 0) state.interpParen--;
+        else state.interp--;
+        continue;
+      }
+    }
   }
   return (
     state.interp <= 0 && state.link <= 0 && state.ref <= 0 && state.image <= 0
@@ -260,7 +267,7 @@ function interpolationsAreClosed(str, state) {
 }
 
 /**
- * Merge consecutive lines that have unclosed #[...], @(...) or !(...) constructs
+ * Merge consecutive lines that have unclosed #(...), @(...) or !(...) constructs
  * into single entries so multi-line inline elements are handled as one unit.
  *
  * Returns an array of {text, indented, lines} objects.
@@ -272,6 +279,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
   let pendingIndentIdx = 0;
   const state = {
     interp: 0,
+    interpParen: 0,
     link: 0,
     linkParen: 0,
     ref: 0,
@@ -299,6 +307,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       pendingText = null;
       pendingLines = 0;
       state.interp = 0;
+      state.interpParen = 0;
       state.link = 0;
       state.linkParen = 0;
       state.ref = 0;
@@ -342,7 +351,7 @@ class Lexer {
     this.colno = options.startingColumn || 1;
     this.indentStack = [0];
     this.indentRe = null;
-    // If #{}, !{} or #[] syntax is allowed when adding text
+    // If #{}, !{} or #() syntax is allowed when adding text
     this.interpolationAllowed = true;
 
     this.tokens = [];
@@ -636,7 +645,7 @@ class Lexer {
       this.tokEnd(tok);
       return true;
     }
-    if (/^#/.test(this.input) && !/^#[[{]/.test(this.input)) {
+    if (/^#/.test(this.input) && !/^#[({]/.test(this.input)) {
       this.error(
         'INVALID_ID',
         '"' +
@@ -678,7 +687,7 @@ class Lexer {
    * Text.
    */
   endInterpolation() {
-    if (this.interpolated && this.input[0] === ']') {
+    if (this.interpolated && this.input[0] === ')') {
       this.input = this.input.slice(1);
       this.ended = true;
       return true;
@@ -781,15 +790,31 @@ class Lexer {
     const candidates = [];
 
     if (this.interpolated) {
-      const i = value.indexOf(']');
-      if (i !== -1) candidates.push({pos: i, kind: 'end'});
+      let parenDepth = 0;
+      for (let i = 0; i < value.length; i++) {
+        const ch = value[i];
+        if (ch === '\\') {
+          i++;
+          continue;
+        }
+        if (ch === '(') {
+          parenDepth++;
+        } else if (ch === ')') {
+          if (parenDepth > 0) {
+            parenDepth--;
+          } else {
+            candidates.push({pos: i, kind: 'end'});
+            break;
+          }
+        }
+      }
     }
 
     if (this.interpolationAllowed) {
       let i;
 
-      i = value.indexOf('\\#[');
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#['});
+      i = value.indexOf('\\#(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
 
       i = value.indexOf('\\@(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@('});
@@ -800,7 +825,7 @@ class Lexer {
       i = value.indexOf('\\!(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
-      i = value.indexOf('#[');
+      i = value.indexOf('#(');
       if (i !== -1) candidates.push({pos: i, kind: 'interpolation'});
 
       i = value.indexOf('@(');
@@ -937,7 +962,7 @@ class Lexer {
       'INVALID_LINK',
     );
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
-    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${parsed.text}]${parsed.after}`;
+    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${parsed.text})${parsed.after}`;
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
@@ -974,7 +999,7 @@ class Lexer {
       afterImage = afterImage.substring(attrRange.end + 1);
     }
 
-    const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs})]${afterImage}`;
+    const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs}))${afterImage}`;
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
@@ -985,27 +1010,32 @@ class Lexer {
 
     const inner = value.substring(pos + 2); // after @[
     // Find the matching ] for the ref link.
-    // Only #[...] interpolation nests; bare [ is literal.
+    // #(...) interpolations nest inside ref links; track paren depth to handle them.
     // Use \] to include a literal ] in the link text.
-    let depth = 1;
     let end = -1;
+    let interpDepth = 0;
     for (let i = 0; i < inner.length; i++) {
       const ch = inner[i];
       if (ch === '\\') {
         i++;
         continue;
       }
-      if (ch === '#' && inner[i + 1] === '[') {
-        depth++;
+      if (ch === '#' && inner[i + 1] === '(') {
+        interpDepth++;
         i++;
         continue;
       }
-      if (ch === ']') {
-        depth--;
-        if (depth === 0) {
-          end = i;
-          break;
-        }
+      if (ch === '(' && interpDepth > 0) {
+        interpDepth++;
+        continue;
+      }
+      if (ch === ')' && interpDepth > 0) {
+        interpDepth--;
+        continue;
+      }
+      if (ch === ']' && interpDepth === 0) {
+        end = i;
+        break;
       }
     }
     if (end === -1) {
@@ -1787,7 +1817,7 @@ class Lexer {
       while (this.input.length === 0 && tokens[tokens.length - 1] === '')
         tokens.pop();
 
-      // Merge lines with unclosed #[...] or @(...) constructs so that
+      // Merge lines with unclosed #(...) or @(...) constructs so that
       // inline elements can span multiple lines in text blocks.
       const merged = mergeMultiLineInterpolations(tokens, token_indent);
 
@@ -1821,7 +1851,7 @@ class Lexer {
 
   fail() {
     const inlinePatterns = [
-      [/^#\[/, '#[...] inline tags'],
+      [/^#\(/, '#(...) inline tags'],
       [/^@\(/, '@(...) inline links'],
       [/^@\[/, '@[...] reference links'],
       [/^!\(/, '!(...) inline images'],

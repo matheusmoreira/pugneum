@@ -196,9 +196,16 @@ describe('reference links', () => {
     assert.strictEqual(pg.render(input), '<!DOCTYPE html>');
   });
 
-  it('should throw for undefined references', () => {
+  it('should throw for undefined reference links', () => {
     assert.throws(
       () => pg.render('p @[missing]'),
+      /Undefined reference 'missing'/,
+    );
+  });
+
+  it('should throw for undefined reference images', () => {
+    assert.throws(
+      () => pg.render('p ![missing]'),
       /Undefined reference 'missing'/,
     );
   });

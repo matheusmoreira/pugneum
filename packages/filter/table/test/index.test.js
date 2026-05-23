@@ -249,3 +249,52 @@ describe('section markers', () => {
     assert.match(result, /tfoot\n/);
   });
 });
+
+describe('edge cases', () => {
+  test('empty cells', () => {
+    var input = '| a |  | c |\n| --- | --- | --- |\n|  | b |  |';
+    var result = tableFilter.filter(input, {});
+    // Empty cells should produce tags with no text
+    assert.match(result, /th a\n/);
+    assert.match(result, /th\n/);
+  });
+
+  test('single column table', () => {
+    var input = '| Name |\n| --- |\n| Alice |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th Name/);
+    assert.match(result, /td Alice/);
+  });
+
+  test('no header (no separator)', () => {
+    var input = '| a | b |\n| c | d |';
+    var result = tableFilter.filter(input, {});
+    assert.doesNotMatch(result, /thead/);
+    assert.match(result, /tbody/);
+    var ths = result.match(/\bth\b/g);
+    assert.strictEqual(ths, null);
+  });
+
+  test('only whitespace lines are skipped', () => {
+    var input = '\n\n| a |\n| --- |\n| b |\n\n';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th a/);
+    assert.match(result, /td b/);
+  });
+});
+
+describe('errors', () => {
+  test('empty filter body', () => {
+    assert.throws(
+      () => tableFilter.filter('', {}),
+      /empty|no.*rows|no.*cells/i,
+    );
+  });
+
+  test('whitespace-only body', () => {
+    assert.throws(
+      () => tableFilter.filter('   \n   \n', {}),
+      /empty|no.*rows|no.*cells/i,
+    );
+  });
+});

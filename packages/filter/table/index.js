@@ -194,9 +194,11 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
     lines.push(trLine);
     row.cells.forEach(function (cell) {
       var parsed = parseCell(cell, defaultCellTag);
-      lines.push(
-        indent + '    ' + parsed.tag + parsed.attrStr + ' ' + parsed.text,
-      );
+      var cellLine = indent + '    ' + parsed.tag + parsed.attrStr;
+      if (parsed.text !== '') {
+        cellLine += ' ' + parsed.text;
+      }
+      lines.push(cellLine);
     });
   });
   return lines;
@@ -238,6 +240,10 @@ exports.filter = function pugneum_filter_table(text, attrs) {
     .filter(function (line) {
       return line.length > 0;
     });
+
+  if (trimmedLines.length === 0) {
+    throw new Error('Table filter: empty table body');
+  }
 
   // Check for caption on the first non-empty line.
   var captionResult = parseCaption(trimmedLines);
@@ -368,6 +374,14 @@ exports.filter = function pugneum_filter_table(text, attrs) {
       attrStr: currentAttrs,
       rows: currentRows.slice(),
     });
+  }
+
+  // Check that we have actual data rows.
+  var hasRows = sections.some(function (s) {
+    return s.rows.length > 0;
+  });
+  if (!hasRows) {
+    throw new Error('Table filter: no data rows found');
   }
 
   // Build output Pugneum lines.

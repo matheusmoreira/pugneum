@@ -526,6 +526,55 @@ describe('interpolated tags', () => {
       '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
     );
   });
+
+  it('should handle three escaped shorthands of different types', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(a) \\*(b) \\_(c) text)'),
+      '<!DOCTYPE html><p><em>@(a) *(b) _(c) text</em></p>',
+    );
+  });
+
+  it('should handle escaped shorthand with nested parens in content', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(fn()) text)'),
+      '<!DOCTYPE html><p><em>@(fn()) text</em></p>',
+    );
+  });
+
+  it('should handle escaped shorthand as only content before close', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(only))'),
+      '<!DOCTYPE html><p><em>@(only)</em></p>',
+    );
+  });
+
+  it('should handle adjacent escaped shorthands with no space', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(a)\\*(b) text)'),
+      '<!DOCTYPE html><p><em>@(a)*(b) text</em></p>',
+    );
+  });
+
+  it('should handle escaped shorthands in strong child lexer', () => {
+    assert.strictEqual(
+      pg.render('p *(bold \\@(escaped) end)'),
+      '<!DOCTYPE html><p><strong>bold @(escaped) end</strong></p>',
+    );
+  });
+
+  it('should handle multiple escaped shorthands in emphasis child lexer', () => {
+    assert.strictEqual(
+      pg.render('p _(\\@(a) \\@(b) \\@(c))'),
+      '<!DOCTYPE html><p><em>@(a) @(b) @(c)</em></p>',
+    );
+  });
+
+  it('should handle deeply nested escaped shorthand', () => {
+    assert.strictEqual(
+      pg.render('p #(strong *(text \\@(x) end))'),
+      '<!DOCTYPE html><p><strong><strong>text @(x) end</strong></strong></p>',
+    );
+  });
 });
 
 describe('variable edge cases', () => {

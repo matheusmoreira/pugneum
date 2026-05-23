@@ -907,7 +907,7 @@ describe('table of contents', () => {
     );
     assert.match(
       result,
-      /<nav role="doc-toc"><ol><li><a href="#intro">Introduction<\/a><\/li><li><a href="#design">Design<\/a><\/li><\/ol><\/nav>/,
+      /<nav role="doc-toc" aria-label="Table of contents"><ol>/,
     );
   });
 

@@ -819,6 +819,13 @@ function buildTocNav(headings, tocNode) {
         column: tocNode.column,
         filename: tocNode.filename,
       },
+      {
+        name: 'aria-label',
+        val: 'Table of contents',
+        line: tocNode.line,
+        column: tocNode.column,
+        filename: tocNode.filename,
+      },
     ],
     attributeBlocks: [],
     isInline: false,

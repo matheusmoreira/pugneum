@@ -290,6 +290,54 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === '~' && str[i + 1] === '(') {
+      state.del++;
+      i++;
+      continue;
+    }
+    if (state.del > 0) {
+      if (ch === '(') {
+        state.delParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.delParen > 0) state.delParen--;
+        else state.del--;
+        continue;
+      }
+    }
+    if (ch === '^' && str[i + 1] === '(') {
+      state.sup++;
+      i++;
+      continue;
+    }
+    if (state.sup > 0) {
+      if (ch === '(') {
+        state.supParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.supParen > 0) state.supParen--;
+        else state.sup--;
+        continue;
+      }
+    }
+    if (ch === '%' && str[i + 1] === '(') {
+      state.kbd++;
+      i++;
+      continue;
+    }
+    if (state.kbd > 0) {
+      if (ch === '(') {
+        state.kbdParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.kbdParen > 0) state.kbdParen--;
+        else state.kbd--;
+        continue;
+      }
+    }
     if (ch === '`' && str[i + 1] === '(') {
       state.code++;
       i++;
@@ -326,6 +374,9 @@ function interpolationsAreClosed(str, state) {
     state.image <= 0 &&
     state.strong <= 0 &&
     state.emphasis <= 0 &&
+    state.del <= 0 &&
+    state.sup <= 0 &&
+    state.kbd <= 0 &&
     state.code <= 0
   );
 }
@@ -343,6 +394,12 @@ function resetInterpolationState(state) {
   state.strongParen = 0;
   state.emphasis = 0;
   state.emphasisParen = 0;
+  state.del = 0;
+  state.delParen = 0;
+  state.sup = 0;
+  state.supParen = 0;
+  state.kbd = 0;
+  state.kbdParen = 0;
   state.code = 0;
   state.codeParen = 0;
   state.sq = false;
@@ -870,6 +927,33 @@ class Lexer {
           earliest.pos,
         );
 
+      case 'del':
+        return this.handleDelShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
+      case 'sup':
+        return this.handleSupShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
+      case 'kbd':
+        return this.handleKbdShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'code':
         return this.handleCodeShorthand(
           type,
@@ -941,6 +1025,15 @@ class Lexer {
       i = value.indexOf('\\`(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '`('});
 
+      i = value.indexOf('\\~(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '~('});
+
+      i = value.indexOf('\\^(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^('});
+
+      i = value.indexOf('\\%(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '%('});
+
       i = value.indexOf('`(');
       if (i !== -1) candidates.push({pos: i, kind: 'code'});
 
@@ -964,6 +1057,15 @@ class Lexer {
 
       i = value.indexOf('_(');
       if (i !== -1) candidates.push({pos: i, kind: 'emphasis'});
+
+      i = value.indexOf('~(');
+      if (i !== -1) candidates.push({pos: i, kind: 'del'});
+
+      i = value.indexOf('^(');
+      if (i !== -1) candidates.push({pos: i, kind: 'sup'});
+
+      i = value.indexOf('%(');
+      if (i !== -1) candidates.push({pos: i, kind: 'kbd'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
@@ -1188,6 +1290,78 @@ class Lexer {
     const content = unescapeShorthand(range.src);
     const afterShorthand = rest.substring(range.end + 1);
     const childInput = `em ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleDelShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for ~() del shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `del ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleSupShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for ^() sup shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `sup ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleKbdShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for %() kbd shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `kbd ${content})${afterShorthand}`;
     return this.desugarAsInterpolation(childInput, range.src.length);
   }
 
@@ -2199,6 +2373,9 @@ class Lexer {
       [/^!\[/, '![...] reference images'],
       [/^!\(/, '!(...) inline images'],
       [/^\*\(/, '*(...) inline strong'],
+      [/^~\(/, '~(...) inline del'],
+      [/^\^\(/, '^(...) inline sup'],
+      [/^%\(/, '%(...) inline kbd'],
       [/^`\(/, '`(...) inline code'],
     ];
     for (const [re, name] of inlinePatterns) {

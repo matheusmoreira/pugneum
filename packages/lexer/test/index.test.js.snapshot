@@ -7142,6 +7142,142 @@ exports[`comments.source.pg 1`] = `
 ]
 `;
 
+exports[`del-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "This is "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 11
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "val": "del"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 17
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 24
+      }
+    },
+    "val": "deleted"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 20
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 21
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 27
+      }
+    },
+    "val": " text."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "del-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`emphasis-shorthand.pg 1`] = `
 [
   {
@@ -21638,6 +21774,142 @@ exports[`invalid-variable-name.pg 1`] = `
   "line": 1,
   "column": 1
 }
+`;
+
+exports[`kbd-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    },
+    "val": "Press "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 11
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 14
+      }
+    },
+    "val": "kbd"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 15
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    },
+    "val": "Ctrl+C"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 17
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 18
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 27
+      }
+    },
+    "val": " to copy."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "kbd-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
 `;
 
 exports[`layout.append.pg 1`] = `
@@ -39689,6 +39961,215 @@ exports[`strong-shorthand.pg 1`] = `
       "filename": "strong-shorthand.pg",
       "end": {
         "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`sup-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "Footnote"
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 11
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "val": "sup"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 17
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 18
+      }
+    },
+    "val": "1"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 14
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 15
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 30
+      }
+    },
+    "val": " and exponent x"
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 30
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 32
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 32
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 35
+      }
+    },
+    "val": "sup"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 36
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 37
+      }
+    },
+    "val": "2"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 33
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 34
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 34
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 35
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "sup-shorthand.pg",
+      "end": {
+        "line": 2,
         "column": 1
       }
     }

@@ -577,6 +577,43 @@ describe('interpolated tags', () => {
   });
 });
 
+describe('del/sup/kbd shorthands', () => {
+  it('should render ~(del) shorthand', () => {
+    assert.strictEqual(
+      pg.render('p ~(deleted)'),
+      '<!DOCTYPE html><p><del>deleted</del></p>',
+    );
+  });
+
+  it('should render ^(sup) shorthand', () => {
+    assert.strictEqual(
+      pg.render('p x^(2)'),
+      '<!DOCTYPE html><p>x<sup>2</sup></p>',
+    );
+  });
+
+  it('should render %(kbd) shorthand', () => {
+    assert.strictEqual(
+      pg.render('p %(Ctrl+C)'),
+      '<!DOCTYPE html><p><kbd>Ctrl+C</kbd></p>',
+    );
+  });
+
+  it('should render escaped \\~( \\^( \\%( as literal', () => {
+    assert.strictEqual(
+      pg.render('p \\~(not del) \\^(not sup) \\%(not kbd)'),
+      '<!DOCTYPE html><p>~(not del) ^(not sup) %(not kbd)</p>',
+    );
+  });
+
+  it('should render nested del/sup/kbd shorthands', () => {
+    assert.strictEqual(
+      pg.render('p *(strong ~(deleted))'),
+      '<!DOCTYPE html><p><strong>strong <del>deleted</del></strong></p>',
+    );
+  });
+});
+
 describe('variable edge cases', () => {
   it('should render #{var} followed by @[ref] without space', () => {
     assert.strictEqual(

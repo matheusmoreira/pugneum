@@ -83,6 +83,9 @@ Self-contained shorthands (`sigil(content)`):
 - `!(src alt)` — inline image → `<img src="src" alt="alt">`; supports extra attributes via `!(src alt)(attrs)`
 - `*(text)` — inline strong → `<strong>text</strong>`
 - `_(text)` — inline emphasis → `<em>text</em>`
+- `~(text)` — inline del → `<del>text</del>`
+- `^(text)` — inline sup → `<sup>text</sup>`
+- `%(text)` — inline kbd → `<kbd>text</kbd>`
 - `` `(code) `` — inline code → `<code>code</code>`; content is literal (no inner shorthand processing)
 - `#(tag text)` — inline tag interpolation → `<tag>text</tag>`
 - `#(+mixin(args))` — inline mixin call

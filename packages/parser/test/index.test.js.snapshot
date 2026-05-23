@@ -2890,6 +2890,71 @@ exports[`comments.source.pg 1`] = `
 }
 `;
 
+exports[`del-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "del-shorthand.pg",
+            "val": "This is "
+          },
+          {
+            "type": "Tag",
+            "name": "del",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 17,
+                  "filename": "del-shorthand.pg",
+                  "val": "deleted"
+                }
+              ],
+              "line": 1,
+              "filename": "del-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 1,
+            "column": 13,
+            "filename": "del-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 21,
+            "filename": "del-shorthand.pg",
+            "val": " text."
+          }
+        ],
+        "line": 1,
+        "filename": "del-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "del-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "del-shorthand.pg"
+}
+`;
+
 exports[`emphasis-shorthand.pg 1`] = `
 {
   "type": "Block",
@@ -8679,6 +8744,71 @@ exports[`interpolation.escape.pg 1`] = `
   ],
   "line": 0,
   "filename": "interpolation.escape.pg"
+}
+`;
+
+exports[`kbd-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "kbd-shorthand.pg",
+            "val": "Press "
+          },
+          {
+            "type": "Tag",
+            "name": "kbd",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 15,
+                  "filename": "kbd-shorthand.pg",
+                  "val": "Ctrl+C"
+                }
+              ],
+              "line": 1,
+              "filename": "kbd-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 11,
+            "filename": "kbd-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 18,
+            "filename": "kbd-shorthand.pg",
+            "val": " to copy."
+          }
+        ],
+        "line": 1,
+        "filename": "kbd-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "kbd-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "kbd-shorthand.pg"
 }
 `;
 
@@ -16260,6 +16390,102 @@ exports[`strong-shorthand.pg 1`] = `
   ],
   "line": 0,
   "filename": "strong-shorthand.pg"
+}
+`;
+
+exports[`sup-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "sup-shorthand.pg",
+            "val": "Footnote"
+          },
+          {
+            "type": "Tag",
+            "name": "sup",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 17,
+                  "filename": "sup-shorthand.pg",
+                  "val": "1"
+                }
+              ],
+              "line": 1,
+              "filename": "sup-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 13,
+            "filename": "sup-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 15,
+            "filename": "sup-shorthand.pg",
+            "val": " and exponent x"
+          },
+          {
+            "type": "Tag",
+            "name": "sup",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 36,
+                  "filename": "sup-shorthand.pg",
+                  "val": "2"
+                }
+              ],
+              "line": 1,
+              "filename": "sup-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 32,
+            "filename": "sup-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 34,
+            "filename": "sup-shorthand.pg",
+            "val": "."
+          }
+        ],
+        "line": 1,
+        "filename": "sup-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "sup-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "sup-shorthand.pg"
 }
 `;
 

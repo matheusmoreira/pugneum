@@ -59,6 +59,7 @@ function walkAST(ast, before, after, options) {
       ast.file = walkAST(ast.file, before, after, options);
       break;
     case 'ReferenceLink':
+    case 'ReferenceImage':
       if (ast.block) {
         ast.block = walkAST(ast.block, before, after, options);
       }

@@ -301,6 +301,74 @@ function resolveReferences(ast, source) {
         filename: node.filename,
       });
     }
+    if (node.type === 'ReferenceImage') {
+      const url = definitions[node.name];
+      if (url === undefined) {
+        error(
+          'UNDEFINED_REFERENCE',
+          "Undefined reference '" + node.name + "'",
+          node,
+          source,
+        );
+      }
+
+      let altBlock = node.block;
+      if (!altBlock || altBlock.nodes.length === 0) {
+        altBlock = {
+          type: 'Block',
+          nodes: [
+            {
+              type: 'Text',
+              val: node.name,
+              line: node.line,
+              column: node.column,
+              filename: node.filename,
+            },
+          ],
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        };
+      }
+
+      const altText = altBlock.nodes
+        .filter((n) => n.type === 'Text')
+        .map((n) => n.val)
+        .join('');
+
+      const attrs = [
+        {
+          name: 'src',
+          val: url,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        {
+          name: 'alt',
+          val: altText,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+      ];
+      if (node.attrs) {
+        attrs.push.apply(attrs, node.attrs);
+      }
+
+      replace({
+        type: 'Tag',
+        name: 'img',
+        attrs: attrs,
+        attributeBlocks: [],
+        block: {type: 'Block', nodes: [], line: node.line, filename: node.filename},
+        isInline: true,
+        selfClosing: true,
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      });
+    }
   });
 }
 

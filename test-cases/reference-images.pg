@@ -1,0 +1,9 @@
+references
+  logo /images/logo.png
+  photo /images/sunset.jpg
+
+p Our logo: ![logo Pugneum logo]
+p Just name: ![logo]
+p With attrs: ![photo sunset](loading="lazy" class="hero")
+p Mixed: @[logo Pugneum] and ![photo a photo]
+p \![not a reference image]

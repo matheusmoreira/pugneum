@@ -211,7 +211,16 @@ function interpolationsAreClosed(str, state) {
       i++;
       continue;
     }
+    if (ch === '!' && str[i + 1] === '[') {
+      state.refImage++;
+      i++;
+      continue;
+    }
     if (ch === ']') {
+      if (state.refImage > 0) {
+        state.refImage--;
+        continue;
+      }
       if (state.ref > 0) {
         state.ref--;
         continue;
@@ -313,6 +322,7 @@ function interpolationsAreClosed(str, state) {
     state.interp <= 0 &&
     state.link <= 0 &&
     state.ref <= 0 &&
+    state.refImage <= 0 &&
     state.image <= 0 &&
     state.strong <= 0 &&
     state.emphasis <= 0 &&
@@ -337,6 +347,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
     link: 0,
     linkParen: 0,
     ref: 0,
+    refImage: 0,
     image: 0,
     imageParen: 0,
     strong: 0,
@@ -371,6 +382,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       state.link = 0;
       state.linkParen = 0;
       state.ref = 0;
+      state.refImage = 0;
       state.image = 0;
       state.imageParen = 0;
       state.strong = 0;
@@ -841,6 +853,9 @@ class Lexer {
       case 'reference':
         return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
 
+      case 'ref-image':
+        return this.handleRefImage(type, value, prefix, escaped, earliest.pos);
+
       case 'strong':
         return this.handleStrongShorthand(
           type,
@@ -915,6 +930,9 @@ class Lexer {
       i = value.indexOf('\\@[');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@['});
 
+      i = value.indexOf('\\![');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!['});
+
       i = value.indexOf('\\!(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
@@ -938,6 +956,9 @@ class Lexer {
 
       i = value.indexOf('@[');
       if (i !== -1) candidates.push({pos: i, kind: 'reference'});
+
+      i = value.indexOf('![');
+      if (i !== -1) candidates.push({pos: i, kind: 'ref-image'});
 
       i = value.indexOf('!(');
       if (i !== -1) candidates.push({pos: i, kind: 'image'});
@@ -1295,6 +1316,97 @@ class Lexer {
     }
 
     return afterLink;
+  }
+
+  handleRefImage(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const inner = value.substring(pos + 2); // after ![
+    let end = -1;
+    let interpDepth = 0;
+    for (let i = 0; i < inner.length; i++) {
+      const ch = inner[i];
+      if (ch === '\\') {
+        i++;
+        continue;
+      }
+      if (ch === '#' && inner[i + 1] === '(') {
+        interpDepth++;
+        i++;
+        continue;
+      }
+      if (ch === '(' && interpDepth > 0) {
+        interpDepth++;
+        continue;
+      }
+      if (ch === ')' && interpDepth > 0) {
+        interpDepth--;
+        continue;
+      }
+      if (ch === ']' && interpDepth === 0) {
+        end = i;
+        break;
+      }
+    }
+    if (end === -1) {
+      this.error(
+        'NO_END_BRACKET',
+        'End of line reached with no closing ] for ![] reference image.',
+      );
+    }
+    const content = inner.substring(0, end);
+    let afterImage = inner.substring(end + 1);
+
+    const spaceIdx = content.indexOf(' ');
+    let name, altText;
+    if (spaceIdx === -1) {
+      name = content;
+      altText = null;
+    } else {
+      name = content.substring(0, spaceIdx);
+      altText = content.substring(spaceIdx + 1);
+    }
+
+    if (!name) {
+      this.error(
+        'INVALID_REF_IMAGE',
+        'Reference image ![] requires an identifier.',
+      );
+    }
+
+    tok = this.tok('start-ref-image');
+    tok.val = name;
+    this.incrementColumn(2); // ![
+    this.tokens.push(this.tokEnd(tok));
+
+    if (altText) {
+      const unescaped = altText.replace(/\\([\[\]\\])/g, '$1');
+      const textTok = this.tok('text', unescaped);
+      this.incrementColumn(name.length + 1 + altText.length);
+      this.tokens.push(this.tokEnd(textTok));
+    } else {
+      this.incrementColumn(name.length);
+    }
+
+    tok = this.tok('end-ref-image');
+    this.incrementColumn(1); // ]
+    this.tokens.push(this.tokEnd(tok));
+
+    // Support (attrs) immediately after ]: ![name alt](class="x")
+    if (afterImage.startsWith('(')) {
+      const savedInput = this.input;
+      this.input = afterImage;
+      try {
+        this.attrs();
+        afterImage = this.input;
+      } finally {
+        this.input = savedInput;
+      }
+    }
+
+    return afterImage;
   }
 
   handleVariableRef(type, value, prefix, escaped, match) {
@@ -2052,6 +2164,7 @@ class Lexer {
       [/^#\(/, '#(...) inline tags'],
       [/^@\(/, '@(...) inline links'],
       [/^@\[/, '@[...] reference links'],
+      [/^!\[/, '![...] reference images'],
       [/^!\(/, '!(...) inline images'],
       [/^\*\(/, '*(...) inline strong'],
       [/^`\(/, '`(...) inline code'],

@@ -257,6 +257,7 @@ class Parser {
       case 'text':
       case 'start-interpolation':
       case 'start-ref-link':
+      case 'start-ref-image':
         return this.parseText({block: true});
       case 'dot':
         return this.parseDot();
@@ -315,6 +316,9 @@ class Parser {
           break;
         case 'start-ref-link':
           nodes.push(this.parseRefLink());
+          break;
+        case 'start-ref-image':
+          nodes.push(this.parseRefImage());
           break;
         default:
           break loop;
@@ -569,6 +573,52 @@ class Parser {
     };
   }
 
+  parseRefImage() {
+    const tok = this.expect('start-ref-image');
+    return this.parseRefImageContent(tok);
+  }
+
+  parseRefImageContent(tok) {
+    const name = tok.val;
+    const block = this.emptyBlock(tok.loc.start.line);
+
+    while (this.peek().type !== 'end-ref-image') {
+      const next = this.peek();
+      switch (next.type) {
+        case 'text':
+          block.nodes.push(this.textNode(this.advance()));
+          break;
+        case 'start-interpolation':
+          this.advance();
+          block.nodes.push(this.parseExpr());
+          this.expect('end-interpolation');
+          break;
+        default:
+          this.error(
+            'INVALID_TOKEN',
+            'Unexpected token in reference image: ' + next.type,
+            next,
+          );
+      }
+    }
+    this.expect('end-ref-image');
+
+    let attrs = [];
+    if (this.peek().type === 'start-attributes') {
+      attrs = this.attrs();
+    }
+
+    return {
+      type: 'ReferenceImage',
+      name: name,
+      block: block,
+      attrs: attrs,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
   /**
    * include block?
    */
@@ -712,6 +762,9 @@ class Parser {
         case 'start-ref-link':
           block.nodes.push(this.parseRefLinkContent(currentTok));
           break;
+        case 'start-ref-image':
+          block.nodes.push(this.parseRefImageContent(currentTok));
+          break;
         default:
           this.error(
             'INVALID_TOKEN',
@@ -847,6 +900,7 @@ class Parser {
       case 'text':
       case 'start-interpolation':
       case 'start-ref-link':
+      case 'start-ref-image':
         const text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);

@@ -182,8 +182,8 @@ function unescapeShorthand(str) {
 }
 
 /**
- * Check whether a line has unclosed #(...), @(...) or !(...) interpolation constructs.
- * Returns true if all interpolations are closed (line is complete).
+ * Check whether a line has unclosed inline shorthand constructs.
+ * Returns true if all constructs are closed (line is complete).
  */
 function interpolationsAreClosed(str, state) {
   for (let i = 0; i < str.length; i++) {
@@ -331,7 +331,7 @@ function interpolationsAreClosed(str, state) {
 }
 
 /**
- * Merge consecutive lines that have unclosed #(...), @(...) or !(...) constructs
+ * Merge consecutive lines that have unclosed inline shorthand constructs
  * into single entries so multi-line inline elements are handled as one unit.
  *
  * Returns an array of {text, indented, lines} objects.
@@ -943,7 +943,7 @@ class Lexer {
       i = value.indexOf('\\*(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '*('});
 
-      i = value.indexOf('\\_(' );
+      i = value.indexOf('\\_(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '_('});
 
       i = value.indexOf('\\`(');
@@ -991,7 +991,10 @@ class Lexer {
 
   spawnChildLexer(input) {
     if (this.depth >= 256) {
-      this.error('NESTING_TOO_DEEP', 'Inline element nesting exceeds maximum depth of 256');
+      this.error(
+        'NESTING_TOO_DEEP',
+        'Inline element nesting exceeds maximum depth of 256',
+      );
     }
     const child = new this.constructor(input, {
       filename: this.filename,
@@ -1062,12 +1065,19 @@ class Lexer {
         text = content.substring(spaceIdx + 1);
       }
     }
-    return {url: unescapeShorthand(url), text: unescapeShorthand(text), content, after};
+    return {
+      url: unescapeShorthand(url),
+      text: unescapeShorthand(text),
+      content,
+      after,
+    };
   }
 
   escapeForAttr(value) {
     const quote = value.includes("'") ? '"' : "'";
-    const escaped = value.replaceAll('\\', '\\\\').replaceAll(quote, '\\' + quote);
+    const escaped = value
+      .replaceAll('\\', '\\\\')
+      .replaceAll(quote, '\\' + quote);
     return {quote, escaped};
   }
 
@@ -1115,7 +1125,9 @@ class Lexer {
     );
     let afterImage = parsed.after;
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
-    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(parsed.text);
+    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(
+      parsed.text,
+    );
 
     let extraAttrs = '';
     if (afterImage.startsWith('(')) {
@@ -2131,7 +2143,7 @@ class Lexer {
       while (this.input.length === 0 && tokens[tokens.length - 1] === '')
         tokens.pop();
 
-      // Merge lines with unclosed #(...) or @(...) constructs so that
+      // Merge lines with unclosed inline shorthand constructs so that
       // inline elements can span multiple lines in text blocks.
       const merged = mergeMultiLineInterpolations(tokens, token_indent);
 

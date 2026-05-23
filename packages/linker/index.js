@@ -17,7 +17,10 @@ module.exports = link;
 function link(ast, options) {
   options = options || {};
   const source = options.source;
-  const maxDepth = options.maxLinkDepth != null ? options.maxLinkDepth : DEFAULT_MAX_LINK_DEPTH;
+  const maxDepth =
+    options.maxLinkDepth != null
+      ? options.maxLinkDepth
+      : DEFAULT_MAX_LINK_DEPTH;
   const depth = options._linkDepth || 0;
 
   if (depth >= maxDepth) {
@@ -30,7 +33,12 @@ function link(ast, options) {
   }
 
   if (ast.type !== 'Block') {
-    error('INVALID_AST', 'The top level element should always be a block', ast, source);
+    error(
+      'INVALID_AST',
+      'The top level element should always be a block',
+      ast,
+      source,
+    );
   }
   let extendsNode = null;
   if (ast.nodes.length) {
@@ -64,7 +72,10 @@ function link(ast, options) {
     });
 
     // Validate expected blocks BEFORE mutating parent via extend()
-    const parent = link(extendsNode.file.ast, Object.assign({}, options, {_linkDepth: depth + 1}));
+    const parent = link(
+      extendsNode.file.ast,
+      Object.assign({}, options, {_linkDepth: depth + 1}),
+    );
     const parentBlockNames = [];
     walk(parent, function (node) {
       if (node.type === 'NamedBlock') {
@@ -178,7 +189,10 @@ function applyIncludes(ast, options) {
     function after(node, replace) {
       if (node.type === 'Include') {
         const depth = options._linkDepth || 0;
-        let childAST = link(node.file.ast, Object.assign({}, options, {_linkDepth: depth + 1}));
+        let childAST = link(
+          node.file.ast,
+          Object.assign({}, options, {_linkDepth: depth + 1}),
+        );
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }
@@ -361,7 +375,13 @@ function resolveReferences(ast, source) {
         name: 'img',
         attrs: attrs,
         attributeBlocks: [],
-        block: {type: 'Block', nodes: [], line: node.line, filename: node.filename},
+        block: {
+          type: 'Block',
+          nodes: [],
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
         isInline: true,
         selfClosing: true,
         line: node.line,

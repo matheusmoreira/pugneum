@@ -232,6 +232,8 @@ p This feature is ~(deprecated).
 <p>This feature is <del>deprecated</del>.</p>
 ```
 
+Escape with `\~(` to output a literal `~(`.
+
 ## Ins shorthand
 
 The `&()` shorthand generates `<ins>` tags for inserted text,
@@ -244,6 +246,8 @@ p Returns ~(NULL) &(nullptr) now.
 ```html
 <p>Returns <del>NULL</del> <ins>nullptr</ins> now.</p>
 ```
+
+Escape with `\&(` to output a literal `&(`.
 
 ## Abbr shorthand
 
@@ -261,6 +265,7 @@ p Uses ?(CSS) for styling.
 
 First word is the visible abbreviation, rest is the title.
 Without expansion text, generates `<abbr>` with no title.
+Escape with `\?(` to output a literal `?(`.
 
 ## Sup and sub shorthands
 
@@ -274,6 +279,8 @@ p Footnote^(1) and x^(2) + H,(2)O.
 <p>Footnote<sup>1</sup> and x<sup>2</sup> + H<sub>2</sub>O.</p>
 ```
 
+Escape with `\^(`, `\,(` to output literal `^(`, `,(`.
+
 ## Kbd shorthand
 
 The `%()` shorthand generates `<kbd>` tags for keyboard input:
@@ -285,6 +292,8 @@ p Press %(Ctrl+C) to copy.
 ```html
 <p>Press <kbd>Ctrl+C</kbd> to copy.</p>
 ```
+
+Escape with `\%(` to output a literal `%(`.
 
 ## Footnotes
 

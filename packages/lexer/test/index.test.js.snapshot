@@ -12132,6 +12132,468 @@ exports[`footnotes-basic.pg 1`] = `
 ]
 `;
 
+exports[`footnotes-multiple.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "val": "First"
+  },
+  {
+    "type": "start-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 10
+      }
+    },
+    "val": "beta"
+  },
+  {
+    "type": "end-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 14
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 15
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 27
+      }
+    },
+    "val": " then second"
+  },
+  {
+    "type": "start-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 27
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 29
+      }
+    },
+    "val": "alpha"
+  },
+  {
+    "type": "end-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 34
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 35
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "footnotes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "footnote-def-start",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    },
+    "val": "alpha"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 5,
+        "column": 15
+      }
+    },
+    "val": "Alpha content."
+  },
+  {
+    "type": "footnote-def-end",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 15
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 5,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "footnote-def-start",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    },
+    "val": "beta"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 6,
+        "column": 14
+      }
+    },
+    "val": "Beta content."
+  },
+  {
+    "type": "footnote-def-end",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 14
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 6,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 14
+      },
+      "filename": "footnotes-multiple.pg",
+      "end": {
+        "line": 6,
+        "column": 14
+      }
+    }
+  }
+]
+`;
+
+exports[`footnotes-repeated.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "val": "First mention"
+  },
+  {
+    "type": "start-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 16
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 18
+      }
+    },
+    "val": "note1"
+  },
+  {
+    "type": "end-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 23
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 24
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 24
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 43
+      }
+    },
+    "val": " and second mention"
+  },
+  {
+    "type": "start-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 43
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 45
+      }
+    },
+    "val": "note1"
+  },
+  {
+    "type": "end-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 50
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 51
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 51
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 1,
+        "column": 52
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "footnotes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "footnote-def-start",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    },
+    "val": "note1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    },
+    "val": "Shared footnote."
+  },
+  {
+    "type": "footnote-def-end",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "footnotes-repeated.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    }
+  }
+]
+`;
+
 exports[`footnotes.pg 1`] = `
 [
   {

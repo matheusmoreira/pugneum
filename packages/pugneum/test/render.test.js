@@ -765,6 +765,31 @@ describe('footnotes', () => {
       (err) => err.code === 'PUGNEUM:DUPLICATE_FOOTNOTE',
     );
   });
+
+  it('should number footnotes by order of appearance', () => {
+    const result = pg.render(
+      'p First^[beta] then^[alpha].\n\nfootnotes\n  alpha Alpha.\n  beta Beta.',
+    );
+    assert.match(result, /First<sup><a[^>]*>\[1\]/);
+    assert.match(result, /then<sup><a[^>]*>\[2\]/);
+  });
+
+  it('should render repeated references with same number and multiple back-links', () => {
+    const result = pg.render('p A^[x] and B^[x].\n\nfootnotes\n  x Shared.');
+    var markers = result.match(/\[1\]/g);
+    assert.strictEqual(markers.length, 2);
+    assert.match(result, /↩<\/a>/);
+    assert.match(result, /↩²<\/a>/);
+    assert.match(result, /id="footnote-reference-x"/);
+    assert.match(result, /id="footnote-reference-x-2"/);
+  });
+
+  it('should support inline shorthands in footnote content', () => {
+    const result = pg.render(
+      'p Note^[fn1].\n\nfootnotes\n  fn1 This is *(important).',
+    );
+    assert.match(result, /<strong>important<\/strong>/);
+  });
 });
 
 describe('renderFile()', () => {

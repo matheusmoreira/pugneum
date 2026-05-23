@@ -94,6 +94,7 @@ Self-contained shorthands (`sigil(content)`):
 Reference shorthands (`sigil[name content]`):
 - `@[ref text]` — reference link (URL defined in `references` block)
 - `![ref alt]` — reference image (URL defined in `references` block); supports extra attributes via `![ref alt](attrs)`
+- `^[name]` — footnote reference (content defined in `footnotes` block); generates numbered markers with bidirectional anchors and DPUB-ARIA roles
 
 Substitution:
 - `#{var}` — variable interpolation in text and attributes (mixin arguments only); names match `[a-zA-Z_?-]`

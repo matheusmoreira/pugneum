@@ -5008,6 +5008,206 @@ exports[`footnotes-basic.pg 1`] = `
 }
 `;
 
+exports[`footnotes-multiple.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "footnotes-multiple.pg",
+            "val": "First"
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "beta",
+            "line": 1,
+            "column": 8,
+            "filename": "footnotes-multiple.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 15,
+            "filename": "footnotes-multiple.pg",
+            "val": " then second"
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "alpha",
+            "line": 1,
+            "column": 27,
+            "filename": "footnotes-multiple.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 35,
+            "filename": "footnotes-multiple.pg",
+            "val": "."
+          }
+        ],
+        "line": 1,
+        "filename": "footnotes-multiple.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "footnotes-multiple.pg"
+    },
+    {
+      "type": "Footnotes",
+      "definitions": [
+        {
+          "name": "alpha",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 5,
+                "column": 1,
+                "filename": "footnotes-multiple.pg",
+                "val": "Alpha content."
+              }
+            ],
+            "line": 5,
+            "filename": "footnotes-multiple.pg"
+          },
+          "line": 5,
+          "column": 1,
+          "filename": "footnotes-multiple.pg"
+        },
+        {
+          "name": "beta",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 6,
+                "column": 1,
+                "filename": "footnotes-multiple.pg",
+                "val": "Beta content."
+              }
+            ],
+            "line": 6,
+            "filename": "footnotes-multiple.pg"
+          },
+          "line": 6,
+          "column": 1,
+          "filename": "footnotes-multiple.pg"
+        }
+      ],
+      "line": 3,
+      "column": 1,
+      "filename": "footnotes-multiple.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "footnotes-multiple.pg"
+}
+`;
+
+exports[`footnotes-repeated.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "footnotes-repeated.pg",
+            "val": "First mention"
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "note1",
+            "line": 1,
+            "column": 16,
+            "filename": "footnotes-repeated.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 24,
+            "filename": "footnotes-repeated.pg",
+            "val": " and second mention"
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "note1",
+            "line": 1,
+            "column": 43,
+            "filename": "footnotes-repeated.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 51,
+            "filename": "footnotes-repeated.pg",
+            "val": "."
+          }
+        ],
+        "line": 1,
+        "filename": "footnotes-repeated.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "footnotes-repeated.pg"
+    },
+    {
+      "type": "Footnotes",
+      "definitions": [
+        {
+          "name": "note1",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 5,
+                "column": 1,
+                "filename": "footnotes-repeated.pg",
+                "val": "Shared footnote."
+              }
+            ],
+            "line": 5,
+            "filename": "footnotes-repeated.pg"
+          },
+          "line": 5,
+          "column": 1,
+          "filename": "footnotes-repeated.pg"
+        }
+      ],
+      "line": 3,
+      "column": 1,
+      "filename": "footnotes-repeated.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "footnotes-repeated.pg"
+}
+`;
+
 exports[`footnotes.pg 1`] = `
 {
   "type": "Block",

@@ -498,6 +498,34 @@ describe('interpolated tags', () => {
       '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
     );
   });
+
+  it('should handle escaped shorthands with balanced parens between them', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(a) (parens) \\@(b) text)'),
+      '<!DOCTYPE html><p><em>@(a) (parens) @(b) text</em></p>',
+    );
+  });
+
+  it('should handle escaped shorthands inside balanced parens', () => {
+    assert.strictEqual(
+      pg.render('p #(em (before \\@(inner) after) text)'),
+      '<!DOCTYPE html><p><em>(before @(inner) after) text</em></p>',
+    );
+  });
+
+  it('should handle mixed real and escaped shorthands', () => {
+    assert.strictEqual(
+      pg.render('p #(em *(real) \\@(escaped) text)'),
+      '<!DOCTYPE html><p><em><strong>real</strong> @(escaped) text</em></p>',
+    );
+  });
+
+  it('should handle multiple escaped shorthands inside interpolation', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(a) \\@(b) text)'),
+      '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
+    );
+  });
 });
 
 describe('variable edge cases', () => {

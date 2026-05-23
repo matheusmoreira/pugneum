@@ -148,15 +148,31 @@ function handleNestedFilters(node, filters, options) {
   }
 }
 
+function validateIncludeFilterType(resolved, name, node) {
+  validateFilterType(resolved, name, node);
+  if (resolved.type !== 'text' && resolved.type !== 'html') {
+    throw error(
+      'INVALID_FILTER_TYPE',
+      `Filter '${name}' has type '${resolved.type}' which cannot be used with include (only text and html are valid)`,
+      {
+        line: node ? node.line : 0,
+        column: node ? node.column : 0,
+        filename: node ? node.filename : '',
+        source: '',
+      },
+    );
+  }
+}
+
 function filterText(name, text, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
-  validateFilterType(resolved, name, node);
+  validateIncludeFilterType(resolved, name, node);
   return runFilter(resolved, name, text, attrs, node);
 }
 
 function filterFile(name, file, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
-  validateFilterType(resolved, name, node);
+  validateIncludeFilterType(resolved, name, node);
   const input = resolved.binary ? file.raw : file.str;
   return runFilter(resolved, name, input, attrs, node);
 }
@@ -170,6 +186,7 @@ function runFilter(resolved, name, input, attrs, node) {
       line: node ? node.line : 0,
       column: node ? node.column : 0,
       filename: node ? node.filename : '',
+      source: '',
     });
   }
 }

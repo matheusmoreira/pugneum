@@ -338,6 +338,22 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === ',' && str[i + 1] === '(') {
+      state.sub++;
+      i++;
+      continue;
+    }
+    if (state.sub > 0) {
+      if (ch === '(') {
+        state.subParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.subParen > 0) state.subParen--;
+        else state.sub--;
+        continue;
+      }
+    }
     if (ch === '`' && str[i + 1] === '(') {
       state.code++;
       i++;
@@ -377,6 +393,7 @@ function interpolationsAreClosed(str, state) {
     state.del <= 0 &&
     state.sup <= 0 &&
     state.kbd <= 0 &&
+    state.sub <= 0 &&
     state.code <= 0
   );
 }
@@ -400,6 +417,8 @@ function resetInterpolationState(state) {
   state.supParen = 0;
   state.kbd = 0;
   state.kbdParen = 0;
+  state.sub = 0;
+  state.subParen = 0;
   state.code = 0;
   state.codeParen = 0;
   state.sq = false;
@@ -954,6 +973,15 @@ class Lexer {
           earliest.pos,
         );
 
+      case 'sub':
+        return this.handleSubShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'code':
         return this.handleCodeShorthand(
           type,
@@ -1034,6 +1062,9 @@ class Lexer {
       i = value.indexOf('\\%(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '%('});
 
+      i = value.indexOf('\\,(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ',('});
+
       i = value.indexOf('`(');
       if (i !== -1) candidates.push({pos: i, kind: 'code'});
 
@@ -1066,6 +1097,9 @@ class Lexer {
 
       i = value.indexOf('%(');
       if (i !== -1) candidates.push({pos: i, kind: 'kbd'});
+
+      i = value.indexOf(',(');
+      if (i !== -1) candidates.push({pos: i, kind: 'sub'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
@@ -1362,6 +1396,30 @@ class Lexer {
     const content = unescapeShorthand(range.src);
     const afterShorthand = rest.substring(range.end + 1);
     const childInput = `kbd ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleSubShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for ,() sub shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `sub ${content})${afterShorthand}`;
     return this.desugarAsInterpolation(childInput, range.src.length);
   }
 
@@ -2376,6 +2434,7 @@ class Lexer {
       [/^~\(/, '~(...) inline del'],
       [/^\^\(/, '^(...) inline sup'],
       [/^%\(/, '%(...) inline kbd'],
+      [/^,\(/, ',(...) inline sub'],
       [/^`\(/, '`(...) inline code'],
     ];
     for (const [re, name] of inlinePatterns) {

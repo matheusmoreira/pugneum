@@ -39968,6 +39968,142 @@ exports[`strong-shorthand.pg 1`] = `
 ]
 `;
 
+exports[`sub-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 4
+      }
+    },
+    "val": "H"
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 6
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 6
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    },
+    "val": "sub"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 10
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "2"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 19
+      }
+    },
+    "val": "O is water."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "sub-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`sup-shorthand.pg 1`] = `
 [
   {

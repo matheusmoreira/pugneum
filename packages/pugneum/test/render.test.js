@@ -577,7 +577,7 @@ describe('interpolated tags', () => {
   });
 });
 
-describe('del/sup/kbd shorthands', () => {
+describe('del/sup/kbd/sub shorthands', () => {
   it('should render ~(del) shorthand', () => {
     assert.strictEqual(
       pg.render('p ~(deleted)'),
@@ -599,10 +599,28 @@ describe('del/sup/kbd shorthands', () => {
     );
   });
 
-  it('should render escaped \\~( \\^( \\%( as literal', () => {
+  it('should render ,(sub) shorthand', () => {
+    assert.strictEqual(
+      pg.render('p H,(2)O'),
+      '<!DOCTYPE html><p>H<sub>2</sub>O</p>',
+    );
+  });
+
+  it('should render escaped \\~( \\^( \\%( \\,( as literal', () => {
     assert.strictEqual(
       pg.render('p \\~(not del) \\^(not sup) \\%(not kbd)'),
       '<!DOCTYPE html><p>~(not del) ^(not sup) %(not kbd)</p>',
+    );
+    assert.strictEqual(
+      pg.render('p \\,(not sub)'),
+      '<!DOCTYPE html><p>,(not sub)</p>',
+    );
+  });
+
+  it('should render nested sup and sub', () => {
+    assert.strictEqual(
+      pg.render('p x^(2),(i)'),
+      '<!DOCTYPE html><p>x<sup>2</sup><sub>i</sub></p>',
     );
   });
 

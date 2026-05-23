@@ -86,6 +86,7 @@ Self-contained shorthands (`sigil(content)`):
 - `~(text)` — inline del → `<del>text</del>`
 - `^(text)` — inline sup → `<sup>text</sup>`
 - `%(text)` — inline kbd → `<kbd>text</kbd>`
+- `,(text)` — inline sub → `<sub>text</sub>`
 - `` `(code) `` — inline code → `<code>code</code>`; content is literal (no inner shorthand processing)
 - `#(tag text)` — inline tag interpolation → `<tag>text</tag>`
 - `#(+mixin(args))` — inline mixin call

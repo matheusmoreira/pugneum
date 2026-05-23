@@ -16393,6 +16393,71 @@ exports[`strong-shorthand.pg 1`] = `
 }
 `;
 
+exports[`sub-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "sub-shorthand.pg",
+            "val": "H"
+          },
+          {
+            "type": "Tag",
+            "name": "sub",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 10,
+                  "filename": "sub-shorthand.pg",
+                  "val": "2"
+                }
+              ],
+              "line": 1,
+              "filename": "sub-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 6,
+            "filename": "sub-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 8,
+            "filename": "sub-shorthand.pg",
+            "val": "O is water."
+          }
+        ],
+        "line": 1,
+        "filename": "sub-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "sub-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "sub-shorthand.pg"
+}
+`;
+
 exports[`sup-shorthand.pg 1`] = `
 {
   "type": "Block",

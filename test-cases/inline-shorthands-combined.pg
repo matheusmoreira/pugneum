@@ -1,0 +1,12 @@
+references
+  docs /docs
+  logo /logo.png
+
+p All shorthands: @(/url link), !(photo.jpg alt), *(bold), _(italic), `(code).
+p References: @[docs documentation] and ![logo the logo].
+p Nesting: *(strongly _(emphasized `(code))).
+p Mixed refs: see @[docs the docs](class="ref") and ![logo logo](loading="lazy").
+p Tag interp: #(em emphasized) text.
+mixin show(var)
+  p Variables: #{var}.
++show(value)

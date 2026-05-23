@@ -5,6 +5,94 @@ module.exports = applyFilters;
 
 const packagePrefix = 'pugneum-filter-';
 
+const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
+
+function validateFilterType(resolved, name, node) {
+  if (!resolved.type) {
+    throw error(
+      'MISSING_FILTER_TYPE',
+      `Filter '${name}' must declare a type (text, html, pugneum, or syntax)`,
+      {
+        line: node ? node.line : 0,
+        column: node ? node.column : 0,
+        filename: node ? node.filename : '',
+        source: '',
+      },
+    );
+  }
+  if (!validFilterTypes.has(resolved.type)) {
+    throw error(
+      'INVALID_FILTER_TYPE',
+      `Filter '${name}' has unknown type '${resolved.type}' (must be text, html, pugneum, or syntax)`,
+      {
+        line: node ? node.line : 0,
+        column: node ? node.column : 0,
+        filename: node ? node.filename : '',
+        source: '',
+      },
+    );
+  }
+}
+
+function escapeFilterText(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function applyFilterResult(node, type, result, name) {
+  switch (type) {
+    case 'text':
+      node.type = 'Text';
+      node.val = escapeFilterText(result);
+      break;
+    case 'html':
+      node.type = 'Text';
+      node.val = result;
+      break;
+    case 'pugneum': {
+      if (typeof result !== 'string') {
+        throw error(
+          'INVALID_FILTER_OUTPUT',
+          `Filter '${name}' (type pugneum) must return a string`,
+          {
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+            source: '',
+          },
+        );
+      }
+      const lex = require('pugneum-lexer');
+      const parse = require('pugneum-parser');
+      const tokens = lex(result, {filename: node.filename});
+      const ast = parse(tokens, {filename: node.filename, source: result});
+      node.type = 'Block';
+      node.nodes = ast.nodes;
+      break;
+    }
+    case 'syntax': {
+      if (!Array.isArray(result)) {
+        throw error(
+          'INVALID_FILTER_OUTPUT',
+          `Filter '${name}' (type syntax) must return an array of AST nodes`,
+          {
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+            source: '',
+          },
+        );
+      }
+      node.type = 'Block';
+      node.nodes = result;
+      break;
+    }
+  }
+}
+
 function applyFilters(ast, filters, options) {
   options = options || {};
   walk(
@@ -15,8 +103,10 @@ function applyFilters(ast, filters, options) {
         const text = getBodyAsText(node);
         const attrs = getAttributes(node, options);
         attrs.filename = node.filename;
-        node.type = 'Text';
-        node.val = filterText(node.name, text, attrs, filters, node);
+        const resolved = resolveFilter(node.name, filters, node);
+        validateFilterType(resolved, node.name, node);
+        const result = runFilter(resolved, node.name, text, attrs, node);
+        applyFilterResult(node, resolved.type, result, node.name);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         const firstFilter = node.filters.pop();
         const attrs = getAttributes(firstFilter, options);
@@ -60,11 +150,13 @@ function handleNestedFilters(node, filters, options) {
 
 function filterText(name, text, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
+  validateFilterType(resolved, name, node);
   return runFilter(resolved, name, text, attrs, node);
 }
 
 function filterFile(name, file, attrs, filters, node) {
   const resolved = resolveFilter(name, filters, node);
+  validateFilterType(resolved, name, node);
   const input = resolved.binary ? file.raw : file.str;
   return runFilter(resolved, name, input, attrs, node);
 }
@@ -101,7 +193,7 @@ function getAttributes(node, options) {
 }
 
 const builtinFilters = Object.create(null);
-builtinFilters.verbatim = {filter: (text) => text};
+builtinFilters.verbatim = {type: 'text', filter: (text) => text};
 
 function resolveFilter(name, filters, node) {
   if (filters && Object.prototype.hasOwnProperty.call(filters, name)) {

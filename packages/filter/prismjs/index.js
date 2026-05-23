@@ -1,3 +1,5 @@
+exports.type = 'html';
+
 // https://www.npmjs.com/package/prismjs
 // https://prismjs.com/docs/
 // https://github.com/PrismJS/prism

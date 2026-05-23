@@ -1,3 +1,5 @@
+exports.type = 'html';
+
 // https://github.com/highlightjs/highlight.js/blob/main/src/highlight.js
 
 const hljs = require('highlight.js');

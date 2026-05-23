@@ -52,6 +52,9 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
         cellLine = indent + '    ' + classified.verbatim;
       } else {
         cellLine = indent + '    ' + classified.tag;
+        if (classified.tag === 'th' && sectionTag === 'thead') {
+          cellLine += '(scope="col")';
+        }
         if (classified.text !== '') {
           cellLine += ' ' + classified.text;
         }

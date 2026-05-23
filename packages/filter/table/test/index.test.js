@@ -26,7 +26,7 @@ describe('table filter', () => {
       result,
       'table\n' +
         '  colgroup\n    col\n    col\n' +
-        '  thead\n    tr\n      th Name\n      th Count\n' +
+        '  thead\n    tr\n      th(scope="col") Name\n      th(scope="col") Count\n' +
         '  tbody\n    tr\n      td Alice\n      td 42',
     );
   });
@@ -256,7 +256,7 @@ describe('box drawing normalization', () => {
       '┌──────┬──────┐\n│ Name │ Type │\n├──────┼──────┤\n│ fd   │ int  │\n└──────┴──────┘';
     var result = tableFilter.filter(input, {});
     assert.match(result, /thead/);
-    assert.match(result, /th Name/);
+    assert.match(result, /th\(scope="col"\) Name/);
     assert.match(result, /td fd/);
   });
 });
@@ -284,7 +284,7 @@ describe('section markers', () => {
     var input = 'thead\n| a |\ntbody\n| b |\ntfoot\n| c |';
     var result = tableFilter.filter(input, {});
     assert.match(result, /thead\n/);
-    assert.match(result, /th a/);
+    assert.match(result, /th\(scope="col"\) a/);
     assert.match(result, /tbody\n/);
     assert.match(result, /td b/);
     assert.match(result, /tfoot\n/);
@@ -302,7 +302,7 @@ describe('section markers', () => {
   test('thead marker followed by --- preserves thead', () => {
     var input = 'thead\n| a |\n| --- |\n| b |';
     var result = tableFilter.filter(input, {});
-    assert.match(result, /thead\n\s+tr\n\s+th a/);
+    assert.match(result, /thead\n\s+tr\n\s+th\(scope="col"\) a/);
     assert.match(result, /tbody\n\s+tr\n\s+td b/);
   });
 
@@ -316,8 +316,8 @@ describe('edge cases', () => {
   test('empty cells', () => {
     var input = '| a |  | c |\n| --- | --- | --- |\n|  | b |  |';
     var result = tableFilter.filter(input, {});
-    assert.match(result, /th a\n/);
-    assert.match(result, /th\n/);
+    assert.match(result, /th\(scope="col"\) a\n/);
+    assert.match(result, /th\(scope="col"\)\n/);
     assert.match(result, /td\n/);
     assert.match(result, /td b\n/);
   });
@@ -325,7 +325,7 @@ describe('edge cases', () => {
   test('single column table', () => {
     var input = '| Name |\n| --- |\n| Alice |';
     var result = tableFilter.filter(input, {});
-    assert.match(result, /th Name/);
+    assert.match(result, /th\(scope="col"\) Name/);
     assert.match(result, /td Alice/);
   });
 
@@ -341,7 +341,7 @@ describe('edge cases', () => {
   test('only whitespace lines are skipped', () => {
     var input = '\n\n| a |\n| --- |\n| b |\n\n';
     var result = tableFilter.filter(input, {});
-    assert.match(result, /th a/);
+    assert.match(result, /th\(scope="col"\) a/);
     assert.match(result, /td b/);
   });
 });

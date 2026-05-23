@@ -71,7 +71,13 @@ describe('RawInclude with filters', () => {
   test('RawInclude with filters is preserved for the filterer', () => {
     var dir = __dirname + '/cases';
     var source = 'include:markdown-it some.md';
-    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
@@ -88,7 +94,13 @@ describe('RawInclude with filters', () => {
   test('RawInclude without filters is replaced with Text', () => {
     var dir = __dirname + '/cases';
     var source = 'include some.md';
-    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
@@ -139,7 +151,13 @@ describe('error handling', () => {
   test('EXTENDS_NOT_FIRST when extends is not the first statement', () => {
     var dir = __dirname + '/cases';
     var source = 'p hello\nextends auxiliary/layout.pg';
-    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
@@ -152,7 +170,13 @@ describe('error handling', () => {
   test('UNEXPECTED_BLOCK for block not defined in parent', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\nblock nonexistent\n  p hello';
-    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
@@ -185,7 +209,13 @@ describe('error handling', () => {
   test('UNEXPECTED_NODES_IN_EXTENDING_ROOT for non-block content in extending template', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\np this is not allowed';
-    var options = {filename: dir + '/test.pg', source, lex, parse, basedir: dir};
+    var options = {
+      filename: dir + '/test.pg',
+      source,
+      lex,
+      parse,
+      basedir: dir,
+    };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);

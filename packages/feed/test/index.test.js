@@ -91,19 +91,13 @@ describe('resolveRelativeUrls', () => {
   test('protocol-relative //cdn.example.com is unchanged', () => {
     var html = '<a href="//cdn.example.com/file.js">link</a>';
     var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
-      '<a href="//cdn.example.com/file.js">link</a>',
-    );
+    assert.strictEqual(result, '<a href="//cdn.example.com/file.js">link</a>');
   });
 
   test('absolute https://other.com is unchanged', () => {
     var html = '<a href="https://other.com/page">link</a>';
     var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
-      '<a href="https://other.com/page">link</a>',
-    );
+    assert.strictEqual(result, '<a href="https://other.com/page">link</a>');
   });
 
   test('base URL with $ is not corrupted', () => {

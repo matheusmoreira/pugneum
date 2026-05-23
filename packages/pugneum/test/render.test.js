@@ -630,6 +630,13 @@ describe('del/sup/kbd/sub shorthands', () => {
       '<!DOCTYPE html><p><strong>strong <del>deleted</del></strong></p>',
     );
   });
+
+  it('should render escaped \\^[ as literal text', () => {
+    assert.strictEqual(
+      pg.render('p \\^[not a footnote]'),
+      '<!DOCTYPE html><p>^[not a footnote]</p>',
+    );
+  });
 });
 
 describe('variable edge cases', () => {

@@ -96,8 +96,7 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
   assert.throws(
     () => filter(ast, {exploding}),
-    (err) =>
-      err.code === 'PUGNEUM:FILTER_ERROR' && /kaboom/.test(err.message),
+    (err) => err.code === 'PUGNEUM:FILTER_ERROR' && /kaboom/.test(err.message),
   );
 });
 

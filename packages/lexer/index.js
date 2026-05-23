@@ -354,6 +354,22 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === '^' && str[i + 1] === '[') {
+      state.footnoteRef++;
+      i++;
+      continue;
+    }
+    if (state.footnoteRef > 0) {
+      if (ch === '[') {
+        state.footnoteRefBracket++;
+        continue;
+      }
+      if (ch === ']') {
+        if (state.footnoteRefBracket > 0) state.footnoteRefBracket--;
+        else state.footnoteRef--;
+        continue;
+      }
+    }
     if (ch === '`' && str[i + 1] === '(') {
       state.code++;
       i++;
@@ -387,6 +403,7 @@ function interpolationsAreClosed(str, state) {
     state.link <= 0 &&
     state.ref <= 0 &&
     state.refImage <= 0 &&
+    state.footnoteRef <= 0 &&
     state.image <= 0 &&
     state.strong <= 0 &&
     state.emphasis <= 0 &&
@@ -405,6 +422,8 @@ function resetInterpolationState(state) {
   state.linkParen = 0;
   state.ref = 0;
   state.refImage = 0;
+  state.footnoteRef = 0;
+  state.footnoteRefBracket = 0;
   state.image = 0;
   state.imageParen = 0;
   state.strong = 0;
@@ -928,6 +947,15 @@ class Lexer {
       case 'ref-image':
         return this.handleRefImage(type, value, prefix, escaped, earliest.pos);
 
+      case 'footnote-ref':
+        return this.handleFootnoteRef(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'strong':
         return this.handleStrongShorthand(
           type,
@@ -1041,6 +1069,9 @@ class Lexer {
       i = value.indexOf('\\![');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!['});
 
+      i = value.indexOf('\\^[');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^['});
+
       i = value.indexOf('\\!(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
@@ -1079,6 +1110,9 @@ class Lexer {
 
       i = value.indexOf('![');
       if (i !== -1) candidates.push({pos: i, kind: 'ref-image'});
+
+      i = value.indexOf('^[');
+      if (i !== -1) candidates.push({pos: i, kind: 'footnote-ref'});
 
       i = value.indexOf('!(');
       if (i !== -1) candidates.push({pos: i, kind: 'image'});
@@ -1671,6 +1705,51 @@ class Lexer {
     }
 
     return afterImage;
+  }
+
+  handleFootnoteRef(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const inner = value.substring(pos + 2); // after ^[
+    let end = -1;
+    for (let i = 0; i < inner.length; i++) {
+      const ch = inner[i];
+      if (ch === '\\') {
+        i++;
+        continue;
+      }
+      if (ch === ']') {
+        end = i;
+        break;
+      }
+    }
+    if (end === -1) {
+      this.error(
+        'NO_END_BRACKET',
+        'End of line reached with no closing ] for ^[] footnote reference.',
+      );
+    }
+    const name = inner.substring(0, end).trim();
+    if (!name) {
+      this.error(
+        'INVALID_FOOTNOTE_REF',
+        'Footnote reference ^[] requires an identifier.',
+      );
+    }
+
+    tok = this.tok('start-footnote-ref');
+    tok.val = name;
+    this.incrementColumn(2); // ^[
+    this.tokens.push(this.tokEnd(tok));
+    this.incrementColumn(name.length);
+
+    tok = this.tok('end-footnote-ref');
+    this.incrementColumn(1); // ]
+    this.tokens.push(this.tokEnd(tok));
+
+    return inner.substring(end + 1);
   }
 
   handleVariableRef(type, value, prefix, escaped, match) {
@@ -2433,6 +2512,7 @@ class Lexer {
       [/^\*\(/, '*(...) inline strong'],
       [/^~\(/, '~(...) inline del'],
       [/^\^\(/, '^(...) inline sup'],
+      [/^\^\[/, '^[...] footnote references'],
       [/^%\(/, '%(...) inline kbd'],
       [/^,\(/, ',(...) inline sub'],
       [/^`\(/, '`(...) inline code'],

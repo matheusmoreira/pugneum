@@ -186,7 +186,6 @@ function validateIncludeFilterType(resolved, name, node) {
   }
 }
 
-
 function runFilter(resolved, name, input, attrs, node) {
   try {
     return resolved.filter(input, attrs);

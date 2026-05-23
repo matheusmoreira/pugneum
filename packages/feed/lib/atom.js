@@ -7,8 +7,12 @@ module.exports = function generateAtom(feed) {
       '    <title>' + escapeXml(entry.title) + '</title>',
       '    <link href="' + escapeXml(entry.url) + '" rel="alternate"/>',
       '    <id>' + escapeXml(entry.url) + '</id>',
-      '    <published>' + escapeXml(toISO8601(entry.published, feed.buildDate)) + '</published>',
-      '    <updated>' + escapeXml(toISO8601(entry.published, feed.buildDate)) + '</updated>',
+      '    <published>' +
+        escapeXml(toISO8601(entry.published, feed.buildDate)) +
+        '</published>',
+      '    <updated>' +
+        escapeXml(toISO8601(entry.published, feed.buildDate)) +
+        '</updated>',
       entry.summary
         ? '    <summary>' + escapeXml(entry.summary) + '</summary>'
         : null,

@@ -140,7 +140,12 @@ module.exports.resolveRelativeUrls = resolveRelativeUrls;
 function resolveRelativeUrls(html, baseUrl) {
   const escaped = baseUrl.replace(/\$/g, '$$$$');
   const resolve = (attr) =>
-    new RegExp('(<(?:a|img|source|video|audio|iframe)\\s[^>]*' + attr + '=")\/(?!\/)([^"]*")', 'g');
+    new RegExp(
+      '(<(?:a|img|source|video|audio|iframe)\\s[^>]*' +
+        attr +
+        '=")/(?!/)([^"]*")',
+      'g',
+    );
   return html
     .replace(resolve('href'), '$1' + escaped + '$2')
     .replace(resolve('src'), '$1' + escaped + '$2')

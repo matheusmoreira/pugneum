@@ -37,3 +37,58 @@ describe('table filter', () => {
     assert.match(result, /^table\(class="data"\)/);
   });
 });
+
+describe('tagged cells', () => {
+  test('th with attrs', () => {
+    var input = '| th(scope="col") Name | th Count |\n| --- | --- |\n| a | 1 |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th\(scope="col"\) Name/);
+  });
+
+  test('td with attrs', () => {
+    var input = '| a |\n| --- |\n| td(class="mono") value |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td\(class="mono"\) value/);
+  });
+
+  test('td with colspan', () => {
+    var input = '| a | b |\n| --- | --- |\n| td(colspan="2") merged |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td\(colspan="2"\) merged/);
+  });
+
+  test('escaped \\th produces literal text', () => {
+    var input = '| --- |\n| \\th is not a tag |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td th is not a tag/);
+  });
+
+  test('escaped \\td produces literal text', () => {
+    var input = '| --- |\n| \\td also literal |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td td also literal/);
+  });
+});
+
+describe('row attrs', () => {
+  test('tr(attrs) before first pipe', () => {
+    var input = '| a |\n| --- |\ntr(class="highlight") | value |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tr\(class="highlight"\)/);
+  });
+});
+
+describe('caption', () => {
+  test('plain caption', () => {
+    var input = 'caption System calls\n| Name |\n| --- |\n| read |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /caption System calls/);
+  });
+
+  test('caption with attrs', () => {
+    var input =
+      'caption(class="sr-only") System call reference\n| Name |\n| --- |\n| read |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /caption\(class="sr-only"\) System call reference/);
+  });
+});

@@ -16531,6 +16531,102 @@ exports[`svg-basic.pg 1`] = `
 }
 `;
 
+exports[`table-attrs.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Filter",
+      "name": "table",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "table-attrs.pg",
+            "val": "caption(class=\\"sr-only\\") System calls"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 1,
+            "filename": "table-attrs.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "table-attrs.pg",
+            "val": "| th(scope=\\"col\\") Name | th Count |"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "table-attrs.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "table-attrs.pg",
+            "val": "| ---                  | ---      |"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 1,
+            "filename": "table-attrs.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "table-attrs.pg",
+            "val": "tr(class=\\"highlight\\") | td(class=\\"mono\\") read | 42 |"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 1,
+            "filename": "table-attrs.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "table-attrs.pg",
+            "val": "| write | 10 |"
+          }
+        ],
+        "line": 1,
+        "filename": "table-attrs.pg"
+      },
+      "attrs": [
+        {
+          "name": "class",
+          "val": "reference",
+          "line": 1,
+          "column": 8,
+          "filename": "table-attrs.pg"
+        }
+      ],
+      "line": 1,
+      "column": 1,
+      "filename": "table-attrs.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "table-attrs.pg"
+}
+`;
+
 exports[`table-basic.pg 1`] = `
 {
   "type": "Block",

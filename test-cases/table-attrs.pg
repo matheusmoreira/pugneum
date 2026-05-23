@@ -1,0 +1,6 @@
+:table(class="reference")
+  caption(class="sr-only") System calls
+  | th(scope="col") Name | th Count |
+  | ---                  | ---      |
+  tr(class="highlight") | td(class="mono") read | 42 |
+  | write | 10 |

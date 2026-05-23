@@ -2094,6 +2094,315 @@ exports[`classes.pg 1`] = `
 }
 `;
 
+exports[`code-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "Use "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 9,
+                  "filename": "code-shorthand.pg",
+                  "val": "git status"
+                }
+              ],
+              "line": 1,
+              "filename": "code-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 9,
+            "filename": "code-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 20,
+            "filename": "code-shorthand.pg",
+            "val": " to check."
+          }
+        ],
+        "line": 1,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "Call "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 10,
+                  "filename": "code-shorthand.pg",
+                  "val": "printf(\\"hello\\")"
+                }
+              ],
+              "line": 2,
+              "filename": "code-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 10,
+            "filename": "code-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 26,
+            "filename": "code-shorthand.pg",
+            "val": " carefully."
+          }
+        ],
+        "line": 2,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "Balanced: "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 15,
+                  "filename": "code-shorthand.pg",
+                  "val": "a(b(c))"
+                }
+              ],
+              "line": 3,
+              "filename": "code-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 15,
+            "filename": "code-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 23,
+            "filename": "code-shorthand.pg",
+            "val": " works."
+          }
+        ],
+        "line": 3,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "Not a link: "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 17,
+                  "filename": "code-shorthand.pg",
+                  "val": "@(not a link)"
+                }
+              ],
+              "line": 4,
+              "filename": "code-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 17,
+            "filename": "code-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 31,
+            "filename": "code-shorthand.pg",
+            "val": " literal."
+          }
+        ],
+        "line": 4,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "Not strong: "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 17,
+                  "filename": "code-shorthand.pg",
+                  "val": "*(not strong)"
+                }
+              ],
+              "line": 5,
+              "filename": "code-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 17,
+            "filename": "code-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 31,
+            "filename": "code-shorthand.pg",
+            "val": " literal."
+          }
+        ],
+        "line": 5,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "code-shorthand.pg",
+            "val": "\`(not code)"
+          }
+        ],
+        "line": 6,
+        "filename": "code-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "code-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "code-shorthand.pg"
+}
+`;
+
 exports[`comments.pg 1`] = `
 {
   "type": "Block",

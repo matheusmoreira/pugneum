@@ -5329,6 +5329,654 @@ exports[`classes.pg 1`] = `
 ]
 `;
 
+exports[`code-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    },
+    "val": "Use "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 19
+      }
+    },
+    "val": "git status"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 19
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 20
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 30
+      }
+    },
+    "val": " to check."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    },
+    "val": "Call "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 8
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 10
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 10
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 10
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 25
+      }
+    },
+    "val": "printf(\\"hello\\")"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 25
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 26
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 37
+      }
+    },
+    "val": " carefully."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": "Balanced: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 13
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 15
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 15
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 15
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 22
+      }
+    },
+    "val": "a(b(c))"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 22
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 23
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 30
+      }
+    },
+    "val": " works."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 15
+      }
+    },
+    "val": "Not a link: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 15
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 17
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 17
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 17
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 30
+      }
+    },
+    "val": "@(not a link)"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 30
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 31
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 40
+      }
+    },
+    "val": " literal."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 15
+      }
+    },
+    "val": "Not strong: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 15
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 30
+      }
+    },
+    "val": "*(not strong)"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 30
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 31
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 40
+      }
+    },
+    "val": " literal."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "\`(not code)"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "code-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`comments.pg 1`] = `
 [
   {
@@ -17876,6 +18524,15 @@ exports[`inline-block-comment.pg 1`] = `
     }
   }
 ]
+`;
+
+exports[`inline-code-at-line-start.pg 1`] = `
+{
+  "msg": "\`(...) inline code can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
 `;
 
 exports[`inline-image-at-line-start.pg 1`] = `

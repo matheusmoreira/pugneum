@@ -69,3 +69,4 @@ Beyond standard Pug syntax, pugneum adds:
 - `#{var}` — variable interpolation in text and attributes (mixin arguments only); names match `[a-zA-Z_?-]`
 - `#[+mixin(args)]` — inline mixin calls within text
 - `mixin name(arg1 arg2?)` — `?` is part of the name, referenced as `#{arg2?}`; trailing args are implicitly optional
+- Named mixin blocks — `block name` inside a mixin defines a named slot; callers fill slots with `block name`, `append name`, or `prepend name`; a mixin uses either one unnamed `block` or named blocks, never both

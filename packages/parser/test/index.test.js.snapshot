@@ -8883,6 +8883,7 @@ exports[`mixin-block-with-space.pg 1`] = `
         "filename": "mixin-block-with-space.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-block-with-space.pg"
@@ -8950,6 +8951,7 @@ exports[`mixin-hoist.pg 1`] = `
         "filename": "mixin-hoist.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 2,
       "column": 1,
       "filename": "mixin-hoist.pg"
@@ -9069,6 +9071,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
         "filename": "mixin-inline-optional-args.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-inline-optional-args.pg"
@@ -9131,6 +9134,7 @@ exports[`mixin-inline-optional-args.pg 1`] = `
         "filename": "mixin-inline-optional-args.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 4,
       "column": 1,
       "filename": "mixin-inline-optional-args.pg"
@@ -9347,6 +9351,7 @@ exports[`mixin-optional-args.pg 1`] = `
         "filename": "mixin-optional-args.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-optional-args.pg"
@@ -9438,6 +9443,7 @@ exports[`mixin-optional-args.pg 1`] = `
         "filename": "mixin-optional-args.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 6,
       "column": 1,
       "filename": "mixin-optional-args.pg"
@@ -9532,6 +9538,7 @@ exports[`mixin-optional-args.pg 1`] = `
         "filename": "mixin-optional-args.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 12,
       "column": 1,
       "filename": "mixin-optional-args.pg"
@@ -9645,6 +9652,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
         "filename": "mixin-optional-attr-omission.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
@@ -9737,6 +9745,7 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
         "filename": "mixin-optional-attr-omission.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 7,
       "column": 1,
       "filename": "mixin-optional-attr-omission.pg"
@@ -9848,6 +9857,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "filename": "mixin-optional-question-mark.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-optional-question-mark.pg"
@@ -9954,6 +9964,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "filename": "mixin-optional-question-mark.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 7,
       "column": 1,
       "filename": "mixin-optional-question-mark.pg"
@@ -10048,6 +10059,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
         "filename": "mixin-optional-question-mark.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 13,
       "column": 1,
       "filename": "mixin-optional-question-mark.pg"
@@ -10140,6 +10152,7 @@ exports[`mixin-variables.pg 1`] = `
         "filename": "mixin-variables.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin-variables.pg"
@@ -10287,6 +10300,7 @@ exports[`mixin-variables.pg 1`] = `
         "filename": "mixin-variables.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 9,
       "column": 1,
       "filename": "mixin-variables.pg"
@@ -10358,6 +10372,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
         "filename": "mixin.block-tag-behaviour.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 2,
       "column": 1,
       "filename": "mixin.block-tag-behaviour.pg"
@@ -10498,6 +10513,7 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
         "filename": "mixin.block-tag-behaviour.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 10,
       "column": 1,
       "filename": "mixin.block-tag-behaviour.pg"
@@ -10671,6 +10687,7 @@ exports[`mixin.blocks.pg 1`] = `
         "filename": "mixin.blocks.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixin.blocks.pg"
@@ -10736,6 +10753,7 @@ exports[`mixin.blocks.pg 1`] = `
         "filename": "mixin.blocks.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 5,
       "column": 1,
       "filename": "mixin.blocks.pg"
@@ -10873,6 +10891,7 @@ exports[`mixin.blocks.pg 1`] = `
         "filename": "mixin.blocks.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 16,
       "column": 1,
       "filename": "mixin.blocks.pg"
@@ -10957,6 +10976,7 @@ exports[`mixins-unused.pg 1`] = `
         "filename": "mixins-unused.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixins-unused.pg"
@@ -11088,6 +11108,7 @@ exports[`mixins.pg 1`] = `
         "filename": "mixins.pg"
       },
       "call": false,
+      "usesNamedBlocks": false,
       "line": 1,
       "column": 1,
       "filename": "mixins.pg"
@@ -11358,6 +11379,884 @@ exports[`multi-line-interpolation.pg 1`] = `
   ],
   "line": 0,
   "filename": "multi-line-interpolation.pg"
+}
+`;
+
+exports[`named-mixin-blocks-append.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "nav",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "nav",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "a",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "line": 4,
+                            "column": 19,
+                            "filename": "named-mixin-blocks-append.pg",
+                            "val": "Home"
+                          }
+                        ],
+                        "line": 4,
+                        "filename": "named-mixin-blocks-append.pg"
+                      },
+                      "attrs": [
+                        {
+                          "name": "href",
+                          "val": "/",
+                          "line": 4,
+                          "column": 9,
+                          "filename": "named-mixin-blocks-append.pg"
+                        }
+                      ],
+                      "attributeBlocks": [],
+                      "isInline": true,
+                      "line": 4,
+                      "column": 7,
+                      "filename": "named-mixin-blocks-append.pg"
+                    }
+                  ],
+                  "line": 3,
+                  "filename": "named-mixin-blocks-append.pg",
+                  "name": "links",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 2,
+              "filename": "named-mixin-blocks-append.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "named-mixin-blocks-append.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "named-mixin-blocks-append.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "line": 1,
+      "column": 1,
+      "filename": "named-mixin-blocks-append.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "nav",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "a",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 8,
+                      "column": 22,
+                      "filename": "named-mixin-blocks-append.pg",
+                      "val": "About"
+                    }
+                  ],
+                  "line": 8,
+                  "filename": "named-mixin-blocks-append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "href",
+                    "val": "/about",
+                    "line": 8,
+                    "column": 7,
+                    "filename": "named-mixin-blocks-append.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": true,
+                "line": 8,
+                "column": 5,
+                "filename": "named-mixin-blocks-append.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "a",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 9,
+                      "column": 25,
+                      "filename": "named-mixin-blocks-append.pg",
+                      "val": "Articles"
+                    }
+                  ],
+                  "line": 9,
+                  "filename": "named-mixin-blocks-append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "href",
+                    "val": "/articles",
+                    "line": 9,
+                    "column": 7,
+                    "filename": "named-mixin-blocks-append.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": true,
+                "line": 9,
+                "column": 5,
+                "filename": "named-mixin-blocks-append.pg"
+              }
+            ],
+            "line": 7,
+            "filename": "named-mixin-blocks-append.pg",
+            "name": "links",
+            "mode": "append",
+            "column": 3
+          }
+        ],
+        "line": 6,
+        "filename": "named-mixin-blocks-append.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 6,
+      "column": 1,
+      "filename": "named-mixin-blocks-append.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "nav",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "a",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 13,
+                      "column": 22,
+                      "filename": "named-mixin-blocks-append.pg",
+                      "val": "First"
+                    }
+                  ],
+                  "line": 13,
+                  "filename": "named-mixin-blocks-append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "href",
+                    "val": "/first",
+                    "line": 13,
+                    "column": 7,
+                    "filename": "named-mixin-blocks-append.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": true,
+                "line": 13,
+                "column": 5,
+                "filename": "named-mixin-blocks-append.pg"
+              }
+            ],
+            "line": 12,
+            "filename": "named-mixin-blocks-append.pg",
+            "name": "links",
+            "mode": "prepend",
+            "column": 3
+          }
+        ],
+        "line": 11,
+        "filename": "named-mixin-blocks-append.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 11,
+      "column": 1,
+      "filename": "named-mixin-blocks-append.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "nav",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "a",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 17,
+                      "column": 21,
+                      "filename": "named-mixin-blocks-append.pg",
+                      "val": "Only Link"
+                    }
+                  ],
+                  "line": 17,
+                  "filename": "named-mixin-blocks-append.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "href",
+                    "val": "/only",
+                    "line": 17,
+                    "column": 7,
+                    "filename": "named-mixin-blocks-append.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": true,
+                "line": 17,
+                "column": 5,
+                "filename": "named-mixin-blocks-append.pg"
+              }
+            ],
+            "line": 16,
+            "filename": "named-mixin-blocks-append.pg",
+            "name": "links",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 15,
+        "filename": "named-mixin-blocks-append.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 15,
+      "column": 1,
+      "filename": "named-mixin-blocks-append.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "named-mixin-blocks-append.pg"
+}
+`;
+
+exports[`named-mixin-blocks-defaults.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "panel",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "div",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "NamedBlock",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "line": 5,
+                            "column": 11,
+                            "filename": "named-mixin-blocks-defaults.pg",
+                            "val": "Default Header"
+                          }
+                        ],
+                        "line": 4,
+                        "filename": "named-mixin-blocks-defaults.pg",
+                        "name": "header",
+                        "mode": "replace",
+                        "column": 7
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "named-mixin-blocks-defaults.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "class",
+                      "val": "header",
+                      "line": 3,
+                      "column": 5,
+                      "filename": "named-mixin-blocks-defaults.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "named-mixin-blocks-defaults.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "NamedBlock",
+                        "nodes": [],
+                        "line": 7,
+                        "filename": "named-mixin-blocks-defaults.pg",
+                        "name": "body",
+                        "mode": "replace",
+                        "column": 7
+                      }
+                    ],
+                    "line": 6,
+                    "filename": "named-mixin-blocks-defaults.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "class",
+                      "val": "body",
+                      "line": 6,
+                      "column": 5,
+                      "filename": "named-mixin-blocks-defaults.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 6,
+                  "column": 5,
+                  "filename": "named-mixin-blocks-defaults.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "named-mixin-blocks-defaults.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "panel",
+                "line": 2,
+                "column": 3,
+                "filename": "named-mixin-blocks-defaults.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "named-mixin-blocks-defaults.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "named-mixin-blocks-defaults.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "line": 1,
+      "column": 1,
+      "filename": "named-mixin-blocks-defaults.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "panel",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 11,
+                      "column": 7,
+                      "filename": "named-mixin-blocks-defaults.pg",
+                      "val": "Only body provided"
+                    }
+                  ],
+                  "line": 11,
+                  "filename": "named-mixin-blocks-defaults.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 11,
+                "column": 5,
+                "filename": "named-mixin-blocks-defaults.pg"
+              }
+            ],
+            "line": 10,
+            "filename": "named-mixin-blocks-defaults.pg",
+            "name": "body",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 9,
+        "filename": "named-mixin-blocks-defaults.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 9,
+      "column": 1,
+      "filename": "named-mixin-blocks-defaults.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "named-mixin-blocks-defaults.pg"
+}
+`;
+
+exports[`named-mixin-blocks-nested.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "outer",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "div",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 3,
+                  "filename": "named-mixin-blocks-nested.pg",
+                  "name": "header",
+                  "mode": "replace",
+                  "column": 5
+                },
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "named-mixin-blocks-nested.pg",
+                  "name": "content",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 2,
+              "filename": "named-mixin-blocks-nested.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "outer",
+                "line": 2,
+                "column": 3,
+                "filename": "named-mixin-blocks-nested.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "named-mixin-blocks-nested.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "named-mixin-blocks-nested.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "line": 1,
+      "column": 1,
+      "filename": "named-mixin-blocks-nested.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "inner",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "div",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 8,
+                  "filename": "named-mixin-blocks-nested.pg",
+                  "name": "title",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 7,
+              "filename": "named-mixin-blocks-nested.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "inner",
+                "line": 7,
+                "column": 3,
+                "filename": "named-mixin-blocks-nested.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 7,
+            "column": 3,
+            "filename": "named-mixin-blocks-nested.pg"
+          }
+        ],
+        "line": 7,
+        "filename": "named-mixin-blocks-nested.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "line": 6,
+      "column": 1,
+      "filename": "named-mixin-blocks-nested.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "outer",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "h1",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 12,
+                      "column": 8,
+                      "filename": "named-mixin-blocks-nested.pg",
+                      "val": "Outer Header"
+                    }
+                  ],
+                  "line": 12,
+                  "filename": "named-mixin-blocks-nested.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 12,
+                "column": 5,
+                "filename": "named-mixin-blocks-nested.pg"
+              }
+            ],
+            "line": 11,
+            "filename": "named-mixin-blocks-nested.pg",
+            "name": "header",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Mixin",
+                "name": "inner",
+                "args": [],
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "NamedBlock",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "line": 16,
+                          "column": 11,
+                          "filename": "named-mixin-blocks-nested.pg",
+                          "val": "Inner Title"
+                        }
+                      ],
+                      "line": 15,
+                      "filename": "named-mixin-blocks-nested.pg",
+                      "name": "title",
+                      "mode": "replace",
+                      "column": 7
+                    }
+                  ],
+                  "line": 14,
+                  "filename": "named-mixin-blocks-nested.pg"
+                },
+                "call": true,
+                "attrs": [],
+                "attributeBlocks": [],
+                "line": 14,
+                "column": 5,
+                "filename": "named-mixin-blocks-nested.pg"
+              }
+            ],
+            "line": 13,
+            "filename": "named-mixin-blocks-nested.pg",
+            "name": "content",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 10,
+        "filename": "named-mixin-blocks-nested.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 10,
+      "column": 1,
+      "filename": "named-mixin-blocks-nested.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "named-mixin-blocks-nested.pg"
+}
+`;
+
+exports[`named-mixin-blocks.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "citation",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "figure",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "blockquote",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "NamedBlock",
+                        "nodes": [],
+                        "line": 4,
+                        "filename": "named-mixin-blocks.pg",
+                        "name": "quote",
+                        "mode": "replace",
+                        "column": 7
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "named-mixin-blocks.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "named-mixin-blocks.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "figcaption",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "cite",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "NamedBlock",
+                              "nodes": [],
+                              "line": 7,
+                              "filename": "named-mixin-blocks.pg",
+                              "name": "source",
+                              "mode": "replace",
+                              "column": 9
+                            }
+                          ],
+                          "line": 6,
+                          "filename": "named-mixin-blocks.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 6,
+                        "column": 7,
+                        "filename": "named-mixin-blocks.pg"
+                      }
+                    ],
+                    "line": 5,
+                    "filename": "named-mixin-blocks.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 5,
+                  "column": 5,
+                  "filename": "named-mixin-blocks.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "named-mixin-blocks.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "named-mixin-blocks.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "named-mixin-blocks.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "line": 1,
+      "column": 1,
+      "filename": "named-mixin-blocks.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "citation",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 11,
+                      "column": 7,
+                      "filename": "named-mixin-blocks.pg",
+                      "val": "Hello world"
+                    }
+                  ],
+                  "line": 11,
+                  "filename": "named-mixin-blocks.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 11,
+                "column": 5,
+                "filename": "named-mixin-blocks.pg"
+              }
+            ],
+            "line": 10,
+            "filename": "named-mixin-blocks.pg",
+            "name": "quote",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 13,
+                "column": 7,
+                "filename": "named-mixin-blocks.pg",
+                "val": "Bob Nystrom"
+              }
+            ],
+            "line": 12,
+            "filename": "named-mixin-blocks.pg",
+            "name": "source",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 9,
+        "filename": "named-mixin-blocks.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 9,
+      "column": 1,
+      "filename": "named-mixin-blocks.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "named-mixin-blocks.pg"
 }
 `;
 

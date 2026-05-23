@@ -152,8 +152,42 @@ class Compiler {
     return this.visitTag(Object.assign({}, interp, {name: interp.expr}));
   }
 
-  visitNamedBlock(block) {
-    return this.visitBlock(block);
+  visitNamedBlock(namedBlock) {
+    if (this.callStack.length > 0) {
+      const frame = this.callStack.at(-1);
+      if (frame.namedBlocks) {
+        const callerBlock = frame.namedBlocks[namedBlock.name];
+        if (callerBlock) {
+          delete frame.namedBlocks[namedBlock.name];
+          try {
+            switch (callerBlock.mode) {
+              case 'replace':
+                this.visitBlock(callerBlock);
+                return;
+              case 'append':
+                this.visitBlock(namedBlock);
+                this.visitBlock(callerBlock);
+                return;
+              case 'prepend':
+                this.visitBlock(callerBlock);
+                this.visitBlock(namedBlock);
+                return;
+              default:
+                this.error(
+                  'UNKNOWN_BLOCK_MODE',
+                  `Unknown block mode '${callerBlock.mode}'`,
+                  callerBlock,
+                );
+            }
+          } finally {
+            frame.namedBlocks[namedBlock.name] = callerBlock;
+          }
+        }
+        this.visitBlock(namedBlock);
+        return;
+      }
+    }
+    this.visitBlock(namedBlock);
   }
 
   visitBlock(block) {
@@ -342,7 +376,34 @@ class Compiler {
 
       const block = mixin.block;
 
-      this.callStack.push({name: mixin.name, environment, block});
+      let namedBlocks = null;
+      if (declared.usesNamedBlocks) {
+        namedBlocks = Object.create(null);
+        if (block && block.nodes) {
+          for (let i = 0; i < block.nodes.length; ++i) {
+            const node = block.nodes[i];
+            if (node.type === 'NamedBlock') {
+              if (node.name in namedBlocks) {
+                this.error(
+                  'DUPLICATE_NAMED_BLOCK',
+                  `Named block '${node.name}' provided more than once`,
+                  node,
+                );
+              }
+              namedBlocks[node.name] = node;
+            } else {
+              this.error(
+                'UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
+                `Content outside named blocks in call to mixin '${mixin.name}' which uses named blocks`,
+                node,
+              );
+            }
+          }
+        }
+        this.validateNamedBlocks(declared, namedBlocks, mixin);
+      }
+
+      this.callStack.push({name: mixin.name, environment, block, namedBlocks});
       try {
         this.visit(declared.block);
       } finally {
@@ -376,6 +437,36 @@ class Compiler {
       this.visit(current.block);
     } finally {
       this.callStack.push(current);
+    }
+  }
+
+  validateNamedBlocks(declared, callerBlocks, callNode) {
+    const declaredNames = new Set();
+    this.collectNamedBlockNames(declared.block, declaredNames);
+    for (const name of Object.keys(callerBlocks)) {
+      if (!declaredNames.has(name)) {
+        this.error(
+          'UNEXPECTED_NAMED_BLOCK',
+          `Mixin '${declared.name}' does not define named block '${name}'`,
+          callerBlocks[name],
+        );
+      }
+    }
+  }
+
+  collectNamedBlockNames(node, names) {
+    if (!node) return;
+    if (node.type === 'NamedBlock') {
+      names.add(node.name);
+    }
+    if (node.type === 'Mixin' && node.call) return;
+    if (node.nodes) {
+      for (let i = 0; i < node.nodes.length; ++i) {
+        this.collectNamedBlockNames(node.nodes[i], names);
+      }
+    }
+    if (node.block) {
+      this.collectNamedBlockNames(node.block, names);
     }
   }
 }

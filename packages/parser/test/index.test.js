@@ -97,4 +97,20 @@ describe('error paths', () => {
       (err) => err.code === 'PUGNEUM:NESTING_TOO_DEEP',
     );
   });
+
+  test('MIXED_MIXIN_BLOCK_TYPES', (t) => {
+    const source = 'mixin bad\n  block name\n  block';
+    const tokens = lex(source, {filename: 'test'});
+    assert.throws(
+      () => parse(tokens, {filename: 'test', source}),
+      (err) => err.code === 'PUGNEUM:MIXED_MIXIN_BLOCK_TYPES',
+    );
+  });
+
+  test('unnamed block mixin with nested named-block call is not MIXED_MIXIN_BLOCK_TYPES', (t) => {
+    const source =
+      'mixin outer\n  block\n  +inner\n    block slot\n      | content';
+    const tokens = lex(source, {filename: 'test'});
+    assert.doesNotThrow(() => parse(tokens, {filename: 'test', source}));
+  });
 });

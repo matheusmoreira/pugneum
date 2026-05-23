@@ -37,6 +37,21 @@ function parse(tokens, options) {
   return parser.parse();
 }
 
+function containsNodeType(node, type) {
+  if (!node) return false;
+  if (node.type === type) return true;
+  if (node.type === 'Mixin' && node.call) return false;
+  if (node.nodes) {
+    for (let i = 0; i < node.nodes.length; ++i) {
+      if (containsNodeType(node.nodes[i], type)) return true;
+    }
+  }
+  if (node.block) {
+    return containsNodeType(node.block, type);
+  }
+  return false;
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
 const inlineTags = [
@@ -636,20 +651,34 @@ class Parser {
 
     if ('indent' === this.peek().type) {
       this.inMixin++;
+      let block;
       try {
-        return {
-          type: 'Mixin',
-          name: name,
-          args: args,
-          block: this.block(),
-          call: false,
-          line: tok.loc.start.line,
-          column: tok.loc.start.column,
-          filename: this.filename,
-        };
+        block = this.block();
       } finally {
         this.inMixin--;
       }
+
+      const hasMixinBlock = containsNodeType(block, 'MixinBlock');
+      const hasNamedBlock = containsNodeType(block, 'NamedBlock');
+      if (hasMixinBlock && hasNamedBlock) {
+        this.error(
+          'MIXED_MIXIN_BLOCK_TYPES',
+          'Mixin cannot use both unnamed block and named blocks',
+          tok,
+        );
+      }
+
+      return {
+        type: 'Mixin',
+        name: name,
+        args: args,
+        block: block,
+        call: false,
+        usesNamedBlocks: hasNamedBlock,
+        line: tok.loc.start.line,
+        column: tok.loc.start.column,
+        filename: this.filename,
+      };
     } else {
       this.error(
         'MIXIN_WITHOUT_BODY',

@@ -1,0 +1,17 @@
+mixin nav
+  nav
+    block links
+      a(href="/") Home
+
++nav
+  append links
+    a(href="/about") About
+    a(href="/articles") Articles
+
++nav
+  prepend links
+    a(href="/first") First
+
++nav
+  block links
+    a(href="/only") Only Link

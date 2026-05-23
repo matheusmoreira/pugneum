@@ -184,6 +184,68 @@ mixin card(title)
 </div>
 ```
 
+### Named blocks
+
+When a mixin needs multiple content areas,
+named blocks provide multiple slots
+that callers fill independently:
+
+```pugneum
+mixin citation
+  figure
+    blockquote
+      block quote
+    figcaption
+      cite
+        block source
+          | Anonymous
+
++citation
+  block quote
+    p To be or not to be.
+  block source
+    | Shakespeare,
+    |  
+    time(datetime="1600") circa 1600
+```
+
+```html
+<figure>
+  <blockquote>
+    <p>To be or not to be.</p>
+  </blockquote>
+  <figcaption>
+    <cite>Shakespeare, <time datetime="1600">circa 1600</time></cite>
+  </figcaption>
+</figure>
+```
+
+Each slot can have default content.
+Omitted slots use their defaults;
+the `source` slot above defaults to "Anonymous".
+
+A mixin uses either one unnamed `block`
+or named blocks, never both.
+
+At the call site, `block name` replaces the slot's default content.
+`append name` adds after it and `prepend name` adds before it,
+mirroring template inheritance:
+
+```pugneum
+mixin nav
+  nav
+    block links
+      a(href="/") Home
+
++nav
+  append links
+    a(href="/about") About
+```
+
+```html
+<nav><a href="/">Home</a><a href="/about">About</a></nav>
+```
+
 ## Programming interface
 
 ```js

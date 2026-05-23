@@ -1,0 +1,13 @@
+mixin citation
+  figure
+    blockquote
+      block quote
+    figcaption
+      cite
+        block source
+
++citation
+  block quote
+    p Hello world
+  block source
+    | Bob Nystrom

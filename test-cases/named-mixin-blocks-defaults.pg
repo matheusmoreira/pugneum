@@ -1,0 +1,11 @@
+mixin panel
+  .panel
+    .header
+      block header
+        | Default Header
+    .body
+      block body
+
++panel
+  block body
+    p Only body provided

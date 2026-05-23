@@ -32,6 +32,56 @@ function text(val) {
   return {type: 'Text', val: val, line: 1, column: 1, filename: 'test'};
 }
 
+// Helper: NamedBlock node
+function namedBlock(name, mode, nodes) {
+  return {
+    type: 'NamedBlock',
+    name: name,
+    mode: mode,
+    nodes: nodes || [],
+    line: 1,
+    column: 1,
+    filename: 'test',
+  };
+}
+
+// Helper: Mixin definition node
+function mixinDef(name, args, body, opts) {
+  return Object.assign(
+    {
+      type: 'Mixin',
+      name: name,
+      args: args || [],
+      block: block(body || []),
+      call: false,
+      usesNamedBlocks: false,
+      line: 1,
+      column: 1,
+      filename: 'test',
+    },
+    opts,
+  );
+}
+
+// Helper: Mixin call node (with opts support)
+function mixinCallOpts(name, args, children, opts) {
+  return Object.assign(
+    {
+      type: 'Mixin',
+      name: name,
+      args: args || [],
+      block: children ? block(children) : null,
+      call: true,
+      attrs: [],
+      attributeBlocks: [],
+      line: 2,
+      column: 1,
+      filename: 'test',
+    },
+    opts,
+  );
+}
+
 describe('basic rendering', () => {
   test('empty block', () => {
     assert.strictEqual(render(block([])), '<!DOCTYPE html>');
@@ -1370,6 +1420,264 @@ describe('optional arguments and attributes', () => {
     assert.strictEqual(
       render(block([inner, outer, call])),
       '<!DOCTYPE html><span></span>',
+    );
+  });
+});
+
+describe('named mixin blocks', () => {
+  test('basic replace semantics', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [
+        tag(
+          'div',
+          [],
+          [namedBlock('header', 'replace'), namedBlock('body', 'replace')],
+        ),
+      ],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [
+        namedBlock('header', 'replace', [text('H')]),
+        namedBlock('body', 'replace', [text('B')]),
+      ],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div>HB</div>',
+    );
+  });
+
+  test('default content when caller omits a named block', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [
+        namedBlock('header', 'replace', [text('Default')]),
+        namedBlock('body', 'replace'),
+      ],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [namedBlock('body', 'replace', [text('B')])],
+    );
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>DefaultB');
+  });
+
+  test('caller with no block uses all defaults', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [namedBlock('slot', 'replace', [text('fallback')])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts('wrap', []);
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>fallback');
+  });
+
+  test('append adds after default content', () => {
+    const decl = mixinDef(
+      'nav',
+      [],
+      [namedBlock('links', 'replace', [text('A')])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'nav',
+      [],
+      [namedBlock('links', 'append', [text('B')])],
+    );
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>AB');
+  });
+
+  test('prepend adds before default content', () => {
+    const decl = mixinDef(
+      'nav',
+      [],
+      [namedBlock('links', 'replace', [text('A')])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'nav',
+      [],
+      [namedBlock('links', 'prepend', [text('B')])],
+    );
+    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>BA');
+  });
+
+  test('named blocks with variables', () => {
+    const decl = mixinDef(
+      'card',
+      [{name: 'title'}],
+      [
+        tag(
+          'div',
+          [],
+          [
+            tag(
+              'h2',
+              [],
+              [
+                {
+                  type: 'Variable',
+                  name: 'title',
+                  line: 1,
+                  column: 1,
+                  filename: 'test',
+                },
+              ],
+            ),
+            namedBlock('body', 'replace'),
+          ],
+        ),
+      ],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'card',
+      ['Hello'],
+      [namedBlock('body', 'replace', [text('content')])],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div><h2>Hello</h2>content</div>',
+    );
+  });
+
+  test('empty named block at call site replaces default with nothing', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [namedBlock('slot', 'replace', [text('default')])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts('wrap', [], [namedBlock('slot', 'replace')]);
+    assert.strictEqual(render(block([decl, call]), {doctype: false}), '');
+  });
+
+  test('same block name at multiple positions injects at all', () => {
+    const decl = mixinDef(
+      'multi',
+      [],
+      [
+        tag('header', [], [namedBlock('slot', 'replace', [text('h')])]),
+        tag('footer', [], [namedBlock('slot', 'replace', [text('f')])]),
+      ],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'multi',
+      [],
+      [namedBlock('slot', 'replace', [text('X')])],
+    );
+    assert.strictEqual(
+      render(block([decl, call]), {doctype: false}),
+      '<header>X</header><footer>X</footer>',
+    );
+  });
+});
+
+describe('named mixin block errors', () => {
+  test('caller names non-existent block throws UNEXPECTED_NAMED_BLOCK', () => {
+    const decl = mixinDef('wrap', [], [namedBlock('header', 'replace')], {
+      usesNamedBlocks: true,
+    });
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [namedBlock('nonexistent', 'replace', [text('x')])],
+    );
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_NAMED_BLOCK',
+    );
+  });
+
+  test('caller naming a block from nested mixin call throws UNEXPECTED_NAMED_BLOCK', () => {
+    const inner = mixinDef('inner', [], [namedBlock('slot', 'replace')], {
+      usesNamedBlocks: true,
+    });
+    const outer = mixinDef(
+      'outer',
+      [],
+      [
+        namedBlock('header', 'replace'),
+        mixinCallOpts(
+          'inner',
+          [],
+          [namedBlock('slot', 'replace', [text('inner default')])],
+        ),
+      ],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'outer',
+      [],
+      [
+        namedBlock('header', 'replace', [text('ok')]),
+        namedBlock('slot', 'replace', [text('should fail')]),
+      ],
+    );
+    assert.throws(
+      () => render(block([inner, outer, call])),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_NAMED_BLOCK',
+    );
+  });
+
+  test('loose content in named block call throws UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL', () => {
+    const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
+      usesNamedBlocks: true,
+    });
+    const call = mixinCallOpts('wrap', [], [text('loose content')]);
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
+    );
+  });
+
+  test('duplicate named block at call site throws DUPLICATE_NAMED_BLOCK', () => {
+    const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
+      usesNamedBlocks: true,
+    });
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [
+        namedBlock('slot', 'replace', [text('first')]),
+        namedBlock('slot', 'replace', [text('second')]),
+      ],
+    );
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:DUPLICATE_NAMED_BLOCK',
+    );
+  });
+
+  test('same-name named block in caller content does not recurse', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [tag('div', [], [namedBlock('header', 'replace', [text('default')])])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [
+        namedBlock('header', 'replace', [
+          namedBlock('header', 'replace', [text('inner')]),
+        ]),
+      ],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<!DOCTYPE html><div>inner</div>',
     );
   });
 });

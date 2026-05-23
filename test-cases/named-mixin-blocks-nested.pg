@@ -1,0 +1,16 @@
+mixin outer
+  .outer
+    block header
+    block content
+
+mixin inner
+  .inner
+    block title
+
++outer
+  block header
+    h1 Outer Header
+  block content
+    +inner
+      block title
+        | Inner Title

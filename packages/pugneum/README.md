@@ -232,6 +232,23 @@ p This feature is ~(deprecated).
 <p>This feature is <del>deprecated</del>.</p>
 ```
 
+## Abbr shorthand
+
+The `?()` shorthand generates `<abbr>` tags with title expansion:
+
+```pugneum
+p The ?(HTML Hypertext Markup Language) standard.
+p Uses ?(CSS) for styling.
+```
+
+```html
+<p>The <abbr title="Hypertext Markup Language">HTML</abbr> standard.</p>
+<p>Uses <abbr>CSS</abbr> for styling.</p>
+```
+
+First word is the visible abbreviation, rest is the title.
+Without expansion text, generates `<abbr>` with no title.
+
 ## Sup and sub shorthands
 
 `^()` generates `<sup>`, `,()` generates `<sub>`:

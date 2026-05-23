@@ -907,7 +907,7 @@ describe('table of contents', () => {
     );
     assert.match(
       result,
-      /<nav><ul><li><a href="#intro">Introduction<\/a><\/li><li><a href="#design">Design<\/a><\/li><\/ul><\/nav>/,
+      /<nav><ol><li><a href="#intro">Introduction<\/a><\/li><li><a href="#design">Design<\/a><\/li><\/ol><\/nav>/,
     );
   });
 
@@ -928,7 +928,7 @@ describe('table of contents', () => {
     );
     assert.match(
       result,
-      /<li><a href="#a">Section<\/a><ul><li><a href="#b">Subsection<\/a><\/li><\/ul><\/li>/,
+      /<li><a href="#a">Section<\/a><ol><li><a href="#b">Subsection<\/a><\/li><\/ol><\/li>/,
     );
   });
 

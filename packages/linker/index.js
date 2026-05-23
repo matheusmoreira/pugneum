@@ -790,9 +790,9 @@ function extractText(nodes) {
 function buildTocNav(headings, tocNode) {
   const items = buildTocItems(headings, 0, headings.length, tocNode);
 
-  const ul = {
+  const ol = {
     type: 'Tag',
-    name: 'ul',
+    name: 'ol',
     attrs: [],
     attributeBlocks: [],
     isInline: false,
@@ -816,7 +816,7 @@ function buildTocNav(headings, tocNode) {
     isInline: false,
     block: {
       type: 'Block',
-      nodes: [ul],
+      nodes: [ol],
       line: tocNode.line,
       column: tocNode.column,
       filename: tocNode.filename,
@@ -884,7 +884,7 @@ function buildTocItems(headings, start, end, tocNode) {
       if (childItems.length > 0) {
         liContent.push({
           type: 'Tag',
-          name: 'ul',
+          name: 'ol',
           attrs: [],
           attributeBlocks: [],
           isInline: false,

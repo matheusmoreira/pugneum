@@ -5280,51 +5280,16 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 9,
+                "line": 8,
                 "column": 1,
                 "filename": "footnotes.pg",
                 "val": "McCarthy's original Lisp used mark-and-sweep."
-              },
-              {
-                "type": "Text",
-                "val": " ",
-                "line": 10,
-                "column": 1,
-                "filename": "footnotes.pg"
-              },
-              {
-                "type": "Text",
-                "line": 10,
-                "column": 1,
-                "filename": "footnotes.pg",
-                "val": "See "
-              },
-              {
-                "type": "ReferenceLink",
-                "name": "mccarthy",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 10,
-                  "filename": "footnotes.pg"
-                },
-                "attrs": [],
-                "line": 10,
-                "column": 5,
-                "filename": "footnotes.pg"
-              },
-              {
-                "type": "Text",
-                "line": 10,
-                "column": 16,
-                "filename": "footnotes.pg",
-                "val": " for the original 1960 paper."
               }
             ],
-            "line": 9,
+            "line": 8,
             "filename": "footnotes.pg"
           },
-          "line": 9,
+          "line": 8,
           "column": 1,
           "filename": "footnotes.pg"
         },
@@ -5335,16 +5300,16 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 11,
+                "line": 9,
                 "column": 1,
                 "filename": "footnotes.pg",
                 "val": "Content on the name line only."
               }
             ],
-            "line": 11,
+            "line": 9,
             "filename": "footnotes.pg"
           },
-          "line": 11,
+          "line": 9,
           "column": 1,
           "filename": "footnotes.pg"
         }

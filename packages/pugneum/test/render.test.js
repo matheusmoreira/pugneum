@@ -790,6 +790,50 @@ describe('footnotes', () => {
     );
     assert.match(result, /<strong>important<\/strong>/);
   });
+
+  it('should work with footnotes block before call sites', () => {
+    const result = pg.render('footnotes\n  fn1 Content.\n\np Note^[fn1].');
+    assert.match(result, /\[1\]<\/a><\/sup>/);
+    assert.match(result, /<li id="footnote-fn1"/);
+    assert.match(result, /Content\./);
+  });
+
+  it('should handle empty footnotes block without crashing', () => {
+    const result = pg.render('p Text.\n\nfootnotes');
+    assert.doesNotMatch(result, /section/);
+    assert.match(result, /<p>Text.<\/p>/);
+  });
+
+  it('should throw UNDEFINED_FOOTNOTE when no footnotes block exists', () => {
+    assert.throws(
+      () => pg.render('p ^[missing].'),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_FOOTNOTE',
+    );
+  });
+
+  it('should throw DUPLICATE_FOOTNOTES_BLOCK for multiple blocks', () => {
+    assert.throws(
+      () =>
+        pg.render('p ^[a].\n\nfootnotes\n  a First.\n\nfootnotes\n  b Second.'),
+      (err) => err.code === 'PUGNEUM:DUPLICATE_FOOTNOTES_BLOCK',
+    );
+  });
+
+  it('should suppress section when no footnotes are referenced', () => {
+    const result = pg.render('p No refs.\n\nfootnotes\n  unused Content.');
+    assert.doesNotMatch(result, /section/);
+    assert.doesNotMatch(result, /footnote/);
+  });
+
+  it('should resolve footnote refs inside definition content', () => {
+    const result = pg.render(
+      'p Start^[fn1].\n\nfootnotes\n  fn1 See also^[fn2].\n  fn2 Second.',
+    );
+    assert.match(result, /\[1\]/);
+    assert.match(result, /\[2\]/);
+    assert.match(result, /<li id="footnote-fn1"/);
+    assert.match(result, /<li id="footnote-fn2"/);
+  });
 });
 
 describe('renderFile()', () => {

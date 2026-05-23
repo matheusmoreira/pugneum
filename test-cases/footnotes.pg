@@ -5,5 +5,4 @@ footnotes
   gc-tricolor Introduced by Dijkstra in 1978.
   gc-history
     McCarthy's original Lisp used mark-and-sweep.
-    See @[mccarthy] for the original 1960 paper.
   inline-only Content on the name line only.

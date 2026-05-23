@@ -405,11 +405,31 @@ function toSuperscript(n) {
 
 function resolveFootnotes(ast, source) {
   const definitions = Object.create(null);
+  let footnotesBlockCount = 0;
 
-  // Pass 1: collect definitions
+  // Pass 1: collect definitions, error on duplicates and multiple blocks
   walk(ast, function (node) {
     if (node.type === 'Footnotes') {
+      footnotesBlockCount++;
+      if (footnotesBlockCount > 1) {
+        error(
+          'DUPLICATE_FOOTNOTES_BLOCK',
+          'Only one footnotes block is allowed per file',
+          node,
+          source,
+        );
+      }
       for (const def of node.definitions) {
+        if (!/^[a-zA-Z0-9_-]+$/.test(def.name)) {
+          error(
+            'INVALID_FOOTNOTE_NAME',
+            "Footnote name '" +
+              def.name +
+              "' contains invalid characters (only a-z, A-Z, 0-9, -, _ allowed)",
+            def,
+            source,
+          );
+        }
         if (def.name in definitions) {
           error(
             'DUPLICATE_FOOTNOTE',
@@ -423,120 +443,140 @@ function resolveFootnotes(ast, source) {
     }
   });
 
-  if (Object.keys(definitions).length === 0) return ast;
-
-  // Pass 2: resolve refs and replace Footnotes block
+  // Pass 2: resolve all FootnoteRef nodes (assign numbers, replace with sup>a)
+  // This includes refs inside definition content blocks.
   const numberByName = Object.create(null);
   const refCountByName = Object.create(null);
   let nextNumber = 1;
 
-  return walk(ast, function before(node, replace) {
-    if (node.type === 'FootnoteRef') {
-      const name = node.name;
-      if (!(name in definitions)) {
-        error(
-          'UNDEFINED_FOOTNOTE',
-          "Undefined footnote '" + name + "'",
-          node,
-          source,
-        );
-      }
+  function resolveRef(node, replace) {
+    const name = node.name;
+    if (!(name in definitions)) {
+      error(
+        'UNDEFINED_FOOTNOTE',
+        "Undefined footnote '" + name + "'",
+        node,
+        source,
+      );
+    }
 
-      // Assign number on first encounter
-      if (!(name in numberByName)) {
-        numberByName[name] = nextNumber++;
-        refCountByName[name] = 0;
-      }
+    if (!(name in numberByName)) {
+      numberByName[name] = nextNumber++;
+      refCountByName[name] = 0;
+    }
 
-      const num = numberByName[name];
-      const refIndex = ++refCountByName[name];
+    const num = numberByName[name];
+    const refIndex = ++refCountByName[name];
+    const refId =
+      refIndex === 1
+        ? 'footnote-reference-' + name
+        : 'footnote-reference-' + name + '-' + refIndex;
 
-      // id: footnote-reference-NAME for first ref, footnote-reference-NAME-N for subsequent
-      const refId =
-        refIndex === 1
-          ? 'footnote-reference-' + name
-          : 'footnote-reference-' + name + '-' + refIndex;
-
-      const anchorNode = {
-        type: 'Tag',
-        name: 'a',
-        attrs: [
+    const anchorNode = {
+      type: 'Tag',
+      name: 'a',
+      attrs: [
+        {
+          name: 'href',
+          val: '#footnote-' + name,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        {
+          name: 'id',
+          val: refId,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        {
+          name: 'role',
+          val: 'doc-noteref',
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+      ],
+      attributeBlocks: [],
+      isInline: true,
+      block: {
+        type: 'Block',
+        nodes: [
           {
-            name: 'href',
-            val: '#footnote-' + name,
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-          },
-          {
-            name: 'id',
-            val: refId,
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-          },
-          {
-            name: 'role',
-            val: 'doc-noteref',
+            type: 'Text',
+            val: '[' + num + ']',
             line: node.line,
             column: node.column,
             filename: node.filename,
           },
         ],
-        attributeBlocks: [],
-        isInline: true,
-        block: {
-          type: 'Block',
-          nodes: [
-            {
-              type: 'Text',
-              val: '[' + num + ']',
-              line: node.line,
-              column: node.column,
-              filename: node.filename,
-            },
-          ],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
         line: node.line,
         column: node.column,
         filename: node.filename,
-      };
+      },
+      line: node.line,
+      column: node.column,
+      filename: node.filename,
+    };
 
-      replace({
-        type: 'Tag',
-        name: 'sup',
-        attrs: [],
-        attributeBlocks: [],
-        isInline: true,
-        block: {
-          type: 'Block',
-          nodes: [anchorNode],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
+    replace({
+      type: 'Tag',
+      name: 'sup',
+      attrs: [],
+      attributeBlocks: [],
+      isInline: true,
+      block: {
+        type: 'Block',
+        nodes: [anchorNode],
         line: node.line,
         column: node.column,
         filename: node.filename,
-      });
+      },
+      line: node.line,
+      column: node.column,
+      filename: node.filename,
+    });
+  }
+
+  // Resolve refs in main document AND inside definition content blocks
+  ast = walk(ast, function before(node, replace) {
+    if (node.type === 'FootnoteRef') {
+      resolveRef(node, replace);
       return false;
     }
-
     if (node.type === 'Footnotes') {
-      // Build ordered list of referenced footnotes
-      // Sort by the number assigned during ref processing
+      for (const def of node.definitions) {
+        if (def.block) {
+          def.block = walk(def.block, function (innerNode, innerReplace) {
+            if (innerNode.type === 'FootnoteRef') {
+              resolveRef(innerNode, innerReplace);
+              return false;
+            }
+          });
+        }
+      }
+      return false;
+    }
+  });
+
+  // Pass 3: replace Footnotes node with rendered section
+  // All refs are now numbered so ordering is correct regardless of source position
+  return walk(ast, function before(node, replace) {
+    if (node.type === 'Footnotes') {
       const referenced = Object.keys(numberByName).sort(function (a, b) {
         return numberByName[a] - numberByName[b];
       });
+
+      if (referenced.length === 0) {
+        replace([]);
+        return false;
+      }
 
       const listItems = referenced.map(function (name) {
         const def = definitions[name];
         const totalRefs = refCountByName[name];
 
-        // Build back-links
         const backLinkNodes = [];
         for (let i = 1; i <= totalRefs; i++) {
           const backId =
@@ -586,7 +626,6 @@ function resolveFootnotes(ast, source) {
           });
         }
 
-        // Combine definition content nodes + backlinks
         const liContentNodes = def.block ? def.block.nodes.slice() : [];
         liContentNodes.push.apply(liContentNodes, backLinkNodes);
 

@@ -12761,12 +12761,12 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 9,
+        "line": 8,
         "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 9,
+        "line": 8,
         "column": 1
       }
     },
@@ -12776,101 +12776,28 @@ exports[`footnotes.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 9,
+        "line": 8,
         "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 9,
+        "line": 8,
         "column": 46
       }
     },
     "val": "McCarthy's original Lisp used mark-and-sweep."
   },
   {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 1
-      },
-      "filename": "footnotes.pg",
-      "end": {
-        "line": 10,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 1
-      },
-      "filename": "footnotes.pg",
-      "end": {
-        "line": 10,
-        "column": 5
-      }
-    },
-    "val": "See "
-  },
-  {
-    "type": "start-ref-link",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 5
-      },
-      "filename": "footnotes.pg",
-      "end": {
-        "line": 10,
-        "column": 7
-      }
-    },
-    "val": "mccarthy"
-  },
-  {
-    "type": "end-ref-link",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 15
-      },
-      "filename": "footnotes.pg",
-      "end": {
-        "line": 10,
-        "column": 16
-      }
-    }
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 16
-      },
-      "filename": "footnotes.pg",
-      "end": {
-        "line": 10,
-        "column": 45
-      }
-    },
-    "val": " for the original 1960 paper."
-  },
-  {
     "type": "footnote-def-end",
     "loc": {
       "start": {
-        "line": 10,
-        "column": 45
+        "line": 8,
+        "column": 46
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 10,
-        "column": 45
+        "line": 8,
+        "column": 46
       }
     }
   },
@@ -12878,12 +12805,12 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 9,
         "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 11,
+        "line": 9,
         "column": 1
       }
     },
@@ -12893,12 +12820,12 @@ exports[`footnotes.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 9,
         "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 11,
+        "line": 9,
         "column": 31
       }
     },
@@ -12908,12 +12835,12 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-end",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 9,
         "column": 31
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 11,
+        "line": 9,
         "column": 31
       }
     }
@@ -12922,12 +12849,12 @@ exports[`footnotes.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 9,
         "column": 31
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 11,
+        "line": 9,
         "column": 31
       }
     }

@@ -417,7 +417,7 @@ class Lexer {
     this.colno = options.startingColumn || 1;
     this.indentStack = [0];
     this.indentRe = null;
-    // If #{}, !{} or #() syntax is allowed when adding text
+    // If #{} or inline shorthand syntax is allowed when adding text
     this.interpolationAllowed = true;
 
     this.tokens = [];

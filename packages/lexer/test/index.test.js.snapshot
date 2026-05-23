@@ -21613,6 +21613,15 @@ exports[`invalid-mixin-param.pg 1`] = `
 }
 `;
 
+exports[`invalid-ref-image.pg 1`] = `
+{
+  "msg": "Reference image ![] requires an identifier.",
+  "code": "PUGNEUM:INVALID_REF_IMAGE",
+  "line": 1,
+  "column": 3
+}
+`;
+
 exports[`invalid-ref-link.pg 1`] = `
 {
   "msg": "Reference link @[] requires an identifier.",

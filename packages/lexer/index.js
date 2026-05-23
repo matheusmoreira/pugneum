@@ -2162,6 +2162,99 @@ class Lexer {
     this.consume(stringPtr);
   }
 
+  /**
+   * Footnotes block.
+   */
+
+  footnotes() {
+    const tok = this.scanEndOfLine(/^footnotes/, 'footnotes');
+    if (tok) {
+      this.tokens.push(this.tokEnd(tok));
+      this.footnotesBlock();
+      return true;
+    }
+  }
+
+  footnotesBlock() {
+    while (this.blank());
+
+    const captures = this.scanIndentation();
+    const defIndent = captures && captures[1].length;
+    if (!defIndent || defIndent <= this.indentStack[0]) return;
+
+    // Collect all lines belonging to this block
+    const blockLines = [];
+    let stringPtr = 0;
+    let isMatch;
+    do {
+      let i = this.input.slice(stringPtr + 1).indexOf('\n');
+      if (i === -1) i = this.input.length - stringPtr - 1;
+      const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
+      const lineCaptures = this.indentRe.exec('\n' + str);
+      const lineIndents = lineCaptures && lineCaptures[1].length;
+      isMatch = lineIndents >= defIndent || !str.trim();
+      if (isMatch) {
+        stringPtr += str.length + 1;
+        blockLines.push({raw: str, indent: lineIndents || 0});
+      }
+    } while (this.input.length - stringPtr && isMatch);
+    this.consume(stringPtr);
+
+    // Group lines into definitions
+    let currentName = null;
+    let contentLines = [];
+
+    const self = this;
+    function flushDefinition() {
+      if (currentName === null) return;
+
+      let tok = self.tok('footnote-def-start');
+      tok.val = currentName;
+      self.tokens.push(self.tokEnd(tok));
+
+      for (let ci = 0; ci < contentLines.length; ci++) {
+        if (ci > 0) {
+          self.incrementLine(1);
+          self.tokens.push(self.tokEnd(self.tok('newline')));
+        }
+        self.addText('text', contentLines[ci]);
+      }
+
+      self.tokens.push(self.tokEnd(self.tok('footnote-def-end')));
+      currentName = null;
+      contentLines = [];
+    }
+
+    for (let li = 0; li < blockLines.length; li++) {
+      const line = blockLines[li];
+      this.incrementLine(1);
+
+      if (!line.raw.trim()) continue;
+
+      if (line.indent <= defIndent) {
+        // New definition starts
+        flushDefinition();
+        const content = line.raw.slice(defIndent);
+        const spaceIdx = content.indexOf(' ');
+        if (spaceIdx === -1) {
+          currentName = content.trim();
+          this.incrementColumn(defIndent + currentName.length);
+        } else {
+          currentName = content.substring(0, spaceIdx);
+          const inlineContent = content.substring(spaceIdx + 1);
+          this.incrementColumn(defIndent + currentName.length + 1);
+          contentLines.push(inlineContent);
+        }
+      } else {
+        // Continuation line
+        const continuation = line.raw.slice(defIndent).trimStart();
+        this.incrementColumn(line.indent);
+        contentLines.push(continuation);
+      }
+    }
+    flushDefinition();
+  }
+
   skipWhitespace(str, i) {
     for (; i < str.length; i++) {
       if (!whitespaceRe.test(str[i])) break;
@@ -2548,6 +2641,7 @@ class Lexer {
       this.mixinBlock() ||
       this.include() ||
       this.references() ||
+      this.footnotes() ||
       this.mixin() ||
       this.call() ||
       this.tag() ||

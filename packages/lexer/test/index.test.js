@@ -16,6 +16,18 @@ fs.readdirSync(dir).forEach(function (testCase) {
   }
 });
 
+var lexerDir = __dirname + '/cases/';
+fs.readdirSync(lexerDir).forEach(function (testCase) {
+  if (/\.pg$/.test(testCase)) {
+    test(testCase, (t) => {
+      var result = lex(fs.readFileSync(lexerDir + testCase, 'utf8'), {
+        filename: testCase,
+      });
+      t.assert.snapshot(result);
+    });
+  }
+});
+
 var edir = __dirname + '/errors/';
 fs.readdirSync(edir).forEach(function (testCase) {
   if (/\.pg$/.test(testCase)) {

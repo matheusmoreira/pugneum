@@ -249,6 +249,38 @@ function interpolationsAreClosed(str, state) {
         continue;
       }
     }
+    if (ch === '*' && str[i + 1] === '(') {
+      state.strong++;
+      i++;
+      continue;
+    }
+    if (state.strong > 0) {
+      if (ch === '(') {
+        state.strongParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.strongParen > 0) state.strongParen--;
+        else state.strong--;
+        continue;
+      }
+    }
+    if (ch === '_' && str[i + 1] === '(') {
+      state.emphasis++;
+      i++;
+      continue;
+    }
+    if (state.emphasis > 0) {
+      if (ch === '(') {
+        state.emphasisParen++;
+        continue;
+      }
+      if (ch === ')') {
+        if (state.emphasisParen > 0) state.emphasisParen--;
+        else state.emphasis--;
+        continue;
+      }
+    }
     if (state.interp > 0) {
       if (ch === '(') {
         state.interpParen++;
@@ -262,7 +294,12 @@ function interpolationsAreClosed(str, state) {
     }
   }
   return (
-    state.interp <= 0 && state.link <= 0 && state.ref <= 0 && state.image <= 0
+    state.interp <= 0 &&
+    state.link <= 0 &&
+    state.ref <= 0 &&
+    state.image <= 0 &&
+    state.strong <= 0 &&
+    state.emphasis <= 0
   );
 }
 
@@ -285,6 +322,10 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
     ref: 0,
     image: 0,
     imageParen: 0,
+    strong: 0,
+    strongParen: 0,
+    emphasis: 0,
+    emphasisParen: 0,
     sq: false,
     dq: false,
   };
@@ -313,6 +354,10 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       state.ref = 0;
       state.image = 0;
       state.imageParen = 0;
+      state.strong = 0;
+      state.strongParen = 0;
+      state.emphasis = 0;
+      state.emphasisParen = 0;
       state.sq = false;
       state.dq = false;
     }
@@ -775,6 +820,24 @@ class Lexer {
       case 'reference':
         return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
 
+      case 'strong':
+        return this.handleStrongShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
+      case 'emphasis':
+        return this.handleEmphasisShorthand(
+          type,
+          value,
+          prefix,
+          escaped,
+          earliest.pos,
+        );
+
       case 'variable':
         return this.handleVariableRef(
           type,
@@ -825,6 +888,12 @@ class Lexer {
       i = value.indexOf('\\!(');
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
+      i = value.indexOf('\\*(');
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '*('});
+
+      i = value.indexOf('\\_(' );
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '_('});
+
       i = value.indexOf('#(');
       if (i !== -1) candidates.push({pos: i, kind: 'interpolation'});
 
@@ -836,6 +905,12 @@ class Lexer {
 
       i = value.indexOf('!(');
       if (i !== -1) candidates.push({pos: i, kind: 'image'});
+
+      i = value.indexOf('*(');
+      if (i !== -1) candidates.push({pos: i, kind: 'strong'});
+
+      i = value.indexOf('_(');
+      if (i !== -1) candidates.push({pos: i, kind: 'emphasis'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
       if (m) {
@@ -1001,6 +1076,54 @@ class Lexer {
 
     const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs}))${afterImage}`;
     return this.desugarAsInterpolation(childInput, parsed.content.length);
+  }
+
+  handleStrongShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for *() strong shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `strong ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
+  }
+
+  handleEmphasisShorthand(type, value, prefix, escaped, pos) {
+    let tok = this.tok(type, prefix + value.substring(0, pos));
+    this.incrementColumn(prefix.length + pos + escaped);
+    this.tokens.push(this.tokEnd(tok));
+
+    const rest = value.substring(pos + 1);
+    let range;
+    try {
+      range = parseUntil(rest, ')', 1);
+    } catch (ex) {
+      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+        this.error(
+          'NO_END_BRACKET',
+          'End of line reached with no closing ) for _() emphasis shorthand.',
+        );
+      }
+      throw ex;
+    }
+    const content = unescapeShorthand(range.src);
+    const afterShorthand = rest.substring(range.end + 1);
+    const childInput = `em ${content})${afterShorthand}`;
+    return this.desugarAsInterpolation(childInput, range.src.length);
   }
 
   handleRefLink(type, value, prefix, escaped, pos) {
@@ -1855,6 +1978,7 @@ class Lexer {
       [/^@\(/, '@(...) inline links'],
       [/^@\[/, '@[...] reference links'],
       [/^!\(/, '!(...) inline images'],
+      [/^\*\(/, '*(...) inline strong'],
     ];
     for (const [re, name] of inlinePatterns) {
       if (re.test(this.input)) {

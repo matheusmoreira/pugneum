@@ -1,0 +1,6 @@
+p This is *(important) information.
+p Multiple: *(one) and *(two) here.
+p Nested link: *(click @(/url here) now)
+p Nested emphasis: *(really _(very) important)
+p Balanced parens: *(text (parenthesized) more)
+p \*(not strong)

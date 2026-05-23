@@ -11,21 +11,6 @@ exports[`filters can be used 1`] = `
           {
             "type": "Text",
             "name": "custom",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 4,
-                  "column": 5,
-                  "filename": "index.test.js",
-                  "val": "Filters can be used."
-                }
-              ],
-              "line": 3,
-              "filename": "index.test.js"
-            },
-            "attrs": [],
             "line": 3,
             "column": 3,
             "filename": "index.test.js",

@@ -101,7 +101,7 @@ p
   );
 });
 
-test('verbatim filter escapes HTML entities', () => {
+test('verbatim filter passes text through unchanged', () => {
   const source = `
 p
   :verbatim
@@ -111,10 +111,9 @@ p
   const ast = parse(lex(source, {filename}), {filename, source});
   const output = filter(ast, {});
 
-  // verbatim is type 'text' so output is HTML-escaped
   const textNode = output.nodes[0].block.nodes[0];
   assert.strictEqual(textNode.type, 'Text');
-  assert.strictEqual(textNode.val, '&lt;strong&gt;raw html&lt;/strong&gt;');
+  assert.strictEqual(textNode.val, '<strong>raw html</strong>');
 });
 
 test('filters can be used with options', () => {

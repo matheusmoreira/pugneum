@@ -42,35 +42,51 @@ function escapeFilterText(str) {
     .replace(/"/g, '&quot;');
 }
 
+function validateStringOutput(result, name, type, node) {
+  if (typeof result !== 'string') {
+    throw error(
+      'INVALID_FILTER_OUTPUT',
+      `Filter '${name}' (type ${type}) must return a string`,
+      {
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+        source: '',
+      },
+    );
+  }
+}
+
 function applyFilterResult(node, type, result, name) {
   switch (type) {
     case 'text':
+      validateStringOutput(result, name, type, node);
       node.type = 'Text';
       node.val = escapeFilterText(result);
+      delete node.block;
+      delete node.attrs;
+      delete node.attributeBlocks;
       break;
     case 'html':
+      validateStringOutput(result, name, type, node);
       node.type = 'Text';
       node.val = result;
+      delete node.block;
+      delete node.attrs;
+      delete node.attributeBlocks;
       break;
     case 'pugneum': {
-      if (typeof result !== 'string') {
-        throw error(
-          'INVALID_FILTER_OUTPUT',
-          `Filter '${name}' (type pugneum) must return a string`,
-          {
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-            source: '',
-          },
-        );
-      }
+      validateStringOutput(result, name, type, node);
       const lex = require('pugneum-lexer');
       const parse = require('pugneum-parser');
       const tokens = lex(result, {filename: node.filename});
       const ast = parse(tokens, {filename: node.filename, source: result});
       node.type = 'Block';
       node.nodes = ast.nodes;
+      delete node.block;
+      delete node.attrs;
+      delete node.attributeBlocks;
+      delete node.val;
       break;
     }
     case 'syntax': {
@@ -88,6 +104,10 @@ function applyFilterResult(node, type, result, name) {
       }
       node.type = 'Block';
       node.nodes = result;
+      delete node.block;
+      delete node.attrs;
+      delete node.attributeBlocks;
+      delete node.val;
       break;
     }
   }
@@ -111,28 +131,30 @@ function applyFilters(ast, filters, options) {
         const firstFilter = node.filters.pop();
         const attrs = getAttributes(firstFilter, options);
         const filename = (attrs.filename = node.file.fullPath);
-        node.type = 'Text';
-        node.val = filterFile(
+        let resolved = resolveFilter(firstFilter.name, filters, node);
+        validateIncludeFilterType(resolved, firstFilter.name, node);
+        let result = runFilter(
+          resolved,
           firstFilter.name,
-          node.file,
+          resolved.binary ? node.file.raw : node.file.str,
           attrs,
-          filters,
           node,
         );
+        let lastType = resolved.type;
         node.filters
           .slice()
           .reverse()
-          .forEach(function (filter) {
-            const filterAttrs = getAttributes(filter, options);
+          .forEach(function (f) {
+            const filterAttrs = getAttributes(f, options);
             filterAttrs.filename = filename;
-            node.val = filterText(
-              filter.name,
-              node.val,
-              filterAttrs,
-              filters,
-              node,
-            );
+            resolved = resolveFilter(f.name, filters, node);
+            validateIncludeFilterType(resolved, f.name, node);
+            result = runFilter(resolved, f.name, result, filterAttrs, node);
+            lastType = resolved.type;
           });
+        validateStringOutput(result, firstFilter.name, lastType, node);
+        node.type = 'Text';
+        node.val = lastType === 'text' ? escapeFilterText(result) : result;
         delete node.filters;
         delete node.file;
       }
@@ -164,18 +186,6 @@ function validateIncludeFilterType(resolved, name, node) {
   }
 }
 
-function filterText(name, text, attrs, filters, node) {
-  const resolved = resolveFilter(name, filters, node);
-  validateIncludeFilterType(resolved, name, node);
-  return runFilter(resolved, name, text, attrs, node);
-}
-
-function filterFile(name, file, attrs, filters, node) {
-  const resolved = resolveFilter(name, filters, node);
-  validateIncludeFilterType(resolved, name, node);
-  const input = resolved.binary ? file.raw : file.str;
-  return runFilter(resolved, name, input, attrs, node);
-}
 
 function runFilter(resolved, name, input, attrs, node) {
   try {
@@ -210,7 +220,7 @@ function getAttributes(node, options) {
 }
 
 const builtinFilters = Object.create(null);
-builtinFilters.verbatim = {type: 'text', filter: (text) => text};
+builtinFilters.verbatim = {type: 'html', filter: (text) => text};
 
 function resolveFilter(name, filters, node) {
   if (filters && Object.prototype.hasOwnProperty.call(filters, name)) {

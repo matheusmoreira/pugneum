@@ -738,6 +738,35 @@ describe('link shorthand', () => {
   });
 });
 
+describe('footnotes', () => {
+  it('should render a basic footnote', () => {
+    const result = pg.render('p Note^[fn1].\n\nfootnotes\n  fn1 Content.');
+    assert.match(result, /<sup><a href="#footnote-fn1"/);
+    assert.match(result, /id="footnote-reference-fn1"/);
+    assert.match(result, /role="doc-noteref"/);
+    assert.match(result, /\[1\]<\/a><\/sup>/);
+    assert.match(result, /<section role="doc-endnotes">/);
+    assert.match(result, /<li id="footnote-fn1" role="doc-endnote">/);
+    assert.match(result, /Content\./);
+    assert.match(result, /role="doc-backlink"/);
+    assert.match(result, /↩<\/a>/);
+  });
+
+  it('should throw UNDEFINED_FOOTNOTE for unknown reference', () => {
+    assert.throws(
+      () => pg.render('p ^[unknown]\n\nfootnotes\n  other Content.'),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_FOOTNOTE',
+    );
+  });
+
+  it('should throw DUPLICATE_FOOTNOTE for duplicate definitions', () => {
+    assert.throws(
+      () => pg.render('p ^[dup]\n\nfootnotes\n  dup First.\n  dup Second.'),
+      (err) => err.code === 'PUGNEUM:DUPLICATE_FOOTNOTE',
+    );
+  });
+});
+
 describe('renderFile()', () => {
   var filePath = path.join(testCasesDir, 'basic.pg');
 

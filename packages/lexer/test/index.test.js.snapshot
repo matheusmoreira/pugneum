@@ -11967,6 +11967,171 @@ exports[`filters.verbatim.pg 1`] = `
 ]
 `;
 
+exports[`footnotes-basic.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 23
+      }
+    },
+    "val": "Text with a footnote"
+  },
+  {
+    "type": "start-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 23
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 25
+      }
+    },
+    "val": "note1"
+  },
+  {
+    "type": "end-footnote-ref",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 30
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 31
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 1,
+        "column": 32
+      }
+    },
+    "val": "."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "footnotes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "footnote-def-start",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    },
+    "val": "note1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 30
+      }
+    },
+    "val": "This is the footnote content."
+  },
+  {
+    "type": "footnote-def-end",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 30
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 30
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 30
+      },
+      "filename": "footnotes-basic.pg",
+      "end": {
+        "line": 5,
+        "column": 30
+      }
+    }
+  }
+]
+`;
+
 exports[`footnotes.pg 1`] = `
 [
   {

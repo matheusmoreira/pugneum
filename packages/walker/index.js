@@ -60,8 +60,16 @@ function walkAST(ast, before, after, options) {
       break;
     case 'ReferenceLink':
     case 'ReferenceImage':
+    case 'FootnoteRef':
       if (ast.block) {
         ast.block = walkAST(ast.block, before, after, options);
+      }
+      break;
+    case 'Footnotes':
+      for (const def of ast.definitions) {
+        if (def.block) {
+          def.block = walkAST(def.block, before, after, options);
+        }
       }
       break;
     case 'References':

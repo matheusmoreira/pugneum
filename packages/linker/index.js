@@ -50,6 +50,7 @@ function link(ast, options) {
   }
   ast = applyIncludes(ast, options);
   ast = resolveReferences(ast, source);
+  ast = resolveFootnotes(ast, source);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -388,6 +389,285 @@ function resolveReferences(ast, source) {
         column: node.column,
         filename: node.filename,
       });
+    }
+  });
+}
+
+function toSuperscript(n) {
+  const digits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  return String(n)
+    .split('')
+    .map(function (d) {
+      return digits[parseInt(d)];
+    })
+    .join('');
+}
+
+function resolveFootnotes(ast, source) {
+  const definitions = Object.create(null);
+
+  // Pass 1: collect definitions
+  walk(ast, function (node) {
+    if (node.type === 'Footnotes') {
+      for (const def of node.definitions) {
+        if (def.name in definitions) {
+          error(
+            'DUPLICATE_FOOTNOTE',
+            "Duplicate footnote '" + def.name + "'",
+            def,
+            source,
+          );
+        }
+        definitions[def.name] = def;
+      }
+    }
+  });
+
+  if (Object.keys(definitions).length === 0) return ast;
+
+  // Pass 2: resolve refs and replace Footnotes block
+  const numberByName = Object.create(null);
+  const refCountByName = Object.create(null);
+  let nextNumber = 1;
+
+  return walk(ast, function before(node, replace) {
+    if (node.type === 'FootnoteRef') {
+      const name = node.name;
+      if (!(name in definitions)) {
+        error(
+          'UNDEFINED_FOOTNOTE',
+          "Undefined footnote '" + name + "'",
+          node,
+          source,
+        );
+      }
+
+      // Assign number on first encounter
+      if (!(name in numberByName)) {
+        numberByName[name] = nextNumber++;
+        refCountByName[name] = 0;
+      }
+
+      const num = numberByName[name];
+      const refIndex = ++refCountByName[name];
+
+      // id: footnote-reference-NAME for first ref, footnote-reference-NAME-N for subsequent
+      const refId =
+        refIndex === 1
+          ? 'footnote-reference-' + name
+          : 'footnote-reference-' + name + '-' + refIndex;
+
+      const anchorNode = {
+        type: 'Tag',
+        name: 'a',
+        attrs: [
+          {
+            name: 'href',
+            val: '#footnote-' + name,
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+          },
+          {
+            name: 'id',
+            val: refId,
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+          },
+          {
+            name: 'role',
+            val: 'doc-noteref',
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+          },
+        ],
+        attributeBlocks: [],
+        isInline: true,
+        block: {
+          type: 'Block',
+          nodes: [
+            {
+              type: 'Text',
+              val: '[' + num + ']',
+              line: node.line,
+              column: node.column,
+              filename: node.filename,
+            },
+          ],
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      };
+
+      replace({
+        type: 'Tag',
+        name: 'sup',
+        attrs: [],
+        attributeBlocks: [],
+        isInline: true,
+        block: {
+          type: 'Block',
+          nodes: [anchorNode],
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      });
+      return false;
+    }
+
+    if (node.type === 'Footnotes') {
+      // Build ordered list of referenced footnotes
+      // Sort by the number assigned during ref processing
+      const referenced = Object.keys(numberByName).sort(function (a, b) {
+        return numberByName[a] - numberByName[b];
+      });
+
+      const listItems = referenced.map(function (name) {
+        const def = definitions[name];
+        const totalRefs = refCountByName[name];
+
+        // Build back-links
+        const backLinkNodes = [];
+        for (let i = 1; i <= totalRefs; i++) {
+          const backId =
+            i === 1
+              ? 'footnote-reference-' + name
+              : 'footnote-reference-' + name + '-' + i;
+          const label = i === 1 ? '↩' : '↩' + toSuperscript(i);
+          backLinkNodes.push({
+            type: 'Tag',
+            name: 'a',
+            attrs: [
+              {
+                name: 'href',
+                val: '#' + backId,
+                line: def.line,
+                column: def.column,
+                filename: def.filename,
+              },
+              {
+                name: 'role',
+                val: 'doc-backlink',
+                line: def.line,
+                column: def.column,
+                filename: def.filename,
+              },
+            ],
+            attributeBlocks: [],
+            isInline: true,
+            block: {
+              type: 'Block',
+              nodes: [
+                {
+                  type: 'Text',
+                  val: label,
+                  line: def.line,
+                  column: def.column,
+                  filename: def.filename,
+                },
+              ],
+              line: def.line,
+              column: def.column,
+              filename: def.filename,
+            },
+            line: def.line,
+            column: def.column,
+            filename: def.filename,
+          });
+        }
+
+        // Combine definition content nodes + backlinks
+        const liContentNodes = def.block ? def.block.nodes.slice() : [];
+        liContentNodes.push.apply(liContentNodes, backLinkNodes);
+
+        return {
+          type: 'Tag',
+          name: 'li',
+          attrs: [
+            {
+              name: 'id',
+              val: 'footnote-' + name,
+              line: def.line,
+              column: def.column,
+              filename: def.filename,
+            },
+            {
+              name: 'role',
+              val: 'doc-endnote',
+              line: def.line,
+              column: def.column,
+              filename: def.filename,
+            },
+          ],
+          attributeBlocks: [],
+          isInline: false,
+          block: {
+            type: 'Block',
+            nodes: liContentNodes,
+            line: def.line,
+            column: def.column,
+            filename: def.filename,
+          },
+          line: def.line,
+          column: def.column,
+          filename: def.filename,
+        };
+      });
+
+      const olNode = {
+        type: 'Tag',
+        name: 'ol',
+        attrs: [],
+        attributeBlocks: [],
+        isInline: false,
+        block: {
+          type: 'Block',
+          nodes: listItems,
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      };
+
+      replace({
+        type: 'Tag',
+        name: 'section',
+        attrs: [
+          {
+            name: 'role',
+            val: 'doc-endnotes',
+            line: node.line,
+            column: node.column,
+            filename: node.filename,
+          },
+        ],
+        attributeBlocks: [],
+        isInline: false,
+        block: {
+          type: 'Block',
+          nodes: [olNode],
+          line: node.line,
+          column: node.column,
+          filename: node.filename,
+        },
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+      });
+      return false;
     }
   });
 }

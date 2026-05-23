@@ -4932,6 +4932,82 @@ exports[`filters.verbatim.pg 1`] = `
 }
 `;
 
+exports[`footnotes-basic.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "footnotes-basic.pg",
+            "val": "Text with a footnote"
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "note1",
+            "line": 1,
+            "column": 23,
+            "filename": "footnotes-basic.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 31,
+            "filename": "footnotes-basic.pg",
+            "val": "."
+          }
+        ],
+        "line": 1,
+        "filename": "footnotes-basic.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "footnotes-basic.pg"
+    },
+    {
+      "type": "Footnotes",
+      "definitions": [
+        {
+          "name": "note1",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 5,
+                "column": 1,
+                "filename": "footnotes-basic.pg",
+                "val": "This is the footnote content."
+              }
+            ],
+            "line": 5,
+            "filename": "footnotes-basic.pg"
+          },
+          "line": 5,
+          "column": 1,
+          "filename": "footnotes-basic.pg"
+        }
+      ],
+      "line": 3,
+      "column": 1,
+      "filename": "footnotes-basic.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "footnotes-basic.pg"
+}
+`;
+
 exports[`footnotes.pg 1`] = `
 {
   "type": "Block",

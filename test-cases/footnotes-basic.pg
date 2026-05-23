@@ -1,0 +1,4 @@
+p Text with a footnote^[note1].
+
+footnotes
+  note1 This is the footnote content.

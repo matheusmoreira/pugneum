@@ -452,6 +452,20 @@ describe('interpolated tags', () => {
       '<!DOCTYPE html><p><strong>text (with parens) more</strong></p>',
     );
   });
+
+  it('should handle escaped shorthands with parens inside interpolation', () => {
+    assert.strictEqual(
+      pg.render('p *(text \\#(em inner) end)'),
+      '<!DOCTYPE html><p><strong>text #(em inner) end</strong></p>',
+    );
+  });
+
+  it('should handle escaped shorthands inside link shorthand', () => {
+    assert.strictEqual(
+      pg.render('p @(url text \\#(not interp) end)'),
+      '<!DOCTYPE html><p><a href="url">text #(not interp) end</a></p>',
+    );
+  });
 });
 
 describe('variable edge cases', () => {

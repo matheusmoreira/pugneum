@@ -778,9 +778,10 @@ class Lexer {
 
     while (true) {
       let earliest;
+      let escapedParenDepth = 0;
 
       for (;;) {
-        earliest = this.findEarliestCandidate(value);
+        earliest = this.findEarliestCandidate(value, escapedParenDepth);
 
         if (!earliest) {
           value = prefix + value;
@@ -792,6 +793,9 @@ class Lexer {
 
         if (earliest.kind !== 'escaped') break;
 
+        if (earliest.literal.endsWith('(')) {
+          escapedParenDepth++;
+        }
         prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
         value = value.substring(earliest.pos + 1 + earliest.literal.length);
         escaped++;
@@ -894,11 +898,11 @@ class Lexer {
     }
   }
 
-  findEarliestCandidate(value) {
+  findEarliestCandidate(value, initialParenDepth) {
     const candidates = [];
 
     if (this.interpolated) {
-      let parenDepth = 0;
+      let parenDepth = initialParenDepth || 0;
       for (let i = 0; i < value.length; i++) {
         const ch = value[i];
         if (ch === '\\') {

@@ -57,6 +57,24 @@ describe('tagged cells', () => {
     assert.match(result, /td\(colspan="2"\) merged/);
   });
 
+  test('tagged cell with nested parens in attrs passes through verbatim', () => {
+    var input = '| a |\n| --- |\n| td(style="width:calc(100% - 2em)") value |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td\(style="width:calc\(100% - 2em\)"\) value/);
+  });
+
+  test('tagged cell with no text', () => {
+    var input = '| a |\n| --- |\n| td(class="empty") |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td\(class="empty"\)/);
+  });
+
+  test('bare td tag with no content', () => {
+    var input = '| a |\n| --- |\n| td |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /^\s+td$/m);
+  });
+
   test('escaped \\th produces literal text', () => {
     var input = '| --- |\n| \\th is not a tag |';
     var result = tableFilter.filter(input, {});
@@ -193,10 +211,7 @@ describe('table structure', () => {
 
   test('--- after === throws error', () => {
     var input = '| a |\n| --- |\n| b |\n| === |\n| c |\n| --- |\n| d |';
-    assert.throws(
-      () => tableFilter.filter(input, {}),
-      /---.*after.*===/i,
-    );
+    assert.throws(() => tableFilter.filter(input, {}), /---.*after.*===/i);
   });
 
   test('mixed --- and === in same row throws error', () => {

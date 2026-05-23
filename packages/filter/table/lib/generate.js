@@ -1,4 +1,4 @@
-const parseCell = require('./parse').parseCell;
+const classifyCell = require('./parse').classifyCell;
 
 // Render a col element line given {align, attrs} and an indent string.
 function renderCol(seg, indent) {
@@ -46,10 +46,15 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
     }
     lines.push(trLine);
     row.cells.forEach(function (cell) {
-      let parsed = parseCell(cell, defaultCellTag);
-      let cellLine = indent + '    ' + parsed.tag + parsed.attrStr;
-      if (parsed.text !== '') {
-        cellLine += ' ' + parsed.text;
+      let classified = classifyCell(cell, defaultCellTag);
+      let cellLine;
+      if (classified.verbatim !== undefined) {
+        cellLine = indent + '    ' + classified.verbatim;
+      } else {
+        cellLine = indent + '    ' + classified.tag;
+        if (classified.text !== '') {
+          cellLine += ' ' + classified.text;
+        }
       }
       lines.push(cellLine);
     });

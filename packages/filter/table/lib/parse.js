@@ -112,33 +112,21 @@ function parseSepSegment(seg) {
   return {align: align, attrs: attrs};
 }
 
-// Parse a cell string into {tag, attrStr, text}.
-// defaultTag is 'th' or 'td'.
-// Handles:
-//   th(attrs) text   → tag=th, attrStr=(attrs), text=text
-//   th text          → tag=th, attrStr='', text=text
-//   td(attrs) text   → tag=td, attrStr=(attrs), text=text
-//   td text          → tag=td, attrStr='', text=text
-//   \th text         → tag=defaultTag, attrStr='', text='th text'
-//   \td text         → tag=defaultTag, attrStr='', text='td text'
-//   anything else    → tag=defaultTag, attrStr='', text=cell
-function parseCell(cell, defaultTag) {
+// Classify a cell as tagged, escaped, or bare.
+// Tagged cells start with th or td followed by space or (
+// and are emitted verbatim — the real lexer handles attrs.
+// Returns {verbatim: string} or {tag: string, text: string}.
+function classifyCell(cell, defaultTag) {
   // Escaped \th or \td — strip backslash, use default tag
   if (/^\\t[hd]/.test(cell)) {
-    return {tag: defaultTag, attrStr: '', text: cell.slice(1)};
+    return {tag: defaultTag, text: cell.slice(1)};
   }
-  // Tagged cell with attrs: th(attrs) text or td(attrs) text
-  let withAttrs = cell.match(/^(t[hd])(\([^)]*\))\s*(.*)/);
-  if (withAttrs) {
-    return {tag: withAttrs[1], attrStr: withAttrs[2], text: withAttrs[3]};
-  }
-  // Tagged cell without attrs: th text or td text (must be followed by space)
-  let noAttrs = cell.match(/^(t[hd])\s+(.*)/);
-  if (noAttrs) {
-    return {tag: noAttrs[1], attrStr: '', text: noAttrs[2]};
+  // Tagged cell: th or td followed by space, (, or end of string
+  if (/^t[hd](?:\s|\(|$)/.test(cell)) {
+    return {verbatim: cell};
   }
   // Bare cell
-  return {tag: defaultTag, attrStr: '', text: cell};
+  return {tag: defaultTag, text: cell};
 }
 
 // Parse optional caption from the first non-empty line.
@@ -315,4 +303,4 @@ function parse(lines) {
 }
 
 module.exports = parse;
-module.exports.parseCell = parseCell;
+module.exports.classifyCell = classifyCell;

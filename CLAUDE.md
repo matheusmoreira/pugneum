@@ -32,7 +32,7 @@ source string
   → parser     builds AST from tokens
   → loader     resolves file dependencies (include/extends), recursively lexing+parsing them
   → linker     links ASTs together (template inheritance, includes, named blocks, reference links/images)
-  → filterer   applies text filters (highlight.js, prismjs, etc.)
+  → filterer   applies filters (highlight.js, prismjs, etc.) with typed dispatch
   → renderer   generates HTML string from final AST
 ```
 
@@ -42,7 +42,13 @@ Cross-cutting packages:
 - **walker** — depth-first AST traversal with before/after hooks, used by loader, linker, and filterer
 - **error** — error factory attaching source context (±3 lines) and location info, used throughout
 
-Filter plugins (`packages/filter/`) are dynamically loaded by naming convention (`pugneum-filter-*`).
+Filter plugins (`packages/filter/`) are dynamically loaded by naming convention (`pugneum-filter-*`). Every filter must declare `exports.type` as one of:
+- `text` — plain text output, HTML-escaped by the filterer
+- `html` — raw HTML output, passed through as-is (used by prismjs, highlight.js, verbatim)
+- `pugneum` — Pugneum source output, re-lexed/re-parsed into AST nodes (enables inline shorthands in filter output)
+- `syntax` — direct AST node array, inserted into the tree
+
+Filters used with `include:filter` are restricted to `text` and `html` types.
 
 ## Testing
 

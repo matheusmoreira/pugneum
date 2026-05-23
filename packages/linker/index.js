@@ -811,7 +811,15 @@ function buildTocNav(headings, tocNode) {
   return {
     type: 'Tag',
     name: 'nav',
-    attrs: [],
+    attrs: [
+      {
+        name: 'role',
+        val: 'doc-toc',
+        line: tocNode.line,
+        column: tocNode.column,
+        filename: tocNode.filename,
+      },
+    ],
     attributeBlocks: [],
     isInline: false,
     block: {

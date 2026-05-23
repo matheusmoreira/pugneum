@@ -1,5 +1,7 @@
 'use strict';
 
+var normalize = require('./lib/normalize');
+
 exports.type = 'pugneum';
 
 // Parse an optional tr(attrs) prefix before the first | on a line.
@@ -225,6 +227,8 @@ function parseSectionMarker(line) {
 }
 
 exports.filter = function pugneum_filter_table(text, attrs) {
+  text = normalize(text);
+
   // Split into non-empty trimmed lines.
   var trimmedLines = text
     .split('\n')

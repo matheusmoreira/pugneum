@@ -184,6 +184,44 @@ describe('table structure', () => {
   });
 });
 
+describe('box drawing normalization', () => {
+  test('│ normalizes to |', () => {
+    var input = '│ a │ b │\n│ --- │ --- │\n│ 1 │ 2 │';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead/);
+    assert.match(result, /tbody/);
+  });
+
+  test('║ normalizes to ||', () => {
+    var input =
+      '| a | b ║ c | d |\n| --- | --- ║ --- | --- |\n| 1 | 2 ║ 3 | 4 |';
+    var result = tableFilter.filter(input, {});
+    var colgroups = result.match(/colgroup/g);
+    assert.strictEqual(colgroups.length, 2);
+  });
+
+  test('─ normalizes to -', () => {
+    var input = '| a |\n| ─── |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead/);
+  });
+
+  test('═ normalizes to =', () => {
+    var input = '| a |\n| --- |\n| b |\n| ═══ |\n| c |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tfoot/);
+  });
+
+  test('decorative corners and junctions are stripped', () => {
+    var input =
+      '┌──────┬──────┐\n│ Name │ Type │\n│ ──── │ ──── │\n│ fd   │ int  │\n└──────┴──────┘';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead/);
+    assert.match(result, /th Name/);
+    assert.match(result, /td fd/);
+  });
+});
+
 describe('section markers', () => {
   test('thead(attrs) applies attrs to thead', () => {
     var input = 'thead(class="sticky")\n| a |\n| --- |\n| b |';

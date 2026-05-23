@@ -11,37 +11,6 @@ exports[`per filter options are applied, even to nested filters 1`] = `
           {
             "type": "Text",
             "name": "first",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "name": "second",
-                  "block": {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "Text",
-                        "line": 4,
-                        "column": 5,
-                        "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                        "val": "Will be wrapped in second."
-                      }
-                    ],
-                    "line": 3,
-                    "filename": "per-filter-options-applied-to-nested-filters.test.js"
-                  },
-                  "attrs": [],
-                  "line": 3,
-                  "column": 9,
-                  "filename": "per-filter-options-applied-to-nested-filters.test.js",
-                  "val": "SECOND\\nWill be wrapped in second.\\nEND SECOND"
-                }
-              ],
-              "line": 3,
-              "filename": "per-filter-options-applied-to-nested-filters.test.js"
-            },
-            "attrs": [],
             "line": 3,
             "column": 3,
             "filename": "per-filter-options-applied-to-nested-filters.test.js",

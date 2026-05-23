@@ -6494,6 +6494,917 @@ exports[`comments.source.pg 1`] = `
 ]
 `;
 
+exports[`emphasis-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "This is "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 11
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 15
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 16
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 25
+      }
+    },
+    "val": "important"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 22
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 23
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "val": " information."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 13
+      }
+    },
+    "val": "Multiple: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 13
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 15
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 17
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 18
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 21
+      }
+    },
+    "val": "one"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 18
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 19
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 19
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 24
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 24
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 26
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 28
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 29
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 32
+      }
+    },
+    "val": "two"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 29
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 30
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 30
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 36
+      }
+    },
+    "val": " here."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 16
+      }
+    },
+    "val": "Nested link: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 16
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 18
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 20
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 21
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 27
+      }
+    },
+    "val": "click "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 27
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 29
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 30
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 30
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 31
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 31
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 42
+      }
+    },
+    "name": "href",
+    "val": "/url"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 42
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 44
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 48
+      }
+    },
+    "val": "here"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 38
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 39
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 39
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    },
+    "val": " now"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 40
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 41
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 41
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 41
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 18
+      }
+    },
+    "val": "Nested strong: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 18
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 20
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 22
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 23
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 30
+      }
+    },
+    "val": "really "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 30
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 32
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 32
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 38
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 39
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 43
+      }
+    },
+    "val": "very"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 36
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 37
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 37
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 47
+      }
+    },
+    "val": " important"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 44
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 45
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 45
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 45
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    },
+    "val": "Balanced parens: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 20
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 24
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 25
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 50
+      }
+    },
+    "val": "text (parenthesized) more"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 47
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 48
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 19
+      }
+    },
+    "val": "_(not emphasis)"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "emphasis-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`escape-chars.pg 1`] = `
 [
   {
@@ -16997,6 +17908,15 @@ exports[`inline-link-at-line-start.pg 1`] = `
 exports[`inline-reflink-at-line-start.pg 1`] = `
 {
   "msg": "@[...] reference links can only appear inside text content, not at the start of a line.",
+  "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`inline-strong-at-line-start.pg 1`] = `
+{
+  "msg": "*(...) inline strong can only appear inside text content, not at the start of a line.",
   "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
   "line": 1,
   "column": 1
@@ -35036,6 +35956,917 @@ exports[`source.pg 1`] = `
       "filename": "source.pg",
       "end": {
         "line": 5,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`strong-shorthand.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "This is "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 11
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 19
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 20
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 29
+      }
+    },
+    "val": "important"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 22
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 23
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "val": " information."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 13
+      }
+    },
+    "val": "Multiple: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 13
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 15
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 21
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 22
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 25
+      }
+    },
+    "val": "one"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 18
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 19
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 19
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 24
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 24
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 26
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 32
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 33
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 36
+      }
+    },
+    "val": "two"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 29
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 30
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 30
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 2,
+        "column": 36
+      }
+    },
+    "val": " here."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 16
+      }
+    },
+    "val": "Nested link: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 16
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 18
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 24
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 25
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 31
+      }
+    },
+    "val": "click "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 31
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 33
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 33
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 34
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 34
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 35
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 46
+      }
+    },
+    "name": "href",
+    "val": "/url"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 46
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 48
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 52
+      }
+    },
+    "val": "here"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 42
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 43
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 43
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 47
+      }
+    },
+    "val": " now"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 40
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 41
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 41
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 3,
+        "column": 41
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 20
+      }
+    },
+    "val": "Nested emphasis: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 20
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 22
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 28
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 29
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 36
+      }
+    },
+    "val": "really "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 36
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 38
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 38
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 40
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 41
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 45
+      }
+    },
+    "val": "very"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 42
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 43
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 43
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 53
+      }
+    },
+    "val": " important"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 46
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 47
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 47
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 4,
+        "column": 47
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    },
+    "val": "Balanced parens: "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 20
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 28
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 29
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 54
+      }
+    },
+    "val": "text (parenthesized) more"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 47
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 48
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 5,
+        "column": 48
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 6,
+        "column": 17
+      }
+    },
+    "val": "*(not strong)"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "strong-shorthand.pg",
+      "end": {
+        "line": 7,
         "column": 1
       }
     }

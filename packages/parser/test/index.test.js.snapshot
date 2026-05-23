@@ -2581,6 +2581,416 @@ exports[`comments.source.pg 1`] = `
 }
 `;
 
+exports[`emphasis-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "This is "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 16,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "important"
+                }
+              ],
+              "line": 1,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 13,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 23,
+            "filename": "emphasis-shorthand.pg",
+            "val": " information."
+          }
+        ],
+        "line": 1,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "Multiple: "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 18,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "one"
+                }
+              ],
+              "line": 2,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 15,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 19,
+            "filename": "emphasis-shorthand.pg",
+            "val": " and "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 29,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "two"
+                }
+              ],
+              "line": 2,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 26,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 30,
+            "filename": "emphasis-shorthand.pg",
+            "val": " here."
+          }
+        ],
+        "line": 2,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "Nested link: "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 21,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "click "
+                },
+                {
+                  "type": "Tag",
+                  "name": "a",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 3,
+                        "column": 44,
+                        "filename": "emphasis-shorthand.pg",
+                        "val": "here"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "emphasis-shorthand.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "href",
+                      "val": "/url",
+                      "line": 3,
+                      "column": 31,
+                      "filename": "emphasis-shorthand.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 3,
+                  "column": 29,
+                  "filename": "emphasis-shorthand.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 39,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": " now"
+                }
+              ],
+              "line": 3,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 18,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 41,
+            "filename": "emphasis-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 3,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "Nested strong: "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 23,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "really "
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 4,
+                        "column": 39,
+                        "filename": "emphasis-shorthand.pg",
+                        "val": "very"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "emphasis-shorthand.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 4,
+                  "column": 32,
+                  "filename": "emphasis-shorthand.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 37,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": " important"
+                }
+              ],
+              "line": 4,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 20,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 45,
+            "filename": "emphasis-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 4,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "Balanced parens: "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 25,
+                  "filename": "emphasis-shorthand.pg",
+                  "val": "text (parenthesized) more"
+                }
+              ],
+              "line": 5,
+              "filename": "emphasis-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 22,
+            "filename": "emphasis-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 48,
+            "filename": "emphasis-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "emphasis-shorthand.pg",
+            "val": "_(not emphasis)"
+          }
+        ],
+        "line": 6,
+        "filename": "emphasis-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "emphasis-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "emphasis-shorthand.pg"
+}
+`;
+
 exports[`escape-chars.pg 1`] = `
 {
   "type": "Block",
@@ -14190,6 +14600,416 @@ exports[`source.pg 1`] = `
   ],
   "line": 0,
   "filename": "source.pg"
+}
+`;
+
+exports[`strong-shorthand.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "This is "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 20,
+                  "filename": "strong-shorthand.pg",
+                  "val": "important"
+                }
+              ],
+              "line": 1,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 13,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 23,
+            "filename": "strong-shorthand.pg",
+            "val": " information."
+          }
+        ],
+        "line": 1,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "Multiple: "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 22,
+                  "filename": "strong-shorthand.pg",
+                  "val": "one"
+                }
+              ],
+              "line": 2,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 15,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 19,
+            "filename": "strong-shorthand.pg",
+            "val": " and "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 33,
+                  "filename": "strong-shorthand.pg",
+                  "val": "two"
+                }
+              ],
+              "line": 2,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 26,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 30,
+            "filename": "strong-shorthand.pg",
+            "val": " here."
+          }
+        ],
+        "line": 2,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "Nested link: "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 25,
+                  "filename": "strong-shorthand.pg",
+                  "val": "click "
+                },
+                {
+                  "type": "Tag",
+                  "name": "a",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 3,
+                        "column": 48,
+                        "filename": "strong-shorthand.pg",
+                        "val": "here"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "strong-shorthand.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "href",
+                      "val": "/url",
+                      "line": 3,
+                      "column": 35,
+                      "filename": "strong-shorthand.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 3,
+                  "column": 33,
+                  "filename": "strong-shorthand.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 43,
+                  "filename": "strong-shorthand.pg",
+                  "val": " now"
+                }
+              ],
+              "line": 3,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 18,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 41,
+            "filename": "strong-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 3,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "Nested emphasis: "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 29,
+                  "filename": "strong-shorthand.pg",
+                  "val": "really "
+                },
+                {
+                  "type": "Tag",
+                  "name": "em",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 4,
+                        "column": 41,
+                        "filename": "strong-shorthand.pg",
+                        "val": "very"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "strong-shorthand.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 4,
+                  "column": 38,
+                  "filename": "strong-shorthand.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 43,
+                  "filename": "strong-shorthand.pg",
+                  "val": " important"
+                }
+              ],
+              "line": 4,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 22,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 47,
+            "filename": "strong-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 4,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "Balanced parens: "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 29,
+                  "filename": "strong-shorthand.pg",
+                  "val": "text (parenthesized) more"
+                }
+              ],
+              "line": 5,
+              "filename": "strong-shorthand.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 22,
+            "filename": "strong-shorthand.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 48,
+            "filename": "strong-shorthand.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "strong-shorthand.pg",
+            "val": "*(not strong)"
+          }
+        ],
+        "line": 6,
+        "filename": "strong-shorthand.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "strong-shorthand.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "strong-shorthand.pg"
 }
 `;
 

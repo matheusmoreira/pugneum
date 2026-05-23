@@ -539,26 +539,40 @@ function resolveFootnotes(ast, source) {
     });
   }
 
-  // Resolve refs in main document AND inside definition content blocks
+  // Resolve refs in main document (skip into Footnotes definitions)
   ast = walk(ast, function before(node, replace) {
     if (node.type === 'FootnoteRef') {
       resolveRef(node, replace);
       return false;
     }
     if (node.type === 'Footnotes') {
-      for (const def of node.definitions) {
-        if (def.block) {
-          def.block = walk(def.block, function (innerNode, innerReplace) {
-            if (innerNode.type === 'FootnoteRef') {
-              resolveRef(innerNode, innerReplace);
-              return false;
-            }
-          });
-        }
-      }
       return false;
     }
   });
+
+  // Resolve refs inside definition blocks, but only for footnotes
+  // transitively reachable from body text. Fixpoint loop: process
+  // newly-discovered footnotes until no new ones appear.
+  const resolved = Object.create(null);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const name in numberByName) {
+      if (name in resolved) continue;
+      resolved[name] = true;
+      const def = definitions[name];
+      if (def && def.block) {
+        const prevCount = nextNumber;
+        def.block = walk(def.block, function (innerNode, innerReplace) {
+          if (innerNode.type === 'FootnoteRef') {
+            resolveRef(innerNode, innerReplace);
+            return false;
+          }
+        });
+        if (nextNumber > prevCount) changed = true;
+      }
+    }
+  }
 
   // Pass 3: replace Footnotes node with rendered section
   // All refs are now numbered so ordering is correct regardless of source position

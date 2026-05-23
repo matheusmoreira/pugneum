@@ -834,6 +834,14 @@ describe('footnotes', () => {
     assert.match(result, /<li id="footnote-fn1"/);
     assert.match(result, /<li id="footnote-fn2"/);
   });
+
+  it('should not render orphan footnotes with internal cross-refs', () => {
+    const result = pg.render(
+      'p Clean text.\n\nfootnotes\n  orphan1 See^[orphan2].\n  orphan2 Content.',
+    );
+    assert.doesNotMatch(result, /section/);
+    assert.doesNotMatch(result, /footnote/);
+  });
 });
 
 describe('renderFile()', () => {

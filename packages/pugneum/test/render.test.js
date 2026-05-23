@@ -900,6 +900,49 @@ describe('footnotes', () => {
   });
 });
 
+describe('table of contents', () => {
+  it('should generate nav with links to headings that have IDs', () => {
+    const result = pg.render(
+      'toc\n\nh2#intro Introduction\np Text.\nh2#design Design',
+    );
+    assert.match(
+      result,
+      /<nav><ul><li><a href="#intro">Introduction<\/a><\/li><li><a href="#design">Design<\/a><\/li><\/ul><\/nav>/,
+    );
+  });
+
+  it('should exclude headings without IDs', () => {
+    const result = pg.render(
+      'toc\n\nh2#included Included\nh2 Excluded\nh2#also Also',
+    );
+    assert.match(result, /href="#included"/);
+    assert.match(result, /href="#also"/);
+    // "Excluded" appears in the body but must not appear as a nav link
+    assert.doesNotMatch(result, /href="#excluded"/);
+    assert.doesNotMatch(result, /<a[^>]*>Excluded<\/a>/);
+  });
+
+  it('should nest deeper headings', () => {
+    const result = pg.render(
+      'toc\n\nh2#a Section\nh3#b Subsection\nh2#c Another',
+    );
+    assert.match(
+      result,
+      /<li><a href="#a">Section<\/a><ul><li><a href="#b">Subsection<\/a><\/li><\/ul><\/li>/,
+    );
+  });
+
+  it('should produce empty output when no headings have IDs', () => {
+    const result = pg.render('toc\n\nh2 No ID\np Text.');
+    assert.doesNotMatch(result, /nav/);
+  });
+
+  it('should work with toc placed after headings', () => {
+    const result = pg.render('h2#first First\np Text.\n\ntoc');
+    assert.match(result, /href="#first"/);
+  });
+});
+
 describe('abbr shorthand', () => {
   it('should render ?(abbr expansion) as <abbr>', () => {
     assert.strictEqual(

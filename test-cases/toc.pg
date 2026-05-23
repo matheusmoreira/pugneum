@@ -1,0 +1,10 @@
+h1 My Article
+
+toc
+
+h2#background Background
+p Some background text.
+h3#prior-work Prior work
+p Prior work details.
+h2#design Design
+p Design details.

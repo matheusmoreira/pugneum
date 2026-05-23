@@ -72,6 +72,7 @@ function walkAST(ast, before, after, options) {
         }
       }
       break;
+    case 'Toc':
     case 'References':
     case 'Comment':
     case 'IncludeFilter':

@@ -51,6 +51,7 @@ function link(ast, options) {
   ast = applyIncludes(ast, options);
   ast = resolveReferences(ast, source);
   ast = resolveFootnotes(ast, source);
+  ast = resolveToc(ast, source);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -727,6 +728,202 @@ function resolveFootnotes(ast, source) {
       return false;
     }
   });
+}
+
+function resolveToc(ast, source) {
+  const headings = [];
+
+  // Pass 1: collect headings with IDs
+  walk(ast, function (node) {
+    if (node.type === 'Tag' && /^h[1-6]$/.test(node.name)) {
+      const idAttr =
+        node.attrs &&
+        node.attrs.find(function (a) {
+          return a.name === 'id';
+        });
+      if (!idAttr) return;
+
+      let text = '';
+      if (node.block && node.block.nodes) {
+        text = extractText(node.block.nodes);
+      }
+
+      headings.push({
+        level: parseInt(node.name[1]),
+        id: idAttr.val,
+        text: text || idAttr.val,
+      });
+    }
+  });
+
+  if (headings.length === 0) {
+    // No headings with IDs — remove Toc node
+    return walk(ast, function (node, replace) {
+      if (node.type === 'Toc') {
+        replace([]);
+        return false;
+      }
+    });
+  }
+
+  // Pass 2: replace Toc nodes with nav structure
+  return walk(ast, function before(node, replace) {
+    if (node.type === 'Toc') {
+      replace(buildTocNav(headings, node));
+      return false;
+    }
+  });
+}
+
+function extractText(nodes) {
+  let text = '';
+  for (const node of nodes) {
+    if (node.type === 'Text') {
+      text += node.val;
+    } else if (node.block && node.block.nodes) {
+      text += extractText(node.block.nodes);
+    }
+  }
+  return text;
+}
+
+function buildTocNav(headings, tocNode) {
+  const items = buildTocItems(headings, 0, headings.length, tocNode);
+
+  const ul = {
+    type: 'Tag',
+    name: 'ul',
+    attrs: [],
+    attributeBlocks: [],
+    isInline: false,
+    block: {
+      type: 'Block',
+      nodes: items,
+      line: tocNode.line,
+      column: tocNode.column,
+      filename: tocNode.filename,
+    },
+    line: tocNode.line,
+    column: tocNode.column,
+    filename: tocNode.filename,
+  };
+
+  return {
+    type: 'Tag',
+    name: 'nav',
+    attrs: [],
+    attributeBlocks: [],
+    isInline: false,
+    block: {
+      type: 'Block',
+      nodes: [ul],
+      line: tocNode.line,
+      column: tocNode.column,
+      filename: tocNode.filename,
+    },
+    line: tocNode.line,
+    column: tocNode.column,
+    filename: tocNode.filename,
+  };
+}
+
+function buildTocItems(headings, start, end, tocNode) {
+  if (start >= end) return [];
+
+  const items = [];
+  const topLevel = headings[start].level;
+  let i = start;
+
+  while (i < end) {
+    const heading = headings[i];
+    // Find the range of children (deeper headings until next same-or-higher level)
+    let j = i + 1;
+    while (j < end && headings[j].level > topLevel) {
+      j++;
+    }
+
+    // Build the <a> link
+    const link = {
+      type: 'Tag',
+      name: 'a',
+      attrs: [
+        {
+          name: 'href',
+          val: '#' + heading.id,
+          line: tocNode.line,
+          column: tocNode.column,
+          filename: tocNode.filename,
+        },
+      ],
+      attributeBlocks: [],
+      isInline: true,
+      block: {
+        type: 'Block',
+        nodes: [
+          {
+            type: 'Text',
+            val: heading.text,
+            line: tocNode.line,
+            column: tocNode.column,
+            filename: tocNode.filename,
+          },
+        ],
+        line: tocNode.line,
+        column: tocNode.column,
+        filename: tocNode.filename,
+      },
+      line: tocNode.line,
+      column: tocNode.column,
+      filename: tocNode.filename,
+    };
+
+    // Build children (sub-headings)
+    const liContent = [link];
+    if (j > i + 1) {
+      const childItems = buildTocItems(headings, i + 1, j, tocNode);
+      if (childItems.length > 0) {
+        liContent.push({
+          type: 'Tag',
+          name: 'ul',
+          attrs: [],
+          attributeBlocks: [],
+          isInline: false,
+          block: {
+            type: 'Block',
+            nodes: childItems,
+            line: tocNode.line,
+            column: tocNode.column,
+            filename: tocNode.filename,
+          },
+          line: tocNode.line,
+          column: tocNode.column,
+          filename: tocNode.filename,
+        });
+      }
+    }
+
+    items.push({
+      type: 'Tag',
+      name: 'li',
+      attrs: [],
+      attributeBlocks: [],
+      isInline: false,
+      block: {
+        type: 'Block',
+        nodes: liContent,
+        line: tocNode.line,
+        column: tocNode.column,
+        filename: tocNode.filename,
+      },
+      line: tocNode.line,
+      column: tocNode.column,
+      filename: tocNode.filename,
+    });
+
+    i = j;
+  }
+
+  return items;
 }
 
 function checkExtendPosition(ast, hasExtends, source) {

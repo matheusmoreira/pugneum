@@ -18942,6 +18942,214 @@ exports[`text.pg 1`] = `
 }
 `;
 
+exports[`toc.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "h1",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 4,
+            "filename": "toc.pg",
+            "val": "My Article"
+          }
+        ],
+        "line": 1,
+        "filename": "toc.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Toc",
+      "line": 3,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "h2",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 15,
+            "filename": "toc.pg",
+            "val": "Background"
+          }
+        ],
+        "line": 5,
+        "filename": "toc.pg"
+      },
+      "attrs": [
+        {
+          "name": "id",
+          "val": "background",
+          "line": 5,
+          "column": 3,
+          "filename": "toc.pg"
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "toc.pg",
+            "val": "Some background text."
+          }
+        ],
+        "line": 6,
+        "filename": "toc.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "h3",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 15,
+            "filename": "toc.pg",
+            "val": "Prior work"
+          }
+        ],
+        "line": 7,
+        "filename": "toc.pg"
+      },
+      "attrs": [
+        {
+          "name": "id",
+          "val": "prior-work",
+          "line": 7,
+          "column": 3,
+          "filename": "toc.pg"
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 3,
+            "filename": "toc.pg",
+            "val": "Prior work details."
+          }
+        ],
+        "line": 8,
+        "filename": "toc.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 8,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "h2",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 11,
+            "filename": "toc.pg",
+            "val": "Design"
+          }
+        ],
+        "line": 9,
+        "filename": "toc.pg"
+      },
+      "attrs": [
+        {
+          "name": "id",
+          "val": "design",
+          "line": 9,
+          "column": 3,
+          "filename": "toc.pg"
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
+      "column": 1,
+      "filename": "toc.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 10,
+            "column": 3,
+            "filename": "toc.pg",
+            "val": "Design details."
+          }
+        ],
+        "line": 10,
+        "filename": "toc.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 10,
+      "column": 1,
+      "filename": "toc.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "toc.pg"
+}
+`;
+
 exports[`utf8bom.pg 1`] = `
 {
   "type": "Block",

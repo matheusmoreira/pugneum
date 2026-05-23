@@ -252,6 +252,8 @@ class Parser {
         return this.parseReferences();
       case 'footnotes':
         return this.parseFootnotes();
+      case 'toc':
+        return this.parseToc();
       case 'filter':
         return this.parseFilter();
       case 'comment':
@@ -637,6 +639,16 @@ class Parser {
     return {
       type: 'FootnoteRef',
       name: name,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
+  parseToc() {
+    const tok = this.expect('toc');
+    return {
+      type: 'Toc',
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,

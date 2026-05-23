@@ -2300,6 +2300,18 @@ class Lexer {
   }
 
   /**
+   * Table of contents.
+   */
+
+  toc() {
+    const tok = this.scanEndOfLine(/^toc/, 'toc');
+    if (tok) {
+      this.tokens.push(this.tokEnd(tok));
+      return true;
+    }
+  }
+
+  /**
    * Footnotes block.
    */
 
@@ -2781,6 +2793,7 @@ class Lexer {
       this.include() ||
       this.references() ||
       this.footnotes() ||
+      this.toc() ||
       this.mixin() ||
       this.call() ||
       this.tag() ||

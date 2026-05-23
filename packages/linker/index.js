@@ -50,8 +50,8 @@ function link(ast, options) {
   }
   ast = applyIncludes(ast, options);
   ast = resolveReferences(ast, source);
-  ast = resolveFootnotes(ast, source);
   ast = resolveToc(ast, source);
+  ast = resolveFootnotes(ast, source);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];

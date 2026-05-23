@@ -39,6 +39,9 @@ The linker also resolves:
    references (including nested refs in definition content), then
    generate the `<section role="doc-endnotes">` structure with
    numbered markers and DPUB-ARIA accessibility roles.
+ - **Table of contents** — `toc` nodes are replaced with a
+   `<nav role="doc-toc">` containing nested `<ol>` lists
+   linking to headings with explicit `id` attributes.
 
 ## License
 

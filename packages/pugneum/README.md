@@ -344,6 +344,41 @@ attributes, captions, colgroups, and structural sections:
 
 See the table filter package for full syntax documentation.
 
+## Table of contents
+
+The `toc` keyword generates a table of contents from headings
+that have explicit `id` attributes. Headings without IDs are
+excluded — you opt in per heading:
+
+```pugneum
+h1 My Article
+
+toc
+
+h2#background Background
+p Some text.
+h3#prior-work Prior work
+p More text.
+h2#design Design
+```
+
+```html
+<nav role="doc-toc" aria-label="Table of contents">
+  <ol>
+    <li><a href="#background">Background</a>
+      <ol>
+        <li><a href="#prior-work">Prior work</a></li>
+      </ol>
+    </li>
+    <li><a href="#design">Design</a></li>
+  </ol>
+</nav>
+```
+
+The ToC appears where the `toc` keyword is placed.
+Only headings with `#id` are included — you control
+exactly which sections appear.
+
 ## Mixins
 
 Mixins define reusable template fragments with parameters:

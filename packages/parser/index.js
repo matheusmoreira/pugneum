@@ -250,6 +250,8 @@ class Parser {
         return this.parseInclude();
       case 'references':
         return this.parseReferences();
+      case 'footnotes':
+        return this.parseFootnotes();
       case 'filter':
         return this.parseFilter();
       case 'comment':
@@ -258,6 +260,7 @@ class Parser {
       case 'start-interpolation':
       case 'start-ref-link':
       case 'start-ref-image':
+      case 'start-footnote-ref':
         return this.parseText({block: true});
       case 'dot':
         return this.parseDot();
@@ -319,6 +322,9 @@ class Parser {
           break;
         case 'start-ref-image':
           nodes.push(this.parseRefImage());
+          break;
+        case 'start-footnote-ref':
+          nodes.push(this.parseFootnoteRef());
           break;
         default:
           break loop;
@@ -619,6 +625,93 @@ class Parser {
     };
   }
 
+  parseFootnoteRef() {
+    const tok = this.expect('start-footnote-ref');
+    return this.parseFootnoteRefContent(tok);
+  }
+
+  parseFootnoteRefContent(tok) {
+    const name = tok.val;
+    this.expect('end-footnote-ref');
+    return {
+      type: 'FootnoteRef',
+      name: name,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
+  parseFootnotes() {
+    const tok = this.expect('footnotes');
+    const definitions = [];
+
+    while (this.peek().type === 'footnote-def-start') {
+      const defTok = this.advance();
+      const name = defTok.val;
+      const block = this.emptyBlock(defTok.loc.start.line);
+
+      while (
+        this.peek().type !== 'footnote-def-end' &&
+        this.peek().type !== 'eos'
+      ) {
+        const next = this.peek();
+        switch (next.type) {
+          case 'text':
+            block.nodes.push(this.textNode(this.advance()));
+            break;
+          case 'newline':
+            this.advance();
+            block.nodes.push({
+              type: 'Text',
+              val: ' ',
+              line: next.loc.start.line,
+              column: next.loc.start.column,
+              filename: this.filename,
+            });
+            break;
+          case 'start-interpolation':
+            this.advance();
+            block.nodes.push(this.parseExpr());
+            this.expect('end-interpolation');
+            break;
+          case 'start-ref-link':
+            block.nodes.push(this.parseRefLink());
+            break;
+          case 'start-ref-image':
+            block.nodes.push(this.parseRefImage());
+            break;
+          case 'start-footnote-ref':
+            block.nodes.push(this.parseFootnoteRef());
+            break;
+          default:
+            this.error(
+              'INVALID_TOKEN',
+              'Unexpected token in footnote definition: ' + next.type,
+              next,
+            );
+        }
+      }
+      this.expect('footnote-def-end');
+
+      definitions.push({
+        name: name,
+        block: block,
+        line: defTok.loc.start.line,
+        column: defTok.loc.start.column,
+        filename: this.filename,
+      });
+    }
+
+    return {
+      type: 'Footnotes',
+      definitions: definitions,
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+  }
+
   /**
    * include block?
    */
@@ -765,6 +858,9 @@ class Parser {
         case 'start-ref-image':
           block.nodes.push(this.parseRefImageContent(currentTok));
           break;
+        case 'start-footnote-ref':
+          block.nodes.push(this.parseFootnoteRefContent(currentTok));
+          break;
         default:
           this.error(
             'INVALID_TOKEN',
@@ -901,6 +997,7 @@ class Parser {
       case 'start-interpolation':
       case 'start-ref-link':
       case 'start-ref-image':
+      case 'start-footnote-ref':
         const text = this.parseText();
         if (text.type === 'Block') {
           tag.block.nodes.push.apply(tag.block.nodes, text.nodes);

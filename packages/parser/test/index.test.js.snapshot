@@ -4932,6 +4932,157 @@ exports[`filters.verbatim.pg 1`] = `
 }
 `;
 
+exports[`footnotes.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 5,
+            "filename": "footnotes.pg",
+            "val": "See "
+          },
+          {
+            "type": "FootnoteRef",
+            "name": "gc-tricolor",
+            "line": 2,
+            "column": 9,
+            "filename": "footnotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 23,
+            "filename": "footnotes.pg",
+            "val": " for details."
+          }
+        ],
+        "line": 1,
+        "filename": "footnotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "footnotes.pg"
+    },
+    {
+      "type": "Footnotes",
+      "definitions": [
+        {
+          "name": "gc-tricolor",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 6,
+                "column": 1,
+                "filename": "footnotes.pg",
+                "val": "Introduced by Dijkstra in 1978."
+              }
+            ],
+            "line": 6,
+            "filename": "footnotes.pg"
+          },
+          "line": 6,
+          "column": 1,
+          "filename": "footnotes.pg"
+        },
+        {
+          "name": "gc-history",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 9,
+                "column": 1,
+                "filename": "footnotes.pg",
+                "val": "McCarthy's original Lisp used mark-and-sweep."
+              },
+              {
+                "type": "Text",
+                "val": " ",
+                "line": 10,
+                "column": 1,
+                "filename": "footnotes.pg"
+              },
+              {
+                "type": "Text",
+                "line": 10,
+                "column": 1,
+                "filename": "footnotes.pg",
+                "val": "See "
+              },
+              {
+                "type": "ReferenceLink",
+                "name": "mccarthy",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 10,
+                  "filename": "footnotes.pg"
+                },
+                "attrs": [],
+                "line": 10,
+                "column": 5,
+                "filename": "footnotes.pg"
+              },
+              {
+                "type": "Text",
+                "line": 10,
+                "column": 16,
+                "filename": "footnotes.pg",
+                "val": " for the original 1960 paper."
+              }
+            ],
+            "line": 9,
+            "filename": "footnotes.pg"
+          },
+          "line": 9,
+          "column": 1,
+          "filename": "footnotes.pg"
+        },
+        {
+          "name": "inline-only",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 11,
+                "column": 1,
+                "filename": "footnotes.pg",
+                "val": "Content on the name line only."
+              }
+            ],
+            "line": 11,
+            "filename": "footnotes.pg"
+          },
+          "line": 11,
+          "column": 1,
+          "filename": "footnotes.pg"
+        }
+      ],
+      "line": 4,
+      "column": 1,
+      "filename": "footnotes.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "footnotes.pg"
+}
+`;
+
 exports[`html5.pg 1`] = `
 {
   "type": "Block",

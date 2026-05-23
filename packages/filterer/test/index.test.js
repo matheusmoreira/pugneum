@@ -369,3 +369,35 @@ div
   assert.strictEqual(pTag.type, 'Tag');
   assert.strictEqual(pTag.name, 'p');
 });
+
+test('INVALID_FILTER_TYPE when include uses pugneum type filter', () => {
+  const pugneumInclude = {
+    type: 'pugneum',
+    filter: function (str) {
+      return 'p hello';
+    },
+  };
+
+  const ast = {
+    type: 'Block',
+    nodes: [
+      {
+        type: 'RawInclude',
+        filters: [{name: 'pugneumInclude', attrs: []}],
+        file: {fullPath: 'test.txt', str: 'test content'},
+        line: 1,
+        column: 1,
+        filename: filename,
+      },
+    ],
+    line: 1,
+    filename: filename,
+  };
+
+  assert.throws(
+    () => filter(ast, {pugneumInclude}),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_TYPE' &&
+      /cannot be used with include/.test(err.message),
+  );
+});

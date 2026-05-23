@@ -1,1 +1,1 @@
-p before #[:cdata inside] after
+p before #(:cdata inside) after

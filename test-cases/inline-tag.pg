@@ -1,15 +1,15 @@
-p bing #[strong foo] bong
+p bing #(strong foo) bong
 
 p.
   bing
-  #[strong foo]
+  #(strong foo)
   bong
 
 p
   | bing
-  | #[strong foo]
+  | #(strong foo)
   | bong
 
 p.
-  \#[strong escaped]
-  \#[#[strong escaped]
+  \#(strong escaped)
+  \#(#(strong escaped)

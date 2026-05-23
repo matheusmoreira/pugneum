@@ -4,6 +4,6 @@ mixin btn(text target=/)
 mixin icon(name size=16)
   img(src="/icons/#{name}.svg" width="#{size}" height="#{size}")
 
-p Click #[+btn(here)] or #[+btn(there /page)]
+p Click #(+btn(here)) or #(+btn(there /page))
 
-p Icons: #[+icon(star)] and #[+icon(heart 32)]
+p Icons: #(+icon(star)) and #(+icon(heart 32))

@@ -6,4 +6,4 @@ p @(/save).button save
 p.
   Text with @(/about the about page) inside.
 p \@(not a link)
-p #[em check @(/docs the docs) out]
+p #(em check @(/docs the docs) out)

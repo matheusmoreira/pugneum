@@ -1,11 +1,11 @@
 p.
-    #[strong This strong text is really really long. This strong
+    #(strong This strong text is really really long. This strong
     text is really really long. This strong text is really really
-    long.]
+    long.)
 
 p.
-  Before #[a(href='https://example.com/very/long/path')
-  link text here] after.
+  Before #(a(href='https://example.com/very/long/path')
+  link text here) after.
 
 p.
   Multi-line @(https://example.com/path

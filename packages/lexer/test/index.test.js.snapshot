@@ -40409,6 +40409,170 @@ exports[`svg-basic.pg 1`] = `
 ]
 `;
 
+exports[`table-alignment.pg 1`] = `
+[
+  {
+    "type": "filter",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    },
+    "val": "table"
+  },
+  {
+    "type": "start-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 7
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 2,
+        "column": 29
+      }
+    },
+    "val": "| Name  | Count | Status |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 3,
+        "column": 29
+      }
+    },
+    "val": "| :---  | ----: | :---:  |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 4,
+        "column": 29
+      }
+    },
+    "val": "| Alice |    42 | active |"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 5,
+        "column": 29
+      }
+    },
+    "val": "| Bob   |     7 | idle   |"
+  },
+  {
+    "type": "end-pipeless-text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 29
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 5,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 29
+      },
+      "filename": "table-alignment.pg",
+      "end": {
+        "line": 5,
+        "column": 29
+      }
+    }
+  }
+]
+`;
+
 exports[`table-attrs.pg 1`] = `
 [
   {

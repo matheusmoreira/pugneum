@@ -92,3 +92,67 @@ describe('caption', () => {
     assert.match(result, /caption\(class="sr-only"\) System call reference/);
   });
 });
+
+describe('alignment', () => {
+  test('left alignment :---', () => {
+    var input = '| a |\n| :--- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:left"\)/);
+  });
+
+  test('right alignment ---:', () => {
+    var input = '| a |\n| ---: |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:right"\)/);
+  });
+
+  test('center alignment :---:', () => {
+    var input = '| a |\n| :---: |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:center"\)/);
+  });
+
+  test('no alignment ---', () => {
+    var input = '| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /^\s*col$/m);
+  });
+
+  test('col attrs ---(class="mono")---', () => {
+    var input = '| a |\n| ---(class="mono")--- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(class="mono"\)/);
+  });
+
+  test('alignment + col attrs :---(class="x")---:', () => {
+    var input = '| a |\n| :---(class="x")---: |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:center" class="x"\)/);
+  });
+
+  test('mixed alignment across columns', () => {
+    var input = '| a | b | c |\n| :--- | ---: | :---: |\n| 1 | 2 | 3 |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:left"\)/);
+    assert.match(result, /col\(style="text-align:right"\)/);
+    assert.match(result, /col\(style="text-align:center"\)/);
+  });
+});
+
+describe('colgroup boundaries', () => {
+  test('|| creates separate colgroups', () => {
+    var input =
+      '| a | b | c | d |\n| :--- | ---: || :--- | :---: |\n| 1 | 2 | 3 | 4 |';
+    var result = tableFilter.filter(input, {});
+    var colgroups = result.match(/colgroup/g);
+    assert.strictEqual(colgroups.length, 2);
+  });
+
+  test('|| in data rows treated as |', () => {
+    var input =
+      '| a | b || c | d |\n| --- | --- || --- | --- |\n| 1 | 2 || 3 | 4 |';
+    var result = tableFilter.filter(input, {});
+    var tds = result.match(/td /g);
+    assert.strictEqual(tds.length, 4);
+  });
+});

@@ -16531,6 +16531,80 @@ exports[`svg-basic.pg 1`] = `
 }
 `;
 
+exports[`table-alignment.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Filter",
+      "name": "table",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "table-alignment.pg",
+            "val": "| Name  | Count | Status |"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 1,
+            "filename": "table-alignment.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "table-alignment.pg",
+            "val": "| :---  | ----: | :---:  |"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "table-alignment.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "table-alignment.pg",
+            "val": "| Alice |    42 | active |"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 1,
+            "filename": "table-alignment.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "table-alignment.pg",
+            "val": "| Bob   |     7 | idle   |"
+          }
+        ],
+        "line": 1,
+        "filename": "table-alignment.pg"
+      },
+      "attrs": [],
+      "line": 1,
+      "column": 1,
+      "filename": "table-alignment.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "table-alignment.pg"
+}
+`;
+
 exports[`table-attrs.pg 1`] = `
 {
   "type": "Block",

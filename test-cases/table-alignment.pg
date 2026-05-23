@@ -1,0 +1,5 @@
+:table
+  | Name  | Count | Status |
+  | :---  | ----: | :---:  |
+  | Alice |    42 | active |
+  | Bob   |     7 | idle   |

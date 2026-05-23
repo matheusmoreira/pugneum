@@ -484,6 +484,13 @@ describe('interpolated tags', () => {
       '<!DOCTYPE html><p><a href="url">text #(not interp) end</a></p>',
     );
   });
+
+  it('should handle multiple escaped shorthands inside interpolation', () => {
+    assert.strictEqual(
+      pg.render('p #(em \\@(a) \\@(b) text)'),
+      '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
+    );
+  });
 });
 
 describe('variable edge cases', () => {

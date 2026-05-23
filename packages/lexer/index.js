@@ -781,12 +781,16 @@ class Lexer {
 
         if (earliest.kind !== 'escaped') break;
 
-        if (earliest.literal.endsWith('(')) {
-          escapedParenDepth++;
-        }
         prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
         value = value.substring(earliest.pos + 1 + earliest.literal.length);
         escaped++;
+
+        escapedParenDepth = 0;
+        for (let ci = 0; ci < prefix.length; ci++) {
+          if (prefix[ci] === '(') escapedParenDepth++;
+          else if (prefix[ci] === ')' && escapedParenDepth > 0)
+            escapedParenDepth--;
+        }
       }
 
       if (earliest.kind === 'end') {

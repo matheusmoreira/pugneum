@@ -518,6 +518,7 @@ class Parser {
       definitions.push({
         name: def.name,
         url: def.url,
+        defaultText: def.defaultText || null,
         line: def.loc.start.line,
         column: def.loc.start.column,
         filename: this.filename,

@@ -196,6 +196,41 @@ describe('reference links', () => {
     assert.strictEqual(pg.render(input), '<!DOCTYPE html>');
   });
 
+  it('should use default text when no explicit text is provided', () => {
+    var input =
+      'references\n  docs https://docs.com Documentation\n\np @[docs]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><a href="https://docs.com">Documentation</a></p>',
+    );
+  });
+
+  it('should use explicit text over default text', () => {
+    var input =
+      'references\n  docs https://docs.com Documentation\n\np @[docs click here]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><a href="https://docs.com">click here</a></p>',
+    );
+  });
+
+  it('should use default text for reference images', () => {
+    var input = 'references\n  logo /logo.png Pugneum Logo\n\np ![logo]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><img src="/logo.png" alt="Pugneum Logo"></p>',
+    );
+  });
+
+  it('should support default text with quoted URLs', () => {
+    var input =
+      "references\n  ex 'https://example.com/path with spaces' Example Site\n\np @[ex]";
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><a href="https://example.com/path with spaces">Example Site</a></p>',
+    );
+  });
+
   it('should throw for undefined reference links', () => {
     assert.throws(
       () => pg.render('p @[missing]'),

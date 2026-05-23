@@ -2132,14 +2132,31 @@ class Lexer {
             );
           }
           const name = content.substring(0, spaceIdx);
-          let url = content.substring(spaceIdx + 1).trim();
+          let rest = content.substring(spaceIdx + 1).trim();
+          let url;
+          let defaultText = null;
 
-          // Handle quoted URLs
-          if (
-            (url[0] === "'" || url[0] === '"') &&
-            url[url.length - 1] === url[0]
-          ) {
-            url = url.substring(1, url.length - 1);
+          // Handle quoted URLs (may be followed by default text)
+          if (rest[0] === "'" || rest[0] === '"') {
+            const quote = rest[0];
+            const closeIdx = rest.indexOf(quote, 1);
+            if (closeIdx !== -1) {
+              url = rest.substring(1, closeIdx);
+              const afterUrl = rest.substring(closeIdx + 1).trim();
+              if (afterUrl) defaultText = afterUrl;
+            } else {
+              url = rest;
+            }
+          } else {
+            // Unquoted URL: first word is URL, rest is default text
+            const urlEnd = rest.indexOf(' ');
+            if (urlEnd === -1) {
+              url = rest;
+            } else {
+              url = rest.substring(0, urlEnd);
+              const afterUrl = rest.substring(urlEnd + 1).trim();
+              if (afterUrl) defaultText = afterUrl;
+            }
           }
 
           if (!url) {
@@ -2152,6 +2169,7 @@ class Lexer {
           const tok = this.tok('ref-def');
           tok.name = name;
           tok.url = url;
+          tok.defaultText = defaultText;
           this.incrementColumn(content.length);
           this.tokens.push(this.tokEnd(tok));
         } else {

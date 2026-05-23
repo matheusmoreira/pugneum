@@ -251,7 +251,7 @@ function resolveReferences(ast, source) {
             source,
           );
         }
-        definitions[def.name] = def.url;
+        definitions[def.name] = {url: def.url, defaultText: def.defaultText};
       }
     }
   });
@@ -262,8 +262,8 @@ function resolveReferences(ast, source) {
       return false;
     }
     if (node.type === 'ReferenceLink') {
-      const url = definitions[node.name];
-      if (url === undefined) {
+      const def = definitions[node.name];
+      if (def === undefined) {
         error(
           'UNDEFINED_REFERENCE',
           "Undefined reference '" + node.name + "'",
@@ -271,15 +271,17 @@ function resolveReferences(ast, source) {
           source,
         );
       }
+      const url = def.url;
 
       let block = node.block;
       if (!block || block.nodes.length === 0) {
+        const fallbackText = def.defaultText || node.name;
         block = {
           type: 'Block',
           nodes: [
             {
               type: 'Text',
-              val: node.name,
+              val: fallbackText,
               line: node.line,
               column: node.column,
               filename: node.filename,
@@ -317,8 +319,8 @@ function resolveReferences(ast, source) {
       });
     }
     if (node.type === 'ReferenceImage') {
-      const url = definitions[node.name];
-      if (url === undefined) {
+      const def = definitions[node.name];
+      if (def === undefined) {
         error(
           'UNDEFINED_REFERENCE',
           "Undefined reference '" + node.name + "'",
@@ -326,15 +328,17 @@ function resolveReferences(ast, source) {
           source,
         );
       }
+      const url = def.url;
 
       let altBlock = node.block;
       if (!altBlock || altBlock.nodes.length === 0) {
+        const fallbackAlt = def.defaultText || node.name;
         altBlock = {
           type: 'Block',
           nodes: [
             {
               type: 'Text',
-              val: node.name,
+              val: fallbackAlt,
               line: node.line,
               column: node.column,
               filename: node.filename,

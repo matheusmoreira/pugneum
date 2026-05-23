@@ -7901,6 +7901,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
         {
           "name": "docs",
           "url": "/docs",
+          "defaultText": null,
           "line": 2,
           "column": 3,
           "filename": "inline-shorthands-combined.pg"
@@ -7908,6 +7909,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
         {
           "name": "logo",
           "url": "/logo.png",
+          "defaultText": null,
           "line": 3,
           "column": 3,
           "filename": "inline-shorthands-combined.pg"
@@ -14955,6 +14957,7 @@ exports[`reference-images.pg 1`] = `
         {
           "name": "logo",
           "url": "/images/logo.png",
+          "defaultText": null,
           "line": 2,
           "column": 3,
           "filename": "reference-images.pg"
@@ -14962,6 +14965,7 @@ exports[`reference-images.pg 1`] = `
         {
           "name": "photo",
           "url": "/images/sunset.jpg",
+          "defaultText": null,
           "line": 3,
           "column": 3,
           "filename": "reference-images.pg"
@@ -15370,6 +15374,7 @@ exports[`reference-links-forward.pg 1`] = `
         {
           "name": "example",
           "url": "https://example.com",
+          "defaultText": null,
           "line": 4,
           "column": 3,
           "filename": "reference-links-forward.pg"
@@ -15395,6 +15400,7 @@ exports[`reference-links-text-block.pg 1`] = `
         {
           "name": "nystrom",
           "url": "https://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/",
+          "defaultText": null,
           "line": 2,
           "column": 3,
           "filename": "reference-links-text-block.pg"
@@ -15402,6 +15408,7 @@ exports[`reference-links-text-block.pg 1`] = `
         {
           "name": "sicp",
           "url": "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html",
+          "defaultText": null,
           "line": 3,
           "column": 3,
           "filename": "reference-links-text-block.pg"
@@ -15535,6 +15542,7 @@ exports[`reference-links.pg 1`] = `
         {
           "name": "nystrom",
           "url": "https://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/",
+          "defaultText": null,
           "line": 2,
           "column": 3,
           "filename": "reference-links.pg"
@@ -15542,6 +15550,7 @@ exports[`reference-links.pg 1`] = `
         {
           "name": "sicp",
           "url": "https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/index.html",
+          "defaultText": null,
           "line": 3,
           "column": 3,
           "filename": "reference-links.pg"

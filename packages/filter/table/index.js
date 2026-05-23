@@ -9,7 +9,8 @@ function parseRow(line) {
   var parts = line.split('|');
   // Trim leading and trailing empty segments (from leading/trailing pipes)
   var start = parts[0].trim() === '' ? 1 : 0;
-  var end = parts[parts.length - 1].trim() === '' ? parts.length - 1 : parts.length;
+  var end =
+    parts[parts.length - 1].trim() === '' ? parts.length - 1 : parts.length;
   return parts.slice(start, end).map(function (cell) {
     return cell.trim();
   });
@@ -17,9 +18,12 @@ function parseRow(line) {
 
 // A separator row has all cells matching /^-+$/ (only dashes after trim).
 function isSeparatorRow(cells) {
-  return cells.length > 0 && cells.every(function (cell) {
-    return /^-+$/.test(cell);
-  });
+  return (
+    cells.length > 0 &&
+    cells.every(function (cell) {
+      return /^-+$/.test(cell);
+    })
+  );
 }
 
 // Format filter attributes (excluding filename) as a Pugneum attribute string.

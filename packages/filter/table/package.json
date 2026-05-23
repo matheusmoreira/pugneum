@@ -2,7 +2,11 @@
   "name": "pugneum-filter-table",
   "version": "1.0.0",
   "description": "Pugneum table filter",
-  "keywords": ["pugneum", "filter", "table"],
+  "keywords": [
+    "pugneum",
+    "filter",
+    "table"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matheusmoreira/pugneum.git",

@@ -212,9 +212,9 @@ describe('box drawing normalization', () => {
     assert.match(result, /tfoot/);
   });
 
-  test('decorative corners and junctions are stripped', () => {
+  test('full box drawing table with junctions', () => {
     var input =
-      '┌──────┬──────┐\n│ Name │ Type │\n│ ──── │ ──── │\n│ fd   │ int  │\n└──────┴──────┘';
+      '┌──────┬──────┐\n│ Name │ Type │\n├──────┼──────┤\n│ fd   │ int  │\n└──────┴──────┘';
     var result = tableFilter.filter(input, {});
     assert.match(result, /thead/);
     assert.match(result, /th Name/);

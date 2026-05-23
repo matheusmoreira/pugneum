@@ -5933,7 +5933,7 @@ exports[`image-shorthand.pg 1`] = `
               },
               {
                 "name": "alt",
-                "val": "https://example.com/logo.png",
+                "val": "",
                 "line": 2,
                 "column": 44,
                 "filename": "image-shorthand.pg"

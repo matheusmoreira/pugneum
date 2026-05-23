@@ -1286,10 +1286,9 @@ class Lexer {
       'INVALID_IMAGE',
     );
     let afterImage = parsed.after;
+    const altText = parsed.text === parsed.url ? '' : parsed.text;
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
-    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(
-      parsed.text,
-    );
+    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(altText);
 
     let extraAttrs = '';
     if (afterImage.startsWith('(')) {

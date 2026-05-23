@@ -325,10 +325,10 @@ describe('image shorthand', () => {
     );
   });
 
-  it('should use URL as alt text when no alt provided', () => {
+  it('should use empty alt for decorative image when no alt provided', () => {
     assert.strictEqual(
       pg.render('p !(/logo.png)'),
-      '<!DOCTYPE html><p><img src="/logo.png" alt="/logo.png"></p>',
+      '<!DOCTYPE html><p><img src="/logo.png" alt=""></p>',
     );
   });
 

@@ -14504,23 +14504,23 @@ exports[`image-shorthand.pg 1`] = `
       "filename": "image-shorthand.pg",
       "end": {
         "line": 2,
-        "column": 78
+        "column": 50
       }
     },
     "name": "alt",
-    "val": "https://example.com/logo.png"
+    "val": ""
   },
   {
     "type": "end-attributes",
     "loc": {
       "start": {
         "line": 2,
-        "column": 78
+        "column": 50
       },
       "filename": "image-shorthand.pg",
       "end": {
         "line": 2,
-        "column": 79
+        "column": 51
       }
     }
   },

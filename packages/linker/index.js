@@ -332,7 +332,7 @@ function resolveReferences(ast, source) {
 
       let altBlock = node.block;
       if (!altBlock || altBlock.nodes.length === 0) {
-        const fallbackAlt = def.defaultText || node.name;
+        const fallbackAlt = def.defaultText || '';
         altBlock = {
           type: 'Block',
           nodes: [

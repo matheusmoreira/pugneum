@@ -109,7 +109,7 @@ p !(/logo.png Logo)(class="logo" loading="lazy")
 <p><img class="logo" src="/logo.png" alt="Logo" loading="lazy"></p>
 ```
 
-If no alt text is provided, the URL is used as alt text.
+If no alt text is provided, an empty `alt=""` is used (decorative image).
 Custom attributes can be appended after the shorthand in parentheses.
 Escape with `\!(` to output a literal `!(`.
 
@@ -164,8 +164,8 @@ p ![photo sunset](loading="lazy" class="hero")
 ```
 
 If no alt text is given, the default text from the definition
-is used. If no default text was defined, the reference name
-is used.
+is used. If no default text was defined, an empty `alt=""`
+is used (decorative image).
 Custom attributes can be appended after the shorthand in parentheses.
 Escape with `\![` to output a literal `![`.
 

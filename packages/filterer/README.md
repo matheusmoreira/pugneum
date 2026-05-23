@@ -25,6 +25,7 @@ passed to that filter.
 ```
 {
   custom: {
+    type: 'html',
     filter: function(text, options) {
       return 'filtered' + text;
     },

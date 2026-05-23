@@ -29,6 +29,17 @@ in the `FileReference` nodes.
  - `source` (string): pugneum source code; used for error context
  - `maxLinkDepth` (number): maximum template inheritance/include chain depth; default `256`
 
+The linker also resolves:
+
+ - **Reference links/images** — `@[name]` and `![name]` nodes are
+   resolved against a `references` block. Definitions can include
+   optional default display text: `name url Default Text`.
+ - **Footnotes** — `^[name]` nodes are resolved against a `footnotes`
+   block. Three-pass architecture: collect definitions, resolve all
+   references (including nested refs in definition content), then
+   generate the `<section role="doc-endnotes">` structure with
+   numbered markers and DPUB-ARIA accessibility roles.
+
 ## License
 
   MIT

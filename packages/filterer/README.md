@@ -37,11 +37,26 @@ passed to that filter.
 `custom` is the name of the filter as written in the pugneum template.
 Every key maps a name to an object describing the filter of that name.
 
-The filter descriptor is an object whose filter property is a function
-that processes the text. This is the only strictly required property.
+Every filter must declare a `type` property:
+
+- `text` — plain text output, HTML-escaped by the filterer
+- `html` — raw HTML output, passed through as-is
+- `pugneum` — Pugneum source output, re-lexed/re-parsed into AST nodes
+- `syntax` — direct AST node array, inserted into the tree
+
+```
+{
+  custom: {
+    type: 'html',
+    filter: function(text, options) {
+      return '<strong>' + text + '</strong>';
+    }
+  }
+}
+```
+
 If `binary` is specified as true, the filter receives a raw input buffer
 containing binary data instead of already decoded text.
-Support for more metadata will probably be added later.
 
 The built-in `verbatim` filter passes text through unchanged.
 It is always available without any configuration.

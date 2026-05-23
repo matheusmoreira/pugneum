@@ -132,7 +132,17 @@ p @[docs](class="external" target="_blank")
 <p><a class="external" href="https://docs.example.com" target="_blank">docs</a></p>
 ```
 
-If no link text is given, the reference name is used.
+If no link text is given, the default text from the definition
+is used. If no default text was defined, the reference name is
+used. Define default text after the URL:
+
+```pugneum
+references
+  docs https://docs.com Documentation
+```
+
+`@[docs]` renders as "Documentation". Explicit text overrides:
+`@[docs click here]` renders as "click here".
 References can be defined anywhere in the file, including via `include`.
 
 ## Reference images
@@ -153,7 +163,9 @@ p ![photo sunset](loading="lazy" class="hero")
 <p><img class="hero" src="/images/sunset.jpg" alt="sunset" loading="lazy"></p>
 ```
 
-If no alt text is given, the reference name is used.
+If no alt text is given, the default text from the definition
+is used. If no default text was defined, the reference name
+is used.
 Custom attributes can be appended after the shorthand in parentheses.
 Escape with `\![` to output a literal `![`.
 
@@ -207,6 +219,100 @@ p Call `(printf("hello")) carefully.
 
 Balanced parentheses in code work via depth tracking.
 Escape with `` \`( `` to output a literal `` `( ``.
+
+## Del shorthand
+
+The `~()` shorthand generates `<del>` tags for deleted/struck text:
+
+```pugneum
+p This feature is ~(deprecated).
+```
+
+```html
+<p>This feature is <del>deprecated</del>.</p>
+```
+
+## Sup and sub shorthands
+
+`^()` generates `<sup>`, `,()` generates `<sub>`:
+
+```pugneum
+p Footnote^(1) and x^(2) + H,(2)O.
+```
+
+```html
+<p>Footnote<sup>1</sup> and x<sup>2</sup> + H<sub>2</sub>O.</p>
+```
+
+## Kbd shorthand
+
+The `%()` shorthand generates `<kbd>` tags for keyboard input:
+
+```pugneum
+p Press %(Ctrl+C) to copy.
+```
+
+```html
+<p>Press <kbd>Ctrl+C</kbd> to copy.</p>
+```
+
+## Footnotes
+
+Define footnotes in a `footnotes` block and reference them
+with `^[name]`. Footnotes are numbered by order of first
+appearance and generate bidirectional anchors with DPUB-ARIA
+accessibility roles:
+
+```pugneum
+p The tricolor algorithm^[gc] is fundamental.
+
+footnotes
+  gc Introduced by Dijkstra in 1978.
+```
+
+```html
+<p>The tricolor algorithm<sup><a href="#footnote-gc"
+  id="footnote-reference-gc" role="doc-noteref">[1]</a></sup>
+  is fundamental.</p>
+<section role="doc-endnotes">
+  <ol>
+    <li id="footnote-gc" role="doc-endnote">
+      Introduced by Dijkstra in 1978.
+      <a href="#footnote-reference-gc" role="doc-backlink">↩</a>
+    </li>
+  </ol>
+</section>
+```
+
+Multi-line definitions use indented content:
+
+```pugneum
+footnotes
+  gc-tricolor Short note.
+  gc-history
+    McCarthy's original Lisp used mark-and-sweep.
+    See @[mccarthy] for the original paper.
+```
+
+Repeated references show the same number with multiple
+back-links. Footnote content supports all inline shorthands.
+
+## Table filter
+
+The `:table` filter parses pipe-delimited table syntax and
+generates full HTML tables with support for alignment,
+attributes, captions, colgroups, and structural sections:
+
+```pugneum
+:table(class="data")
+  caption System calls
+  | Name  | Count | Description     |
+  | :---  | ----: | :---:           |
+  | read  |   100 | Read from fd    |
+  | write |    50 | Write to fd     |
+```
+
+See the table filter package for full syntax documentation.
 
 ## Mixins
 

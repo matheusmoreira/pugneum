@@ -81,8 +81,8 @@ assert.deepEqual(parse(lex(dest)), ast);
 // Convert all simple <strong> elements to text
 // ============================================
 
-var source = 'p abc #[strong NO]\nstrong on its own line';
-var dest = 'p abc #[| NO]\n| on its own line';
+var source = 'p abc #(strong NO)\nstrong on its own line';
+var dest = 'p abc #(| NO)\n| on its own line';
 
 var ast = parse(lex(source));
 

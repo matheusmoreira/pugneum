@@ -31,7 +31,7 @@ source string
   → lexer      tokenizes into token array
   → parser     builds AST from tokens
   → loader     resolves file dependencies (include/extends), recursively lexing+parsing them
-  → linker     links ASTs together (template inheritance, includes, named blocks, reference links)
+  → linker     links ASTs together (template inheritance, includes, named blocks, reference links/images)
   → filterer   applies text filters (highlight.js, prismjs, etc.)
   → renderer   generates HTML string from final AST
 ```
@@ -63,10 +63,33 @@ Prettier with: `singleQuote: true`, `bracketSpacing: false`, `trailingComma: 'al
 ## Template Syntax (unique to pugneum)
 
 Beyond standard Pug syntax, pugneum adds:
-- `@(url text)` — inline link shorthand → `<a href="url">text</a>`
-- `!(src alt)` — inline image shorthand → `<img src="src" alt="alt">`
-- `@[ref text]` — reference links (URLs defined in `references` block)
+
+### Inline shorthands
+
+Pugneum's inline shorthands use three delimiter types, each signaling when content is resolved:
+
+- `()` — self-contained / immediate: content desugars at lex time
+- `[]` — reference / deferred: content is a name resolved by the linker against a `references` block
+- `{}` — substitution / binding: variable name resolved from mixin scope during rendering
+
+Self-contained shorthands (`sigil(content)`):
+- `@(url text)` — inline link → `<a href="url">text</a>`
+- `!(src alt)` — inline image → `<img src="src" alt="alt">`; supports extra attributes via `!(src alt)(attrs)`
+- `*(text)` — inline strong → `<strong>text</strong>`
+- `_(text)` — inline emphasis → `<em>text</em>`
+- `` `(code) `` — inline code → `<code>code</code>`; content is literal (no inner shorthand processing)
+- `#(tag text)` — inline tag interpolation → `<tag>text</tag>`
+- `#(+mixin(args))` — inline mixin call
+
+Reference shorthands (`sigil[name content]`):
+- `@[ref text]` — reference link (URL defined in `references` block)
+- `![ref alt]` — reference image (URL defined in `references` block); supports extra attributes via `![ref alt](attrs)`
+
+Substitution:
 - `#{var}` — variable interpolation in text and attributes (mixin arguments only); names match `[a-zA-Z_?-]`
-- `#[+mixin(args)]` — inline mixin calls within text
+
+Shorthands nest: `*(strongly _(emphasized `(code)))` works. Balanced parentheses in content are handled by depth tracking. Escaped sigils (`\*(`, `\_(`, etc.) produce literal text.
+
+### Other syntax
 - `mixin name(arg1 arg2?)` — `?` is part of the name, referenced as `#{arg2?}`; trailing args are implicitly optional
 - Named mixin blocks — `block name` inside a mixin defines a named slot; callers fill slots with `block name`, `append name`, or `prepend name`; a mixin uses either one unnamed `block` or named blocks, never both

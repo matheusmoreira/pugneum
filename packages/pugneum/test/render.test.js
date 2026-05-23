@@ -173,6 +173,24 @@ describe('reference links', () => {
     );
   });
 
+  it('should handle ![...] inside @[...] without premature ] close', () => {
+    var input =
+      'references\n  docs /docs\n  logo /logo.png\n\np @[docs click ![logo icon] here]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><a href="/docs">click ![logo icon] here</a></p>',
+    );
+  });
+
+  it('should handle @[...] inside ![...] without premature ] close', () => {
+    var input =
+      'references\n  docs /docs\n  logo /logo.png\n\np ![logo alt @[docs link] end]';
+    assert.strictEqual(
+      pg.render(input),
+      '<!DOCTYPE html><p><img src="/logo.png" alt="alt @[docs link] end"></p>',
+    );
+  });
+
   it('should produce no output for the references block itself', () => {
     var input = 'references\n  ex https://example.com';
     assert.strictEqual(pg.render(input), '<!DOCTYPE html>');

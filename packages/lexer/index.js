@@ -1237,6 +1237,7 @@ class Lexer {
     // Use \] to include a literal ] in the link text.
     let end = -1;
     let interpDepth = 0;
+    let bracketDepth = 0;
     for (let i = 0; i < inner.length; i++) {
       const ch = inner[i];
       if (ch === '\\') {
@@ -1256,9 +1257,20 @@ class Lexer {
         interpDepth--;
         continue;
       }
-      if (ch === ']' && interpDepth === 0) {
-        end = i;
-        break;
+      if ((ch === '@' || ch === '!') && inner[i + 1] === '[') {
+        bracketDepth++;
+        i++;
+        continue;
+      }
+      if (ch === ']') {
+        if (bracketDepth > 0) {
+          bracketDepth--;
+          continue;
+        }
+        if (interpDepth === 0) {
+          end = i;
+          break;
+        }
       }
     }
     if (end === -1) {
@@ -1330,6 +1342,7 @@ class Lexer {
     const inner = value.substring(pos + 2); // after ![
     let end = -1;
     let interpDepth = 0;
+    let bracketDepth = 0;
     for (let i = 0; i < inner.length; i++) {
       const ch = inner[i];
       if (ch === '\\') {
@@ -1349,9 +1362,20 @@ class Lexer {
         interpDepth--;
         continue;
       }
-      if (ch === ']' && interpDepth === 0) {
-        end = i;
-        break;
+      if ((ch === '@' || ch === '!') && inner[i + 1] === '[') {
+        bracketDepth++;
+        i++;
+        continue;
+      }
+      if (ch === ']') {
+        if (bracketDepth > 0) {
+          bracketDepth--;
+          continue;
+        }
+        if (interpDepth === 0) {
+          end = i;
+          break;
+        }
       }
     }
     if (end === -1) {

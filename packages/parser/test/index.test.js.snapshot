@@ -4109,7 +4109,7 @@ exports[`filters.verbatim.pg 1`] = `
                         "line": 5,
                         "column": 5,
                         "filename": "filters.verbatim.pg",
-                        "val": "with no #[b interpolation] at #{all}"
+                        "val": "with no #(b interpolation) at #{all}"
                       }
                     ],
                     "line": 3,
@@ -6966,7 +6966,7 @@ exports[`inline-tag.pg 1`] = `
             "line": 14,
             "column": 3,
             "filename": "inline-tag.pg",
-            "val": "#[strong escaped]"
+            "val": "#(strong escaped)"
           },
           {
             "type": "Text",
@@ -6980,7 +6980,7 @@ exports[`inline-tag.pg 1`] = `
             "line": 15,
             "column": 3,
             "filename": "inline-tag.pg",
-            "val": "#["
+            "val": "#("
           },
           {
             "type": "Tag",
@@ -7293,7 +7293,7 @@ exports[`interpolation.escape.pg 1`] = `
             "line": 3,
             "column": 5,
             "filename": "interpolation.escape.pg",
-            "val": "#[text]"
+            "val": "#(text)"
           },
           {
             "type": "Text",

@@ -10211,7 +10211,7 @@ exports[`filters.verbatim.pg 1`] = `
         "column": 41
       }
     },
-    "val": "with no #[b interpolation] at #{all}"
+    "val": "with no #(b interpolation) at #{all}"
   },
   {
     "type": "end-pipeless-text",
@@ -16978,7 +16978,7 @@ exports[`inline-image-at-line-start.pg 1`] = `
 
 exports[`inline-interpolation-at-line-start.pg 1`] = `
 {
-  "msg": "#[...] inline tags can only appear inside text content, not at the start of a line.",
+  "msg": "#(...) inline tags can only appear inside text content, not at the start of a line.",
   "code": "PUGNEUM:INLINE_SYNTAX_AT_LINE_START",
   "line": 1,
   "column": 1
@@ -17614,7 +17614,7 @@ exports[`inline-tag.pg 1`] = `
         "column": 21
       }
     },
-    "val": "#[strong escaped]"
+    "val": "#(strong escaped)"
   },
   {
     "type": "newline",
@@ -17643,7 +17643,7 @@ exports[`inline-tag.pg 1`] = `
         "column": 6
       }
     },
-    "val": "#["
+    "val": "#("
   },
   {
     "type": "start-interpolation",
@@ -18403,7 +18403,7 @@ exports[`interpolation.escape.pg 1`] = `
         "column": 13
       }
     },
-    "val": "#[text]"
+    "val": "#(text)"
   },
   {
     "type": "newline",

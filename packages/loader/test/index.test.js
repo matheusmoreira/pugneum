@@ -120,7 +120,7 @@ describe('path resolution', () => {
 describe('library includes', () => {
   test('resolves @-prefixed include from node_modules', () => {
     var filename = __dirname + '/test.pg';
-    var source = 'include @pugneum@mock-lib/greeting.pg';
+    var source = 'include @@pugneum/mock-lib/greeting.pg';
     var tokens = lex(source, {filename});
     var ast = parse(tokens, {filename});
 
@@ -143,7 +143,7 @@ describe('library includes', () => {
 
   test('missing @-prefixed package produces PACKAGE_NOT_FOUND error', () => {
     var filename = __dirname + '/test.pg';
-    var source = 'include @pugneum@nonexistent/file.pg';
+    var source = 'include @@pugneum/nonexistent/file.pg';
     var tokens = lex(source, {filename});
     var ast = parse(tokens, {filename});
 
@@ -157,7 +157,7 @@ describe('library includes', () => {
 
   test('@-prefixed resolution works with extends', () => {
     var filename = __dirname + '/test.pg';
-    var source = 'extends @pugneum@mock-lib/greeting.pg';
+    var source = 'extends @@pugneum/mock-lib/greeting.pg';
     var tokens = lex(source, {filename});
     var ast = parse(tokens, {filename});
 
@@ -179,7 +179,7 @@ describe('library includes', () => {
 
   test('throws PATH_TRAVERSAL for @-prefixed path escaping package directory', () => {
     var filename = __dirname + '/test.pg';
-    var source = 'include @pugneum@mock-lib/../../etc/passwd';
+    var source = 'include @@pugneum/mock-lib/../../etc/passwd';
     var tokens = lex(source, {filename});
     var ast = parse(tokens, {filename});
 
@@ -227,7 +227,7 @@ describe('library includes', () => {
 
   test('throws INVALID_LIBRARY_PATH for @ without file path', () => {
     var filename = __dirname + '/test.pg';
-    var source = 'include @pugneum@mock-lib';
+    var source = 'include @@pugneum/mock-lib';
     var tokens = lex(source, {filename});
     var ast = parse(tokens, {filename});
 

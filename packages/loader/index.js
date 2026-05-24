@@ -131,12 +131,12 @@ function resolve(filename, source, options) {
 }
 
 function resolveLibrary(filename) {
+  // Leading @ is the library-mode trigger; the rest is the npm path verbatim.
+  // Unscoped: @pkg/file.pg        → pkg/file.pg
+  // Scoped:   @@scope/pkg/file.pg  → @scope/pkg/file.pg
   const rest = filename.slice(1);
-  const slashIdx = rest.indexOf('/');
-  const pkgPart = slashIdx === -1 ? rest : rest.slice(0, slashIdx);
-  const subpath = slashIdx === -1 ? '' : rest.slice(slashIdx + 1);
 
-  if (!pkgPart) {
+  if (!rest) {
     throw makeError(
       'INVALID_LIBRARY_PATH',
       'Library include is missing a package name: ' + filename,
@@ -144,11 +144,16 @@ function resolveLibrary(filename) {
     );
   }
 
-  const atIdx = pkgPart.indexOf('@');
-  const pkg =
-    atIdx === -1
-      ? pkgPart
-      : '@' + pkgPart.slice(0, atIdx) + '/' + pkgPart.slice(atIdx + 1);
+  let pkgEnd;
+  if (rest[0] === '@') {
+    const firstSlash = rest.indexOf('/');
+    pkgEnd = firstSlash === -1 ? -1 : rest.indexOf('/', firstSlash + 1);
+  } else {
+    pkgEnd = rest.indexOf('/');
+  }
+
+  const pkg = pkgEnd === -1 ? rest : rest.slice(0, pkgEnd);
+  const subpath = pkgEnd === -1 ? '' : rest.slice(pkgEnd + 1);
 
   if (!subpath) {
     throw makeError(

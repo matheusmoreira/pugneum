@@ -46,6 +46,16 @@ const whitespaceRe = /[ \n\t]/;
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};
 
+const inlineShorthandTags = {
+  strong: ['strong', '*'],
+  emphasis: ['em', '_'],
+  del: ['del', '~'],
+  ins: ['ins', '&'],
+  sup: ['sup', '^'],
+  kbd: ['kbd', '%'],
+  sub: ['sub', ','],
+};
+
 /**
  * Advance past one character inside a quote-aware bracket scan.
  * Handles escape sequences and quote toggling.
@@ -1039,16 +1049,7 @@ class Lexer {
       case 'sup':
       case 'kbd':
       case 'sub': {
-        const tagMap = {
-          strong: ['strong', '*'],
-          emphasis: ['em', '_'],
-          del: ['del', '~'],
-          ins: ['ins', '&'],
-          sup: ['sup', '^'],
-          kbd: ['kbd', '%'],
-          sub: ['sub', ','],
-        };
-        const [tag, sigil] = tagMap[earliest.kind];
+        const [tag, sigil] = inlineShorthandTags[earliest.kind];
         return this.handleInlineShorthand(
           type,
           value,

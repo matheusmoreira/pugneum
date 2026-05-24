@@ -8,6 +8,9 @@
     "traversal",
     "walk"
   ],
+  "files": [
+    "index.js"
+  ],
   "devDependencies": {
     "pugneum-lexer": "^1.0.0",
     "pugneum-parser": "^1.0.0"

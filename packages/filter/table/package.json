@@ -7,6 +7,10 @@
     "filter",
     "table"
   ],
+  "files": [
+    "index.js",
+    "lib/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matheusmoreira/pugneum.git",

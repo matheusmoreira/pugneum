@@ -7,6 +7,10 @@
     "html",
     "template"
   ],
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
   "dependencies": {
     "pugneum-filterer": "^1.0.0",
     "pugneum-lexer": "^1.0.0",

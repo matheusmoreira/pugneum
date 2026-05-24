@@ -6,6 +6,9 @@
     "pugneum",
     "error"
   ],
+  "files": [
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matheusmoreira/pugneum.git",

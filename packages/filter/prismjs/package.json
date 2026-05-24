@@ -10,6 +10,9 @@
     "prismjs",
     "prism"
   ],
+  "files": [
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/matheusmoreira/pugneum.git",

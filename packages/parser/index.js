@@ -242,6 +242,8 @@ class Parser {
         return this.parseBlock();
       case 'mixin-block':
         return this.parseMixinBlock();
+      case 'given':
+        return this.parseGiven();
       case 'variable':
         return this.parseVariable();
       case 'extends':
@@ -482,6 +484,29 @@ class Parser {
       column: tok.loc.start.column,
       filename: this.filename,
     };
+  }
+
+  parseGiven() {
+    const tok = this.expect('given');
+    if (!this.inMixin) {
+      this.error(
+        'GIVEN_OUTSIDE_MIXIN',
+        'The given keyword can only be used inside a mixin definition.',
+        tok,
+      );
+    }
+    const node = {
+      type: 'Given',
+      name: tok.val,
+      block:
+        'indent' === this.peek().type
+          ? this.block()
+          : this.emptyBlock(tok.loc.start.line),
+      line: tok.loc.start.line,
+      column: tok.loc.start.column,
+      filename: this.filename,
+    };
+    return node;
   }
 
   parseVariable() {
@@ -816,6 +841,7 @@ class Parser {
 
       const hasMixinBlock = containsNodeType(block, 'MixinBlock');
       const hasNamedBlock = containsNodeType(block, 'NamedBlock');
+      const hasGiven = containsNodeType(block, 'Given');
 
       return {
         type: 'Mixin',
@@ -823,7 +849,7 @@ class Parser {
         args: args,
         block: block,
         call: false,
-        usesNamedBlocks: hasNamedBlock,
+        usesNamedBlocks: hasNamedBlock || hasGiven,
         usesUnnamedBlock: hasMixinBlock,
         line: tok.loc.start.line,
         column: tok.loc.start.column,

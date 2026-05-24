@@ -135,3 +135,36 @@ describe('error paths', () => {
     assert.strictEqual(mixin.usesUnnamedBlock, true);
   });
 });
+
+describe('given keyword', () => {
+  test('given produces Given node with name and block', (t) => {
+    const source = 'mixin card\n  given header\n    h1 Title';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    const givenNode = mixin.block.nodes[0];
+    assert.strictEqual(givenNode.type, 'Given');
+    assert.strictEqual(givenNode.name, 'header');
+    assert.ok(givenNode.block);
+    assert.strictEqual(givenNode.block.nodes[0].type, 'Tag');
+    assert.strictEqual(givenNode.block.nodes[0].name, 'h1');
+  });
+
+  test('given outside mixin throws GIVEN_OUTSIDE_MIXIN', (t) => {
+    const source = 'given header\n  h1 Title';
+    const tokens = lex(source, {filename: 'test'});
+    assert.throws(
+      () => parse(tokens, {filename: 'test', source}),
+      (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
+    );
+  });
+
+  test('given sets usesNamedBlocks on containing mixin', (t) => {
+    const source = 'mixin card\n  block\n  given footer\n    p foot';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    assert.strictEqual(mixin.usesNamedBlocks, true);
+    assert.strictEqual(mixin.usesUnnamedBlock, true);
+  });
+});

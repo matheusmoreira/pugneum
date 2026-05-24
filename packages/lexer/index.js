@@ -82,7 +82,7 @@ function scanChar(str, i, quote) {
  * @param {number} start - The index to start searching from (after the opening bracket)
  * @returns {{end: number, src: string}}
  */
-function parseUntil(str, end, start) {
+function parseUntil(str, end, start, {quotes = true} = {}) {
   let depth = 1;
   let i = start;
   let quote = null;
@@ -91,7 +91,7 @@ function parseUntil(str, end, start) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quote || c === "'" || c === '"') {
+    if (quotes && (quote || c === "'" || c === '"')) {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -1285,7 +1285,7 @@ class Lexer {
   parseShorthandContent(rest, errorPrefix, errorCode) {
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error('NO_END_BRACKET', errorPrefix);
@@ -1435,7 +1435,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1459,7 +1459,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1483,7 +1483,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1507,7 +1507,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1531,7 +1531,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1555,7 +1555,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1579,7 +1579,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -1603,7 +1603,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1);
+      range = parseUntil(rest, ')', 1, {quotes: false});
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(

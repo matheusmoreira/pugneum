@@ -1566,6 +1566,7 @@ describe('named mixin block errors', () => {
   test('loose content in named block call throws UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL', () => {
     const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
       usesNamedBlocks: true,
+      usesUnnamedBlock: false,
     });
     const call = mixinCallOpts('wrap', [], [text('loose content')]);
     assert.throws(

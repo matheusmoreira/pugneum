@@ -33,6 +33,7 @@ function walkAST(ast, before, after, options) {
 
   parents.unshift(ast);
 
+  try {
   switch (ast.type) {
     case 'NamedBlock':
     case 'Block':
@@ -89,8 +90,9 @@ function walkAST(ast, before, after, options) {
     default:
       throw new Error('Unexpected node type ' + ast.type);
   }
-
-  parents.shift();
+  } finally {
+    parents.shift();
+  }
 
   after && after(ast, replace);
   return ast;

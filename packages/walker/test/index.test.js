@@ -204,6 +204,43 @@ test('before returning false skips children and after', function () {
   );
 });
 
+test('parents array is cleaned up when before hook throws', (t) => {
+  const walk = require('../');
+  const ast = {
+    type: 'Block',
+    nodes: [
+      {
+        type: 'Tag',
+        name: 'div',
+        attrs: [],
+        attributeBlocks: [],
+        isInline: false,
+        block: {type: 'Block', nodes: [], line: 1, column: 1, filename: 'test'},
+        line: 1,
+        column: 1,
+        filename: 'test',
+      },
+    ],
+    line: 1,
+    column: 1,
+    filename: 'test',
+  };
+  const options = {parents: []};
+  t.assert.throws(
+    () => {
+      walk(
+        ast,
+        (node) => {
+          if (node.type === 'Tag') throw new Error('hook error');
+        },
+        options,
+      );
+    },
+    {message: 'hook error'},
+  );
+  t.assert.deepStrictEqual(options.parents, []);
+});
+
 test('unknown node type throws', function () {
   assert.throws(
     function () {

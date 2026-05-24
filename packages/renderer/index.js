@@ -70,13 +70,7 @@ class Compiler {
 
   compile() {
     this.buf = [];
-
-    if (this.options.doctype !== false) {
-      this.buffer('<!DOCTYPE html>');
-    }
-
     this.visit(this.node);
-
     return this.buf.join('');
   }
 

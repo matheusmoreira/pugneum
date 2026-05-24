@@ -2303,6 +2303,15 @@ class Lexer {
    * Table of contents.
    */
 
+  doctype() {
+    const tok = this.scan(/^doctype html(?= *$| *\n)/, 'text');
+    if (tok) {
+      tok.val = '<!DOCTYPE html>';
+      this.tokens.push(this.tokEnd(tok));
+      return true;
+    }
+  }
+
   toc() {
     const tok = this.scanEndOfLine(/^toc/, 'toc');
     if (tok) {
@@ -2801,6 +2810,7 @@ class Lexer {
       this.references() ||
       this.footnotes() ||
       this.toc() ||
+      this.doctype() ||
       this.mixin() ||
       this.call() ||
       this.tag() ||

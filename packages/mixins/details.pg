@@ -1,0 +1,4 @@
+mixin details(summary)
+  details
+    summary #{summary}
+    block

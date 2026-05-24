@@ -43,7 +43,7 @@ describe('figure mixin', () => {
 describe('code mixin', () => {
   test('code block with caption', () => {
     var input =
-      'include ../figure.pg\n' +
+      'include ../code.pg\n' +
       '\n' +
       '+code\n' +
       '  | console.log("hello");\n' +
@@ -58,7 +58,7 @@ describe('code mixin', () => {
 
   test('code block without caption — figcaption omitted', () => {
     var input =
-      'include ../figure.pg\n' + '\n' + '+code\n' + '  | npm install pugneum';
+      'include ../code.pg\n' + '\n' + '+code\n' + '  | npm install pugneum';
     var html = render(input);
     assert.ok(html.includes('<figure>'));
     assert.ok(html.includes('<pre><code>'));
@@ -68,7 +68,7 @@ describe('code mixin', () => {
 
   test('code with inline shorthands in caption', () => {
     var input =
-      'include ../figure.pg\n' +
+      'include ../code.pg\n' +
       '\n' +
       '+code\n' +
       '  | x = 1\n' +

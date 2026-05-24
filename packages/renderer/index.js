@@ -154,34 +154,36 @@ class Compiler {
         const callerBlocks = frame.namedBlocks[namedBlock.name];
         if (callerBlocks) {
           delete frame.namedBlocks[namedBlock.name];
-          try {
-            let nodes = namedBlock.nodes;
-            for (const callerBlock of callerBlocks) {
-              switch (callerBlock.mode) {
-                case 'replace':
-                  nodes = callerBlock.nodes;
-                  break;
-                case 'append':
-                  nodes = nodes.concat(callerBlock.nodes);
-                  break;
-                case 'prepend':
-                  nodes = callerBlock.nodes.concat(nodes);
-                  break;
-                default:
-                  this.error(
-                    'UNKNOWN_BLOCK_MODE',
-                    `Unknown block mode '${callerBlock.mode}'`,
-                    callerBlock,
-                  );
-              }
+          let nodes = namedBlock.nodes;
+          for (const callerBlock of callerBlocks) {
+            switch (callerBlock.mode) {
+              case 'replace':
+                nodes = callerBlock.nodes;
+                break;
+              case 'append':
+                nodes = nodes.concat(callerBlock.nodes);
+                break;
+              case 'prepend':
+                nodes = callerBlock.nodes.concat(nodes);
+                break;
+              default:
+                this.error(
+                  'UNKNOWN_BLOCK_MODE',
+                  `Unknown block mode '${callerBlock.mode}'`,
+                  callerBlock,
+                );
             }
+          }
+          this.callStack.pop();
+          try {
             for (const node of nodes) {
               this.visit(node, namedBlock);
             }
-            return;
           } finally {
+            this.callStack.push(frame);
             frame.namedBlocks[namedBlock.name] = callerBlocks;
           }
+          return;
         }
         this.visitBlock(namedBlock);
         return;

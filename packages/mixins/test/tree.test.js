@@ -93,4 +93,33 @@ describe('file-system mixin', () => {
     assert.ok(html.includes('<code>.bash_profile</code>'));
     assert.ok(html.includes('<code>GNUmakefile</code>'));
   });
+
+  test('directory with description annotation', () => {
+    var input =
+      'include ../file-system.pg\n' +
+      '\n' +
+      '+file-system\n' +
+      '  +directory(src)\n' +
+      '    block description\n' +
+      '      |  — source code\n' +
+      '    +file(index.js)\n' +
+      '    +file(render.js)';
+    var html = render(input);
+    assert.ok(html.includes('<code>src</code>'));
+    assert.ok(html.includes(' — source code'));
+    assert.ok(html.includes('<code>index.js</code>'));
+    assert.ok(html.includes('<code>render.js</code>'));
+  });
+
+  test('directory without description still works', () => {
+    var input =
+      'include ../file-system.pg\n' +
+      '\n' +
+      '+file-system\n' +
+      '  +directory(src)\n' +
+      '    +file(main.js)';
+    var html = render(input);
+    assert.ok(html.includes('<code>src</code>'));
+    assert.ok(html.includes('<code>main.js</code>'));
+  });
 });

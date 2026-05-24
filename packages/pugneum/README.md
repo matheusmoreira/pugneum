@@ -155,6 +155,27 @@ Block comments indent their content:
 block comment.-->
 ```
 
+## Doctype
+
+Use `doctype html` to emit an HTML5 doctype declaration:
+
+```pugneum
+doctype html
+html
+  head
+    title Page
+  body
+    p Hello
+```
+
+```html
+<!DOCTYPE html><html><head><title>Page</title></head><body><p>Hello</p></body></html>
+```
+
+Place it at the top of your root template.
+Templates that extend a layout with `doctype html`
+inherit the declaration automatically.
+
 ## Usage
 
 The command line utility requires a `pugneum.json` file to work:
@@ -392,6 +413,25 @@ p Press %(Ctrl+C) to copy.
 ```
 
 Escape with `\%(` to output a literal `%(`.
+
+## Inline tag shorthand
+
+The `#()` shorthand wraps text in any tag:
+
+```pugneum
+p Click the #(button Start) to begin.
+p This is #(mark highlighted) text.
+```
+
+```html
+<p>Click the <button>Start</button> to begin.</p>
+<p>This is <mark>highlighted</mark> text.</p>
+```
+
+The first word is the tag name, the rest is content.
+Attributes are supported: `#(a(href="/help") click here)`.
+Mixin calls work too: `#(+mixin(args))`.
+Escape with `\#(` for literal output.
 
 ## Footnotes
 
@@ -710,6 +750,58 @@ mixin nav
 ```html
 <nav><a href="/">Home</a><a href="/about">About</a></nav>
 ```
+
+## Feeds
+
+Generate Atom and RSS feeds from compiled HTML.
+Install the optional feed package:
+
+    npm install pugneum-feed
+
+Add a `feeds` key to `pugneum.json`:
+
+```json
+{
+  "inputDirectory": "pg",
+  "outputDirectory": "site",
+  "feeds": {
+    "url": "https://example.com"
+  }
+}
+```
+
+The feed generator reads compiled HTML to extract article metadata.
+Articles are discovered from elements with `data-published-at`
+attributes on the index page. Feed title, author, and description
+are extracted from standard HTML meta elements.
+
+See the `pugneum-feed` package for full configuration.
+
+## Escaping
+
+Prefix any shorthand sigil with `\` to output it literally:
+
+| Escape | Output |
+|---|---|
+| `\@(` | `@(` |
+| `\!(` | `!(` |
+| `\*(` | `*(` |
+| `\_(` | `_(` |
+| `` \`( `` | `` `( `` |
+| `\~(` | `~(` |
+| `\&(` | `&(` |
+| `\^(` | `^(` |
+| `\%(` | `%(` |
+| `\,(` | `,(` |
+| `\?(` | `?(` |
+| `\@[` | `@[` |
+| `\![` | `![` |
+| `\^[` | `^[` |
+| `\#{` | `#{` |
+| `\#(` | `#(` |
+
+Tag names that collide with keywords can be escaped:
+`\extends` produces a literal `<extends>` tag.
 
 ## Programming interface
 

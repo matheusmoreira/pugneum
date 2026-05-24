@@ -1803,3 +1803,129 @@ describe('mixed named + unnamed blocks', () => {
     );
   });
 });
+
+describe('given keyword', () => {
+  test('given renders subtree when caller provides the named block', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
+        {
+          type: 'Given',
+          name: 'footer',
+          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [
+      text('Body'),
+      namedBlock('footer', 'replace', [text('Foot')]),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Body<footer>Foot</footer>');
+  });
+
+  test('given skips subtree when caller does not provide the named block', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
+        {
+          type: 'Given',
+          name: 'footer',
+          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [text('Body only')]);
+    assert.strictEqual(render(block([decl, call])), 'Body only');
+  });
+
+  test('given with named-only mixin (no unnamed block)', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [
+        namedBlock('main', 'replace'),
+        {
+          type: 'Given',
+          name: 'sidebar',
+          block: block([tag('aside', [], [namedBlock('sidebar', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: false},
+    );
+    const call = mixinCallOpts('wrap', [], [
+      namedBlock('main', 'replace', [text('Main')]),
+      namedBlock('sidebar', 'replace', [text('Side')]),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Main<aside>Side</aside>');
+  });
+
+  test('given without caller block omits subtree', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [
+        namedBlock('main', 'replace', [text('default')]),
+        {
+          type: 'Given',
+          name: 'sidebar',
+          block: block([tag('aside', [], [namedBlock('sidebar', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: false},
+    );
+    const call = mixinCallOpts('wrap', [], [
+      namedBlock('main', 'replace', [text('Main')]),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Main');
+  });
+
+  test('multiple given blocks in same mixin', () => {
+    const decl = mixinDef(
+      'page',
+      [],
+      [
+        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
+        {
+          type: 'Given',
+          name: 'nav',
+          block: block([tag('nav', [], [namedBlock('nav', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+        {
+          type: 'Given',
+          name: 'footer',
+          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('page', [], [
+      text('Content'),
+      namedBlock('footer', 'replace', [text('Foot')]),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Content<footer>Foot</footer>');
+  });
+});

@@ -458,6 +458,20 @@ class Compiler {
     }
   }
 
+  visitGiven(given) {
+    if (this.callStack.length === 0) {
+      this.error(
+        'GIVEN_OUTSIDE_CALL',
+        'Given used outside mixin call',
+        given,
+      );
+    }
+    const frame = this.callStack.at(-1);
+    if (frame.namedBlocks && frame.namedBlocks[given.name]) {
+      this.visit(given.block);
+    }
+  }
+
   validateNamedBlocks(declared, callerBlocks, callNode) {
     const declaredNames = new Set();
     this.collectNamedBlockNames(declared.block, declaredNames);

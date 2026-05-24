@@ -173,10 +173,7 @@ describe('void elements', () => {
   });
 
   test('void element with whitespace-only content is allowed', () => {
-    assert.strictEqual(
-      render(block([tag('br', [], [text('  ')])])),
-      '<br>',
-    );
+    assert.strictEqual(render(block([tag('br', [], [text('  ')])])), '<br>');
   });
 
   test('void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
@@ -327,10 +324,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!-- start body-->',
-    );
+    assert.strictEqual(render(block([node])), '<!-- start body-->');
   });
 
   test('unbuffered block comment produces no output', () => {
@@ -390,10 +384,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!--foo- -bar-->',
-    );
+    assert.strictEqual(render(block([node])), '<!--foo- -bar-->');
   });
 
   test('--- (odd-length dashes) are all separated', () => {
@@ -404,10 +395,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!--foo- - -bar-->',
-    );
+    assert.strictEqual(render(block([node])), '<!--foo- - -bar-->');
   });
 
   test('comment starting with > has space prepended', () => {
@@ -418,10 +406,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!-- >dangerous-->',
-    );
+    assert.strictEqual(render(block([node])), '<!-- >dangerous-->');
   });
 
   test('comment starting with -> has space prepended', () => {
@@ -432,10 +417,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!-- ->dangerous-->',
-    );
+    assert.strictEqual(render(block([node])), '<!-- ->dangerous-->');
   });
 
   test('comment ending with - has space appended', () => {
@@ -446,10 +428,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!--trailing- -->',
-    );
+    assert.strictEqual(render(block([node])), '<!--trailing- -->');
   });
 
   test('block comment with -- in body text is sanitized', () => {
@@ -461,10 +440,7 @@ describe('comment sanitization', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<!-- start has- -dashes-->',
-    );
+    assert.strictEqual(render(block([node])), '<!-- start has- -dashes-->');
   });
 });
 
@@ -504,10 +480,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([declaration, call])),
-      '<p>world</p>',
-    );
+    assert.strictEqual(render(block([declaration, call])), '<p>world</p>');
   });
 
   test('mixin with no args', () => {
@@ -531,10 +504,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([declaration, call])),
-      '<hr>',
-    );
+    assert.strictEqual(render(block([declaration, call])), '<hr>');
   });
 
   test('mixin block (caller content)', () => {
@@ -564,10 +534,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([declaration, call])),
-      '<div>inside</div>',
-    );
+    assert.strictEqual(render(block([declaration, call])), '<div>inside</div>');
   });
 
   test('nested mixin calls inherit parent environment', () => {
@@ -614,10 +581,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([inner, outer, call])),
-      'hello',
-    );
+    assert.strictEqual(render(block([inner, outer, call])), 'hello');
   });
 });
 
@@ -952,10 +916,7 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(
-      render(block([node])),
-      '<em>stressed</em>',
-    );
+    assert.strictEqual(render(block([node])), '<em>stressed</em>');
   });
 
   test('self-closing interpolated tag', () => {
@@ -1131,10 +1092,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('title'), text(' '), variable('name')])],
     );
     var call = mixinCall('greet', ['Alice']);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<p> Alice</p>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<p> Alice</p>');
   });
 
   test('omitted arg with default uses default value', () => {
@@ -1163,10 +1121,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('title'), text(' '), variable('name')])],
     );
     var call = mixinCall('greet', ['Alice', 'Doctor']);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<p>Doctor Alice</p>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<p>Doctor Alice</p>');
   });
 
   test('all args can be omitted', () => {
@@ -1189,10 +1144,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('a'), text('-'), variable('b')])],
     );
     var call = mixinCall('defaults', []);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<p>x-y</p>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<p>x-y</p>');
   });
 
   test('too many args still throws MIXIN_ARGUMENT_COUNT_MISMATCH', () => {
@@ -1333,10 +1285,7 @@ describe('optional arguments and attributes', () => {
       ],
     );
     var call = mixinCall('item', []);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<div>hi</div>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<div>hi</div>');
   });
 
   test('boolean attributes unaffected by optional args', () => {
@@ -1346,10 +1295,7 @@ describe('optional arguments and attributes', () => {
       [tag('input', [attr('type', '#{type}'), attr('disabled', true)])],
     );
     var call = mixinCall('input', []);
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<input disabled>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<input disabled>');
   });
 
   test('static attributes unaffected when variable attribute omitted', () => {
@@ -1410,10 +1356,7 @@ describe('optional arguments and attributes', () => {
     outer.line = 2;
     var call = mixinCall('outer', ['hello']);
     call.line = 3;
-    assert.strictEqual(
-      render(block([inner, outer, call])),
-      '<span></span>',
-    );
+    assert.strictEqual(render(block([inner, outer, call])), '<span></span>');
   });
 });
 
@@ -1439,10 +1382,7 @@ describe('named mixin blocks', () => {
         namedBlock('body', 'replace', [text('B')]),
       ],
     );
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<div>HB</div>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<div>HB</div>');
   });
 
   test('default content when caller omits a named block', () => {
@@ -1668,9 +1608,6 @@ describe('named mixin block errors', () => {
         ]),
       ],
     );
-    assert.strictEqual(
-      render(block([decl, call])),
-      '<div>inner</div>',
-    );
+    assert.strictEqual(render(block([decl, call])), '<div>inner</div>');
   });
 });

@@ -24,25 +24,16 @@ describe('render()', () => {
 
   it('should render nested tags', () => {
     var input = 'div\n  p Hello';
-    assert.strictEqual(
-      pg.render(input),
-      '<div><p>Hello</p></div>',
-    );
+    assert.strictEqual(pg.render(input), '<div><p>Hello</p></div>');
   });
 
   it('should render attributes', () => {
     var input = 'a(href="/home") Home';
-    assert.strictEqual(
-      pg.render(input),
-      '<a href="/home">Home</a>',
-    );
+    assert.strictEqual(pg.render(input), '<a href="/home">Home</a>');
   });
 
   it('should render id shorthand', () => {
-    assert.strictEqual(
-      pg.render('#main'),
-      '<div id="main"></div>',
-    );
+    assert.strictEqual(pg.render('#main'), '<div id="main"></div>');
   });
 
   it('should render class shorthand', () => {
@@ -54,18 +45,12 @@ describe('render()', () => {
 
   it('should render self-closing tags', () => {
     assert.strictEqual(pg.render('br'), '<br>');
-    assert.strictEqual(
-      pg.render('img(src="a.png")'),
-      '<img src="a.png">',
-    );
+    assert.strictEqual(pg.render('img(src="a.png")'), '<img src="a.png">');
     assert.strictEqual(pg.render('hr'), '<hr>');
   });
 
   it('should render buffered comments', () => {
-    assert.strictEqual(
-      pg.render('// comment'),
-      '<!-- comment-->',
-    );
+    assert.strictEqual(pg.render('// comment'), '<!-- comment-->');
   });
 
   it('should suppress unbuffered comments', () => {
@@ -74,24 +59,15 @@ describe('render()', () => {
 
   it('should render text blocks', () => {
     var input = 'p.\n  Line 1\n  Line 2';
-    assert.strictEqual(
-      pg.render(input),
-      '<p>Line 1\nLine 2</p>',
-    );
+    assert.strictEqual(pg.render(input), '<p>Line 1\nLine 2</p>');
   });
 
   it('should render multiple classes', () => {
-    assert.strictEqual(
-      pg.render('.a.b.c'),
-      '<div class="a b c"></div>',
-    );
+    assert.strictEqual(pg.render('.a.b.c'), '<div class="a b c"></div>');
   });
 
   it('should render boolean attributes', () => {
-    assert.strictEqual(
-      pg.render('input(disabled)'),
-      '<input disabled>',
-    );
+    assert.strictEqual(pg.render('input(disabled)'), '<input disabled>');
   });
 });
 
@@ -150,10 +126,7 @@ describe('reference links', () => {
   });
 
   it('should escape \\@[ as literal text', () => {
-    assert.strictEqual(
-      pg.render('p \\@[not a ref]'),
-      '<p>@[not a ref]</p>',
-    );
+    assert.strictEqual(pg.render('p \\@[not a ref]'), '<p>@[not a ref]</p>');
   });
 
   it('should support quoted URLs with spaces', () => {
@@ -614,10 +587,7 @@ describe('interpolated tags', () => {
 
 describe('del/ins/sup/kbd/sub shorthands', () => {
   it('should render ~(del) shorthand', () => {
-    assert.strictEqual(
-      pg.render('p ~(deleted)'),
-      '<p><del>deleted</del></p>',
-    );
+    assert.strictEqual(pg.render('p ~(deleted)'), '<p><del>deleted</del></p>');
   });
 
   it('should render &(ins) shorthand', () => {
@@ -635,31 +605,19 @@ describe('del/ins/sup/kbd/sub shorthands', () => {
   });
 
   it('should render escaped \\&( as literal', () => {
-    assert.strictEqual(
-      pg.render('p \\&(not ins)'),
-      '<p>&(not ins)</p>',
-    );
+    assert.strictEqual(pg.render('p \\&(not ins)'), '<p>&(not ins)</p>');
   });
 
   it('should render ^(sup) shorthand', () => {
-    assert.strictEqual(
-      pg.render('p x^(2)'),
-      '<p>x<sup>2</sup></p>',
-    );
+    assert.strictEqual(pg.render('p x^(2)'), '<p>x<sup>2</sup></p>');
   });
 
   it('should render %(kbd) shorthand', () => {
-    assert.strictEqual(
-      pg.render('p %(Ctrl+C)'),
-      '<p><kbd>Ctrl+C</kbd></p>',
-    );
+    assert.strictEqual(pg.render('p %(Ctrl+C)'), '<p><kbd>Ctrl+C</kbd></p>');
   });
 
   it('should render ,(sub) shorthand', () => {
-    assert.strictEqual(
-      pg.render('p H,(2)O'),
-      '<p>H<sub>2</sub>O</p>',
-    );
+    assert.strictEqual(pg.render('p H,(2)O'), '<p>H<sub>2</sub>O</p>');
   });
 
   it('should render escaped \\~( \\^( \\%( \\,( as literal', () => {
@@ -667,10 +625,7 @@ describe('del/ins/sup/kbd/sub shorthands', () => {
       pg.render('p \\~(not del) \\^(not sup) \\%(not kbd)'),
       '<p>~(not del) ^(not sup) %(not kbd)</p>',
     );
-    assert.strictEqual(
-      pg.render('p \\,(not sub)'),
-      '<p>,(not sub)</p>',
-    );
+    assert.strictEqual(pg.render('p \\,(not sub)'), '<p>,(not sub)</p>');
   });
 
   it('should render nested sup and sub', () => {
@@ -780,10 +735,7 @@ describe('link shorthand', () => {
   });
 
   it('should escape \\@( as literal text', () => {
-    assert.strictEqual(
-      pg.render('p \\@(not a link)'),
-      '<p>@(not a link)</p>',
-    );
+    assert.strictEqual(pg.render('p \\@(not a link)'), '<p>@(not a link)</p>');
   });
 
   it('should unescape \\( and \\) in unquoted content', () => {
@@ -973,17 +925,11 @@ describe('abbr shorthand', () => {
   });
 
   it('should render ?(abbr) without expansion', () => {
-    assert.strictEqual(
-      pg.render('p ?(CPU)'),
-      '<p><abbr>CPU</abbr></p>',
-    );
+    assert.strictEqual(pg.render('p ?(CPU)'), '<p><abbr>CPU</abbr></p>');
   });
 
   it('should render escaped \\?( as literal', () => {
-    assert.strictEqual(
-      pg.render('p \\?(not abbr)'),
-      '<p>?(not abbr)</p>',
-    );
+    assert.strictEqual(pg.render('p \\?(not abbr)'), '<p>?(not abbr)</p>');
   });
 
   it('should nest inside other shorthands', () => {

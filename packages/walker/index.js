@@ -34,62 +34,62 @@ function walkAST(ast, before, after, options) {
   parents.unshift(ast);
 
   try {
-  switch (ast.type) {
-    case 'NamedBlock':
-    case 'Block':
-      ast.nodes = walkAndMergeNodes(ast.nodes);
-      break;
-    case 'Filter':
-    case 'Mixin':
-    case 'Tag':
-    case 'InterpolatedTag':
-    case 'BlockComment':
-      if (ast.block) {
-        ast.block = walkAST(ast.block, before, after, options);
-      }
-      break;
-    case 'Include':
-      ast.block = walkAST(ast.block, before, after, options);
-      ast.file = walkAST(ast.file, before, after, options);
-      break;
-    case 'Extends':
-      ast.file = walkAST(ast.file, before, after, options);
-      break;
-    case 'RawInclude':
-      ast.filters = walkAndMergeNodes(ast.filters);
-      ast.file = walkAST(ast.file, before, after, options);
-      break;
-    case 'ReferenceLink':
-    case 'ReferenceImage':
-    case 'FootnoteRef':
-      if (ast.block) {
-        ast.block = walkAST(ast.block, before, after, options);
-      }
-      break;
-    case 'Footnotes':
-      for (const def of ast.definitions) {
-        if (def.block) {
-          def.block = walkAST(def.block, before, after, options);
+    switch (ast.type) {
+      case 'NamedBlock':
+      case 'Block':
+        ast.nodes = walkAndMergeNodes(ast.nodes);
+        break;
+      case 'Filter':
+      case 'Mixin':
+      case 'Tag':
+      case 'InterpolatedTag':
+      case 'BlockComment':
+        if (ast.block) {
+          ast.block = walkAST(ast.block, before, after, options);
         }
-      }
-      break;
-    case 'Toc':
-    case 'References':
-    case 'Comment':
-    case 'IncludeFilter':
-    case 'MixinBlock':
-    case 'YieldBlock':
-    case 'Text':
-    case 'Variable':
-      break;
-    case 'FileReference':
-      if (options.includeDependencies && ast.ast) {
-        ast.ast = walkAST(ast.ast, before, after, options);
-      }
-      break;
-    default:
-      throw new Error('Unexpected node type ' + ast.type);
-  }
+        break;
+      case 'Include':
+        ast.block = walkAST(ast.block, before, after, options);
+        ast.file = walkAST(ast.file, before, after, options);
+        break;
+      case 'Extends':
+        ast.file = walkAST(ast.file, before, after, options);
+        break;
+      case 'RawInclude':
+        ast.filters = walkAndMergeNodes(ast.filters);
+        ast.file = walkAST(ast.file, before, after, options);
+        break;
+      case 'ReferenceLink':
+      case 'ReferenceImage':
+      case 'FootnoteRef':
+        if (ast.block) {
+          ast.block = walkAST(ast.block, before, after, options);
+        }
+        break;
+      case 'Footnotes':
+        for (const def of ast.definitions) {
+          if (def.block) {
+            def.block = walkAST(def.block, before, after, options);
+          }
+        }
+        break;
+      case 'Toc':
+      case 'References':
+      case 'Comment':
+      case 'IncludeFilter':
+      case 'MixinBlock':
+      case 'YieldBlock':
+      case 'Text':
+      case 'Variable':
+        break;
+      case 'FileReference':
+        if (options.includeDependencies && ast.ast) {
+          ast.ast = walkAST(ast.ast, before, after, options);
+        }
+        break;
+      default:
+        throw new Error('Unexpected node type ' + ast.type);
+    }
   } finally {
     parents.shift();
   }

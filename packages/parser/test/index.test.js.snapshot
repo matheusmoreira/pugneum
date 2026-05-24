@@ -5436,6 +5436,270 @@ exports[`footnotes.pg 1`] = `
 }
 `;
 
+exports[`given.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "card",
+      "args": [
+        {
+          "name": "title"
+        }
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "div",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "h2",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Variable",
+                        "name": "title",
+                        "line": 3,
+                        "column": 10,
+                        "filename": "given.pg"
+                      },
+                      {
+                        "type": "Text",
+                        "line": 3,
+                        "column": 16,
+                        "filename": "given.pg",
+                        "val": ""
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "given.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "given.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "MixinBlock",
+                        "line": 5,
+                        "column": 7,
+                        "filename": "given.pg"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "given.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "class",
+                      "val": "body",
+                      "line": 4,
+                      "column": 5,
+                      "filename": "given.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 4,
+                  "column": 5,
+                  "filename": "given.pg"
+                },
+                {
+                  "type": "Given",
+                  "name": "footer",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "footer",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "NamedBlock",
+                              "nodes": [],
+                              "line": 8,
+                              "filename": "given.pg",
+                              "name": "footer",
+                              "mode": "replace",
+                              "column": 9
+                            }
+                          ],
+                          "line": 7,
+                          "filename": "given.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 7,
+                        "column": 7,
+                        "filename": "given.pg"
+                      }
+                    ],
+                    "line": 7,
+                    "filename": "given.pg"
+                  },
+                  "line": 6,
+                  "column": 5,
+                  "filename": "given.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "given.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "card",
+                "line": 2,
+                "column": 3,
+                "filename": "given.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "given.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "given.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": true,
+      "usesUnnamedBlock": true,
+      "line": 1,
+      "column": 1,
+      "filename": "given.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "card",
+      "args": [
+        "Hello"
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 11,
+                  "column": 5,
+                  "filename": "given.pg",
+                  "val": "Card body."
+                }
+              ],
+              "line": 11,
+              "filename": "given.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 11,
+            "column": 3,
+            "filename": "given.pg"
+          },
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 13,
+                "column": 7,
+                "filename": "given.pg",
+                "val": "Footer text"
+              }
+            ],
+            "line": 12,
+            "filename": "given.pg",
+            "name": "footer",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 10,
+        "filename": "given.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 10,
+      "column": 1,
+      "filename": "given.pg"
+    },
+    {
+      "type": "Mixin",
+      "name": "card",
+      "args": [
+        "Simple"
+      ],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 16,
+                  "column": 5,
+                  "filename": "given.pg",
+                  "val": "No footer here."
+                }
+              ],
+              "line": 16,
+              "filename": "given.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 16,
+            "column": 3,
+            "filename": "given.pg"
+          }
+        ],
+        "line": 15,
+        "filename": "given.pg"
+      },
+      "call": true,
+      "attrs": [],
+      "attributeBlocks": [],
+      "line": 15,
+      "column": 1,
+      "filename": "given.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "given.pg"
+}
+`;
+
 exports[`html5.pg 1`] = `
 {
   "type": "Block",

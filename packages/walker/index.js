@@ -73,6 +73,11 @@ function walkAST(ast, before, after, options) {
           }
         }
         break;
+      case 'Given':
+        if (ast.block) {
+          ast.block = walkAST(ast.block, before, after, options);
+        }
+        break;
       case 'Toc':
       case 'References':
       case 'Comment':

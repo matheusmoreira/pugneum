@@ -1,0 +1,16 @@
+mixin card(title)
+  .card
+    h2 #{title}
+    .body
+      block
+    given footer
+      footer
+        block footer
+
++card(Hello)
+  p Card body.
+  block footer
+    | Footer text
+
++card(Simple)
+  p No footer here.

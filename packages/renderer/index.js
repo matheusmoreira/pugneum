@@ -487,6 +487,9 @@ class Compiler {
     if (node.type === 'NamedBlock') {
       names.add(node.name);
     }
+    if (node.type === 'Given') {
+      names.add(node.name);
+    }
     if (node.type === 'Mixin' && node.call) return;
     if (node.nodes) {
       for (let i = 0; i < node.nodes.length; ++i) {

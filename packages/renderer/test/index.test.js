@@ -1942,4 +1942,19 @@ describe('given keyword', () => {
       'Content<footer>Foot</footer>',
     );
   });
+
+  test('given outside mixin call throws GIVEN_OUTSIDE_CALL', () => {
+    const given = {
+      type: 'Given',
+      name: 'footer',
+      block: block([text('content')]),
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    assert.throws(
+      () => render(block([given])),
+      (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_CALL',
+    );
+  });
 });

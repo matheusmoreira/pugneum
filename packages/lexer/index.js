@@ -2335,6 +2335,10 @@ class Lexer {
     let captures;
     if ((captures = /^given +([^\n]+)/.exec(this.input))) {
       let name = captures[1].trim();
+      if (name.indexOf('//') !== -1) {
+        name = name.split('//')[0].trim();
+      }
+      if (!name) return;
       const tok = this.tok('given', name);
       const len = captures[0].length;
       this.consume(len);

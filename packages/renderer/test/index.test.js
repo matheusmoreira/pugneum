@@ -1647,3 +1647,124 @@ describe('named mixin block errors', () => {
     assert.strictEqual(render(block([decl, call])), '<div>inner</div>');
   });
 });
+
+describe('mixed named + unnamed blocks', () => {
+  test('both named and unnamed content dispatched correctly', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        namedBlock('header', 'replace'),
+        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [
+      namedBlock('header', 'replace', [text('Title')]),
+      text('Body content'),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Title<div>Body content</div>');
+  });
+
+  test('only unnamed content provided — named blocks use defaults', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        namedBlock('header', 'replace', [text('Default Header')]),
+        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [text('Body only')]);
+    assert.strictEqual(
+      render(block([decl, call])),
+      'Default Header<div>Body only</div>',
+    );
+  });
+
+  test('only named blocks provided — unnamed block empty', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        namedBlock('header', 'replace', [text('Default')]),
+        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [
+      namedBlock('header', 'replace', [text('Custom Header')]),
+    ]);
+    assert.strictEqual(render(block([decl, call])), 'Custom Header<div></div>');
+  });
+
+  test('interleaved order — named blocks extracted, rest collected in order', () => {
+    const decl = mixinDef(
+      'page',
+      [],
+      [
+        namedBlock('nav', 'replace'),
+        tag('main', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('page', [], [
+      text('First '),
+      namedBlock('nav', 'replace', [tag('nav', [], [text('links')])]),
+      text('Second'),
+    ]);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<nav>links</nav><main>First Second</main>',
+    );
+  });
+
+  test('no caller block at all — both slots empty/default', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        namedBlock('header', 'replace', [text('H')]),
+        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', []);
+    assert.strictEqual(render(block([decl, call])), 'H<div></div>');
+  });
+
+  test('unnamed content at call site for named-only mixin still errors', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [namedBlock('slot', 'replace')],
+      {usesNamedBlocks: true, usesUnnamedBlock: false},
+    );
+    const call = mixinCallOpts('wrap', [], [text('loose content')]);
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
+    );
+  });
+
+  test('append mode works in mixed context', () => {
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        namedBlock('footer', 'replace', [text('default footer')]),
+        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts('card', [], [
+      namedBlock('footer', 'append', [text(' extra')]),
+      text('body'),
+    ]);
+    assert.strictEqual(
+      render(block([decl, call])),
+      'default footer extra<div>body</div>',
+    );
+  });
+});

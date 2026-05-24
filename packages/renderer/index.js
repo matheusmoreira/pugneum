@@ -379,8 +379,10 @@ class Compiler {
       const block = mixin.block;
 
       let namedBlocks = null;
+      let unnamedBlock = null;
       if (declared.usesNamedBlocks) {
         namedBlocks = Object.create(null);
+        const unnamedNodes = [];
         if (block && block.nodes) {
           for (let i = 0; i < block.nodes.length; ++i) {
             const node = block.nodes[i];
@@ -389,6 +391,8 @@ class Compiler {
                 namedBlocks[node.name] = [];
               }
               namedBlocks[node.name].push(node);
+            } else if (declared.usesUnnamedBlock) {
+              unnamedNodes.push(node);
             } else {
               this.error(
                 'UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
@@ -398,10 +402,18 @@ class Compiler {
             }
           }
         }
+        if (unnamedNodes.length > 0) {
+          unnamedBlock = {
+            type: 'Block',
+            nodes: unnamedNodes,
+            line: unnamedNodes[0].line,
+            filename: unnamedNodes[0].filename,
+          };
+        }
         this.validateNamedBlocks(declared, namedBlocks, mixin);
       }
 
-      this.callStack.push({name: mixin.name, environment, block, namedBlocks});
+      this.callStack.push({name: mixin.name, environment, block, namedBlocks, unnamedBlock});
       try {
         this.visit(declared.block);
       } finally {
@@ -427,12 +439,14 @@ class Compiler {
       );
     }
     const current = this.callStack.pop();
-    if (!current.block || !current.block.nodes || !current.block.nodes.length) {
+    const target =
+      current.namedBlocks !== null ? current.unnamedBlock : current.block;
+    if (!target || !target.nodes || !target.nodes.length) {
       this.callStack.push(current);
       return;
     }
     try {
-      this.visit(current.block);
+      this.visit(target);
     } finally {
       this.callStack.push(current);
     }

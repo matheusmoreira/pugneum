@@ -1,0 +1,14 @@
+mixin file-system(class?)
+  ul(class="#{class?}")
+    block
+
+mixin file(name)
+  li
+    code #{name}
+    block
+
+mixin directory(name)
+  li
+    code #{name}
+    ul
+      block

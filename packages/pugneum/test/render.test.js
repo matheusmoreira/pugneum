@@ -19,14 +19,14 @@ function getTestCases() {
 
 describe('render()', () => {
   it('should render a simple tag', () => {
-    assert.strictEqual(pg.render('h1 Hello'), '<!DOCTYPE html><h1>Hello</h1>');
+    assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });
 
   it('should render nested tags', () => {
     var input = 'div\n  p Hello';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><div><p>Hello</p></div>',
+      '<div><p>Hello</p></div>',
     );
   });
 
@@ -34,63 +34,63 @@ describe('render()', () => {
     var input = 'a(href="/home") Home';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><a href="/home">Home</a>',
+      '<a href="/home">Home</a>',
     );
   });
 
   it('should render id shorthand', () => {
     assert.strictEqual(
       pg.render('#main'),
-      '<!DOCTYPE html><div id="main"></div>',
+      '<div id="main"></div>',
     );
   });
 
   it('should render class shorthand', () => {
     assert.strictEqual(
       pg.render('.container'),
-      '<!DOCTYPE html><div class="container"></div>',
+      '<div class="container"></div>',
     );
   });
 
   it('should render self-closing tags', () => {
-    assert.strictEqual(pg.render('br'), '<!DOCTYPE html><br>');
+    assert.strictEqual(pg.render('br'), '<br>');
     assert.strictEqual(
       pg.render('img(src="a.png")'),
-      '<!DOCTYPE html><img src="a.png">',
+      '<img src="a.png">',
     );
-    assert.strictEqual(pg.render('hr'), '<!DOCTYPE html><hr>');
+    assert.strictEqual(pg.render('hr'), '<hr>');
   });
 
   it('should render buffered comments', () => {
     assert.strictEqual(
       pg.render('// comment'),
-      '<!DOCTYPE html><!-- comment-->',
+      '<!-- comment-->',
     );
   });
 
   it('should suppress unbuffered comments', () => {
-    assert.strictEqual(pg.render('//- hidden'), '<!DOCTYPE html>');
+    assert.strictEqual(pg.render('//- hidden'), '');
   });
 
   it('should render text blocks', () => {
     var input = 'p.\n  Line 1\n  Line 2';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p>Line 1\nLine 2</p>',
+      '<p>Line 1\nLine 2</p>',
     );
   });
 
   it('should render multiple classes', () => {
     assert.strictEqual(
       pg.render('.a.b.c'),
-      '<!DOCTYPE html><div class="a b c"></div>',
+      '<div class="a b c"></div>',
     );
   });
 
   it('should render boolean attributes', () => {
     assert.strictEqual(
       pg.render('input(disabled)'),
-      '<!DOCTYPE html><input disabled>',
+      '<input disabled>',
     );
   });
 });
@@ -100,7 +100,7 @@ describe('reference links', () => {
     var input = 'references\n  example https://example.com\n\np @[example]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com">example</a></p>',
+      '<p><a href="https://example.com">example</a></p>',
     );
   });
 
@@ -109,7 +109,7 @@ describe('reference links', () => {
       "references\n  gc https://example.com/gc\n\np @[gc Baby's First Garbage Collector]";
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com/gc">Baby\'s First Garbage Collector</a></p>',
+      '<p><a href="https://example.com/gc">Baby\'s First Garbage Collector</a></p>',
     );
   });
 
@@ -118,7 +118,7 @@ describe('reference links', () => {
       'references\n  one https://one.com\n  two https://two.com\n\np @[one] and @[two]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://one.com">one</a> and <a href="https://two.com">two</a></p>',
+      '<p><a href="https://one.com">one</a> and <a href="https://two.com">two</a></p>',
     );
   });
 
@@ -127,7 +127,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com\n\np Read @[docs the docs] today.';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p>Read <a href="https://docs.com">the docs</a> today.</p>',
+      '<p>Read <a href="https://docs.com">the docs</a> today.</p>',
     );
   });
 
@@ -136,7 +136,7 @@ describe('reference links', () => {
       'p @[example click here]\n\nreferences\n  example https://example.com';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com">click here</a></p>',
+      '<p><a href="https://example.com">click here</a></p>',
     );
   });
 
@@ -145,14 +145,14 @@ describe('reference links', () => {
       'references\n  ex https://example.com\n\np.\n  Visit @[ex the site] now.';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p>Visit <a href="https://example.com">the site</a> now.</p>',
+      '<p>Visit <a href="https://example.com">the site</a> now.</p>',
     );
   });
 
   it('should escape \\@[ as literal text', () => {
     assert.strictEqual(
       pg.render('p \\@[not a ref]'),
-      '<!DOCTYPE html><p>@[not a ref]</p>',
+      '<p>@[not a ref]</p>',
     );
   });
 
@@ -160,7 +160,7 @@ describe('reference links', () => {
     var input = "references\n  ex 'https://example.com/a b'\n\np @[ex]";
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com/a b">ex</a></p>',
+      '<p><a href="https://example.com/a b">ex</a></p>',
     );
   });
 
@@ -169,7 +169,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com\n\np #(em check @[docs the docs] out)';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><em>check <a href="https://docs.com">the docs</a> out</em></p>',
+      '<p><em>check <a href="https://docs.com">the docs</a> out</em></p>',
     );
   });
 
@@ -178,7 +178,7 @@ describe('reference links', () => {
       'references\n  docs /docs\n  logo /logo.png\n\np @[docs click ![logo icon] here]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="/docs">click ![logo icon] here</a></p>',
+      '<p><a href="/docs">click ![logo icon] here</a></p>',
     );
   });
 
@@ -187,13 +187,13 @@ describe('reference links', () => {
       'references\n  docs /docs\n  logo /logo.png\n\np ![logo alt @[docs link] end]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><img src="/logo.png" alt="alt @[docs link] end"></p>',
+      '<p><img src="/logo.png" alt="alt @[docs link] end"></p>',
     );
   });
 
   it('should produce no output for the references block itself', () => {
     var input = 'references\n  ex https://example.com';
-    assert.strictEqual(pg.render(input), '<!DOCTYPE html>');
+    assert.strictEqual(pg.render(input), '');
   });
 
   it('should use default text when no explicit text is provided', () => {
@@ -201,7 +201,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com Documentation\n\np @[docs]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://docs.com">Documentation</a></p>',
+      '<p><a href="https://docs.com">Documentation</a></p>',
     );
   });
 
@@ -210,7 +210,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com Documentation\n\np @[docs click here]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://docs.com">click here</a></p>',
+      '<p><a href="https://docs.com">click here</a></p>',
     );
   });
 
@@ -218,7 +218,7 @@ describe('reference links', () => {
     var input = 'references\n  logo /logo.png Pugneum Logo\n\np ![logo]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><img src="/logo.png" alt="Pugneum Logo"></p>',
+      '<p><img src="/logo.png" alt="Pugneum Logo"></p>',
     );
   });
 
@@ -227,7 +227,7 @@ describe('reference links', () => {
       "references\n  ex 'https://example.com/path with spaces' Example Site\n\np @[ex]";
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com/path with spaces">Example Site</a></p>',
+      '<p><a href="https://example.com/path with spaces">Example Site</a></p>',
     );
   });
 
@@ -250,7 +250,7 @@ describe('reference links', () => {
       'references\n  ex https://example.com\n\np @[ex click](class="cite")';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a class="cite" href="https://example.com">click</a></p>',
+      '<p><a class="cite" href="https://example.com">click</a></p>',
     );
   });
 
@@ -259,7 +259,7 @@ describe('reference links', () => {
       'references\n  ex https://example.com\n\np @[ex click](target="_blank" rel="noopener")';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com" target="_blank" rel="noopener">click</a></p>',
+      '<p><a href="https://example.com" target="_blank" rel="noopener">click</a></p>',
     );
   });
 
@@ -268,7 +268,7 @@ describe('reference links', () => {
       'references\n  ex https://example.com\n\np @[ex](class="external")';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a class="external" href="https://example.com">ex</a></p>',
+      '<p><a class="external" href="https://example.com">ex</a></p>',
     );
   });
 
@@ -277,7 +277,7 @@ describe('reference links', () => {
       'references\n  mdn https://developer.mozilla.org\n\np @[mdn see [ bracket]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">see [ bracket</a></p>',
+      '<p><a href="https://developer.mozilla.org">see [ bracket</a></p>',
     );
   });
 
@@ -286,7 +286,7 @@ describe('reference links', () => {
       'references\n  mdn https://developer.mozilla.org\n\np @[mdn text \\] more]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">text ] more</a></p>',
+      '<p><a href="https://developer.mozilla.org">text ] more</a></p>',
     );
   });
 
@@ -295,7 +295,7 @@ describe('reference links', () => {
       'references\n  mdn https://developer.mozilla.org\n\np @[mdn Array\\[0\\]]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://developer.mozilla.org">Array[0]</a></p>',
+      '<p><a href="https://developer.mozilla.org">Array[0]</a></p>',
     );
   });
 
@@ -303,7 +303,7 @@ describe('reference links', () => {
     var input = 'references\n  ex https://example.com\n\np @[ex text \\\\]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://example.com">text \\</a></p>',
+      '<p><a href="https://example.com">text \\</a></p>',
     );
   });
 
@@ -312,7 +312,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com\n\np @[docs text with #(em emphasis) end]';
     assert.strictEqual(
       pg.render(input),
-      '<!DOCTYPE html><p><a href="https://docs.com">text with #(em emphasis) end</a></p>',
+      '<p><a href="https://docs.com">text with #(em emphasis) end</a></p>',
     );
   });
 });
@@ -321,70 +321,70 @@ describe('image shorthand', () => {
   it('should render basic image', () => {
     assert.strictEqual(
       pg.render('p !(/photo.jpg A photo)'),
-      '<!DOCTYPE html><p><img src="/photo.jpg" alt="A photo"></p>',
+      '<p><img src="/photo.jpg" alt="A photo"></p>',
     );
   });
 
   it('should use empty alt for decorative image when no alt provided', () => {
     assert.strictEqual(
       pg.render('p !(/logo.png)'),
-      '<!DOCTYPE html><p><img src="/logo.png" alt=""></p>',
+      '<p><img src="/logo.png" alt=""></p>',
     );
   });
 
   it('should support quoted URLs with spaces', () => {
     assert.strictEqual(
       pg.render("p !('/my image.jpg' Photo)"),
-      '<!DOCTYPE html><p><img src="/my image.jpg" alt="Photo"></p>',
+      '<p><img src="/my image.jpg" alt="Photo"></p>',
     );
   });
 
   it('should support custom attributes after shorthand', () => {
     assert.strictEqual(
       pg.render('p !(/hero.jpg Hero)(class="hero")'),
-      '<!DOCTYPE html><p><img class="hero" src="/hero.jpg" alt="Hero"></p>',
+      '<p><img class="hero" src="/hero.jpg" alt="Hero"></p>',
     );
   });
 
   it('should support multiple custom attributes', () => {
     assert.strictEqual(
       pg.render('p !(/img.jpg Alt)(class="lazy" loading="lazy")'),
-      '<!DOCTYPE html><p><img class="lazy" src="/img.jpg" alt="Alt" loading="lazy"></p>',
+      '<p><img class="lazy" src="/img.jpg" alt="Alt" loading="lazy"></p>',
     );
   });
 
   it('should work inline in text', () => {
     assert.strictEqual(
       pg.render('p See !(/cat.jpg a cat) here.'),
-      '<!DOCTYPE html><p>See <img src="/cat.jpg" alt="a cat"> here.</p>',
+      '<p>See <img src="/cat.jpg" alt="a cat"> here.</p>',
     );
   });
 
   it('should escape \\!( as literal text', () => {
     assert.strictEqual(
       pg.render('p \\!(not an image)'),
-      '<!DOCTYPE html><p>!(not an image)</p>',
+      '<p>!(not an image)</p>',
     );
   });
 
   it('should work inside #(...) interpolation', () => {
     assert.strictEqual(
       pg.render('p #(span !(/icon.png icon))'),
-      '<!DOCTYPE html><p><span><img src="/icon.png" alt="icon"></span></p>',
+      '<p><span><img src="/icon.png" alt="icon"></span></p>',
     );
   });
 
   it('should work in text blocks', () => {
     assert.strictEqual(
       pg.render('p.\n  Image: !(/x.png alt text)'),
-      '<!DOCTYPE html><p>Image: <img src="/x.png" alt="alt text"></p>',
+      '<p>Image: <img src="/x.png" alt="alt text"></p>',
     );
   });
 
   it('should unescape \\( and \\) in unquoted content', () => {
     assert.strictEqual(
       pg.render('p !(photo_\\(1\\).jpg Alt)'),
-      '<!DOCTYPE html><p><img src="photo_(1).jpg" alt="Alt"></p>',
+      '<p><img src="photo_(1).jpg" alt="Alt"></p>',
     );
   });
 });
@@ -393,7 +393,7 @@ describe('variables in attributes', () => {
   it('should resolve #{var} in attribute values', () => {
     assert.strictEqual(
       pg.render('mixin link(url)\n  a(href="#{url}") Click\n+link(/home)'),
-      '<!DOCTYPE html><a href="/home">Click</a>',
+      '<a href="/home">Click</a>',
     );
   });
 
@@ -402,7 +402,7 @@ describe('variables in attributes', () => {
       pg.render(
         'mixin tag(cls id)\n  div(class="#{cls}" id="#{id}")\n+tag(main header)',
       ),
-      '<!DOCTYPE html><div class="main" id="header"></div>',
+      '<div class="main" id="header"></div>',
     );
   });
 
@@ -411,7 +411,7 @@ describe('variables in attributes', () => {
       pg.render(
         'mixin item(name)\n  div(class="item-#{name}") #{name}\n+item(active)',
       ),
-      '<!DOCTYPE html><div class="item-active">active</div>',
+      '<div class="item-active">active</div>',
     );
   });
 
@@ -420,7 +420,7 @@ describe('variables in attributes', () => {
       pg.render(
         'mixin inner()\n  span(data-x="#{x}")\nmixin outer(x)\n  +inner()\n+outer(hello)',
       ),
-      '<!DOCTYPE html><span data-x="hello"></span>',
+      '<span data-x="hello"></span>',
     );
   });
 
@@ -429,7 +429,7 @@ describe('variables in attributes', () => {
       pg.render(
         'mixin test(x)\n  div(data-template="\\\\#{x}") Hi\n+test(val)',
       ),
-      '<!DOCTYPE html><div data-template="#{x}">Hi</div>',
+      '<div data-template="#{x}">Hi</div>',
     );
   });
 
@@ -450,7 +450,7 @@ describe('variables in attributes', () => {
   it('should pass through #{...} with non-word chars unchanged', () => {
     assert.strictEqual(
       pg.render('mixin test(x)\n  div(data-x="#{x}") #{ }\n+test(val)'),
-      '<!DOCTYPE html><div data-x="val">#{ }</div>',
+      '<div data-x="val">#{ }</div>',
     );
   });
 });
@@ -459,21 +459,21 @@ describe('inline mixin calls', () => {
   it('should render mixin inline in text', () => {
     assert.strictEqual(
       pg.render('mixin b(text)\n  strong #{text}\n\np I am #(+b(very)) happy.'),
-      '<!DOCTYPE html><p>I am <strong>very</strong> happy.</p>',
+      '<p>I am <strong>very</strong> happy.</p>',
     );
   });
 
   it('should support multiple inline calls in one line', () => {
     assert.strictEqual(
       pg.render('mixin b(t)\n  strong #{t}\n\np #(+b(a)) and #(+b(b))'),
-      '<!DOCTYPE html><p><strong>a</strong> and <strong>b</strong></p>',
+      '<p><strong>a</strong> and <strong>b</strong></p>',
     );
   });
 
   it('should support inline mixin with no args', () => {
     assert.strictEqual(
       pg.render('mixin sep()\n  span |\n\np A #(+sep()) B'),
-      '<!DOCTYPE html><p>A <span>|</span> B</p>',
+      '<p>A <span>|</span> B</p>',
     );
   });
 
@@ -482,7 +482,7 @@ describe('inline mixin calls', () => {
       pg.render(
         'mixin wrap()\n  span.w\n    block\n\np #(+wrap() #(em hi)) end',
       ),
-      '<!DOCTYPE html><p><span class="w"><em>hi</em></span> end</p>',
+      '<p><span class="w"><em>hi</em></span> end</p>',
     );
   });
 
@@ -491,7 +491,7 @@ describe('inline mixin calls', () => {
       pg.render(
         'mixin code(name)\n  code #{name}\n\np.\n  Use #(+code(div)) elements.',
       ),
-      '<!DOCTYPE html><p>Use <code>div</code> elements.</p>',
+      '<p>Use <code>div</code> elements.</p>',
     );
   });
 
@@ -500,7 +500,7 @@ describe('inline mixin calls', () => {
       pg.render(
         'mixin link(url text)\n  a(href="#{url}") #{text}\n\np Go #(+link(/x here))',
       ),
-      '<!DOCTYPE html><p>Go <a href="/x">here</a></p>',
+      '<p>Go <a href="/x">here</a></p>',
     );
   });
 });
@@ -509,105 +509,105 @@ describe('interpolated tags', () => {
   it('should handle balanced parentheses in text content', () => {
     assert.strictEqual(
       pg.render('p #(strong text (with parens) more)'),
-      '<!DOCTYPE html><p><strong>text (with parens) more</strong></p>',
+      '<p><strong>text (with parens) more</strong></p>',
     );
   });
 
   it('should handle escaped shorthands with parens inside interpolation', () => {
     assert.strictEqual(
       pg.render('p *(text \\#(em inner) end)'),
-      '<!DOCTYPE html><p><strong>text #(em inner) end</strong></p>',
+      '<p><strong>text #(em inner) end</strong></p>',
     );
   });
 
   it('should handle escaped shorthands inside link shorthand', () => {
     assert.strictEqual(
       pg.render('p @(url text \\#(not interp) end)'),
-      '<!DOCTYPE html><p><a href="url">text #(not interp) end</a></p>',
+      '<p><a href="url">text #(not interp) end</a></p>',
     );
   });
 
   it('should handle multiple escaped shorthands inside interpolation', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(a) \\@(b) text)'),
-      '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
+      '<p><em>@(a) @(b) text</em></p>',
     );
   });
 
   it('should handle escaped shorthands with balanced parens between them', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(a) (parens) \\@(b) text)'),
-      '<!DOCTYPE html><p><em>@(a) (parens) @(b) text</em></p>',
+      '<p><em>@(a) (parens) @(b) text</em></p>',
     );
   });
 
   it('should handle escaped shorthands inside balanced parens', () => {
     assert.strictEqual(
       pg.render('p #(em (before \\@(inner) after) text)'),
-      '<!DOCTYPE html><p><em>(before @(inner) after) text</em></p>',
+      '<p><em>(before @(inner) after) text</em></p>',
     );
   });
 
   it('should handle mixed real and escaped shorthands', () => {
     assert.strictEqual(
       pg.render('p #(em *(real) \\@(escaped) text)'),
-      '<!DOCTYPE html><p><em><strong>real</strong> @(escaped) text</em></p>',
+      '<p><em><strong>real</strong> @(escaped) text</em></p>',
     );
   });
 
   it('should handle multiple escaped shorthands inside interpolation', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(a) \\@(b) text)'),
-      '<!DOCTYPE html><p><em>@(a) @(b) text</em></p>',
+      '<p><em>@(a) @(b) text</em></p>',
     );
   });
 
   it('should handle three escaped shorthands of different types', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(a) \\*(b) \\_(c) text)'),
-      '<!DOCTYPE html><p><em>@(a) *(b) _(c) text</em></p>',
+      '<p><em>@(a) *(b) _(c) text</em></p>',
     );
   });
 
   it('should handle escaped shorthand with nested parens in content', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(fn()) text)'),
-      '<!DOCTYPE html><p><em>@(fn()) text</em></p>',
+      '<p><em>@(fn()) text</em></p>',
     );
   });
 
   it('should handle escaped shorthand as only content before close', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(only))'),
-      '<!DOCTYPE html><p><em>@(only)</em></p>',
+      '<p><em>@(only)</em></p>',
     );
   });
 
   it('should handle adjacent escaped shorthands with no space', () => {
     assert.strictEqual(
       pg.render('p #(em \\@(a)\\*(b) text)'),
-      '<!DOCTYPE html><p><em>@(a)*(b) text</em></p>',
+      '<p><em>@(a)*(b) text</em></p>',
     );
   });
 
   it('should handle escaped shorthands in strong child lexer', () => {
     assert.strictEqual(
       pg.render('p *(bold \\@(escaped) end)'),
-      '<!DOCTYPE html><p><strong>bold @(escaped) end</strong></p>',
+      '<p><strong>bold @(escaped) end</strong></p>',
     );
   });
 
   it('should handle multiple escaped shorthands in emphasis child lexer', () => {
     assert.strictEqual(
       pg.render('p _(\\@(a) \\@(b) \\@(c))'),
-      '<!DOCTYPE html><p><em>@(a) @(b) @(c)</em></p>',
+      '<p><em>@(a) @(b) @(c)</em></p>',
     );
   });
 
   it('should handle deeply nested escaped shorthand', () => {
     assert.strictEqual(
       pg.render('p #(strong *(text \\@(x) end))'),
-      '<!DOCTYPE html><p><strong><strong>text @(x) end</strong></strong></p>',
+      '<p><strong><strong>text @(x) end</strong></strong></p>',
     );
   });
 });
@@ -616,81 +616,81 @@ describe('del/ins/sup/kbd/sub shorthands', () => {
   it('should render ~(del) shorthand', () => {
     assert.strictEqual(
       pg.render('p ~(deleted)'),
-      '<!DOCTYPE html><p><del>deleted</del></p>',
+      '<p><del>deleted</del></p>',
     );
   });
 
   it('should render &(ins) shorthand', () => {
     assert.strictEqual(
       pg.render('p &(inserted)'),
-      '<!DOCTYPE html><p><ins>inserted</ins></p>',
+      '<p><ins>inserted</ins></p>',
     );
   });
 
   it('should render ~(del) and &(ins) together', () => {
     assert.strictEqual(
       pg.render('p Returns ~(NULL) &(nullptr).'),
-      '<!DOCTYPE html><p>Returns <del>NULL</del> <ins>nullptr</ins>.</p>',
+      '<p>Returns <del>NULL</del> <ins>nullptr</ins>.</p>',
     );
   });
 
   it('should render escaped \\&( as literal', () => {
     assert.strictEqual(
       pg.render('p \\&(not ins)'),
-      '<!DOCTYPE html><p>&(not ins)</p>',
+      '<p>&(not ins)</p>',
     );
   });
 
   it('should render ^(sup) shorthand', () => {
     assert.strictEqual(
       pg.render('p x^(2)'),
-      '<!DOCTYPE html><p>x<sup>2</sup></p>',
+      '<p>x<sup>2</sup></p>',
     );
   });
 
   it('should render %(kbd) shorthand', () => {
     assert.strictEqual(
       pg.render('p %(Ctrl+C)'),
-      '<!DOCTYPE html><p><kbd>Ctrl+C</kbd></p>',
+      '<p><kbd>Ctrl+C</kbd></p>',
     );
   });
 
   it('should render ,(sub) shorthand', () => {
     assert.strictEqual(
       pg.render('p H,(2)O'),
-      '<!DOCTYPE html><p>H<sub>2</sub>O</p>',
+      '<p>H<sub>2</sub>O</p>',
     );
   });
 
   it('should render escaped \\~( \\^( \\%( \\,( as literal', () => {
     assert.strictEqual(
       pg.render('p \\~(not del) \\^(not sup) \\%(not kbd)'),
-      '<!DOCTYPE html><p>~(not del) ^(not sup) %(not kbd)</p>',
+      '<p>~(not del) ^(not sup) %(not kbd)</p>',
     );
     assert.strictEqual(
       pg.render('p \\,(not sub)'),
-      '<!DOCTYPE html><p>,(not sub)</p>',
+      '<p>,(not sub)</p>',
     );
   });
 
   it('should render nested sup and sub', () => {
     assert.strictEqual(
       pg.render('p x^(2),(i)'),
-      '<!DOCTYPE html><p>x<sup>2</sup><sub>i</sub></p>',
+      '<p>x<sup>2</sup><sub>i</sub></p>',
     );
   });
 
   it('should render nested del/sup/kbd shorthands', () => {
     assert.strictEqual(
       pg.render('p *(strong ~(deleted))'),
-      '<!DOCTYPE html><p><strong>strong <del>deleted</del></strong></p>',
+      '<p><strong>strong <del>deleted</del></strong></p>',
     );
   });
 
   it('should render escaped \\^[ as literal text', () => {
     assert.strictEqual(
       pg.render('p \\^[not a footnote]'),
-      '<!DOCTYPE html><p>^[not a footnote]</p>',
+      '<p>^[not a footnote]</p>',
     );
   });
 });
@@ -701,7 +701,7 @@ describe('variable edge cases', () => {
       pg.render(
         'references\n  ex https://example.com\nmixin foo(v)\n  p #{v}@[ex]\n+foo(test)',
       ),
-      '<!DOCTYPE html><p>test<a href="https://example.com">ex</a></p>',
+      '<p>test<a href="https://example.com">ex</a></p>',
     );
   });
 
@@ -710,49 +710,49 @@ describe('variable edge cases', () => {
       pg.render(
         'references\n  ex https://example.com\nmixin foo(v)\n  p #{v} @[ex click]\n+foo(test)',
       ),
-      '<!DOCTYPE html><p>test <a href="https://example.com">click</a></p>',
+      '<p>test <a href="https://example.com">click</a></p>',
     );
   });
 
   it('should render #{var} followed by @() link shorthand', () => {
     assert.strictEqual(
       pg.render('mixin foo(v)\n  p #{v} @(/url link)\n+foo(test)'),
-      '<!DOCTYPE html><p>test <a href="/url">link</a></p>',
+      '<p>test <a href="/url">link</a></p>',
     );
   });
 
   it('should resolve hyphenated variable names in text', () => {
     assert.strictEqual(
       pg.render('mixin foo(my-var)\n  p #{my-var}\n+foo(hello)'),
-      '<!DOCTYPE html><p>hello</p>',
+      '<p>hello</p>',
     );
   });
 
   it('should resolve hyphenated variable names in attributes', () => {
     assert.strictEqual(
       pg.render('mixin foo(my-var)\n  a(href="#{my-var}") link\n+foo(/url)'),
-      '<!DOCTYPE html><a href="/url">link</a>',
+      '<a href="/url">link</a>',
     );
   });
 
   it('should handle quoted mixin arg with spaces', () => {
     assert.strictEqual(
       pg.render('mixin foo(a)\n  p #{a}\n+foo("hello, world")'),
-      '<!DOCTYPE html><p>hello, world</p>',
+      '<p>hello, world</p>',
     );
   });
 
   it('should handle escaped quotes in mixin args', () => {
     assert.strictEqual(
       pg.render('mixin foo(a)\n  p #{a}\n+foo("say \\"hi\\"")'),
-      '<!DOCTYPE html><p>say "hi"</p>',
+      '<p>say "hi"</p>',
     );
   });
 
   it('should handle escaped quotes in mixin default values', () => {
     assert.strictEqual(
       pg.render('mixin foo(a="it\\"s")\n  p #{a}\n+foo'),
-      '<!DOCTYPE html><p>it"s</p>',
+      '<p>it"s</p>',
     );
   });
 });
@@ -761,35 +761,35 @@ describe('link shorthand', () => {
   it('should render basic link', () => {
     assert.strictEqual(
       pg.render('p @(/contact contact us)'),
-      '<!DOCTYPE html><p><a href="/contact">contact us</a></p>',
+      '<p><a href="/contact">contact us</a></p>',
     );
   });
 
   it('should use URL as text when no text provided', () => {
     assert.strictEqual(
       pg.render('p @(https://example.com)'),
-      '<!DOCTYPE html><p><a href="https://example.com">https://example.com</a></p>',
+      '<p><a href="https://example.com">https://example.com</a></p>',
     );
   });
 
   it('should work inline in text', () => {
     assert.strictEqual(
       pg.render('p Visit @(https://example.com our site) today.'),
-      '<!DOCTYPE html><p>Visit <a href="https://example.com">our site</a> today.</p>',
+      '<p>Visit <a href="https://example.com">our site</a> today.</p>',
     );
   });
 
   it('should escape \\@( as literal text', () => {
     assert.strictEqual(
       pg.render('p \\@(not a link)'),
-      '<!DOCTYPE html><p>@(not a link)</p>',
+      '<p>@(not a link)</p>',
     );
   });
 
   it('should unescape \\( and \\) in unquoted content', () => {
     assert.strictEqual(
       pg.render('p @(https://example.com/Rust_\\(language\\) Rust)'),
-      '<!DOCTYPE html><p><a href="https://example.com/Rust_(language)">Rust</a></p>',
+      '<p><a href="https://example.com/Rust_(language)">Rust</a></p>',
     );
   });
 });
@@ -968,28 +968,28 @@ describe('abbr shorthand', () => {
   it('should render ?(abbr expansion) as <abbr>', () => {
     assert.strictEqual(
       pg.render('p ?(HTML Hypertext Markup Language)'),
-      '<!DOCTYPE html><p><abbr title="Hypertext Markup Language">HTML</abbr></p>',
+      '<p><abbr title="Hypertext Markup Language">HTML</abbr></p>',
     );
   });
 
   it('should render ?(abbr) without expansion', () => {
     assert.strictEqual(
       pg.render('p ?(CPU)'),
-      '<!DOCTYPE html><p><abbr>CPU</abbr></p>',
+      '<p><abbr>CPU</abbr></p>',
     );
   });
 
   it('should render escaped \\?( as literal', () => {
     assert.strictEqual(
       pg.render('p \\?(not abbr)'),
-      '<!DOCTYPE html><p>?(not abbr)</p>',
+      '<p>?(not abbr)</p>',
     );
   });
 
   it('should nest inside other shorthands', () => {
     assert.strictEqual(
       pg.render('p The *(?(API Application Programming Interface)) is stable.'),
-      '<!DOCTYPE html><p>The <strong><abbr title="Application Programming Interface">API</abbr></strong> is stable.</p>',
+      '<p>The <strong><abbr title="Application Programming Interface">API</abbr></strong> is stable.</p>',
     );
   });
 });
@@ -1000,7 +1000,7 @@ describe('renderFile()', () => {
   it('should render a file from disk', () => {
     var result = pg.renderFile(filePath);
     assert.strictEqual(typeof result, 'string');
-    assert.match(result, /<!DOCTYPE html>/);
+    assert.match(result, /^<html>/);
   });
 });
 

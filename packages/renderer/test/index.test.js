@@ -84,31 +84,24 @@ function mixinCallOpts(name, args, children, opts) {
 
 describe('basic rendering', () => {
   test('empty block', () => {
-    assert.strictEqual(render(block([])), '<!DOCTYPE html>');
+    assert.strictEqual(render(block([])), '');
   });
 
   test('text node', () => {
-    assert.strictEqual(render(block([text('hello')])), '<!DOCTYPE html>hello');
-  });
-
-  test('doctype: false omits doctype', () => {
-    assert.strictEqual(
-      render(block([tag('p', [], [text('hi')])]), {doctype: false}),
-      '<p>hi</p>',
-    );
+    assert.strictEqual(render(block([text('hello')])), 'hello');
   });
 
   test('tag with text', () => {
     assert.strictEqual(
       render(block([tag('p', [], [text('hi')])])),
-      '<!DOCTYPE html><p>hi</p>',
+      '<p>hi</p>',
     );
   });
 
   test('nested tags', () => {
     assert.strictEqual(
       render(block([tag('div', [], [tag('span', [], [text('x')])])])),
-      '<!DOCTYPE html><div><span>x</span></div>',
+      '<div><span>x</span></div>',
     );
   });
 });
@@ -118,7 +111,7 @@ describe('attributes', () => {
     var attrs = [{name: 'href', val: '/home', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('a', attrs, [text('link')])])),
-      '<!DOCTYPE html><a href="/home">link</a>',
+      '<a href="/home">link</a>',
     );
   });
 
@@ -126,7 +119,7 @@ describe('attributes', () => {
     var attrs = [{name: 'disabled', val: true, line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
-      '<!DOCTYPE html><input disabled>',
+      '<input disabled>',
     );
   });
 
@@ -137,7 +130,7 @@ describe('attributes', () => {
     ];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
-      '<!DOCTYPE html><div class="a b"></div>',
+      '<div class="a b"></div>',
     );
   });
 
@@ -152,7 +145,7 @@ describe('attributes', () => {
     ];
     assert.strictEqual(
       render(block([tag('span', attrs, [text('x')])])),
-      '<!DOCTYPE html><span title="say &quot;hello&quot;">x</span>',
+      '<span title="say &quot;hello&quot;">x</span>',
     );
   });
 
@@ -160,29 +153,29 @@ describe('attributes', () => {
     var attrs = [{name: 'class', val: 'a"b', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
-      '<!DOCTYPE html><div class="a&quot;b"></div>',
+      '<div class="a&quot;b"></div>',
     );
   });
 });
 
 describe('void elements', () => {
   test('self-closing by tag name', () => {
-    assert.strictEqual(render(block([tag('br')])), '<!DOCTYPE html><br>');
-    assert.strictEqual(render(block([tag('hr')])), '<!DOCTYPE html><hr>');
-    assert.strictEqual(render(block([tag('img')])), '<!DOCTYPE html><img>');
+    assert.strictEqual(render(block([tag('br')])), '<br>');
+    assert.strictEqual(render(block([tag('hr')])), '<hr>');
+    assert.strictEqual(render(block([tag('img')])), '<img>');
   });
 
   test('self-closing by property', () => {
     assert.strictEqual(
       render(block([tag('custom', [], [], {selfClosing: true})])),
-      '<!DOCTYPE html><custom>',
+      '<custom>',
     );
   });
 
   test('void element with whitespace-only content is allowed', () => {
     assert.strictEqual(
       render(block([tag('br', [], [text('  ')])])),
-      '<!DOCTYPE html><br>',
+      '<br>',
     );
   });
 
@@ -204,7 +197,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('rect', attrs)])),
-      '<!DOCTYPE html><rect x="0" y="0" width="100" height="50">',
+      '<rect x="0" y="0" width="100" height="50">',
     );
   });
 
@@ -216,7 +209,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('circle', attrs)])),
-      '<!DOCTYPE html><circle cx="50" cy="50" r="25">',
+      '<circle cx="50" cy="50" r="25">',
     );
   });
 
@@ -229,7 +222,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('line', attrs)])),
-      '<!DOCTYPE html><line x1="0" y1="0" x2="100" y2="100">',
+      '<line x1="0" y1="0" x2="100" y2="100">',
     );
   });
 
@@ -237,22 +230,22 @@ describe('SVG void elements', () => {
     var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
-      '<!DOCTYPE html><path d="M0 0 L100 100">',
+      '<path d="M0 0 L100 100">',
     );
   });
 
   test('SVG container elements are NOT self-closing', () => {
     assert.strictEqual(
       render(block([tag('svg', [], [tag('rect')])])),
-      '<!DOCTYPE html><svg><rect></svg>',
+      '<svg><rect></svg>',
     );
     assert.strictEqual(
       render(block([tag('g', [], [tag('circle')])])),
-      '<!DOCTYPE html><g><circle></g>',
+      '<g><circle></g>',
     );
     assert.strictEqual(
       render(block([tag('text', [], [text('hello')])])),
-      '<!DOCTYPE html><text>hello</text>',
+      '<text>hello</text>',
     );
     assert.strictEqual(
       render(
@@ -271,7 +264,7 @@ describe('SVG void elements', () => {
           ),
         ]),
       ),
-      '<!DOCTYPE html><use href="#icon"></use>',
+      '<use href="#icon"></use>',
     );
     assert.strictEqual(
       render(
@@ -290,7 +283,7 @@ describe('SVG void elements', () => {
           ),
         ]),
       ),
-      '<!DOCTYPE html><image href="pic.png"></image>',
+      '<image href="pic.png"></image>',
     );
   });
 
@@ -311,7 +304,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!-- hello -->');
+    assert.strictEqual(render(block([node])), '<!-- hello -->');
   });
 
   test('unbuffered comment produces no output', () => {
@@ -322,7 +315,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
+    assert.strictEqual(render(block([node])), '');
   });
 
   test('buffered block comment', () => {
@@ -336,7 +329,7 @@ describe('comments', () => {
     };
     assert.strictEqual(
       render(block([node])),
-      '<!DOCTYPE html><!-- start body-->',
+      '<!-- start body-->',
     );
   });
 
@@ -349,7 +342,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
+    assert.strictEqual(render(block([node])), '');
   });
 
   test('block comment with empty val', () => {
@@ -361,7 +354,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!--content-->');
+    assert.strictEqual(render(block([node])), '<!--content-->');
   });
 
   test('comment with null val renders empty comment', () => {
@@ -372,7 +365,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!---->');
+    assert.strictEqual(render(block([node])), '<!---->');
   });
 
   test('block comment with null val uses body only', () => {
@@ -384,7 +377,7 @@ describe('comments', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html><!--body-->');
+    assert.strictEqual(render(block([node])), '<!--body-->');
   });
 });
 
@@ -398,7 +391,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!--foo- -bar-->',
     );
   });
@@ -412,7 +405,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!--foo- - -bar-->',
     );
   });
@@ -426,7 +419,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!-- >dangerous-->',
     );
   });
@@ -440,7 +433,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!-- ->dangerous-->',
     );
   });
@@ -454,7 +447,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!--trailing- -->',
     );
   });
@@ -469,7 +462,7 @@ describe('comment sanitization', () => {
       filename: 'test',
     };
     assert.strictEqual(
-      render(block([node]), {doctype: false}),
+      render(block([node])),
       '<!-- start has- -dashes-->',
     );
   });
@@ -513,7 +506,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><p>world</p>',
+      '<p>world</p>',
     );
   });
 
@@ -540,7 +533,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><hr>',
+      '<hr>',
     );
   });
 
@@ -573,7 +566,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div>inside</div>',
+      '<div>inside</div>',
     );
   });
 
@@ -623,7 +616,7 @@ describe('mixins', () => {
     };
     assert.strictEqual(
       render(block([inner, outer, call])),
-      '<!DOCTYPE html>hello',
+      'hello',
     );
   });
 });
@@ -762,7 +755,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><a href="/home">click</a>',
+      '<a href="/home">click</a>',
     );
   });
 
@@ -798,7 +791,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div data-x="hello-world"></div>',
+      '<div data-x="hello-world"></div>',
     );
   });
 
@@ -834,7 +827,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div data-t="#{x}"></div>',
+      '<div data-t="#{x}"></div>',
     );
   });
 
@@ -870,7 +863,7 @@ describe('variables in attributes', () => {
     };
     assert.strictEqual(
       render(block([declaration, call])),
-      '<!DOCTYPE html><div class="item-active"></div>',
+      '<div class="item-active"></div>',
     );
   });
 
@@ -940,7 +933,7 @@ describe('variables in attributes', () => {
           ),
         ]),
       ),
-      '<!DOCTYPE html><a href="/static">link</a>',
+      '<a href="/static">link</a>',
     );
   });
 });
@@ -961,7 +954,7 @@ describe('interpolated tags', () => {
     };
     assert.strictEqual(
       render(block([node])),
-      '<!DOCTYPE html><em>stressed</em>',
+      '<em>stressed</em>',
     );
   });
 
@@ -978,7 +971,7 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html><br>');
+    assert.strictEqual(render(block([node])), '<br>');
   });
 
   test('does not mutate the input AST node', () => {
@@ -995,7 +988,7 @@ describe('interpolated tags', () => {
       filename: 'test',
     };
     assert.strictEqual('name' in node, false);
-    render(block([node]), {doctype: false});
+    render(block([node]));
     assert.strictEqual('name' in node, false);
   });
 });
@@ -1003,7 +996,7 @@ describe('interpolated tags', () => {
 describe('yield block', () => {
   test('produces no output', () => {
     var node = {type: 'YieldBlock', line: 1, filename: 'test'};
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html>');
+    assert.strictEqual(render(block([node])), '');
   });
 });
 
@@ -1017,7 +1010,7 @@ describe('named block', () => {
       line: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<!DOCTYPE html>block content');
+    assert.strictEqual(render(block([node])), 'block content');
   });
 });
 
@@ -1140,7 +1133,7 @@ describe('optional arguments', () => {
     var call = mixinCall('greet', ['Alice']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p> Alice</p>',
+      '<p> Alice</p>',
     );
   });
 
@@ -1159,7 +1152,7 @@ describe('optional arguments', () => {
     var call = mixinCall('greet', ['Alice']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>Hello, friend Alice</p>',
+      '<p>Hello, friend Alice</p>',
     );
   });
 
@@ -1172,7 +1165,7 @@ describe('optional arguments', () => {
     var call = mixinCall('greet', ['Alice', 'Doctor']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>Doctor Alice</p>',
+      '<p>Doctor Alice</p>',
     );
   });
 
@@ -1183,7 +1176,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('a'), variable('b')])],
     );
     var call = mixinCall('empty', []);
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
+    assert.strictEqual(render(block([decl, call])), '<p></p>');
   });
 
   test('all defaults used when no args provided', () => {
@@ -1198,7 +1191,7 @@ describe('optional arguments', () => {
     var call = mixinCall('defaults', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><p>x-y</p>',
+      '<p>x-y</p>',
     );
   });
 
@@ -1218,7 +1211,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('x')])],
     );
     var call = mixinCall('m', ['']);
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
+    assert.strictEqual(render(block([decl, call])), '<p></p>');
   });
 
   test('default with empty string default', () => {
@@ -1228,7 +1221,7 @@ describe('optional arguments', () => {
       [tag('p', [], [variable('x')])],
     );
     var call = mixinCall('m', []);
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html><p></p>');
+    assert.strictEqual(render(block([decl, call])), '<p></p>');
   });
 });
 
@@ -1248,7 +1241,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('link', ['/page']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page">click</a>',
+      '<a href="/page">click</a>',
     );
   });
 
@@ -1266,7 +1259,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('icon', ['arrow']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><img src="/icons/arrow.svg">',
+      '<img src="/icons/arrow.svg">',
     );
   });
 
@@ -1285,7 +1278,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('link', ['/page']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page" target="_blank">click</a>',
+      '<a href="/page" target="_blank">click</a>',
     );
   });
 
@@ -1304,7 +1297,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('link', ['/page', '_self']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><a href="/page" target="_self">click</a>',
+      '<a href="/page" target="_self">click</a>',
     );
   });
 
@@ -1323,7 +1316,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('item', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div class="base">hi</div>',
+      '<div class="base">hi</div>',
     );
   });
 
@@ -1342,7 +1335,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('item', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div>hi</div>',
+      '<div>hi</div>',
     );
   });
 
@@ -1355,7 +1348,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('input', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><input disabled>',
+      '<input disabled>',
     );
   });
 
@@ -1374,7 +1367,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('m', []);
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div id="fixed">content</div>',
+      '<div id="fixed">content</div>',
     );
   });
 
@@ -1419,7 +1412,7 @@ describe('optional arguments and attributes', () => {
     call.line = 3;
     assert.strictEqual(
       render(block([inner, outer, call])),
-      '<!DOCTYPE html><span></span>',
+      '<span></span>',
     );
   });
 });
@@ -1448,7 +1441,7 @@ describe('named mixin blocks', () => {
     );
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div>HB</div>',
+      '<div>HB</div>',
     );
   });
 
@@ -1467,7 +1460,7 @@ describe('named mixin blocks', () => {
       [],
       [namedBlock('body', 'replace', [text('B')])],
     );
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>DefaultB');
+    assert.strictEqual(render(block([decl, call])), 'DefaultB');
   });
 
   test('caller with no block uses all defaults', () => {
@@ -1478,7 +1471,7 @@ describe('named mixin blocks', () => {
       {usesNamedBlocks: true},
     );
     const call = mixinCallOpts('wrap', []);
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>fallback');
+    assert.strictEqual(render(block([decl, call])), 'fallback');
   });
 
   test('append adds after default content', () => {
@@ -1493,7 +1486,7 @@ describe('named mixin blocks', () => {
       [],
       [namedBlock('links', 'append', [text('B')])],
     );
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>AB');
+    assert.strictEqual(render(block([decl, call])), 'AB');
   });
 
   test('prepend adds before default content', () => {
@@ -1508,7 +1501,7 @@ describe('named mixin blocks', () => {
       [],
       [namedBlock('links', 'prepend', [text('B')])],
     );
-    assert.strictEqual(render(block([decl, call])), '<!DOCTYPE html>BA');
+    assert.strictEqual(render(block([decl, call])), 'BA');
   });
 
   test('named blocks with variables', () => {
@@ -1546,7 +1539,7 @@ describe('named mixin blocks', () => {
     );
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div><h2>Hello</h2>content</div>',
+      '<div><h2>Hello</h2>content</div>',
     );
   });
 
@@ -1558,7 +1551,7 @@ describe('named mixin blocks', () => {
       {usesNamedBlocks: true},
     );
     const call = mixinCallOpts('wrap', [], [namedBlock('slot', 'replace')]);
-    assert.strictEqual(render(block([decl, call]), {doctype: false}), '');
+    assert.strictEqual(render(block([decl, call])), '');
   });
 
   test('same block name at multiple positions injects at all', () => {
@@ -1577,7 +1570,7 @@ describe('named mixin blocks', () => {
       [namedBlock('slot', 'replace', [text('X')])],
     );
     assert.strictEqual(
-      render(block([decl, call]), {doctype: false}),
+      render(block([decl, call])),
       '<header>X</header><footer>X</footer>',
     );
   });
@@ -1677,7 +1670,7 @@ describe('named mixin block errors', () => {
     );
     assert.strictEqual(
       render(block([decl, call])),
-      '<!DOCTYPE html><div>inner</div>',
+      '<div>inner</div>',
     );
   });
 });

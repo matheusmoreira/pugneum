@@ -84,7 +84,7 @@ describe('CLI', () => {
       );
       run([], {cwd: tmp});
       const html = fs.readFileSync(path.join(tmp, 'out', 'page.html'), 'utf8');
-      assert.strictEqual(html, '<!DOCTYPE html><p>hello</p>');
+      assert.strictEqual(html, '<p>hello</p>');
     } finally {
       fs.rmSync(tmp, {recursive: true});
     }
@@ -120,7 +120,7 @@ describe('CLI', () => {
       );
       run([], {cwd: tmp});
       const html = fs.readFileSync(path.join(tmp, 'out', 'real.html'), 'utf8');
-      assert.strictEqual(html, '<!DOCTYPE html><p>ok</p>');
+      assert.strictEqual(html, '<p>ok</p>');
       assert.ok(!fs.existsSync(path.join(tmp, 'out', 'loop')));
     } finally {
       fs.rmSync(tmp, {recursive: true});

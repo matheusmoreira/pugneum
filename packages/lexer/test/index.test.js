@@ -78,4 +78,20 @@ describe('given keyword', () => {
     assert.ok(tagTok);
     assert.strictEqual(tagTok.val, 'given');
   });
+
+  test('bare given throws MALFORMED_GIVEN', (t) => {
+    assert.throws(
+      () => lex('given', {filename: 'test'}),
+      (err) => err.code === 'PUGNEUM:MALFORMED_GIVEN',
+    );
+  });
+
+  test('given with comment strips name correctly', (t) => {
+    const tokens = lex('given source // optional\n  p text', {
+      filename: 'test',
+    });
+    const givenTok = tokens.find((t) => t.type === 'given');
+    assert.ok(givenTok);
+    assert.strictEqual(givenTok.val, 'source');
+  });
 });

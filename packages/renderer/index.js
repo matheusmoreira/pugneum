@@ -407,6 +407,7 @@ class Compiler {
             type: 'Block',
             nodes: unnamedNodes,
             line: unnamedNodes[0].line,
+            column: unnamedNodes[0].column,
             filename: unnamedNodes[0].filename,
           };
         }

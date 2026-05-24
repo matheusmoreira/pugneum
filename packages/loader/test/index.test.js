@@ -190,6 +190,52 @@ describe('library includes', () => {
         /escapes package directory/.test(err.message),
     );
   });
+
+  test('resolves unscoped package', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @unscoped-mock-lib/greeting.pg';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    ast = load(ast, {lex, parse});
+
+    var included = false;
+    walk(
+      ast,
+      function (node) {
+        if (node.type === 'Include' && node.file && node.file.ast) {
+          included = true;
+        }
+      },
+      {includeDependencies: true},
+    );
+
+    assert.ok(included, 'unscoped library include was resolved and loaded');
+  });
+
+  test('throws INVALID_LIBRARY_PATH for bare @', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) => err.code === 'PUGNEUM:INVALID_LIBRARY_PATH',
+    );
+  });
+
+  test('throws INVALID_LIBRARY_PATH for @ without file path', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @pugneum@mock-lib';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) => err.code === 'PUGNEUM:INVALID_LIBRARY_PATH',
+    );
+  });
 });
 
 describe('circular dependency detection', () => {

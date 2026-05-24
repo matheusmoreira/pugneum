@@ -38990,10 +38990,68 @@ exports[`reference-links-text-block.pg 1`] = `
       "filename": "reference-links-text-block.pg",
       "end": {
         "line": 6,
-        "column": 76
+        "column": 51
       }
     },
-    "val": " and it changed my life. "
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "reference-links-text-block.pg",
+      "end": {
+        "line": 7,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "reference-links-text-block.pg",
+      "end": {
+        "line": 7,
+        "column": 26
+      }
+    },
+    "val": "and it changed my life."
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-links-text-block.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-links-text-block.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    },
+    "val": ""
   },
   {
     "type": "end-pipeless-text",
@@ -40694,6 +40752,1082 @@ exports[`self-closing-html.pg 1`] = `
       "filename": "self-closing-html.pg",
       "end": {
         "line": 4,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`shorthand-escaped-parens.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 7
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "val": "the range (0, 10) is bounded"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 35
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 36
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 1,
+        "column": 36
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 11
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 34
+      }
+    },
+    "val": "balanced (parens) work"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 27
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 28
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 28
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 2,
+        "column": 28
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 12
+      }
+    },
+    "val": "fn(x)"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 13
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-parens.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`shorthand-quotes.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "val": "it's "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 8
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 10
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 12
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 13
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 20
+      }
+    },
+    "val": "working"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 17
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 18
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 1,
+        "column": 22
+      }
+    },
+    "val": " now"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 5
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 11
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 12
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 27
+      }
+    },
+    "val": "Bob's bold text"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 20
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 21
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 2,
+        "column": 29
+      }
+    },
+    "val": " is here"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    },
+    "val": "it's code"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 14
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 15
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 3,
+        "column": 15
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 9
+      }
+    },
+    "val": "abbr"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 9
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 10
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 67
+      }
+    },
+    "name": "title",
+    "val": "Structure and Interpretation of Computer Programs"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 67
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 68
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 69
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 73
+      }
+    },
+    "val": "SICP"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 59
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 60
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 60
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 4,
+        "column": 60
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 24
+      }
+    },
+    "val": "she said \\"hello\\" and "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 24
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 26
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 28
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 29
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    },
+    "val": "that's "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 36
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 38
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 38
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 44
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 45
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 47
+      }
+    },
+    "val": "it"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 40
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 41
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 38
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 39
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 39
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 5,
+        "column": 39
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "shorthand-quotes.pg",
+      "end": {
+        "line": 6,
         "column": 1
       }
     }

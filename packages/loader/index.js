@@ -135,11 +135,32 @@ function resolveLibrary(filename) {
   const slashIdx = rest.indexOf('/');
   const pkgPart = slashIdx === -1 ? rest : rest.slice(0, slashIdx);
   const subpath = slashIdx === -1 ? '' : rest.slice(slashIdx + 1);
+
+  if (!pkgPart) {
+    throw makeError(
+      'INVALID_LIBRARY_PATH',
+      'Library include is missing a package name: ' + filename,
+      {line: 0, column: 0, filename: ''},
+    );
+  }
+
   const atIdx = pkgPart.indexOf('@');
   const pkg =
     atIdx === -1
       ? pkgPart
       : '@' + pkgPart.slice(0, atIdx) + '/' + pkgPart.slice(atIdx + 1);
+
+  if (!subpath) {
+    throw makeError(
+      'INVALID_LIBRARY_PATH',
+      'Library include is missing a file path: ' +
+        filename +
+        '\n    Use: ' +
+        filename +
+        '/file.pg',
+      {line: 0, column: 0, filename: ''},
+    );
+  }
 
   let pkgJson;
   try {

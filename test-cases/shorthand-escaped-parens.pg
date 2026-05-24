@@ -1,0 +1,3 @@
+p _(the range \(0, 10\) is bounded)
+p *(balanced (parens) work)
+p `(fn\(x\))

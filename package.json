@@ -20,6 +20,7 @@
     "packages/parser",
     "packages/loader",
     "packages/loader/test/fixtures/mock-lib",
+    "packages/loader/test/fixtures/unscoped-mock-lib",
     "packages/linker",
     "packages/filterer",
     "packages/renderer",

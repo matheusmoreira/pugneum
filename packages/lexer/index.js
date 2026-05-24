@@ -73,16 +73,20 @@ function scanChar(str, i, quote) {
   return {i: i + 1, quote: null};
 }
 
+function throwUnclosed(end, i) {
+  const err = new Error(
+    'The end of the string reached with no closing bracket ' + end + ' found.',
+  );
+  err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
+  err.index = i;
+  throw err;
+}
+
 /**
- * Find the closing bracket matching the opener at position `start - 1`.
- * Respects quoted strings and escaped characters.
- *
- * @param {string} str - The string to search
- * @param {string} end - The closing bracket character to find
- * @param {number} start - The index to start searching from (after the opening bracket)
- * @returns {{end: number, src: string}}
+ * Find the closing bracket in an expression context (attributes, mixin args).
+ * Quotes are string delimiters; backslash escaping inside quotes.
  */
-function parseUntil(str, end, start, {quotes = true} = {}) {
+function parseExpressionUntil(str, end, start) {
   let depth = 1;
   let i = start;
   let quote = null;
@@ -91,7 +95,7 @@ function parseUntil(str, end, start, {quotes = true} = {}) {
   while (i < str.length) {
     const c = str[i];
 
-    if (quotes && (quote || c === "'" || c === '"')) {
+    if (quote || c === "'" || c === '"') {
       ({i, quote} = scanChar(str, i, quote));
       continue;
     }
@@ -107,12 +111,41 @@ function parseUntil(str, end, start, {quotes = true} = {}) {
     i++;
   }
 
-  const err = new Error(
-    'The end of the string reached with no closing bracket ' + end + ' found.',
-  );
-  err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
-  err.index = i;
-  throw err;
+  throwUnclosed(end, i);
+}
+
+/**
+ * Find the closing bracket in a text context (inline shorthands).
+ * Quotes are literal; backslash escapes brackets.
+ */
+function parseTextUntil(str, end, start) {
+  let depth = 1;
+  let i = start;
+  const open = closingBrackets[end];
+
+  while (i < str.length) {
+    const c = str[i];
+
+    if (c === '\\' && i + 1 < str.length) {
+      const next = str[i + 1];
+      if (next === open || next === end) {
+        i += 2;
+        continue;
+      }
+    }
+
+    if (c === open) {
+      depth++;
+    } else if (c === end) {
+      depth--;
+      if (depth === 0) {
+        return {end: i, src: str.substring(start, i)};
+      }
+    }
+    i++;
+  }
+
+  throwUnclosed(end, i);
 }
 
 /**
@@ -192,15 +225,6 @@ function interpolationsAreClosed(str, state) {
       i++;
       continue;
     }
-    if (ch === "'" && !state.dq) {
-      state.sq = !state.sq;
-      continue;
-    }
-    if (ch === '"' && !state.sq) {
-      state.dq = !state.dq;
-      continue;
-    }
-    if (state.sq || state.dq) continue;
     if (ch === '#' && str[i + 1] === '(') {
       state.interp++;
       i++;
@@ -478,8 +502,6 @@ function resetInterpolationState(state) {
   state.abbrParen = 0;
   state.code = 0;
   state.codeParen = 0;
-  state.sq = false;
-  state.dq = false;
   return state;
 }
 
@@ -665,7 +687,7 @@ class Lexer {
     const end = {'(': ')', '{': '}', '[': ']'}[start];
     let range;
     try {
-      range = parseUntil(this.input, end, skip + 1);
+      range = parseExpressionUntil(this.input, end, skip + 1);
     } catch (ex) {
       if (ex.index !== undefined) {
         let idx = ex.index;
@@ -1011,67 +1033,32 @@ class Lexer {
         );
 
       case 'strong':
-        return this.handleStrongShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
       case 'emphasis':
-        return this.handleEmphasisShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
       case 'del':
-        return this.handleDelShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
       case 'ins':
-        return this.handleInsShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
       case 'sup':
-        return this.handleSupShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
       case 'kbd':
-        return this.handleKbdShorthand(
+      case 'sub': {
+        const tagMap = {
+          strong: ['strong', '*'],
+          emphasis: ['em', '_'],
+          del: ['del', '~'],
+          ins: ['ins', '&'],
+          sup: ['sup', '^'],
+          kbd: ['kbd', '%'],
+          sub: ['sub', ','],
+        };
+        const [tag, sigil] = tagMap[earliest.kind];
+        return this.handleInlineShorthand(
           type,
           value,
           prefix,
           escaped,
           earliest.pos,
+          tag,
+          sigil,
         );
-
-      case 'sub':
-        return this.handleSubShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
+      }
 
       case 'abbr':
         return this.handleAbbrShorthand(
@@ -1285,7 +1272,7 @@ class Lexer {
   parseShorthandContent(rest, errorPrefix, errorCode) {
     let range;
     try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
+      range = parseTextUntil(rest, ')', 1);
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error('NO_END_BRACKET', errorPrefix);
@@ -1381,7 +1368,7 @@ class Lexer {
     if (afterImage.startsWith('(')) {
       let attrRange;
       try {
-        attrRange = parseUntil(afterImage, ')', 1);
+        attrRange = parseExpressionUntil(afterImage, ')', 1);
       } catch (ex) {
         if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
           this.error(
@@ -1427,7 +1414,7 @@ class Lexer {
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
-  handleStrongShorthand(type, value, prefix, escaped, pos) {
+  handleInlineShorthand(type, value, prefix, escaped, pos, tag, sigil) {
     let tok = this.tok(type, prefix + value.substring(0, pos));
     this.incrementColumn(prefix.length + pos + escaped);
     this.tokens.push(this.tokEnd(tok));
@@ -1435,163 +1422,19 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
+      range = parseTextUntil(rest, ')', 1);
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
           'NO_END_BRACKET',
-          'End of line reached with no closing ) for *() strong shorthand.',
+          `End of line reached with no closing ) for ${sigil}() ${tag} shorthand.`,
         );
       }
       throw ex;
     }
     const content = unescapeShorthand(range.src);
     const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `strong ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleEmphasisShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for _() emphasis shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `em ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleDelShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for ~() del shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `del ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleInsShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for &() ins shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `ins ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleSupShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for ^() sup shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `sup ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleKbdShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for %() kbd shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `kbd ${content})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
-  }
-
-  handleSubShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
-
-    const rest = value.substring(pos + 1);
-    let range;
-    try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
-    } catch (ex) {
-      if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
-        this.error(
-          'NO_END_BRACKET',
-          'End of line reached with no closing ) for ,() sub shorthand.',
-        );
-      }
-      throw ex;
-    }
-    const content = unescapeShorthand(range.src);
-    const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `sub ${content})${afterShorthand}`;
+    const childInput = `${tag} ${content})${afterShorthand}`;
     return this.desugarAsInterpolation(childInput, range.src.length);
   }
 
@@ -1603,7 +1446,7 @@ class Lexer {
     const rest = value.substring(pos + 1);
     let range;
     try {
-      range = parseUntil(rest, ')', 1, {quotes: false});
+      range = parseTextUntil(rest, ')', 1);
     } catch (ex) {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
@@ -2098,7 +1941,7 @@ class Lexer {
         const leading = /^ *\(/.exec(this.input)[0];
         let range;
         try {
-          range = parseUntil(this.input, ')', leading.length);
+          range = parseExpressionUntil(this.input, ')', leading.length);
         } catch (ex) {
           if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
             this.error(

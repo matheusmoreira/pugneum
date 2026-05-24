@@ -15957,7 +15957,35 @@ exports[`reference-links-text-block.pg 1`] = `
             "line": 6,
             "column": 51,
             "filename": "reference-links-text-block.pg",
-            "val": " and it changed my life. "
+            "val": ""
+          },
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 1,
+            "filename": "reference-links-text-block.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 3,
+            "filename": "reference-links-text-block.pg",
+            "val": "and it changed my life."
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 1,
+            "filename": "reference-links-text-block.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 1,
+            "filename": "reference-links-text-block.pg",
+            "val": ""
           }
         ],
         "line": 5,
@@ -16732,6 +16760,498 @@ exports[`self-closing-html.pg 1`] = `
   ],
   "line": 0,
   "filename": "self-closing-html.pg"
+}
+`;
+
+exports[`shorthand-escaped-parens.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 8,
+                  "filename": "shorthand-escaped-parens.pg",
+                  "val": "the range (0, 10) is bounded"
+                }
+              ],
+              "line": 1,
+              "filename": "shorthand-escaped-parens.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 5,
+            "filename": "shorthand-escaped-parens.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 36,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          }
+        ],
+        "line": 1,
+        "filename": "shorthand-escaped-parens.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "shorthand-escaped-parens.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 12,
+                  "filename": "shorthand-escaped-parens.pg",
+                  "val": "balanced (parens) work"
+                }
+              ],
+              "line": 2,
+              "filename": "shorthand-escaped-parens.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 5,
+            "filename": "shorthand-escaped-parens.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 28,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          }
+        ],
+        "line": 2,
+        "filename": "shorthand-escaped-parens.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "shorthand-escaped-parens.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "shorthand-escaped-parens.pg",
+                  "val": "fn(x)"
+                }
+              ],
+              "line": 3,
+              "filename": "shorthand-escaped-parens.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 5,
+            "filename": "shorthand-escaped-parens.pg"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 13,
+            "filename": "shorthand-escaped-parens.pg",
+            "val": ""
+          }
+        ],
+        "line": 3,
+        "filename": "shorthand-escaped-parens.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "shorthand-escaped-parens.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "shorthand-escaped-parens.pg"
+}
+`;
+
+exports[`shorthand-quotes.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 3,
+            "filename": "shorthand-quotes.pg",
+            "val": "it's "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 1,
+                  "column": 13,
+                  "filename": "shorthand-quotes.pg",
+                  "val": "working"
+                }
+              ],
+              "line": 1,
+              "filename": "shorthand-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 1,
+            "column": 10,
+            "filename": "shorthand-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 18,
+            "filename": "shorthand-quotes.pg",
+            "val": " now"
+          }
+        ],
+        "line": 1,
+        "filename": "shorthand-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "shorthand-quotes.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 12,
+                  "filename": "shorthand-quotes.pg",
+                  "val": "Bob's bold text"
+                }
+              ],
+              "line": 2,
+              "filename": "shorthand-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 5,
+            "filename": "shorthand-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 21,
+            "filename": "shorthand-quotes.pg",
+            "val": " is here"
+          }
+        ],
+        "line": 2,
+        "filename": "shorthand-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "shorthand-quotes.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 3,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "shorthand-quotes.pg",
+                  "val": "it's code"
+                }
+              ],
+              "line": 3,
+              "filename": "shorthand-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 5,
+            "filename": "shorthand-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 3,
+            "column": 15,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          }
+        ],
+        "line": 3,
+        "filename": "shorthand-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 3,
+      "column": 1,
+      "filename": "shorthand-quotes.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "abbr",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 69,
+                  "filename": "shorthand-quotes.pg",
+                  "val": "SICP"
+                }
+              ],
+              "line": 4,
+              "filename": "shorthand-quotes.pg"
+            },
+            "attrs": [
+              {
+                "name": "title",
+                "val": "Structure and Interpretation of Computer Programs",
+                "line": 4,
+                "column": 10,
+                "filename": "shorthand-quotes.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 5,
+            "filename": "shorthand-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 60,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          }
+        ],
+        "line": 4,
+        "filename": "shorthand-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "shorthand-quotes.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "shorthand-quotes.pg",
+            "val": "she said \\"hello\\" and "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 29,
+                  "filename": "shorthand-quotes.pg",
+                  "val": "that's "
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 5,
+                        "column": 45,
+                        "filename": "shorthand-quotes.pg",
+                        "val": "it"
+                      }
+                    ],
+                    "line": 5,
+                    "filename": "shorthand-quotes.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 5,
+                  "column": 38,
+                  "filename": "shorthand-quotes.pg"
+                }
+              ],
+              "line": 5,
+              "filename": "shorthand-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 26,
+            "filename": "shorthand-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 39,
+            "filename": "shorthand-quotes.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "shorthand-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "shorthand-quotes.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "shorthand-quotes.pg"
 }
 `;
 

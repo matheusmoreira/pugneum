@@ -151,31 +151,36 @@ class Compiler {
     if (this.callStack.length > 0) {
       const frame = this.callStack.at(-1);
       if (frame.namedBlocks) {
-        const callerBlock = frame.namedBlocks[namedBlock.name];
-        if (callerBlock) {
+        const callerBlocks = frame.namedBlocks[namedBlock.name];
+        if (callerBlocks) {
           delete frame.namedBlocks[namedBlock.name];
           try {
-            switch (callerBlock.mode) {
-              case 'replace':
-                this.visitBlock(callerBlock);
-                return;
-              case 'append':
-                this.visitBlock(namedBlock);
-                this.visitBlock(callerBlock);
-                return;
-              case 'prepend':
-                this.visitBlock(callerBlock);
-                this.visitBlock(namedBlock);
-                return;
-              default:
-                this.error(
-                  'UNKNOWN_BLOCK_MODE',
-                  `Unknown block mode '${callerBlock.mode}'`,
-                  callerBlock,
-                );
+            let nodes = namedBlock.nodes;
+            for (const callerBlock of callerBlocks) {
+              switch (callerBlock.mode) {
+                case 'replace':
+                  nodes = callerBlock.nodes;
+                  break;
+                case 'append':
+                  nodes = nodes.concat(callerBlock.nodes);
+                  break;
+                case 'prepend':
+                  nodes = callerBlock.nodes.concat(nodes);
+                  break;
+                default:
+                  this.error(
+                    'UNKNOWN_BLOCK_MODE',
+                    `Unknown block mode '${callerBlock.mode}'`,
+                    callerBlock,
+                  );
+              }
             }
+            for (const node of nodes) {
+              this.visit(node, namedBlock);
+            }
+            return;
           } finally {
-            frame.namedBlocks[namedBlock.name] = callerBlock;
+            frame.namedBlocks[namedBlock.name] = callerBlocks;
           }
         }
         this.visitBlock(namedBlock);
@@ -378,14 +383,10 @@ class Compiler {
           for (let i = 0; i < block.nodes.length; ++i) {
             const node = block.nodes[i];
             if (node.type === 'NamedBlock') {
-              if (node.name in namedBlocks) {
-                this.error(
-                  'DUPLICATE_NAMED_BLOCK',
-                  `Named block '${node.name}' provided more than once`,
-                  node,
-                );
+              if (!(node.name in namedBlocks)) {
+                namedBlocks[node.name] = [];
               }
-              namedBlocks[node.name] = node;
+              namedBlocks[node.name].push(node);
             } else {
               this.error(
                 'UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
@@ -443,7 +444,7 @@ class Compiler {
         this.error(
           'UNEXPECTED_NAMED_BLOCK',
           `Mixin '${declared.name}' does not define named block '${name}'`,
-          callerBlocks[name],
+          callerBlocks[name][0],
         );
       }
     }

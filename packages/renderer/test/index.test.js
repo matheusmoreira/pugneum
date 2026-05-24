@@ -1574,7 +1574,7 @@ describe('named mixin block errors', () => {
     );
   });
 
-  test('duplicate named block at call site throws DUPLICATE_NAMED_BLOCK', () => {
+  test('duplicate replace blocks use last one', () => {
     const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
       usesNamedBlocks: true,
     });
@@ -1586,9 +1586,45 @@ describe('named mixin block errors', () => {
         namedBlock('slot', 'replace', [text('second')]),
       ],
     );
-    assert.throws(
-      () => render(block([decl, call])),
-      (err) => err.code === 'PUGNEUM:DUPLICATE_NAMED_BLOCK',
+    assert.strictEqual(render(block([decl, call])), 'second');
+  });
+
+  test('replace then append combines content', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [tag('div', [], [namedBlock('slot', 'replace', [text('default')])])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [
+        namedBlock('slot', 'replace', [text('base')]),
+        namedBlock('slot', 'append', [text(' added')]),
+      ],
+    );
+    assert.strictEqual(render(block([decl, call])), '<div>base added</div>');
+  });
+
+  test('multiple appends accumulate', () => {
+    const decl = mixinDef(
+      'wrap',
+      [],
+      [tag('div', [], [namedBlock('slot', 'replace', [text('default')])])],
+      {usesNamedBlocks: true},
+    );
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [
+        namedBlock('slot', 'append', [text(' one')]),
+        namedBlock('slot', 'append', [text(' two')]),
+      ],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<div>default one two</div>',
     );
   });
 

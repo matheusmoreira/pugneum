@@ -55,6 +55,7 @@ function mixinDef(name, args, body, opts) {
       block: block(body || []),
       call: false,
       usesNamedBlocks: false,
+      usesUnnamedBlock: false,
       line: 1,
       column: 1,
       filename: 'test',

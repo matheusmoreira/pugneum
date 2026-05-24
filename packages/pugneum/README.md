@@ -742,8 +742,8 @@ Each slot can have default content.
 Omitted slots use their defaults;
 the `source` slot above defaults to "Anonymous".
 
-A mixin uses either one unnamed `block`
-or named blocks, never both.
+A mixin may use both an unnamed `block` and named blocks.
+Caller content not inside a named block fills the unnamed slot.
 
 At the call site, `block name` replaces the slot's default content.
 `append name` adds after it and `prepend name` adds before it,

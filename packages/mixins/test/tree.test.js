@@ -102,8 +102,7 @@ describe('file-system mixin', () => {
       '    +file(index.js)\n' +
       '    +file(render.js)';
     var html = render(input);
-    assert.ok(html.includes('<code>src</code>'));
-    assert.ok(html.includes(' — source code'));
+    assert.ok(html.includes('<code>src</code> — source code<ul>'));
     assert.ok(html.includes('<code>index.js</code>'));
     assert.ok(html.includes('<code>render.js</code>'));
   });

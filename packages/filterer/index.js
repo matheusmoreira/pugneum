@@ -210,9 +210,11 @@ function getAttributes(node, options) {
   (node.attrs || []).forEach(function (attr) {
     attrs[attr.name] = attr.val === true ? true : attr.val;
   });
+  const filterOptions = options && options.filterOptions;
   const opts =
-    options && Object.prototype.hasOwnProperty.call(options, node.name)
-      ? options[node.name]
+    filterOptions &&
+    Object.prototype.hasOwnProperty.call(filterOptions, node.name)
+      ? filterOptions[node.name]
       : {};
   Object.assign(attrs, opts);
   return attrs;

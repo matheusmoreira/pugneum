@@ -106,4 +106,5 @@ Shorthands nest: `*(strongly _(emphasized `(code)))` works. Balanced parentheses
 ### Other syntax
 - `mixin name(arg1 arg2?)` — `?` is part of the name, referenced as `#{arg2?}`; trailing args are implicitly optional
 - Named mixin blocks — `block name` inside a mixin defines a named slot; callers fill slots with `block name`, `append name`, or `prepend name`; a mixin may combine an unnamed `block` with named blocks, in which case caller content not inside a named block fills the unnamed slot
+- `given name` — inside a mixin, renders its subtree only if the caller provides content for the named block; enables structural conditional rendering without expressions (wrapper elements absent when a slot is unused)
 - `toc` — table of contents generated from headings with IDs; placed where the `toc` keyword appears; only headings with explicit `id` attributes are included

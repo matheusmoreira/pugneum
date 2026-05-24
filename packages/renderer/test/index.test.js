@@ -1822,11 +1822,15 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [
-      text('Body'),
-      namedBlock('footer', 'replace', [text('Foot')]),
-    ]);
-    assert.strictEqual(render(block([decl, call])), 'Body<footer>Foot</footer>');
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [text('Body'), namedBlock('footer', 'replace', [text('Foot')])],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      'Body<footer>Foot</footer>',
+    );
   });
 
   test('given skips subtree when caller does not provide the named block', () => {
@@ -1867,10 +1871,14 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts('wrap', [], [
-      namedBlock('main', 'replace', [text('Main')]),
-      namedBlock('sidebar', 'replace', [text('Side')]),
-    ]);
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [
+        namedBlock('main', 'replace', [text('Main')]),
+        namedBlock('sidebar', 'replace', [text('Side')]),
+      ],
+    );
     assert.strictEqual(render(block([decl, call])), 'Main<aside>Side</aside>');
   });
 
@@ -1891,9 +1899,11 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts('wrap', [], [
-      namedBlock('main', 'replace', [text('Main')]),
-    ]);
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [namedBlock('main', 'replace', [text('Main')])],
+    );
     assert.strictEqual(render(block([decl, call])), 'Main');
   });
 
@@ -1922,10 +1932,14 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('page', [], [
-      text('Content'),
-      namedBlock('footer', 'replace', [text('Foot')]),
-    ]);
-    assert.strictEqual(render(block([decl, call])), 'Content<footer>Foot</footer>');
+    const call = mixinCallOpts(
+      'page',
+      [],
+      [text('Content'), namedBlock('footer', 'replace', [text('Foot')])],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      'Content<footer>Foot</footer>',
+    );
   });
 });

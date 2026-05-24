@@ -32,10 +32,7 @@ describe('quote mixin', () => {
 
   test('no source — figcaption omitted', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
-      '+quote\n' +
-      '  | Just a quote.';
+      'include ../quote.pg\n' + '\n' + '+quote\n' + '  | Just a quote.';
     var html = render(input);
     assert.ok(html.includes('<blockquote>'));
     assert.ok(html.includes('Just a quote.'));

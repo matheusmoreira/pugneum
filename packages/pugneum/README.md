@@ -764,6 +764,41 @@ mixin nav
 <nav><a href="/">Home</a><a href="/about">About</a></nav>
 ```
 
+### Conditional rendering with `given`
+
+`given name` renders its subtree only if the caller provides
+content for the named block. This enables wrapper elements
+that disappear when a slot is unused:
+
+```pugneum
+mixin quote(url?)
+  figure
+    blockquote(cite="#{url?}")
+      block
+    given source
+      figcaption
+        cite
+          block source
+
++quote(https://example.com)
+  | Quoted text.
+  block source
+    a(href='https://example.com') Author
+
++quote
+  | No attribution needed.
+```
+
+```html
+<figure><blockquote cite="https://example.com">Quoted text.</blockquote><figcaption><cite><a href="https://example.com">Author</a></cite></figcaption></figure>
+<figure><blockquote>No attribution needed.</blockquote></figure>
+```
+
+The second quote has no `<figcaption>` — `given source` suppressed
+the entire subtree because the caller didn't provide `block source`.
+
+Use `\given` to create an HTML element named `given`.
+
 ## Feeds
 
 Generate Atom and RSS feeds from compiled HTML.

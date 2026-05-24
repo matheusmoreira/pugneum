@@ -1,7 +1,8 @@
 mixin quote(url?)
   figure
     blockquote(cite="#{url?}")
-      block text
-    figcaption
-      cite
-        block source
+      block
+    given source
+      figcaption
+        cite
+          block source

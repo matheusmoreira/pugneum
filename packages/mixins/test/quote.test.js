@@ -12,13 +12,12 @@ function render(input) {
 }
 
 describe('quote mixin', () => {
-  test('linked source with date', () => {
+  test('linked source with citation', () => {
     var input =
       'include ../quote.pg\n' +
       '\n' +
       '+quote(https://example.com)\n' +
-      '  block text\n' +
-      '    | Quoted text.\n' +
+      '  | Quoted text.\n' +
       '  block source\n' +
       "    a(href='https://example.com') Author, Source";
     var html = render(input);
@@ -31,31 +30,26 @@ describe('quote mixin', () => {
     assert.ok(html.includes('</figure>'));
   });
 
-  test('unlinked source (no URL)', () => {
+  test('no source — figcaption omitted', () => {
     var input =
       'include ../quote.pg\n' +
       '\n' +
       '+quote\n' +
-      '  block text\n' +
-      '    | Anonymous wisdom.\n' +
-      '  block source\n' +
-      '    | Unknown author';
+      '  | Just a quote.';
     var html = render(input);
     assert.ok(html.includes('<blockquote>'));
-    assert.ok(!html.includes('cite='));
-    assert.ok(html.includes('Anonymous wisdom.'));
-    assert.ok(html.includes('Unknown author'));
+    assert.ok(html.includes('Just a quote.'));
+    assert.ok(!html.includes('<figcaption>'));
+    assert.ok(!html.includes('<cite>'));
   });
 
-  test('multi-paragraph via append', () => {
+  test('multi-paragraph quote', () => {
     var input =
       'include ../quote.pg\n' +
       '\n' +
       '+quote(https://example.com)\n' +
-      '  block text\n' +
-      '    p First paragraph.\n' +
-      '  append text\n' +
-      '    p Second paragraph.\n' +
+      '  p First paragraph.\n' +
+      '  p Second paragraph.\n' +
       '  block source\n' +
       '    | Author';
     var html = render(input);
@@ -67,30 +61,42 @@ describe('quote mixin', () => {
     assert.ok(bq[1].includes('Second paragraph'));
   });
 
-  test('text block supports inline shorthands', () => {
+  test('quote text supports inline shorthands', () => {
     var input =
       'include ../quote.pg\n' +
       '\n' +
       '+quote\n' +
-      '  block text\n' +
-      '    | This is *(important) text.\n' +
-      '  block source\n' +
-      '    | Author';
+      '  | This is *(important) text.';
     var html = render(input);
     assert.ok(html.includes('<strong>important</strong>'));
   });
 
-  test('source block supports time element', () => {
+  test('source with time element', () => {
     var input =
       'include ../quote.pg\n' +
       '\n' +
       '+quote(https://example.com)\n' +
-      '  block text\n' +
-      '    | Text.\n' +
+      '  | Text.\n' +
       '  block source\n' +
       "    a(href='https://example.com').\n" +
       '      Author, #(time(datetime=2021-09-04) Sept 4, 2021)';
     var html = render(input);
     assert.ok(html.includes('<time datetime="2021-09-04">Sept 4, 2021</time>'));
+  });
+
+  test('unlinked source (no URL)', () => {
+    var input =
+      'include ../quote.pg\n' +
+      '\n' +
+      '+quote\n' +
+      '  | Anonymous wisdom.\n' +
+      '  block source\n' +
+      '    | Unknown author';
+    var html = render(input);
+    assert.ok(html.includes('<blockquote>'));
+    assert.ok(!html.includes('cite='));
+    assert.ok(html.includes('Anonymous wisdom.'));
+    assert.ok(html.includes('Unknown author'));
+    assert.ok(html.includes('<figcaption>'));
   });
 });

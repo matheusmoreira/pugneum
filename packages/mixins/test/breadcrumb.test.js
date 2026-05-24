@@ -11,15 +11,15 @@ function render(input) {
   });
 }
 
-describe('breadcrumb mixin', () => {
+describe('breadcrumb mixins', () => {
   test('basic breadcrumb trail', () => {
     var input =
       'include ../breadcrumb.pg\n' +
       '\n' +
-      '+breadcrumb\n' +
-      '  +crumb(/) Home\n' +
-      '  +crumb(/articles) Articles\n' +
-      '  +crumb-current This Article';
+      '+breadcrumbs\n' +
+      '  +breadcrumb(/) Home\n' +
+      '  +breadcrumb(/articles) Articles\n' +
+      '  +breadcrumb-current This Article';
     var html = render(input);
     assert.ok(html.includes('<nav aria-label="Breadcrumb">'));
     assert.ok(html.includes('<ol>'));
@@ -34,19 +34,19 @@ describe('breadcrumb mixin', () => {
     var input =
       'include ../breadcrumb.pg\n' +
       '\n' +
-      '+breadcrumb\n' +
-      '  +crumb-current Home';
+      '+breadcrumbs\n' +
+      '  +breadcrumb-current Home';
     var html = render(input);
     assert.ok(html.includes('<nav aria-label="Breadcrumb">'));
     assert.ok(html.includes('<li><a aria-current="page">Home</a></li>'));
   });
 
-  test('crumb with inline shorthands', () => {
+  test('breadcrumb with inline shorthands', () => {
     var input =
       'include ../breadcrumb.pg\n' +
       '\n' +
-      '+breadcrumb\n' +
-      '  +crumb(/) *(Home)';
+      '+breadcrumbs\n' +
+      '  +breadcrumb(/) *(Home)';
     var html = render(input);
     assert.ok(html.includes('<a href="/"><strong>Home</strong></a>'));
   });

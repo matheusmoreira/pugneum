@@ -1,14 +1,14 @@
-mixin breadcrumb
+mixin breadcrumbs
   nav(aria-label="Breadcrumb")
     ol
       block
 
-mixin crumb(href)
+mixin breadcrumb(href)
   li
     a(href="#{href}")
       block
 
-mixin crumb-current
+mixin breadcrumb-current
   li
     a(aria-current="page")
       block

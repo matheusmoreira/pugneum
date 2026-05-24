@@ -57,6 +57,105 @@ modified to be fully static.
 All dynamic features have been removed.
 Only the clean language remains.
 
+## Text
+
+### Piped text
+
+Use `|` at the start of a line to add text content:
+
+```pugneum
+p
+  | This is a paragraph
+  | with two lines.
+```
+
+```html
+<p>This is a paragraph
+with two lines.</p>
+```
+
+### Block text
+
+A trailing `.` after a tag makes all indented content text:
+
+```pugneum
+p.
+  This entire block is text.
+  No tags are parsed here.
+```
+
+```html
+<p>This entire block is text.
+No tags are parsed here.</p>
+```
+
+This is useful for preserving content in `script` or `style` tags:
+
+```pugneum
+script(type='text/javascript').
+  if (foo) {
+    bar();
+  }
+```
+
+```html
+<script type="text/javascript">if (foo) {
+  bar();
+}</script>
+```
+
+## Tag interpolation
+
+Use `#(tag content)` to insert tags inline within text:
+
+```pugneum
+p This is #(strong very) important.
+p Click #(a(href="/help") here) for help.
+```
+
+```html
+<p>This is <strong>very</strong> important.</p>
+<p>Click <a href="/help">here</a> for help.</p>
+```
+
+## Comments
+
+Buffered comments appear in the HTML output:
+
+```pugneum
+// This comment is visible.
+p Hello
+```
+
+```html
+<!-- This comment is visible.-->
+<p>Hello</p>
+```
+
+Unbuffered comments (with `-`) are removed:
+
+```pugneum
+//- This is only in the source.
+p Hello
+```
+
+```html
+<p>Hello</p>
+```
+
+Block comments indent their content:
+
+```pugneum
+//
+  This is a
+  block comment.
+```
+
+```html
+<!--This is a
+block comment.-->
+```
+
 ## Usage
 
 The command line utility requires a `pugneum.json` file to work:

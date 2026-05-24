@@ -2335,16 +2335,22 @@ class Lexer {
     let captures;
     if ((captures = /^given +([^\n]+)/.exec(this.input))) {
       let name = captures[1].trim();
+      let comment = '';
       if (name.indexOf('//') !== -1) {
+        comment = '//' + name.split('//').slice(1).join('//');
         name = name.split('//')[0].trim();
       }
       if (!name) return;
       const tok = this.tok('given', name);
-      const len = captures[0].length;
-      this.consume(len);
-      this.incrementColumn(len);
+      let len = captures[0].length - comment.length;
+      while (len > 0 && this.input[len - 1] === ' ') len--;
+      this.consume(captures[0].length - comment.length);
+      this.incrementColumn(captures[0].length - comment.length);
       this.tokens.push(this.tokEnd(tok));
       return true;
+    }
+    if (/^given\b/.test(this.input)) {
+      this.error('MALFORMED_GIVEN', 'given requires a block name');
     }
   }
 

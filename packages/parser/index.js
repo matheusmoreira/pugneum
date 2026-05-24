@@ -40,7 +40,7 @@ function parse(tokens, options) {
 function containsNodeType(node, type) {
   if (!node) return false;
   if (node.type === type) return true;
-  if (node.type === 'Mixin' && node.call) return false;
+  if (node.type === 'Mixin') return false;
   if (node.nodes) {
     for (let i = 0; i < node.nodes.length; ++i) {
       if (containsNodeType(node.nodes[i], type)) return true;

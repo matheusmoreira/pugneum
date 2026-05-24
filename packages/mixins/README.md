@@ -8,67 +8,113 @@ Reusable mixin library for pugneum templates.
 
 ## Quotation
 
-The `quote` mixin produces a semantically correct HTML5 citation
-using `figure`, `blockquote`, `figcaption`, and `cite`.
+### `+quote(url)`
+
+Linked citation: URL powers both `blockquote cite=` and wraps
+source content in an `<a>` tag.
 
 ```pugneum
 include @pugneum-mixins/quote.pg
 
 +quote(https://example.com)
-  block text
-    | Quoted text here.
+  | Quoted text here.
   block source
-    a(href='https://example.com').
-      Author, Source, #(time(datetime=2024-01-15) Jan 15, 2024)
+    | Author, Source
 ```
 
 ```html
 <figure>
-  <blockquote cite="https://example.com">
-    Quoted text here.
-  </blockquote>
-  <figcaption>
-    <cite>
-      <a href="https://example.com">
-        Author, Source, <time datetime="2024-01-15">Jan 15, 2024</time>
-      </a>
-    </cite>
-  </figcaption>
+  <blockquote cite="https://example.com">Quoted text here.</blockquote>
+  <figcaption><cite><a href="https://example.com">Author, Source</a></cite></figcaption>
 </figure>
 ```
 
-### Parameters
+Without `block source`, the `<figcaption>` is omitted entirely.
 
-- `url?` — optional source URL for the `blockquote cite` attribute
+### `+plain-quote`
 
-### Named blocks
-
-- `text` — the quoted content (paragraphs, code, shorthands)
-- `source` — the attribution (link, plain text, time element)
-
-### Without a URL
+Unlinked citation: no URL, no `<a>` tag.
 
 ```pugneum
-+quote
-  block text
-    | An anonymous quote.
++plain-quote
+  | An anonymous quote.
   block source
     | Unknown author
 ```
 
-### Multi-paragraph quotes
+## Figure
 
-Use `append text` to add paragraphs to the same blockquote:
+### `+figure`
+
+General-purpose figure wrapper with optional caption.
 
 ```pugneum
-+quote(https://example.com)
-  block text
-    p First paragraph of the quote.
-  append text
-    p Second paragraph.
-    p Third paragraph.
-  block source
-    a(href='https://example.com') Author, Source
+include @pugneum-mixins/figure.pg
+
++figure
+  img(src="photo.jpg" alt="A sunset")
+  block caption
+    | A sunset over the mountains.
+```
+
+### `+code`
+
+Code block wrapped in a figure with optional caption.
+
+```pugneum
+include @pugneum-mixins/code.pg
+
++code
+  :prismjs(javascript)
+    console.log('hello');
+  block caption
+    | A minimal program.
+```
+
+## Disclosure
+
+### `+details(summary)`
+
+Disclosure widget. Summary text with spaces requires quoting.
+
+```pugneum
+include @pugneum-mixins/details.pg
+
++details('System Requirements')
+  p Requires a computer with memory.
+```
+
+## Navigation
+
+### `+breadcrumbs`, `+breadcrumb(href)`, `+breadcrumb-current`
+
+Breadcrumb trail with correct ARIA attributes.
+
+```pugneum
+include @pugneum-mixins/breadcrumb.pg
+
++breadcrumbs
+  +breadcrumb(/) Home
+  +breadcrumb(/articles) Articles
+  +breadcrumb-current This Article
+```
+
+## File System
+
+### `+file-system`, `+file(name)`, `+directory(name)`
+
+File tree visualization. Directories support an optional
+`block description` annotation.
+
+```pugneum
+include @pugneum-mixins/file-system.pg
+
++file-system
+  +directory(src)
+    block description
+      |  — source code
+    +file(index.js)
+    +file(render.js)
 ```
 
 ## License

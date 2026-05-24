@@ -224,4 +224,45 @@ describe('error handling', () => {
       (err) => err.code === 'PUGNEUM:UNEXPECTED_NODES_IN_EXTENDING_ROOT',
     );
   });
+
+  test('error in included file shows correct source context', () => {
+    var mainPath = path.join(
+      __dirname,
+      'fixtures',
+      'multi-file-error',
+      'main.pg',
+    );
+    var mainSource = fs.readFileSync(mainPath, 'utf8');
+    var childPath = path.join(
+      __dirname,
+      'fixtures',
+      'multi-file-error',
+      'child.pg',
+    );
+    var childSource = fs.readFileSync(childPath, 'utf8');
+
+    var options = {filename: mainPath, source: mainSource, lex, parse};
+    var tokens = lex(mainSource, options);
+    var ast = parse(tokens, options);
+    var loaded = load(ast, options);
+
+    assert.throws(
+      () => link(loaded, options),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:UNDEFINED_REFERENCE');
+        // The error context should show child file content, not main file content
+        assert.ok(
+          err.message.includes('nonexistent'),
+          'Error context should show child file content containing "nonexistent", got: ' +
+            err.message,
+        );
+        assert.ok(
+          !err.message.includes('include child'),
+          'Error context should NOT show main file content "include child", got: ' +
+            err.message,
+        );
+        return true;
+      },
+    );
+  });
 });

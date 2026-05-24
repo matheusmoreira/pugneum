@@ -58,11 +58,12 @@ class Compiler {
   }
 
   error(code, message, node) {
+    const sources = this.options.sources;
     const err = makeError(code, message, {
       line: node.line,
       column: node.column,
       filename: node.filename,
-      source: this.options.source,
+      source: (sources && sources[node.filename]) || this.options.source || '',
     });
     throw err;
   }

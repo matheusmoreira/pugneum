@@ -8,6 +8,12 @@ module.exports.resolve = resolve;
 
 function load(ast, options, visiting) {
   options = getOptions(options);
+  if (!options.sources) {
+    options.sources = Object.create(null);
+    if (options.filename && options.source) {
+      options.sources[options.filename] = options.source;
+    }
+  }
   visiting = visiting || new Set();
   // clone the ast
   ast = structuredClone(ast);
@@ -42,6 +48,7 @@ function load(ast, options, visiting) {
         }
         file.str = str;
         file.raw = raw;
+        options.sources[filePath] = str;
         if (node.type === 'Extends' || node.type === 'Include') {
           const canonical = path.resolve(filePath);
           if (visiting.has(canonical)) {

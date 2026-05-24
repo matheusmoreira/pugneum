@@ -1,12 +1,12 @@
 const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
 
-function error(code, message, node, source) {
+function error(code, message, node, sources) {
   throw makeError(code, message, {
     line: node.line,
     column: node.column,
     filename: node.filename,
-    source: source,
+    source: (sources && sources[node.filename]) || '',
   });
 }
 
@@ -16,7 +16,7 @@ module.exports = link;
 
 function link(ast, options) {
   options = options || {};
-  const source = options.source;
+  const sources = options.sources;
   const maxDepth =
     options.maxLinkDepth != null
       ? options.maxLinkDepth
@@ -28,7 +28,7 @@ function link(ast, options) {
       'LINK_DEPTH_EXCEEDED',
       `Template inheritance/include chain exceeds maximum depth of ${maxDepth}`,
       ast,
-      source,
+      sources,
     );
   }
 
@@ -37,21 +37,21 @@ function link(ast, options) {
       'INVALID_AST',
       'The top level element should always be a block',
       ast,
-      source,
+      sources,
     );
   }
   let extendsNode = null;
   if (ast.nodes.length) {
     const hasExtends = ast.nodes[0].type === 'Extends';
-    checkExtendPosition(ast, hasExtends, source);
+    checkExtendPosition(ast, hasExtends, sources);
     if (hasExtends) {
       extendsNode = ast.nodes.shift();
     }
   }
   ast = applyIncludes(ast, options);
-  ast = resolveReferences(ast, source);
-  ast = resolveToc(ast, source);
-  ast = resolveFootnotes(ast, source);
+  ast = resolveReferences(ast, sources);
+  ast = resolveToc(ast, sources);
+  ast = resolveFootnotes(ast, sources);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -68,7 +68,7 @@ function link(ast, options) {
           'UNEXPECTED_NODES_IN_EXTENDING_ROOT',
           'Only named blocks and mixins can appear at the top level of an extending template',
           node,
-          source,
+          sources,
         );
       }
     });
@@ -90,12 +90,12 @@ function link(ast, options) {
           'UNEXPECTED_BLOCK',
           'Unexpected block ' + expectedBlock.name,
           expectedBlock,
-          source,
+          sources,
         );
       }
     }
 
-    extend(parent.declaredBlocks, ast, source);
+    extend(parent.declaredBlocks, ast, sources);
     Object.keys(ast.declaredBlocks).forEach(function (name) {
       parent.declaredBlocks[name] = ast.declaredBlocks[name];
     });
@@ -128,7 +128,7 @@ function flattenParentBlocks(parentBlocks, accumulator) {
   return accumulator;
 }
 
-function extend(parentBlocks, ast, source) {
+function extend(parentBlocks, ast, sources) {
   const stack = new Set();
   walk(
     ast,
@@ -159,7 +159,7 @@ function extend(parentBlocks, ast, source) {
                   'UNKNOWN_BLOCK_MODE',
                   "Unknown block mode '" + node.mode + "'",
                   node,
-                  source,
+                  sources,
                 );
             }
           });
@@ -233,13 +233,13 @@ function applyYield(ast, block, includeNode, options) {
       'MISSING_YIELD',
       'Included template has no yield block but the include passes a block into it',
       includeNode,
-      options && options.source,
+      options && options.sources,
     );
   }
   return ast;
 }
 
-function resolveReferences(ast, source) {
+function resolveReferences(ast, sources) {
   const definitions = Object.create(null);
   walk(ast, function (node) {
     if (node.type === 'References') {
@@ -249,7 +249,7 @@ function resolveReferences(ast, source) {
             'DUPLICATE_REFERENCE',
             `Duplicate reference '${def.name}'`,
             def,
-            source,
+            sources,
           );
         }
         definitions[def.name] = {url: def.url, defaultText: def.defaultText};
@@ -269,7 +269,7 @@ function resolveReferences(ast, source) {
           'UNDEFINED_REFERENCE',
           "Undefined reference '" + node.name + "'",
           node,
-          source,
+          sources,
         );
       }
       const url = def.url;
@@ -326,7 +326,7 @@ function resolveReferences(ast, source) {
           'UNDEFINED_REFERENCE',
           "Undefined reference '" + node.name + "'",
           node,
-          source,
+          sources,
         );
       }
       const url = def.url;
@@ -408,7 +408,7 @@ function toSuperscript(n) {
     .join('');
 }
 
-function resolveFootnotes(ast, source) {
+function resolveFootnotes(ast, sources) {
   const definitions = Object.create(null);
   let footnotesBlockCount = 0;
 
@@ -421,7 +421,7 @@ function resolveFootnotes(ast, source) {
           'DUPLICATE_FOOTNOTES_BLOCK',
           'Only one footnotes block is allowed per file',
           node,
-          source,
+          sources,
         );
       }
       for (const def of node.definitions) {
@@ -432,7 +432,7 @@ function resolveFootnotes(ast, source) {
               def.name +
               "' contains invalid characters (only a-z, A-Z, 0-9, -, _ allowed)",
             def,
-            source,
+            sources,
           );
         }
         if (def.name in definitions) {
@@ -440,7 +440,7 @@ function resolveFootnotes(ast, source) {
             'DUPLICATE_FOOTNOTE',
             "Duplicate footnote '" + def.name + "'",
             def,
-            source,
+            sources,
           );
         }
         definitions[def.name] = def;
@@ -461,7 +461,7 @@ function resolveFootnotes(ast, source) {
         'UNDEFINED_FOOTNOTE',
         "Undefined footnote '" + name + "'",
         node,
-        source,
+        sources,
       );
     }
 
@@ -730,7 +730,7 @@ function resolveFootnotes(ast, source) {
   });
 }
 
-function resolveToc(ast, source) {
+function resolveToc(ast, sources) {
   const headings = [];
 
   // Pass 1: collect headings with IDs
@@ -941,7 +941,7 @@ function buildTocItems(headings, start, end, tocNode) {
   return items;
 }
 
-function checkExtendPosition(ast, hasExtends, source) {
+function checkExtendPosition(ast, hasExtends, sources) {
   let legitExtendsReached = false;
   walk(ast, function (node) {
     if (node.type === 'Extends') {
@@ -952,7 +952,7 @@ function checkExtendPosition(ast, hasExtends, source) {
           'EXTENDS_NOT_FIRST',
           'Declaration of template inheritance ("extends") should be the first thing in the file. There can only be one extends statement per file.',
           node,
-          source,
+          sources,
         );
       }
     }

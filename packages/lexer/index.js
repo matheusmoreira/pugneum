@@ -900,30 +900,46 @@ class Lexer {
     while (true) {
       let earliest;
       let escapedParenDepth = 0;
+      let scanPos = 0;
 
       for (;;) {
-        earliest = this.findEarliestCandidate(value, escapedParenDepth);
+        earliest = this.findEarliestCandidate(
+          value,
+          scanPos,
+          escapedParenDepth,
+        );
 
         if (!earliest) {
-          value = prefix + value;
+          value = prefix + value.substring(scanPos);
           tok = this.tok(type, value);
           this.incrementColumn(value.length + escaped);
           this.tokens.push(this.tokEnd(tok));
           return;
         }
 
-        if (earliest.kind !== 'escaped') break;
+        if (earliest.kind !== 'escaped') {
+          prefix = prefix + value.substring(scanPos, earliest.pos);
+          value = value.substring(earliest.pos);
+          earliest.pos = 0;
+          if (earliest.match) earliest.match.index = 0;
+          break;
+        }
 
-        prefix = prefix + value.substring(0, earliest.pos) + earliest.literal;
-        value = value.substring(earliest.pos + 1 + earliest.literal.length);
-        escaped++;
-
-        escapedParenDepth = 0;
-        for (let ci = 0; ci < prefix.length; ci++) {
-          if (prefix[ci] === '(') escapedParenDepth++;
-          else if (prefix[ci] === ')' && escapedParenDepth > 0)
+        const segment = value.substring(scanPos, earliest.pos);
+        for (let ci = 0; ci < segment.length; ci++) {
+          if (segment[ci] === '(') escapedParenDepth++;
+          else if (segment[ci] === ')' && escapedParenDepth > 0)
             escapedParenDepth--;
         }
+        for (let ci = 0; ci < earliest.literal.length; ci++) {
+          if (earliest.literal[ci] === '(') escapedParenDepth++;
+          else if (earliest.literal[ci] === ')' && escapedParenDepth > 0)
+            escapedParenDepth--;
+        }
+
+        prefix = prefix + segment + earliest.literal;
+        scanPos = earliest.pos + 1 + earliest.literal.length;
+        escaped++;
       }
 
       if (earliest.kind === 'end') {
@@ -1086,12 +1102,13 @@ class Lexer {
     }
   }
 
-  findEarliestCandidate(value, initialParenDepth) {
+  findEarliestCandidate(value, startPos, initialParenDepth) {
+    startPos = startPos || 0;
     const candidates = [];
 
     if (this.interpolated) {
       let parenDepth = initialParenDepth || 0;
-      for (let i = 0; i < value.length; i++) {
+      for (let i = startPos; i < value.length; i++) {
         const ch = value[i];
         if (ch === '\\') {
           i++;
@@ -1113,102 +1130,104 @@ class Lexer {
     if (this.interpolationAllowed) {
       let i;
 
-      i = value.indexOf('\\#(');
+      i = value.indexOf('\\#(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
 
-      i = value.indexOf('\\@(');
+      i = value.indexOf('\\@(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@('});
 
-      i = value.indexOf('\\@[');
+      i = value.indexOf('\\@[', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@['});
 
-      i = value.indexOf('\\![');
+      i = value.indexOf('\\![', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!['});
 
-      i = value.indexOf('\\^[');
+      i = value.indexOf('\\^[', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^['});
 
-      i = value.indexOf('\\!(');
+      i = value.indexOf('\\!(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
 
-      i = value.indexOf('\\*(');
+      i = value.indexOf('\\*(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '*('});
 
-      i = value.indexOf('\\_(');
+      i = value.indexOf('\\_(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '_('});
 
-      i = value.indexOf('\\`(');
+      i = value.indexOf('\\`(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '`('});
 
-      i = value.indexOf('\\~(');
+      i = value.indexOf('\\~(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '~('});
 
-      i = value.indexOf('\\&(');
+      i = value.indexOf('\\&(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '&('});
 
-      i = value.indexOf('\\^(');
+      i = value.indexOf('\\^(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^('});
 
-      i = value.indexOf('\\%(');
+      i = value.indexOf('\\%(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '%('});
 
-      i = value.indexOf('\\,(');
+      i = value.indexOf('\\,(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ',('});
 
-      i = value.indexOf('\\?(');
+      i = value.indexOf('\\?(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '?('});
 
-      i = value.indexOf('`(');
+      i = value.indexOf('`(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'code'});
 
-      i = value.indexOf('#(');
+      i = value.indexOf('#(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'interpolation'});
 
-      i = value.indexOf('@(');
+      i = value.indexOf('@(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'link'});
 
-      i = value.indexOf('@[');
+      i = value.indexOf('@[', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'reference'});
 
-      i = value.indexOf('![');
+      i = value.indexOf('![', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'ref-image'});
 
-      i = value.indexOf('^[');
+      i = value.indexOf('^[', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'footnote-ref'});
 
-      i = value.indexOf('!(');
+      i = value.indexOf('!(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'image'});
 
-      i = value.indexOf('*(');
+      i = value.indexOf('*(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'strong'});
 
-      i = value.indexOf('_(');
+      i = value.indexOf('_(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'emphasis'});
 
-      i = value.indexOf('~(');
+      i = value.indexOf('~(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'del'});
 
-      i = value.indexOf('&(');
+      i = value.indexOf('&(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'ins'});
 
-      i = value.indexOf('^(');
+      i = value.indexOf('^(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'sup'});
 
-      i = value.indexOf('%(');
+      i = value.indexOf('%(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'kbd'});
 
-      i = value.indexOf(',(');
+      i = value.indexOf(',(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'sub'});
 
-      i = value.indexOf('?(');
+      i = value.indexOf('?(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'abbr'});
 
-      const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value);
+      const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value.substring(startPos));
       if (m) {
+        const absPos = m.index + startPos;
         if (m[1]) {
-          candidates.push({pos: m.index, kind: 'escaped', literal: '#{'});
+          candidates.push({pos: absPos, kind: 'escaped', literal: '#{'});
         } else {
-          candidates.push({pos: m.index, kind: 'variable', match: m});
+          m.index = absPos;
+          candidates.push({pos: absPos, kind: 'variable', match: m});
         }
       }
     }
@@ -2485,10 +2504,7 @@ class Lexer {
     tok.name = key;
 
     if (key === '') {
-      this.error(
-        'EMPTY_ATTRIBUTE_NAME',
-        'Attribute name cannot be empty',
-      );
+      this.error('EMPTY_ATTRIBUTE_NAME', 'Attribute name cannot be empty');
     }
 
     // consume all whitespace before the =

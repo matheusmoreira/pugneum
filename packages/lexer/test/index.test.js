@@ -51,3 +51,13 @@ fs.readdirSync(edir).forEach(function (testCase) {
     });
   }
 });
+
+test('many escaped shorthands in single text node', (t) => {
+  const escapes = Array(100).fill('\\*(x)').join(' ');
+  const input = 'p ' + escapes + ' end';
+  const tokens = lex(input, {filename: 'stress.pg'});
+  const textTokens = tokens.filter((tok) => tok.type === 'text');
+  const joined = textTokens.map((tok) => tok.val).join('');
+  t.assert.ok(joined.includes('*(x)'));
+  t.assert.ok(joined.includes('end'));
+});

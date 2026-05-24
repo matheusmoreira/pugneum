@@ -1,0 +1,15 @@
+mixin figure
+  figure
+    block
+    given caption
+      figcaption
+        block caption
+
+mixin code
+  figure
+    pre
+      code
+        block
+    given caption
+      figcaption
+        block caption

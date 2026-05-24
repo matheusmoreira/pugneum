@@ -167,4 +167,13 @@ describe('given keyword', () => {
     assert.strictEqual(mixin.usesNamedBlocks, true);
     assert.strictEqual(mixin.usesUnnamedBlock, true);
   });
+
+  test('given inside mixin call block throws GIVEN_OUTSIDE_MIXIN', (t) => {
+    const source = 'mixin outer\n  +inner\n    given slot\n      p hi';
+    const tokens = lex(source, {filename: 'test'});
+    assert.throws(
+      () => parse(tokens, {filename: 'test', source}),
+      (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
+    );
+  });
 });

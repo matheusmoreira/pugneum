@@ -52,6 +52,20 @@ function containsNodeType(node, type) {
   return false;
 }
 
+function collectNames(node, type, names) {
+  if (!node) return;
+  if (node.type === type) names.add(node.name);
+  if (node.type === 'Mixin') return;
+  if (node.nodes) {
+    for (let i = 0; i < node.nodes.length; ++i) {
+      collectNames(node.nodes[i], type, names);
+    }
+  }
+  if (node.block) {
+    collectNames(node.block, type, names);
+  }
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
 const inlineTags = [
@@ -108,6 +122,7 @@ class Parser {
     this.filename = options.filename;
     this.source = options.source;
     this.inMixin = 0;
+    this.inMixinCall = 0;
     this.depth = 0;
   }
 
@@ -488,7 +503,7 @@ class Parser {
 
   parseGiven() {
     const tok = this.expect('given');
-    if (!this.inMixin) {
+    if (!this.inMixin || this.inMixinCall) {
       this.error(
         'GIVEN_OUTSIDE_MIXIN',
         'The given keyword can only be used inside a mixin definition.',
@@ -816,7 +831,12 @@ class Parser {
       filename: this.filename,
     };
 
-    this.tag(mixin);
+    this.inMixinCall++;
+    try {
+      this.tag(mixin);
+    } finally {
+      this.inMixinCall--;
+    }
     if (mixin.block.nodes.length === 0) mixin.block = null;
     return mixin;
   }

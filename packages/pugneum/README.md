@@ -613,6 +613,19 @@ head
 Paths starting with `/` are resolved from `basedir`.
 Relative paths resolve from the including file's directory.
 
+Include from npm packages with `@`:
+
+```pugneum
+include @pugneum-mixins-blog/citation.pg
+
++citation
+  block quote
+    p To be or not to be.
+```
+
+Install the package first: `npm install pugneum-mixins-blog`.
+The path resolves from the package root.
+
 ## Filters
 
 Filters transform blocks of text within templates.
@@ -819,6 +832,7 @@ let html = pg.renderFile('page.pg');
 | `filename` | | Path to source file, required for includes and extends |
 | `basedir` | | Base directory for absolute include/extends paths |
 | `filters` | | Object mapping filter names to filter functions |
+| `filterOptions` | | Per-filter options object, keyed by filter name |
 
 ## License
 

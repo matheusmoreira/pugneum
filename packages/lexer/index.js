@@ -2331,6 +2331,19 @@ class Lexer {
     }
   }
 
+  given() {
+    let captures;
+    if ((captures = /^given +([^\n]+)/.exec(this.input))) {
+      let name = captures[1].trim();
+      const tok = this.tok('given', name);
+      const len = captures[0].length;
+      this.consume(len);
+      this.incrementColumn(len);
+      this.tokens.push(this.tokEnd(tok));
+      return true;
+    }
+  }
+
   toc() {
     const tok = this.scanEndOfLine(/^toc/, 'toc');
     if (tok) {
@@ -2825,6 +2838,7 @@ class Lexer {
       this.include() ||
       this.references() ||
       this.footnotes() ||
+      this.given() ||
       this.toc() ||
       this.doctype() ||
       this.mixin() ||

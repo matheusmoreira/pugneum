@@ -1,7 +1,8 @@
 'use strict';
 
 var fs = require('fs');
-var {test} = require('node:test');
+var {test, describe} = require('node:test');
+var assert = require('node:assert/strict');
 var lex = require('../');
 
 var dir = __dirname + '/../../../test-cases/';
@@ -61,4 +62,20 @@ test('many escaped shorthands in single text node', (t) => {
   t.assert.strictEqual((joined.match(/\*\(x\)/g) || []).length, 100);
   t.assert.ok(joined.endsWith('end'));
   t.assert.ok(!joined.includes('<strong>'));
+});
+
+describe('given keyword', () => {
+  test('given produces token with block name', (t) => {
+    const tokens = lex('given source\n  p text', {filename: 'test'});
+    const givenTok = tokens.find((t) => t.type === 'given');
+    assert.ok(givenTok);
+    assert.strictEqual(givenTok.val, 'source');
+  });
+
+  test('escaped given is a tag', (t) => {
+    const tokens = lex('\\given', {filename: 'test'});
+    const tagTok = tokens.find((t) => t.type === 'tag');
+    assert.ok(tagTok);
+    assert.strictEqual(tagTok.val, 'given');
+  });
 });

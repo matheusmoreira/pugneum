@@ -2475,6 +2475,13 @@ class Lexer {
 
     tok.name = key;
 
+    if (key === '') {
+      this.error(
+        'EMPTY_ATTRIBUTE_NAME',
+        'Attribute name cannot be empty',
+      );
+    }
+
     // consume all whitespace before the =
     i = this.skipWhitespace(str, i);
 

@@ -8486,6 +8486,15 @@ exports[`emphasis-shorthand.pg 1`] = `
 ]
 `;
 
+exports[`empty-attribute-name.pg 1`] = `
+{
+  "msg": "Attribute name cannot be empty",
+  "code": "PUGNEUM:EMPTY_ATTRIBUTE_NAME",
+  "line": 1,
+  "column": 5
+}
+`;
+
 exports[`escape-chars.pg 1`] = `
 [
   {

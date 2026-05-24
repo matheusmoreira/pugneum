@@ -58,6 +58,7 @@ test('many escaped shorthands in single text node', (t) => {
   const tokens = lex(input, {filename: 'stress.pg'});
   const textTokens = tokens.filter((tok) => tok.type === 'text');
   const joined = textTokens.map((tok) => tok.val).join('');
-  t.assert.ok(joined.includes('*(x)'));
-  t.assert.ok(joined.includes('end'));
+  t.assert.strictEqual((joined.match(/\*\(x\)/g) || []).length, 100);
+  t.assert.ok(joined.endsWith('end'));
+  t.assert.ok(!joined.includes('<strong>'));
 });

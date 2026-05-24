@@ -7,13 +7,13 @@ module.exports = load;
 module.exports.resolve = resolve;
 
 function load(ast, options, visiting) {
-  options = getOptions(options);
   if (!options.sources) {
     options.sources = Object.create(null);
     if (options.filename && options.source) {
       options.sources[options.filename] = options.source;
     }
   }
+  options = getOptions(options);
   visiting = visiting || new Set();
   // clone the ast
   ast = structuredClone(ast);

@@ -250,17 +250,22 @@ describe('error handling', () => {
       () => link(loaded, options),
       (err) => {
         assert.strictEqual(err.code, 'PUGNEUM:UNDEFINED_REFERENCE');
-        // The error context should show child file content, not main file content
         assert.ok(
-          err.message.includes('nonexistent'),
-          'Error context should show child file content containing "nonexistent", got: ' +
+          err.message.includes('> 1|'),
+          'Error should include source context line marker, got: ' +
+            err.message,
+        );
+        assert.ok(
+          err.message.includes('@[nonexistent link text]'),
+          'Error context should show child file source line, got: ' +
             err.message,
         );
         assert.ok(
           !err.message.includes('include child'),
-          'Error context should NOT show main file content "include child", got: ' +
+          'Error context should NOT show main file content, got: ' +
             err.message,
         );
+        assert.strictEqual(err.source, childSource);
         return true;
       },
     );

@@ -41,7 +41,7 @@ That code compiles to:
   </head>
   <body>
     <h1>Pugneum</h1>
-    <div id="container" class="centered">
+    <div class="centered" id="container">
       <p>
         Pugneum is a terse and simple templating language
         with a focus on static pure HTML web sites.
@@ -653,8 +653,8 @@ mixin button(url text)
 ```
 
 ```html
-<a href="/home" class="btn">Home</a>
-<a href="/about" class="btn">About</a>
+<a class="btn" href="/home">Home</a>
+<a class="btn" href="/about">About</a>
 ```
 
 Variables can be used in both text content and attribute values

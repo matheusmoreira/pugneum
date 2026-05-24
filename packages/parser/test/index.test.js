@@ -98,19 +98,40 @@ describe('error paths', () => {
     );
   });
 
-  test('MIXED_MIXIN_BLOCK_TYPES', (t) => {
-    const source = 'mixin bad\n  block name\n  block';
+  test('mixin with both unnamed and named blocks sets both flags', (t) => {
+    const source = 'mixin both\n  block name\n  block';
     const tokens = lex(source, {filename: 'test'});
-    assert.throws(
-      () => parse(tokens, {filename: 'test', source}),
-      (err) => err.code === 'PUGNEUM:MIXED_MIXIN_BLOCK_TYPES',
-    );
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    assert.strictEqual(mixin.usesNamedBlocks, true);
+    assert.strictEqual(mixin.usesUnnamedBlock, true);
   });
 
-  test('unnamed block mixin with nested named-block call is not MIXED_MIXIN_BLOCK_TYPES', (t) => {
+  test('mixin with only unnamed block sets usesUnnamedBlock only', (t) => {
+    const source = 'mixin simple\n  div\n    block';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    assert.strictEqual(mixin.usesNamedBlocks, false);
+    assert.strictEqual(mixin.usesUnnamedBlock, true);
+  });
+
+  test('mixin with only named blocks sets usesNamedBlocks only', (t) => {
+    const source = 'mixin named\n  block header\n  block body';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    assert.strictEqual(mixin.usesNamedBlocks, true);
+    assert.strictEqual(mixin.usesUnnamedBlock, false);
+  });
+
+  test('unnamed block mixin with nested named-block call does not set usesNamedBlocks', (t) => {
     const source =
       'mixin outer\n  block\n  +inner\n    block slot\n      | content';
     const tokens = lex(source, {filename: 'test'});
-    assert.doesNotThrow(() => parse(tokens, {filename: 'test', source}));
+    const ast = parse(tokens, {filename: 'test', source});
+    const mixin = ast.nodes[0];
+    assert.strictEqual(mixin.usesNamedBlocks, false);
+    assert.strictEqual(mixin.usesUnnamedBlock, true);
   });
 });

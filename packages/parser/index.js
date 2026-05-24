@@ -816,13 +816,6 @@ class Parser {
 
       const hasMixinBlock = containsNodeType(block, 'MixinBlock');
       const hasNamedBlock = containsNodeType(block, 'NamedBlock');
-      if (hasMixinBlock && hasNamedBlock) {
-        this.error(
-          'MIXED_MIXIN_BLOCK_TYPES',
-          'Mixin cannot use both unnamed block and named blocks',
-          tok,
-        );
-      }
 
       return {
         type: 'Mixin',
@@ -831,6 +824,7 @@ class Parser {
         block: block,
         call: false,
         usesNamedBlocks: hasNamedBlock,
+        usesUnnamedBlock: hasMixinBlock,
         line: tok.loc.start.line,
         column: tok.loc.start.column,
         filename: this.filename,

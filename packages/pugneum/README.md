@@ -30,7 +30,6 @@ html(lang="en")
 That code compiles to:
 
 ```html
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Example</title>
@@ -487,6 +486,120 @@ The ToC appears where the `toc` keyword is placed.
 Only headings with `#id` are included — you control
 exactly which sections appear.
 
+## Template inheritance
+
+Templates can extend a layout and override named blocks.
+
+A layout defines replaceable regions with `block`:
+
+```pugneum
+//- layout.pg
+doctype html
+html
+  head
+    block title
+      title Default Title
+  body
+    block content
+```
+
+A page extends it and fills the blocks:
+
+```pugneum
+//- page.pg
+extends layout.pg
+
+block title
+  title My Page
+
+block content
+  h1 Hello
+  p Welcome.
+```
+
+Compiling `page.pg` produces:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Page</title>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <p>Welcome.</p>
+  </body>
+</html>
+```
+
+Blocks can be appended or prepended instead of replaced:
+
+```pugneum
+extends layout.pg
+
+append title
+  meta(name="description" content="My page")
+
+block content
+  p Hello
+```
+
+`extends` must be the first statement in the file.
+Blocks not overridden keep their default content.
+
+## Includes
+
+Insert the contents of another file with `include`:
+
+```pugneum
+html
+  head
+    include partials/head.pg
+  body
+    h1 My Page
+```
+
+Included `.pg` files are parsed as pugneum.
+Non-`.pg` files are included as raw text.
+
+Include with a filter to transform the content:
+
+```pugneum
+head
+  style
+    include:verbatim styles.css
+```
+
+Paths starting with `/` are resolved from `basedir`.
+Relative paths resolve from the including file's directory.
+
+## Filters
+
+Filters transform blocks of text within templates.
+Apply a filter with `:filtername`:
+
+```pugneum
+:highlight.js(language=javascript)
+  function hello() {
+    console.log('Hello!');
+  }
+```
+
+Built-in filters:
+
+| Filter | Package | Description |
+|---|---|---|
+| `:highlight.js` | `pugneum-filter-highlight.js` | Syntax highlighting via highlight.js |
+| `:prismjs` | `pugneum-filter-prismjs` | Syntax highlighting via Prism |
+| `:table` | `pugneum-filter-table` | Pipe-delimited table syntax |
+| `:verbatim` | built-in | Pass-through, no transformation |
+
+Install filter packages separately:
+`npm install pugneum-filter-highlight.js`
+
+Custom filters can be registered via the `filters` option
+in the programming interface.
+
 ## Mixins
 
 Mixins define reusable template fragments with parameters:
@@ -613,15 +726,7 @@ let html = pg.renderFile('page.pg');
 | --- | --- | --- |
 | `filename` | | Path to source file, required for includes and extends |
 | `basedir` | | Base directory for absolute include/extends paths |
-| `doctype` | `true` | Set to `false` to omit the `<!DOCTYPE html>` declaration |
 | `filters` | | Object mapping filter names to filter functions |
-
-Render a fragment without the doctype:
-
-```js
-let fragment = pg.render('p Hello', {doctype: false});
-// => '<p>Hello</p>'
-```
 
 ## License
 

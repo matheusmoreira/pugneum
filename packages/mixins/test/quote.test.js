@@ -91,8 +91,6 @@ describe('quote mixin', () => {
       "    a(href='https://example.com').\n" +
       '      Author, #(time(datetime=2021-09-04) Sept 4, 2021)';
     var html = render(input);
-    assert.ok(
-      html.includes('<time datetime="2021-09-04">Sept 4, 2021</time>'),
-    );
+    assert.ok(html.includes('<time datetime="2021-09-04">Sept 4, 2021</time>'));
   });
 });

@@ -1810,6 +1810,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
           },
           "call": false,
           "usesNamedBlocks": false,
+          "usesUnnamedBlock": false,
           "line": 2,
           "column": 1,
           "filename": "mixins.pg"

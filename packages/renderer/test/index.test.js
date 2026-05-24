@@ -1656,15 +1656,23 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace'),
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [
-      namedBlock('header', 'replace', [text('Title')]),
-      text('Body content'),
-    ]);
-    assert.strictEqual(render(block([decl, call])), 'Title<div>Body content</div>');
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [namedBlock('header', 'replace', [text('Title')]), text('Body content')],
+    );
+    assert.strictEqual(
+      render(block([decl, call])),
+      'Title<div>Body content</div>',
+    );
   });
 
   test('only unnamed content provided — named blocks use defaults', () => {
@@ -1673,7 +1681,11 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('Default Header')]),
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -1690,13 +1702,19 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('Default')]),
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [
-      namedBlock('header', 'replace', [text('Custom Header')]),
-    ]);
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [namedBlock('header', 'replace', [text('Custom Header')])],
+    );
     assert.strictEqual(render(block([decl, call])), 'Custom Header<div></div>');
   });
 
@@ -1706,15 +1724,23 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('nav', 'replace'),
-        tag('main', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'main',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('page', [], [
-      text('First '),
-      namedBlock('nav', 'replace', [tag('nav', [], [text('links')])]),
-      text('Second'),
-    ]);
+    const call = mixinCallOpts(
+      'page',
+      [],
+      [
+        text('First '),
+        namedBlock('nav', 'replace', [tag('nav', [], [text('links')])]),
+        text('Second'),
+      ],
+    );
     assert.strictEqual(
       render(block([decl, call])),
       '<nav>links</nav><main>First Second</main>',
@@ -1727,7 +1753,11 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('H')]),
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -1736,12 +1766,10 @@ describe('mixed named + unnamed blocks', () => {
   });
 
   test('unnamed content at call site for named-only mixin still errors', () => {
-    const decl = mixinDef(
-      'wrap',
-      [],
-      [namedBlock('slot', 'replace')],
-      {usesNamedBlocks: true, usesUnnamedBlock: false},
-    );
+    const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
+      usesNamedBlocks: true,
+      usesUnnamedBlock: false,
+    });
     const call = mixinCallOpts('wrap', [], [text('loose content')]);
     assert.throws(
       () => render(block([decl, call])),
@@ -1755,14 +1783,19 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('footer', 'replace', [text('default footer')]),
-        tag('div', [], [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}]),
+        tag(
+          'div',
+          [],
+          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
+        ),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [
-      namedBlock('footer', 'append', [text(' extra')]),
-      text('body'),
-    ]);
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [namedBlock('footer', 'append', [text(' extra')]), text('body')],
+    );
     assert.strictEqual(
       render(block([decl, call])),
       'default footer extra<div>body</div>',

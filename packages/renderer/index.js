@@ -413,7 +413,13 @@ class Compiler {
         this.validateNamedBlocks(declared, namedBlocks, mixin);
       }
 
-      this.callStack.push({name: mixin.name, environment, block, namedBlocks, unnamedBlock});
+      this.callStack.push({
+        name: mixin.name,
+        environment,
+        block,
+        namedBlocks,
+        unnamedBlock,
+      });
       try {
         this.visit(declared.block);
       } finally {

@@ -37,10 +37,7 @@ describe('file-system mixin', () => {
 
   test('no class when parameter omitted', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
-      '+file-system\n' +
-      '  +file(a.js)';
+      'include ../file-system.pg\n' + '\n' + '+file-system\n' + '  +file(a.js)';
     var html = render(input);
     assert.ok(html.includes('<ul>'));
     assert.ok(!html.includes('class='));

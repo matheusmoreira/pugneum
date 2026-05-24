@@ -131,9 +131,15 @@ function resolve(filename, source, options) {
 }
 
 function resolveLibrary(filename) {
-  const parts = filename.split('/');
-  const pkg = parts.slice(0, 2).join('/');
-  const subpath = parts.slice(2).join('/');
+  const rest = filename.slice(1);
+  const slashIdx = rest.indexOf('/');
+  const pkgPart = slashIdx === -1 ? rest : rest.slice(0, slashIdx);
+  const subpath = slashIdx === -1 ? '' : rest.slice(slashIdx + 1);
+  const atIdx = pkgPart.indexOf('@');
+  const pkg =
+    atIdx === -1
+      ? pkgPart
+      : '@' + pkgPart.slice(0, atIdx) + '/' + pkgPart.slice(atIdx + 1);
 
   let pkgJson;
   try {

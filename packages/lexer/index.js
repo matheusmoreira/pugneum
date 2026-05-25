@@ -56,6 +56,21 @@ const inlineShorthands = {
   sub: {tag: 'sub', sigil: ','},
 };
 
+const parenShorthands = [
+  {sigil: '@', key: 'link'},
+  {sigil: '!', key: 'image'},
+  {sigil: '*', key: 'strong'},
+  {sigil: '_', key: 'emphasis'},
+  {sigil: '~', key: 'del'},
+  {sigil: '&', key: 'ins'},
+  {sigil: '^', key: 'sup'},
+  {sigil: '%', key: 'kbd'},
+  {sigil: ',', key: 'sub'},
+  {sigil: '?', key: 'abbr'},
+  {sigil: '`', key: 'code'},
+  {sigil: '#', key: 'interp'},
+];
+
 /**
  * Advance past one character inside a quote-aware bracket scan.
  * Handles escape sequences and quote toggling.
@@ -279,27 +294,44 @@ function unescapeShorthand(str) {
  * Returns true if all constructs are closed (line is complete).
  */
 function interpolationsAreClosed(str, state) {
-  for (let i = 0; i < str.length; i++) {
+  outer: for (let i = 0; i < str.length; i++) {
     const ch = str[i];
     if (ch === '\\') {
       i++;
       continue;
     }
-    if (ch === '#' && str[i + 1] === '(') {
-      state.interp++;
-      i++;
-      continue;
+
+    const next = str[i + 1];
+
+    // Paren-delimited openers: sigil(
+    if (next === '(') {
+      for (const t of parenShorthands) {
+        if (ch === t.sigil) {
+          state[t.key]++;
+          i++;
+          continue outer;
+        }
+      }
     }
-    if (ch === '@' && str[i + 1] === '[') {
+
+    // Bracket-delimited openers
+    if (ch === '@' && next === '[') {
       state.ref++;
       i++;
       continue;
     }
-    if (ch === '!' && str[i + 1] === '[') {
+    if (ch === '!' && next === '[') {
       state.refImage++;
       i++;
       continue;
     }
+    if (ch === '^' && next === '[') {
+      state.footnoteRef++;
+      i++;
+      continue;
+    }
+
+    // Bracket close
     if (ch === ']') {
       if (state.refImage > 0) {
         state.refImage--;
@@ -309,259 +341,51 @@ function interpolationsAreClosed(str, state) {
         state.ref--;
         continue;
       }
-    }
-    if (ch === '@' && str[i + 1] === '(') {
-      state.link++;
-      i++;
-      continue;
-    }
-    if (state.link > 0) {
-      if (ch === '(') {
-        state.linkParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.linkParen > 0) state.linkParen--;
-        else state.link--;
-        continue;
-      }
-    }
-    if (ch === '!' && str[i + 1] === '(') {
-      state.image++;
-      i++;
-      continue;
-    }
-    if (state.image > 0) {
-      if (ch === '(') {
-        state.imageParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.imageParen > 0) state.imageParen--;
-        else state.image--;
-        continue;
-      }
-    }
-    if (ch === '*' && str[i + 1] === '(') {
-      state.strong++;
-      i++;
-      continue;
-    }
-    if (state.strong > 0) {
-      if (ch === '(') {
-        state.strongParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.strongParen > 0) state.strongParen--;
-        else state.strong--;
-        continue;
-      }
-    }
-    if (ch === '_' && str[i + 1] === '(') {
-      state.emphasis++;
-      i++;
-      continue;
-    }
-    if (state.emphasis > 0) {
-      if (ch === '(') {
-        state.emphasisParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.emphasisParen > 0) state.emphasisParen--;
-        else state.emphasis--;
-        continue;
-      }
-    }
-    if (ch === '~' && str[i + 1] === '(') {
-      state.del++;
-      i++;
-      continue;
-    }
-    if (state.del > 0) {
-      if (ch === '(') {
-        state.delParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.delParen > 0) state.delParen--;
-        else state.del--;
-        continue;
-      }
-    }
-    if (ch === '&' && str[i + 1] === '(') {
-      state.ins++;
-      i++;
-      continue;
-    }
-    if (state.ins > 0) {
-      if (ch === '(') {
-        state.insParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.insParen > 0) state.insParen--;
-        else state.ins--;
-        continue;
-      }
-    }
-    if (ch === '^' && str[i + 1] === '(') {
-      state.sup++;
-      i++;
-      continue;
-    }
-    if (state.sup > 0) {
-      if (ch === '(') {
-        state.supParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.supParen > 0) state.supParen--;
-        else state.sup--;
-        continue;
-      }
-    }
-    if (ch === '%' && str[i + 1] === '(') {
-      state.kbd++;
-      i++;
-      continue;
-    }
-    if (state.kbd > 0) {
-      if (ch === '(') {
-        state.kbdParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.kbdParen > 0) state.kbdParen--;
-        else state.kbd--;
-        continue;
-      }
-    }
-    if (ch === ',' && str[i + 1] === '(') {
-      state.sub++;
-      i++;
-      continue;
-    }
-    if (state.sub > 0) {
-      if (ch === '(') {
-        state.subParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.subParen > 0) state.subParen--;
-        else state.sub--;
-        continue;
-      }
-    }
-    if (ch === '?' && str[i + 1] === '(') {
-      state.abbr++;
-      i++;
-      continue;
-    }
-    if (state.abbr > 0) {
-      if (ch === '(') {
-        state.abbrParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.abbrParen > 0) state.abbrParen--;
-        else state.abbr--;
-        continue;
-      }
-    }
-    if (ch === '^' && str[i + 1] === '[') {
-      state.footnoteRef++;
-      i++;
-      continue;
-    }
-    if (state.footnoteRef > 0) {
-      if (ch === '[') {
-        state.footnoteRefBracket++;
-        continue;
-      }
-      if (ch === ']') {
+      if (state.footnoteRef > 0) {
         if (state.footnoteRefBracket > 0) state.footnoteRefBracket--;
         else state.footnoteRef--;
         continue;
       }
     }
-    if (ch === '`' && str[i + 1] === '(') {
-      state.code++;
-      i++;
+
+    // Footnote nested bracket
+    if (state.footnoteRef > 0 && ch === '[') {
+      state.footnoteRefBracket++;
       continue;
     }
-    if (state.code > 0) {
-      if (ch === '(') {
-        state.codeParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.codeParen > 0) state.codeParen--;
-        else state.code--;
-        continue;
-      }
-    }
-    if (state.interp > 0) {
-      if (ch === '(') {
-        state.interpParen++;
-        continue;
-      }
-      if (ch === ')') {
-        if (state.interpParen > 0) state.interpParen--;
-        else state.interp--;
-        continue;
+
+    // Paren depth tracking: first active paren type handles ( and )
+    for (const t of parenShorthands) {
+      if (state[t.key] > 0) {
+        if (ch === '(') {
+          state[t.key + 'Paren']++;
+          continue outer;
+        }
+        if (ch === ')') {
+          if (state[t.key + 'Paren'] > 0) state[t.key + 'Paren']--;
+          else state[t.key]--;
+          continue outer;
+        }
+        break;
       }
     }
   }
-  return (
-    state.interp <= 0 &&
-    state.link <= 0 &&
-    state.ref <= 0 &&
-    state.refImage <= 0 &&
-    state.footnoteRef <= 0 &&
-    state.image <= 0 &&
-    state.strong <= 0 &&
-    state.emphasis <= 0 &&
-    state.del <= 0 &&
-    state.ins <= 0 &&
-    state.sup <= 0 &&
-    state.kbd <= 0 &&
-    state.sub <= 0 &&
-    state.abbr <= 0 &&
-    state.code <= 0
-  );
+
+  for (const t of parenShorthands) {
+    if (state[t.key] > 0) return false;
+  }
+  return state.ref <= 0 && state.refImage <= 0 && state.footnoteRef <= 0;
 }
 
 function resetInterpolationState(state) {
-  state.interp = 0;
-  state.interpParen = 0;
-  state.link = 0;
-  state.linkParen = 0;
+  for (const t of parenShorthands) {
+    state[t.key] = 0;
+    state[t.key + 'Paren'] = 0;
+  }
   state.ref = 0;
   state.refImage = 0;
   state.footnoteRef = 0;
   state.footnoteRefBracket = 0;
-  state.image = 0;
-  state.imageParen = 0;
-  state.strong = 0;
-  state.strongParen = 0;
-  state.emphasis = 0;
-  state.emphasisParen = 0;
-  state.del = 0;
-  state.delParen = 0;
-  state.ins = 0;
-  state.insParen = 0;
-  state.sup = 0;
-  state.supParen = 0;
-  state.kbd = 0;
-  state.kbdParen = 0;
-  state.sub = 0;
-  state.subParen = 0;
-  state.abbr = 0;
-  state.abbrParen = 0;
-  state.code = 0;
-  state.codeParen = 0;
   return state;
 }
 

@@ -16938,6 +16938,226 @@ exports[`shorthand-escaped-parens.pg 1`] = `
 }
 `;
 
+exports[`shorthand-multiline-quotes.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 3,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "He said it's "
+          },
+          {
+            "type": "Tag",
+            "name": "strong",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 25,
+                  "filename": "shorthand-multiline-quotes.pg",
+                  "val": "bold text"
+                }
+              ],
+              "line": 2,
+              "filename": "shorthand-multiline-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 2,
+            "column": 18,
+            "filename": "shorthand-multiline-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 2,
+            "column": 28,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": " here"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 1,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": ""
+          }
+        ],
+        "line": 1,
+        "filename": "shorthand-multiline-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "shorthand-multiline-quotes.pg",
+      "textOnly": true
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "She wrote \\"hello\\" and "
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 30,
+                  "filename": "shorthand-multiline-quotes.pg",
+                  "val": "that's emphasized"
+                }
+              ],
+              "line": 6,
+              "filename": "shorthand-multiline-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 6,
+            "column": 27,
+            "filename": "shorthand-multiline-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 45,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": " content"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 1,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 1,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "shorthand-multiline-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "shorthand-multiline-quotes.pg",
+      "textOnly": true
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 10,
+            "column": 3,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "A "
+          },
+          {
+            "type": "Tag",
+            "name": "code",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 10,
+                  "column": 7,
+                  "filename": "shorthand-multiline-quotes.pg",
+                  "val": "code"
+                }
+              ],
+              "line": 10,
+              "filename": "shorthand-multiline-quotes.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 10,
+            "column": 7,
+            "filename": "shorthand-multiline-quotes.pg"
+          },
+          {
+            "type": "Text",
+            "line": 10,
+            "column": 12,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": " span and it's"
+          },
+          {
+            "type": "Text",
+            "line": 11,
+            "column": 1,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "\\n"
+          },
+          {
+            "type": "Text",
+            "line": 11,
+            "column": 3,
+            "filename": "shorthand-multiline-quotes.pg",
+            "val": "just text on the next line"
+          }
+        ],
+        "line": 9,
+        "filename": "shorthand-multiline-quotes.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
+      "column": 1,
+      "filename": "shorthand-multiline-quotes.pg",
+      "textOnly": true
+    }
+  ],
+  "line": 0,
+  "filename": "shorthand-multiline-quotes.pg"
+}
+`;
+
 exports[`shorthand-quotes.pg 1`] = `
 {
   "type": "Block",

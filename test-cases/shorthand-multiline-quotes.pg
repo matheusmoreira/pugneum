@@ -1,0 +1,11 @@
+p.
+  He said it's *(bold
+  text) here
+
+p.
+  She wrote "hello" and _(that's
+  emphasized) content
+
+p.
+  A `(code) span and it's
+  just text on the next line

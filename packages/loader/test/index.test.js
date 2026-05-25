@@ -233,7 +233,24 @@ describe('library includes', () => {
 
     assert.throws(
       () => load(ast, {lex, parse}),
-      (err) => err.code === 'PUGNEUM:INVALID_LIBRARY_PATH',
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_LIBRARY_PATH' &&
+        /Use: @@pugneum\/mock-lib\/file\.pg/.test(err.message),
+    );
+  });
+
+  test('error suggestion for trailing slash has no double slash', () => {
+    var filename = __dirname + '/test.pg';
+    var source = 'include @some-pkg/';
+    var tokens = lex(source, {filename});
+    var ast = parse(tokens, {filename});
+
+    assert.throws(
+      () => load(ast, {lex, parse}),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_LIBRARY_PATH' &&
+        /Use: @some-pkg\/file\.pg/.test(err.message) &&
+        !/\/\//.test(err.message),
     );
   });
 });

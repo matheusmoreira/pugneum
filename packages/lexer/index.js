@@ -71,6 +71,35 @@ const parenShorthands = [
   {sigil: '#', key: 'interp'},
 ];
 
+const bracketShorthands = [
+  {
+    sigil: '@',
+    key: 'ref',
+    kind: 'reference',
+    label: 'reference links',
+    handler: 'handleRefLink',
+  },
+  {
+    sigil: '!',
+    key: 'refImage',
+    kind: 'ref-image',
+    label: 'reference images',
+    handler: 'handleRefImage',
+  },
+  {
+    sigil: '^',
+    key: 'footnoteRef',
+    kind: 'footnote-ref',
+    label: 'footnote references',
+    handler: 'handleFootnoteRef',
+    nestedBrackets: true,
+  },
+];
+
+function escapeForRegex(ch) {
+  return /[\\^$.*+?()[\]{}|]/.test(ch) ? '\\' + ch : ch;
+}
+
 /**
  * Advance past one character inside a quote-aware bracket scan.
  * Handles escape sequences and quote toggling.
@@ -205,7 +234,7 @@ function parseBracketContent(str, start) {
       interpDepth--;
       continue;
     }
-    if ((ch === '@' || ch === '!' || ch === '^') && str[i + 1] === '[') {
+    if (bracketShorthands.some((t) => ch === t.sigil) && str[i + 1] === '[') {
       bracketDepth++;
       i++;
       continue;
@@ -315,43 +344,38 @@ function interpolationsAreClosed(str, state) {
     }
 
     // Bracket-delimited openers
-    if (ch === '@' && next === '[') {
-      state.ref++;
-      i++;
-      continue;
-    }
-    if (ch === '!' && next === '[') {
-      state.refImage++;
-      i++;
-      continue;
-    }
-    if (ch === '^' && next === '[') {
-      state.footnoteRef++;
-      i++;
-      continue;
+    if (next === '[') {
+      for (const t of bracketShorthands) {
+        if (ch === t.sigil) {
+          state[t.key]++;
+          i++;
+          continue outer;
+        }
+      }
     }
 
     // Bracket close
     if (ch === ']') {
-      if (state.refImage > 0) {
-        state.refImage--;
-        continue;
-      }
-      if (state.ref > 0) {
-        state.ref--;
-        continue;
-      }
-      if (state.footnoteRef > 0) {
-        if (state.footnoteRefBracket > 0) state.footnoteRefBracket--;
-        else state.footnoteRef--;
-        continue;
+      for (const t of bracketShorthands) {
+        if (state[t.key] > 0) {
+          if (t.nestedBrackets && state[t.key + 'Bracket'] > 0) {
+            state[t.key + 'Bracket']--;
+          } else {
+            state[t.key]--;
+          }
+          continue outer;
+        }
       }
     }
 
-    // Footnote nested bracket
-    if (state.footnoteRef > 0 && ch === '[') {
-      state.footnoteRefBracket++;
-      continue;
+    // Nested bracket tracking for shorthands that support it
+    if (ch === '[') {
+      for (const t of bracketShorthands) {
+        if (t.nestedBrackets && state[t.key] > 0) {
+          state[t.key + 'Bracket']++;
+          continue outer;
+        }
+      }
     }
 
     // Paren depth tracking: first active paren type handles ( and )
@@ -374,7 +398,10 @@ function interpolationsAreClosed(str, state) {
   for (const t of parenShorthands) {
     if (state[t.key] > 0) return false;
   }
-  return state.ref <= 0 && state.refImage <= 0 && state.footnoteRef <= 0;
+  for (const t of bracketShorthands) {
+    if (state[t.key] > 0) return false;
+  }
+  return true;
 }
 
 function resetInterpolationState(state) {
@@ -382,10 +409,10 @@ function resetInterpolationState(state) {
     state[t.key] = 0;
     state[t.key + 'Paren'] = 0;
   }
-  state.ref = 0;
-  state.refImage = 0;
-  state.footnoteRef = 0;
-  state.footnoteRefBracket = 0;
+  for (const t of bracketShorthands) {
+    state[t.key] = 0;
+    if (t.nestedBrackets) state[t.key + 'Bracket'] = 0;
+  }
   return state;
 }
 
@@ -908,19 +935,11 @@ class Lexer {
         );
 
       case 'reference':
-        return this.handleRefLink(type, value, prefix, escaped, earliest.pos);
-
       case 'ref-image':
-        return this.handleRefImage(type, value, prefix, escaped, earliest.pos);
-
-      case 'footnote-ref':
-        return this.handleFootnoteRef(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
+      case 'footnote-ref': {
+        const bt = bracketShorthands.find((t) => t.kind === earliest.kind);
+        return this[bt.handler](type, value, prefix, escaped, earliest.pos);
+      }
 
       case 'strong':
       case 'emphasis':
@@ -1008,14 +1027,11 @@ class Lexer {
       i = value.indexOf('\\@(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@('});
 
-      i = value.indexOf('\\@[', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@['});
-
-      i = value.indexOf('\\![', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!['});
-
-      i = value.indexOf('\\^[', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^['});
+      for (const t of bracketShorthands) {
+        i = value.indexOf('\\' + t.sigil + '[', startPos);
+        if (i !== -1)
+          candidates.push({pos: i, kind: 'escaped', literal: t.sigil + '['});
+      }
 
       i = value.indexOf('\\!(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
@@ -1067,14 +1083,10 @@ class Lexer {
       i = value.indexOf('@(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'link'});
 
-      i = value.indexOf('@[', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'reference'});
-
-      i = value.indexOf('![', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'ref-image'});
-
-      i = value.indexOf('^[', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'footnote-ref'});
+      for (const t of bracketShorthands) {
+        i = value.indexOf(t.sigil + '[', startPos);
+        if (i !== -1) candidates.push({pos: i, kind: t.kind});
+      }
 
       i = value.indexOf('!(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'image'});
@@ -2475,19 +2487,22 @@ class Lexer {
     const inlinePatterns = [
       [/^#\(/, '#(...) inline tags'],
       [/^@\(/, '@(...) inline links'],
-      [/^@\[/, '@[...] reference links'],
-      [/^!\[/, '![...] reference images'],
       [/^!\(/, '!(...) inline images'],
       [/^\*\(/, '*(...) inline strong'],
       [/^~\(/, '~(...) inline del'],
       [/^&\(/, '&(...) inline ins'],
       [/^\^\(/, '^(...) inline sup'],
-      [/^\^\[/, '^[...] footnote references'],
       [/^%\(/, '%(...) inline kbd'],
       [/^,\(/, ',(...) inline sub'],
       [/^`\(/, '`(...) inline code'],
       [/^\?\(/, '?(...) inline abbr'],
     ];
+    for (const t of bracketShorthands) {
+      inlinePatterns.push([
+        new RegExp('^' + escapeForRegex(t.sigil) + '\\['),
+        t.sigil + '[...] ' + t.label,
+      ]);
+    }
     for (const [re, name] of inlinePatterns) {
       if (re.test(this.input)) {
         this.error(

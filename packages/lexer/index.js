@@ -205,7 +205,7 @@ function parseBracketContent(str, start) {
       interpDepth--;
       continue;
     }
-    if ((ch === '@' || ch === '!') && str[i + 1] === '[') {
+    if ((ch === '@' || ch === '!' || ch === '^') && str[i + 1] === '[') {
       bracketDepth++;
       i++;
       continue;
@@ -289,17 +289,6 @@ function unescapeShorthand(str) {
   return str.replace(/\\([()\\'"])/g, '$1');
 }
 
-/**
- * Unescape shorthand delimiters in child lexer text tokens.
- * Handles \( \) \' \" but NOT \\ since the escaped-candidate
- * handler in findEarliestCandidate already strips that.
- *
- * @param {string} str - The string to unescape
- * @returns {string}
- */
-function unescapeShorthandDelimiters(str) {
-  return str.replace(/\\([()'"])/g, '$1');
-}
 
 /**
  * Check whether a line has unclosed inline shorthand constructs.
@@ -1005,8 +994,14 @@ class Lexer {
     if (this.interpolationAllowed) {
       let i;
 
-      i = value.indexOf('\\\\', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
+      // In child lexers (interpolated), \\ is left in the text token and
+      // handled by unescapeShorthand in desugarAsInterpolation.
+      // In the parent lexer, the escaped-candidate handler resolves it.
+      if (!this.interpolated) {
+        i = value.indexOf('\\\\', startPos);
+        if (i !== -1)
+          candidates.push({pos: i, kind: 'escaped', literal: '\\'});
+      }
 
       i = value.indexOf('\\#(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
@@ -1217,7 +1212,7 @@ class Lexer {
     this.incrementColumn(contentLen);
     for (let ti = 0; ti < child.tokens.length; ti++) {
       const ct = child.tokens[ti];
-      if (ct.type === 'text') ct.val = unescapeShorthandDelimiters(ct.val);
+      if (ct.type === 'text') ct.val = unescapeShorthand(ct.val);
       this.tokens.push(ct);
     }
     tok = this.tok('end-interpolation');
@@ -1484,6 +1479,9 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     if (altText) {
+      // Alt text is emitted as a raw text token — not processed through addText —
+      // because the linker extracts alt text by filtering for Text nodes only.
+      // Expanding shorthands here would create Tag nodes the linker silently drops.
       const unescaped = altText.replace(/\\([\[\]\\])/g, '$1');
       const textTok = this.tok('text', unescaped);
       this.incrementColumn(name.length + 1 + altText.length);

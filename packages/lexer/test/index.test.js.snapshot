@@ -38588,32 +38588,15 @@ exports[`reference-link-shorthands.pg 1`] = `
     "defaultText": null
   },
   {
-    "type": "ref-def",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 3
-      },
-      "filename": "reference-link-shorthands.pg",
-      "end": {
-        "line": 3,
-        "column": 13
-      }
-    },
-    "name": "repo",
-    "url": "/repo",
-    "defaultText": null
-  },
-  {
     "type": "newline",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 1
       }
     }
@@ -38622,12 +38605,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 2
       }
     },
@@ -38637,12 +38620,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 3
       }
     },
@@ -38652,12 +38635,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-ref-link",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 5
       }
     },
@@ -38667,12 +38650,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 10
       }
     },
@@ -38682,12 +38665,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-interpolation",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 12
       }
     }
@@ -38696,12 +38679,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 12
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 12
       }
     },
@@ -38711,12 +38694,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 12
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 16
       }
     },
@@ -38726,12 +38709,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-interpolation",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 16
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 17
       }
     }
@@ -38740,12 +38723,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 17
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 17
       }
     },
@@ -38755,12 +38738,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-ref-link",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 17
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 18
       }
     }
@@ -38769,12 +38752,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
+        "line": 4,
         "column": 18
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 5,
+        "line": 4,
         "column": 18
       }
     },
@@ -38784,12 +38767,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 1
       }
     }
@@ -38798,12 +38781,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 2
       }
     },
@@ -38813,12 +38796,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 3
       }
     },
@@ -38828,12 +38811,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-ref-link",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 5
       }
     },
@@ -38843,12 +38826,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 10
       }
     },
@@ -38858,12 +38841,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-interpolation",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 12
       }
     }
@@ -38872,12 +38855,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 12
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 18
       }
     },
@@ -38887,12 +38870,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 19
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 23
       }
     },
@@ -38902,12 +38885,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-interpolation",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 16
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 17
       }
     }
@@ -38916,12 +38899,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 17
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 22
       }
     },
@@ -38931,12 +38914,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-ref-link",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 22
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 23
       }
     }
@@ -38945,12 +38928,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
+        "line": 5,
         "column": 23
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 6,
+        "line": 5,
         "column": 23
       }
     },
@@ -38960,12 +38943,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 1
       }
     }
@@ -38974,12 +38957,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 2
       }
     },
@@ -38989,12 +38972,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 3
       }
     },
@@ -39004,12 +38987,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-ref-link",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 5
       }
     },
@@ -39019,12 +39002,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 10
       }
     },
@@ -39034,12 +39017,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-interpolation",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 12
       }
     }
@@ -39048,12 +39031,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 12
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 14
       }
     },
@@ -39063,12 +39046,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 15
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 17
       }
     },
@@ -39078,12 +39061,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-interpolation",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 14
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 15
       }
     }
@@ -39092,12 +39075,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 15
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 15
       }
     },
@@ -39107,12 +39090,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-ref-link",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 15
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 16
       }
     }
@@ -39121,12 +39104,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 7,
+        "line": 6,
         "column": 16
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 7,
+        "line": 6,
         "column": 16
       }
     },
@@ -39136,12 +39119,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 1
       }
     }
@@ -39150,12 +39133,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 1
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 2
       }
     },
@@ -39165,12 +39148,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 3
       }
     },
@@ -39180,12 +39163,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-ref-link",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 3
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 5
       }
     },
@@ -39195,12 +39178,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 10
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 15
       }
     },
@@ -39210,12 +39193,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-interpolation",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 15
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 17
       }
     }
@@ -39224,12 +39207,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 17
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 17
       }
     },
@@ -39239,12 +39222,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 17
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 21
       }
     },
@@ -39254,12 +39237,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-interpolation",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 21
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 22
       }
     }
@@ -39268,12 +39251,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 22
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 27
       }
     },
@@ -39283,12 +39266,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "start-interpolation",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 27
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 29
       }
     }
@@ -39297,12 +39280,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 29
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 35
       }
     },
@@ -39312,12 +39295,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 36
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 40
       }
     },
@@ -39327,12 +39310,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-interpolation",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 33
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 34
       }
     }
@@ -39341,12 +39324,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 34
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 34
       }
     },
@@ -39356,12 +39339,12 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "end-ref-link",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 34
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 35
       }
     }
@@ -39370,13 +39353,247 @@ exports[`reference-link-shorthands.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 35
       },
       "filename": "reference-link-shorthands.pg",
       "end": {
-        "line": 8,
+        "line": 7,
         "column": 35
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 10
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 12
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 18
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 19
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 24
+      }
+    },
+    "val": "bold "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 24
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 26
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 26
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 28
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 29
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 31
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 28
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 22
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 23
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 23
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 23
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 24
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 24
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 24
       }
     },
     "val": ""
@@ -39396,7 +39613,7 @@ exports[`reference-link-shorthands.pg 1`] = `
     }
   },
   {
-    "type": "eos",
+    "type": "tag",
     "loc": {
       "start": {
         "line": 9,
@@ -39405,6 +39622,109 @@ exports[`reference-link-shorthands.pg 1`] = `
       "filename": "reference-link-shorthands.pg",
       "end": {
         "line": 9,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 21
+      }
+    },
+    "val": "*(literal)"
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 21
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 22
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 22
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 10,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 10,
         "column": 1
       }
     }
@@ -41971,7 +42291,7 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
     }
   },
   {
-    "type": "eos",
+    "type": "tag",
     "loc": {
       "start": {
         "line": 4,
@@ -41980,6 +42300,401 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
       "filename": "shorthand-escaped-backslash.pg",
       "end": {
         "line": 4,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 7
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 8
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 20
+      }
+    },
+    "val": "text\\\\(more)"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 17
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 18
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 4,
+        "column": 18
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 6
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 6
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 7
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 18
+      }
+    },
+    "name": "href",
+    "val": "/url"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 18
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 19
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 20
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 29
+      }
+    },
+    "val": "text\\\\end"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 19
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 20
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 8
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "\\\\start"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 13
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 13
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 6,
+        "column": 13
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
         "column": 1
       }
     }

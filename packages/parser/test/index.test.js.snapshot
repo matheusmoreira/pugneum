@@ -15766,17 +15766,93 @@ exports[`reference-link-shorthands.pg 1`] = `
           "line": 2,
           "column": 3,
           "filename": "reference-link-shorthands.pg"
-        },
-        {
-          "name": "repo",
-          "url": "/repo",
-          "defaultText": null,
-          "line": 3,
-          "column": 3,
-          "filename": "reference-link-shorthands.pg"
         }
       ],
       "line": 1,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                },
+                {
+                  "type": "Tag",
+                  "name": "code",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 4,
+                        "column": 12,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "code"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 4,
+                  "column": 12,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 17,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                }
+              ],
+              "line": 4,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 4,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 18,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 4,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
       "column": 1,
       "filename": "reference-link-shorthands.pg"
     },
@@ -15808,16 +15884,16 @@ exports[`reference-link-shorthands.pg 1`] = `
                 },
                 {
                   "type": "Tag",
-                  "name": "code",
+                  "name": "strong",
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Text",
                         "line": 5,
-                        "column": 12,
+                        "column": 19,
                         "filename": "reference-link-shorthands.pg",
-                        "val": "code"
+                        "val": "bold"
                       }
                     ],
                     "line": 5,
@@ -15835,7 +15911,7 @@ exports[`reference-link-shorthands.pg 1`] = `
                   "line": 5,
                   "column": 17,
                   "filename": "reference-link-shorthands.pg",
-                  "val": ""
+                  "val": " text"
                 }
               ],
               "line": 5,
@@ -15849,7 +15925,7 @@ exports[`reference-link-shorthands.pg 1`] = `
           {
             "type": "Text",
             "line": 5,
-            "column": 18,
+            "column": 23,
             "filename": "reference-link-shorthands.pg",
             "val": ""
           }
@@ -15892,16 +15968,16 @@ exports[`reference-link-shorthands.pg 1`] = `
                 },
                 {
                   "type": "Tag",
-                  "name": "strong",
+                  "name": "em",
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Text",
                         "line": 6,
-                        "column": 19,
+                        "column": 15,
                         "filename": "reference-link-shorthands.pg",
-                        "val": "bold"
+                        "val": "em"
                       }
                     ],
                     "line": 6,
@@ -15917,9 +15993,9 @@ exports[`reference-link-shorthands.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 6,
-                  "column": 17,
+                  "column": 15,
                   "filename": "reference-link-shorthands.pg",
-                  "val": " text"
+                  "val": ""
                 }
               ],
               "line": 6,
@@ -15933,7 +16009,7 @@ exports[`reference-link-shorthands.pg 1`] = `
           {
             "type": "Text",
             "line": 6,
-            "column": 23,
+            "column": 16,
             "filename": "reference-link-shorthands.pg",
             "val": ""
           }
@@ -15972,20 +16048,20 @@ exports[`reference-link-shorthands.pg 1`] = `
                   "line": 7,
                   "column": 10,
                   "filename": "reference-link-shorthands.pg",
-                  "val": ""
+                  "val": "some "
                 },
                 {
                   "type": "Tag",
-                  "name": "em",
+                  "name": "code",
                   "block": {
                     "type": "Block",
                     "nodes": [
                       {
                         "type": "Text",
                         "line": 7,
-                        "column": 15,
+                        "column": 17,
                         "filename": "reference-link-shorthands.pg",
-                        "val": "em"
+                        "val": "code"
                       }
                     ],
                     "line": 7,
@@ -15995,13 +16071,44 @@ exports[`reference-link-shorthands.pg 1`] = `
                   "attributeBlocks": [],
                   "isInline": true,
                   "line": 7,
-                  "column": 12,
+                  "column": 17,
                   "filename": "reference-link-shorthands.pg"
                 },
                 {
                   "type": "Text",
                   "line": 7,
-                  "column": 15,
+                  "column": 22,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": " and "
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 7,
+                        "column": 36,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "bold"
+                      }
+                    ],
+                    "line": 7,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 7,
+                  "column": 29,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 7,
+                  "column": 34,
                   "filename": "reference-link-shorthands.pg",
                   "val": ""
                 }
@@ -16017,7 +16124,7 @@ exports[`reference-link-shorthands.pg 1`] = `
           {
             "type": "Text",
             "line": 7,
-            "column": 16,
+            "column": 35,
             "filename": "reference-link-shorthands.pg",
             "val": ""
           }
@@ -16056,38 +16163,7 @@ exports[`reference-link-shorthands.pg 1`] = `
                   "line": 8,
                   "column": 10,
                   "filename": "reference-link-shorthands.pg",
-                  "val": "some "
-                },
-                {
-                  "type": "Tag",
-                  "name": "code",
-                  "block": {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "Text",
-                        "line": 8,
-                        "column": 17,
-                        "filename": "reference-link-shorthands.pg",
-                        "val": "code"
-                      }
-                    ],
-                    "line": 8,
-                    "filename": "reference-link-shorthands.pg"
-                  },
-                  "attrs": [],
-                  "attributeBlocks": [],
-                  "isInline": true,
-                  "line": 8,
-                  "column": 17,
-                  "filename": "reference-link-shorthands.pg"
-                },
-                {
-                  "type": "Text",
-                  "line": 8,
-                  "column": 22,
-                  "filename": "reference-link-shorthands.pg",
-                  "val": " and "
+                  "val": ""
                 },
                 {
                   "type": "Tag",
@@ -16098,9 +16174,33 @@ exports[`reference-link-shorthands.pg 1`] = `
                       {
                         "type": "Text",
                         "line": 8,
-                        "column": 36,
+                        "column": 19,
                         "filename": "reference-link-shorthands.pg",
-                        "val": "bold"
+                        "val": "bold "
+                      },
+                      {
+                        "type": "Tag",
+                        "name": "em",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "line": 8,
+                              "column": 29,
+                              "filename": "reference-link-shorthands.pg",
+                              "val": "em"
+                            }
+                          ],
+                          "line": 8,
+                          "filename": "reference-link-shorthands.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": true,
+                        "line": 8,
+                        "column": 26,
+                        "filename": "reference-link-shorthands.pg"
                       }
                     ],
                     "line": 8,
@@ -16110,13 +16210,13 @@ exports[`reference-link-shorthands.pg 1`] = `
                   "attributeBlocks": [],
                   "isInline": true,
                   "line": 8,
-                  "column": 29,
+                  "column": 12,
                   "filename": "reference-link-shorthands.pg"
                 },
                 {
                   "type": "Text",
                   "line": 8,
-                  "column": 34,
+                  "column": 23,
                   "filename": "reference-link-shorthands.pg",
                   "val": ""
                 }
@@ -16132,7 +16232,7 @@ exports[`reference-link-shorthands.pg 1`] = `
           {
             "type": "Text",
             "line": 8,
-            "column": 35,
+            "column": 24,
             "filename": "reference-link-shorthands.pg",
             "val": ""
           }
@@ -16144,6 +16244,59 @@ exports[`reference-link-shorthands.pg 1`] = `
       "attributeBlocks": [],
       "isInline": false,
       "line": 8,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 9,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": "*(literal)"
+                }
+              ],
+              "line": 9,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 9,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 22,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 9,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
       "column": 1,
       "filename": "reference-link-shorthands.pg"
     }
@@ -17330,6 +17483,179 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
       "attributeBlocks": [],
       "isInline": false,
       "line": 3,
+      "column": 1,
+      "filename": "shorthand-escaped-backslash.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 3,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 4,
+                  "column": 8,
+                  "filename": "shorthand-escaped-backslash.pg",
+                  "val": "text\\\\(more)"
+                }
+              ],
+              "line": 4,
+              "filename": "shorthand-escaped-backslash.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 4,
+            "column": 5,
+            "filename": "shorthand-escaped-backslash.pg"
+          },
+          {
+            "type": "Text",
+            "line": 4,
+            "column": 18,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          }
+        ],
+        "line": 4,
+        "filename": "shorthand-escaped-backslash.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 4,
+      "column": 1,
+      "filename": "shorthand-escaped-backslash.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 20,
+                  "filename": "shorthand-escaped-backslash.pg",
+                  "val": "text\\\\end"
+                }
+              ],
+              "line": 5,
+              "filename": "shorthand-escaped-backslash.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "/url",
+                "line": 5,
+                "column": 7,
+                "filename": "shorthand-escaped-backslash.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 5,
+            "column": 5,
+            "filename": "shorthand-escaped-backslash.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 20,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "shorthand-escaped-backslash.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "shorthand-escaped-backslash.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 8,
+                  "filename": "shorthand-escaped-backslash.pg",
+                  "val": "\\\\start"
+                }
+              ],
+              "line": 6,
+              "filename": "shorthand-escaped-backslash.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 6,
+            "column": 5,
+            "filename": "shorthand-escaped-backslash.pg"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 13,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          }
+        ],
+        "line": 6,
+        "filename": "shorthand-escaped-backslash.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
       "column": 1,
       "filename": "shorthand-escaped-backslash.pg"
     }

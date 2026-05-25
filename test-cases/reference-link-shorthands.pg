@@ -1,8 +1,9 @@
 references
   docs /docs
-  repo /repo
 
 p @[docs `(code)]
 p @[docs *(bold) text]
 p @[docs _(em)]
 p @[docs some `(code) and *(bold)]
+p @[docs *(bold _(em))]
+p @[docs \*(literal)]

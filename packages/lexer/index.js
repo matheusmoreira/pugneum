@@ -159,6 +159,56 @@ function parseTextUntil(str, end, start) {
 }
 
 /**
+ * Scan bracket content for `@[...]` and `![...]` reference shorthands.
+ * Tracks `#()` interpolation depth, nested `@[`/`![` brackets, and `\]` escapes.
+ * Returns `{end, src}` with the index of the closing `]` and the content,
+ * or `null` if no matching `]` is found.
+ *
+ * @param {string} str - The string to scan
+ * @param {number} start - The index to start scanning from
+ * @returns {{end: number, src: string} | null}
+ */
+function parseBracketContent(str, start) {
+  let interpDepth = 0;
+  let bracketDepth = 0;
+  for (let i = start; i < str.length; i++) {
+    const ch = str[i];
+    if (ch === '\\') {
+      i++;
+      continue;
+    }
+    if (ch === '#' && str[i + 1] === '(') {
+      interpDepth++;
+      i++;
+      continue;
+    }
+    if (ch === '(' && interpDepth > 0) {
+      interpDepth++;
+      continue;
+    }
+    if (ch === ')' && interpDepth > 0) {
+      interpDepth--;
+      continue;
+    }
+    if ((ch === '@' || ch === '!') && str[i + 1] === '[') {
+      bracketDepth++;
+      i++;
+      continue;
+    }
+    if (ch === ']') {
+      if (bracketDepth > 0) {
+        bracketDepth--;
+        continue;
+      }
+      if (interpDepth === 0) {
+        return {end: i, src: str.substring(start, i)};
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Check if brackets are properly nested in the given expression string.
  * Returns true if nesting is incorrect (unbalanced brackets).
  *
@@ -1485,55 +1535,15 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     const inner = value.substring(pos + 2); // after @[
-    // Find the matching ] for the ref link.
-    // #(...) interpolations nest inside ref links; track paren depth to handle them.
-    // Use \] to include a literal ] in the link text.
-    let end = -1;
-    let interpDepth = 0;
-    let bracketDepth = 0;
-    for (let i = 0; i < inner.length; i++) {
-      const ch = inner[i];
-      if (ch === '\\') {
-        i++;
-        continue;
-      }
-      if (ch === '#' && inner[i + 1] === '(') {
-        interpDepth++;
-        i++;
-        continue;
-      }
-      if (ch === '(' && interpDepth > 0) {
-        interpDepth++;
-        continue;
-      }
-      if (ch === ')' && interpDepth > 0) {
-        interpDepth--;
-        continue;
-      }
-      if ((ch === '@' || ch === '!') && inner[i + 1] === '[') {
-        bracketDepth++;
-        i++;
-        continue;
-      }
-      if (ch === ']') {
-        if (bracketDepth > 0) {
-          bracketDepth--;
-          continue;
-        }
-        if (interpDepth === 0) {
-          end = i;
-          break;
-        }
-      }
-    }
-    if (end === -1) {
+    const result = parseBracketContent(inner, 0);
+    if (!result) {
       this.error(
         'NO_END_BRACKET',
         'End of line reached with no closing ] for @[] reference link.',
       );
     }
-    const content = inner.substring(0, end);
-    let afterLink = inner.substring(end + 1);
+    const content = inner.substring(0, result.end);
+    let afterLink = inner.substring(result.end + 1);
 
     // Extract identifier (first word) and optional link text
     const spaceIdx = content.indexOf(' ');
@@ -1593,52 +1603,15 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     const inner = value.substring(pos + 2); // after ![
-    let end = -1;
-    let interpDepth = 0;
-    let bracketDepth = 0;
-    for (let i = 0; i < inner.length; i++) {
-      const ch = inner[i];
-      if (ch === '\\') {
-        i++;
-        continue;
-      }
-      if (ch === '#' && inner[i + 1] === '(') {
-        interpDepth++;
-        i++;
-        continue;
-      }
-      if (ch === '(' && interpDepth > 0) {
-        interpDepth++;
-        continue;
-      }
-      if (ch === ')' && interpDepth > 0) {
-        interpDepth--;
-        continue;
-      }
-      if ((ch === '@' || ch === '!') && inner[i + 1] === '[') {
-        bracketDepth++;
-        i++;
-        continue;
-      }
-      if (ch === ']') {
-        if (bracketDepth > 0) {
-          bracketDepth--;
-          continue;
-        }
-        if (interpDepth === 0) {
-          end = i;
-          break;
-        }
-      }
-    }
-    if (end === -1) {
+    const result = parseBracketContent(inner, 0);
+    if (!result) {
       this.error(
         'NO_END_BRACKET',
         'End of line reached with no closing ] for ![] reference image.',
       );
     }
-    const content = inner.substring(0, end);
-    let afterImage = inner.substring(end + 1);
+    const content = inner.substring(0, result.end);
+    let afterImage = inner.substring(result.end + 1);
 
     const spaceIdx = content.indexOf(' ');
     let name, altText;

@@ -21118,7 +21118,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 17
+        "column": 22
       },
       "filename": "inline-shorthands-combined.pg",
       "end": {
@@ -21513,7 +21513,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
     "loc": {
       "start": {
         "line": 8,
-        "column": 21
+        "column": 26
       },
       "filename": "inline-shorthands-combined.pg",
       "end": {
@@ -38381,7 +38381,7 @@ exports[`reference-images.pg 1`] = `
     "loc": {
       "start": {
         "line": 8,
-        "column": 12
+        "column": 17
       },
       "filename": "reference-images.pg",
       "end": {
@@ -38554,6 +38554,864 @@ exports[`reference-images.pg 1`] = `
 ]
 `;
 
+exports[`reference-link-shorthands.pg 1`] = `
+[
+  {
+    "type": "references",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    }
+  },
+  {
+    "type": "ref-def",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 2,
+        "column": 13
+      }
+    },
+    "name": "docs",
+    "url": "/docs",
+    "defaultText": null
+  },
+  {
+    "type": "ref-def",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "name": "repo",
+    "url": "/repo",
+    "defaultText": null
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 16
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 16
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 17
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 18
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 5,
+        "column": 18
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 10
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 12
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 19
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 23
+      }
+    },
+    "val": "bold"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 16
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 17
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 22
+      }
+    },
+    "val": " text"
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 22
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 23
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 6,
+        "column": 23
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 10
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 12
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 14
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 17
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 14
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 16
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 16
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 7,
+        "column": 16
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 5
+      }
+    },
+    "val": "docs"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 10
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 15
+      }
+    },
+    "val": "some "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 15
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 17
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 17
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 17
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 17
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 21
+      }
+    },
+    "val": "code"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 21
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 22
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 22
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 27
+      }
+    },
+    "val": " and "
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 27
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 29
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 29
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 35
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 36
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 40
+      }
+    },
+    "val": "bold"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 33
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 34
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 34
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 34
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "end-ref-link",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 34
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 35
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 8,
+        "column": 35
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "reference-link-shorthands.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`reference-links-escape.pg 1`] = `
 [
   {
@@ -38713,7 +39571,7 @@ exports[`reference-links-forward.pg 1`] = `
     "loc": {
       "start": {
         "line": 1,
-        "column": 5
+        "column": 13
       },
       "filename": "reference-links-forward.pg",
       "end": {
@@ -38956,7 +39814,7 @@ exports[`reference-links-text-block.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 12
+        "column": 20
       },
       "filename": "reference-links-text-block.pg",
       "end": {
@@ -39159,7 +40017,7 @@ exports[`reference-links-text-block.pg 1`] = `
     "loc": {
       "start": {
         "line": 10,
-        "column": 14
+        "column": 19
       },
       "filename": "reference-links-text-block.pg",
       "end": {
@@ -39431,7 +40289,7 @@ exports[`reference-links.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 5
+        "column": 13
       },
       "filename": "reference-links.pg",
       "end": {
@@ -39534,7 +40392,7 @@ exports[`reference-links.pg 1`] = `
     "loc": {
       "start": {
         "line": 7,
-        "column": 12
+        "column": 20
       },
       "filename": "reference-links.pg",
       "end": {

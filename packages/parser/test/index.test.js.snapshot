@@ -8511,7 +8511,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 6,
-                  "column": 17,
+                  "column": 22,
                   "filename": "inline-shorthands-combined.pg",
                   "val": "documentation"
                 }
@@ -8696,7 +8696,7 @@ exports[`inline-shorthands-combined.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 8,
-                  "column": 21,
+                  "column": 26,
                   "filename": "inline-shorthands-combined.pg",
                   "val": "the docs"
                 }
@@ -15662,7 +15662,7 @@ exports[`reference-images.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 8,
-                  "column": 12,
+                  "column": 17,
                   "filename": "reference-images.pg",
                   "val": "Pugneum"
                 }
@@ -15752,6 +15752,407 @@ exports[`reference-images.pg 1`] = `
 }
 `;
 
+exports[`reference-link-shorthands.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "References",
+      "definitions": [
+        {
+          "name": "docs",
+          "url": "/docs",
+          "defaultText": null,
+          "line": 2,
+          "column": 3,
+          "filename": "reference-link-shorthands.pg"
+        },
+        {
+          "name": "repo",
+          "url": "/repo",
+          "defaultText": null,
+          "line": 3,
+          "column": 3,
+          "filename": "reference-link-shorthands.pg"
+        }
+      ],
+      "line": 1,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                },
+                {
+                  "type": "Tag",
+                  "name": "code",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 5,
+                        "column": 12,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "code"
+                      }
+                    ],
+                    "line": 5,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 5,
+                  "column": 12,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 5,
+                  "column": 17,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                }
+              ],
+              "line": 5,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 5,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 18,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 5,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 6,
+                        "column": 19,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "bold"
+                      }
+                    ],
+                    "line": 6,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 6,
+                  "column": 12,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 6,
+                  "column": 17,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": " text"
+                }
+              ],
+              "line": 6,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 6,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 6,
+            "column": 23,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 6,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 6,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 7,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                },
+                {
+                  "type": "Tag",
+                  "name": "em",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 7,
+                        "column": 15,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "em"
+                      }
+                    ],
+                    "line": 7,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 7,
+                  "column": 12,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 7,
+                  "column": 15,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                }
+              ],
+              "line": 7,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 7,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 7,
+            "column": 16,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 7,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 7,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 8,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": "some "
+                },
+                {
+                  "type": "Tag",
+                  "name": "code",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 8,
+                        "column": 17,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "code"
+                      }
+                    ],
+                    "line": 8,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 8,
+                  "column": 17,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 8,
+                  "column": 22,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": " and "
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 8,
+                        "column": 36,
+                        "filename": "reference-link-shorthands.pg",
+                        "val": "bold"
+                      }
+                    ],
+                    "line": 8,
+                    "filename": "reference-link-shorthands.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 8,
+                  "column": 29,
+                  "filename": "reference-link-shorthands.pg"
+                },
+                {
+                  "type": "Text",
+                  "line": 8,
+                  "column": 34,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": ""
+                }
+              ],
+              "line": 8,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 8,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 8,
+            "column": 35,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 8,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 8,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "reference-link-shorthands.pg"
+}
+`;
+
 exports[`reference-links-escape.pg 1`] = `
 {
   "type": "Block",
@@ -15836,7 +16237,7 @@ exports[`reference-links-forward.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 1,
-                  "column": 5,
+                  "column": 13,
                   "filename": "reference-links-forward.pg",
                   "val": "click here"
                 }
@@ -15939,7 +16340,7 @@ exports[`reference-links-text-block.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 6,
-                  "column": 12,
+                  "column": 20,
                   "filename": "reference-links-text-block.pg",
                   "val": "Baby's First Garbage Collector"
                 }
@@ -16021,7 +16422,7 @@ exports[`reference-links-text-block.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 10,
-                  "column": 14,
+                  "column": 19,
                   "filename": "reference-links-text-block.pg",
                   "val": "Structure and Interpretation of Computer Programs"
                 }
@@ -16154,7 +16555,7 @@ exports[`reference-links.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 6,
-                  "column": 5,
+                  "column": 13,
                   "filename": "reference-links.pg",
                   "val": "Baby's First Garbage Collector"
                 }
@@ -16207,7 +16608,7 @@ exports[`reference-links.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 7,
-                  "column": 12,
+                  "column": 20,
                   "filename": "reference-links.pg",
                   "val": "the article"
                 }

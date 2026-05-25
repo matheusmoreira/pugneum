@@ -1393,11 +1393,16 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     if (linkText) {
-      // Unescape \[ \] \\ sequences in link text
-      const unescaped = linkText.replace(/\\([\[\]\\])/g, '$1');
-      const textTok = this.tok('text', unescaped);
-      this.incrementColumn(name.length + 1 + linkText.length); // name + space + text (source length)
-      this.tokens.push(this.tokEnd(textTok));
+      // Unescape bracket-specific escapes (\[ \] \\), then escape nested
+      // bracket shorthands (@[ ![ ^[) so addText treats them as literal text
+      const prepared = linkText
+        .replace(/\\([\[\]\\])/g, '$1')
+        .replace(/([@!^])\[/g, '\\$1[');
+      this.incrementColumn(name.length + 1);
+      const savedInterpolated = this.interpolated;
+      this.interpolated = false;
+      this.addText('text', prepared, '', 0);
+      this.interpolated = savedInterpolated;
     } else {
       this.incrementColumn(name.length);
     }

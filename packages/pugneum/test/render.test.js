@@ -285,7 +285,7 @@ describe('reference links', () => {
       'references\n  docs https://docs.com\n\np @[docs text with #(em emphasis) end]';
     assert.strictEqual(
       pg.render(input),
-      '<p><a href="https://docs.com">text with #(em emphasis) end</a></p>',
+      '<p><a href="https://docs.com">text with <em>emphasis</em> end</a></p>',
     );
   });
 });

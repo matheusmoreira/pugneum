@@ -1474,25 +1474,14 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     const inner = value.substring(pos + 2); // after ^[
-    let end = -1;
-    for (let i = 0; i < inner.length; i++) {
-      const ch = inner[i];
-      if (ch === '\\') {
-        i++;
-        continue;
-      }
-      if (ch === ']') {
-        end = i;
-        break;
-      }
-    }
-    if (end === -1) {
+    const result = parseBracketContent(inner, 0);
+    if (!result) {
       this.error(
         'NO_END_BRACKET',
         'End of line reached with no closing ] for ^[] footnote reference.',
       );
     }
-    const name = inner.substring(0, end).trim();
+    const name = inner.substring(0, result.end).trim();
     if (!name) {
       this.error(
         'INVALID_FOOTNOTE_REF',
@@ -1510,7 +1499,7 @@ class Lexer {
     this.incrementColumn(1); // ]
     this.tokens.push(this.tokEnd(tok));
 
-    return inner.substring(end + 1);
+    return inner.substring(result.end + 1);
   }
 
   handleVariableRef(type, value, prefix, escaped, match) {

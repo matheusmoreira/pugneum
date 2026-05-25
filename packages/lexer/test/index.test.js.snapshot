@@ -42686,7 +42686,7 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
     }
   },
   {
-    "type": "eos",
+    "type": "tag",
     "loc": {
       "start": {
         "line": 7,
@@ -42695,6 +42695,356 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
       "filename": "shorthand-escaped-backslash.pg",
       "end": {
         "line": 7,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 11
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 12
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 14
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 16
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 17
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 29
+      }
+    },
+    "val": "text\\\\(more)"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 26
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 27
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 20
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 21
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 21
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 7,
+        "column": 21
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 2
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 3
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 3
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 5
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 11
+      }
+    },
+    "val": "strong"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 12
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "start-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 12
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 14
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 16
+      }
+    },
+    "val": "em"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 17
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 26
+      }
+    },
+    "val": "text\\\\end"
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 23
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 24
+      }
+    }
+  },
+  {
+    "type": "end-interpolation",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 17
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 18
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 8,
+        "column": 18
+      }
+    },
+    "val": ""
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "shorthand-escaped-backslash.pg",
+      "end": {
+        "line": 9,
         "column": 1
       }
     }

@@ -174,8 +174,8 @@ function parseTextUntil(str, end, start) {
 }
 
 /**
- * Scan bracket content for `@[...]` and `![...]` reference shorthands.
- * Tracks `#()` interpolation depth, nested `@[`/`![` brackets, and `\]` escapes.
+ * Scan bracket content for `@[...]`, `![...]`, and `^[...]` shorthands.
+ * Tracks `#()` interpolation depth, nested `@[`/`![`/`^[` brackets, and `\]` escapes.
  * Returns `{end, src}` with the index of the closing `]` and the content,
  * or `null` if no matching `]` is found.
  *
@@ -288,7 +288,6 @@ function findClosingQuote(str, quote, start) {
 function unescapeShorthand(str) {
   return str.replace(/\\([()\\'"])/g, '$1');
 }
-
 
 /**
  * Check whether a line has unclosed inline shorthand constructs.
@@ -999,8 +998,7 @@ class Lexer {
       // In the parent lexer, the escaped-candidate handler resolves it.
       if (!this.interpolated) {
         i = value.indexOf('\\\\', startPos);
-        if (i !== -1)
-          candidates.push({pos: i, kind: 'escaped', literal: '\\'});
+        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
       }
 
       i = value.indexOf('\\#(', startPos);
@@ -1210,9 +1208,13 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
     const child = this.spawnChildLexer(childInput);
     this.incrementColumn(contentLen);
+    let interpDepth = 0;
     for (let ti = 0; ti < child.tokens.length; ti++) {
       const ct = child.tokens[ti];
-      if (ct.type === 'text') ct.val = unescapeShorthand(ct.val);
+      if (ct.type === 'start-interpolation') interpDepth++;
+      else if (ct.type === 'end-interpolation') interpDepth--;
+      else if (ct.type === 'text' && interpDepth === 0)
+        ct.val = unescapeShorthand(ct.val);
       this.tokens.push(ct);
     }
     tok = this.tok('end-interpolation');

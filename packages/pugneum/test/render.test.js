@@ -164,6 +164,14 @@ describe('reference links', () => {
     );
   });
 
+  it('should handle ^[...] inside @[...] without premature ] close', () => {
+    var input = 'references\n  docs /docs\n\np @[docs text ^[note] end]';
+    assert.strictEqual(
+      pg.render(input),
+      '<p><a href="/docs">text ^[note] end</a></p>',
+    );
+  });
+
   it('should produce no output for the references block itself', () => {
     var input = 'references\n  ex https://example.com';
     assert.strictEqual(pg.render(input), '');

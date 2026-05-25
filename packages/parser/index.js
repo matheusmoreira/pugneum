@@ -52,7 +52,6 @@ function containsNodeType(node, type) {
   return false;
 }
 
-
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
 const inlineTags = [

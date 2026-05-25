@@ -46,14 +46,14 @@ const whitespaceRe = /[ \n\t]/;
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};
 
-const inlineShorthandTags = {
-  strong: ['strong', '*'],
-  emphasis: ['em', '_'],
-  del: ['del', '~'],
-  ins: ['ins', '&'],
-  sup: ['sup', '^'],
-  kbd: ['kbd', '%'],
-  sub: ['sub', ','],
+const inlineShorthands = {
+  strong: {tag: 'strong', sigil: '*'},
+  emphasis: {tag: 'em', sigil: '_', name: 'emphasis'},
+  del: {tag: 'del', sigil: '~'},
+  ins: {tag: 'ins', sigil: '&'},
+  sup: {tag: 'sup', sigil: '^'},
+  kbd: {tag: 'kbd', sigil: '%'},
+  sub: {tag: 'sub', sigil: ','},
 };
 
 /**
@@ -1049,15 +1049,16 @@ class Lexer {
       case 'sup':
       case 'kbd':
       case 'sub': {
-        const [tag, sigil] = inlineShorthandTags[earliest.kind];
+        const shorthand = inlineShorthands[earliest.kind];
         return this.handleInlineShorthand(
           type,
           value,
           prefix,
           escaped,
           earliest.pos,
-          tag,
-          sigil,
+          shorthand.tag,
+          shorthand.sigil,
+          shorthand.name || shorthand.tag,
         );
       }
 
@@ -1415,7 +1416,7 @@ class Lexer {
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
-  handleInlineShorthand(type, value, prefix, escaped, pos, tag, sigil) {
+  handleInlineShorthand(type, value, prefix, escaped, pos, tag, sigil, name) {
     let tok = this.tok(type, prefix + value.substring(0, pos));
     this.incrementColumn(prefix.length + pos + escaped);
     this.tokens.push(this.tokEnd(tok));
@@ -1428,7 +1429,7 @@ class Lexer {
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(
           'NO_END_BRACKET',
-          `End of line reached with no closing ) for ${sigil}() ${tag} shorthand.`,
+          `End of line reached with no closing ) for ${sigil}() ${name} shorthand.`,
         );
       }
       throw ex;

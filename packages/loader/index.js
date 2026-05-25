@@ -160,8 +160,8 @@ function resolveLibrary(filename) {
       'INVALID_LIBRARY_PATH',
       'Library include is missing a file path: ' +
         filename +
-        '\n    Use: ' +
-        filename +
+        '\n    Use: @' +
+        pkg +
         '/file.pg',
       {line: 0, column: 0, filename: ''},
     );

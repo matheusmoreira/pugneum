@@ -57,18 +57,18 @@ const inlineShorthands = {
 };
 
 const parenShorthands = [
-  {sigil: '@', key: 'link', kind: 'link'},
-  {sigil: '!', key: 'image', kind: 'image'},
-  {sigil: '*', key: 'strong', kind: 'strong'},
-  {sigil: '_', key: 'emphasis', kind: 'emphasis'},
-  {sigil: '~', key: 'del', kind: 'del'},
-  {sigil: '&', key: 'ins', kind: 'ins'},
-  {sigil: '^', key: 'sup', kind: 'sup'},
-  {sigil: '%', key: 'kbd', kind: 'kbd'},
-  {sigil: ',', key: 'sub', kind: 'sub'},
-  {sigil: '?', key: 'abbr', kind: 'abbr'},
-  {sigil: '`', key: 'code', kind: 'code'},
-  {sigil: '#', key: 'interp', kind: 'interpolation'},
+  {sigil: '@', key: 'link', kind: 'link', label: 'inline links'},
+  {sigil: '!', key: 'image', kind: 'image', label: 'inline images'},
+  {sigil: '*', key: 'strong', kind: 'strong', label: 'inline strong'},
+  {sigil: '_', key: 'emphasis', kind: 'emphasis', label: 'inline emphasis'},
+  {sigil: '~', key: 'del', kind: 'del', label: 'inline del'},
+  {sigil: '&', key: 'ins', kind: 'ins', label: 'inline ins'},
+  {sigil: '^', key: 'sup', kind: 'sup', label: 'inline sup'},
+  {sigil: '%', key: 'kbd', kind: 'kbd', label: 'inline kbd'},
+  {sigil: ',', key: 'sub', kind: 'sub', label: 'inline sub'},
+  {sigil: '?', key: 'abbr', kind: 'abbr', label: 'inline abbr'},
+  {sigil: '`', key: 'code', kind: 'code', label: 'inline code'},
+  {sigil: '#', key: 'interp', kind: 'interpolation', label: 'inline tags'},
 ];
 
 const bracketShorthands = [
@@ -2417,19 +2417,13 @@ class Lexer {
   }
 
   fail() {
-    const inlinePatterns = [
-      [/^#\(/, '#(...) inline tags'],
-      [/^@\(/, '@(...) inline links'],
-      [/^!\(/, '!(...) inline images'],
-      [/^\*\(/, '*(...) inline strong'],
-      [/^~\(/, '~(...) inline del'],
-      [/^&\(/, '&(...) inline ins'],
-      [/^\^\(/, '^(...) inline sup'],
-      [/^%\(/, '%(...) inline kbd'],
-      [/^,\(/, ',(...) inline sub'],
-      [/^`\(/, '`(...) inline code'],
-      [/^\?\(/, '?(...) inline abbr'],
-    ];
+    const inlinePatterns = [];
+    for (const t of parenShorthands) {
+      inlinePatterns.push([
+        new RegExp('^' + escapeForRegex(t.sigil) + '\\('),
+        t.sigil + '(...) ' + t.label,
+      ]);
+    }
     for (const t of bracketShorthands) {
       inlinePatterns.push([
         new RegExp('^' + escapeForRegex(t.sigil) + '\\['),

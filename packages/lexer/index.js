@@ -153,7 +153,7 @@ function parseTextUntil(str, end, start) {
 
     if (c === '\\' && i + 1 < str.length) {
       const next = str[i + 1];
-      if (next === open || next === end) {
+      if (next === '\\' || next === open || next === end) {
         i += 2;
         continue;
       }
@@ -287,6 +287,18 @@ function findClosingQuote(str, quote, start) {
  */
 function unescapeShorthand(str) {
   return str.replace(/\\([()\\'"])/g, '$1');
+}
+
+/**
+ * Unescape shorthand delimiters in child lexer text tokens.
+ * Handles \( \) \' \" but NOT \\ since the escaped-candidate
+ * handler in findEarliestCandidate already strips that.
+ *
+ * @param {string} str - The string to unescape
+ * @returns {string}
+ */
+function unescapeShorthandDelimiters(str) {
+  return str.replace(/\\([()'"])/g, '$1');
 }
 
 /**
@@ -993,6 +1005,9 @@ class Lexer {
     if (this.interpolationAllowed) {
       let i;
 
+      i = value.indexOf('\\\\', startPos);
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
+
       i = value.indexOf('\\#(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
 
@@ -1166,12 +1181,12 @@ class Lexer {
         this.error(errorCode, `Unclosed quote in ${errorPrefix} URL.`);
       }
       url = content.substring(1, endQuote);
-      text = content.substring(endQuote + 1).trimStart() || url;
+      text = content.substring(endQuote + 1).trimStart() || null;
     } else {
       const spaceIdx = content.indexOf(' ');
       if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
         url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
-        text = url;
+        text = null;
       } else {
         url = content.substring(0, spaceIdx);
         text = content.substring(spaceIdx + 1);
@@ -1179,7 +1194,8 @@ class Lexer {
     }
     return {
       url: unescapeShorthand(url),
-      text: unescapeShorthand(text),
+      rawUrl: url,
+      text,
       content,
       after,
     };
@@ -1200,7 +1216,9 @@ class Lexer {
     const child = this.spawnChildLexer(childInput);
     this.incrementColumn(contentLen);
     for (let ti = 0; ti < child.tokens.length; ti++) {
-      this.tokens.push(child.tokens[ti]);
+      const ct = child.tokens[ti];
+      if (ct.type === 'text') ct.val = unescapeShorthandDelimiters(ct.val);
+      this.tokens.push(ct);
     }
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
@@ -1220,7 +1238,8 @@ class Lexer {
       'INVALID_LINK',
     );
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
-    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${parsed.text})${parsed.after}`;
+    const linkText = parsed.text !== null ? parsed.text : parsed.rawUrl;
+    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${linkText})${parsed.after}`;
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
 
@@ -1236,7 +1255,7 @@ class Lexer {
       'INVALID_IMAGE',
     );
     let afterImage = parsed.after;
-    const altText = parsed.text === parsed.url ? '' : parsed.text;
+    const altText = parsed.text !== null ? unescapeShorthand(parsed.text) : '';
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
     const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(altText);
 
@@ -1275,17 +1294,18 @@ class Lexer {
     );
     const afterAbbr = parsed.after;
 
-    // parsed.url = first word (the abbreviation)
-    // parsed.text = rest (the expansion), or same as url if no space
-    const abbreviation = parsed.url;
-    const expansion = parsed.text === parsed.url ? '' : parsed.text;
+    // parsed.url = first word (the abbreviation), unescaped for attributes
+    // parsed.rawUrl = raw abbreviation, for child input
+    // parsed.text = rest (the expansion), or null if no space
+    const expansion =
+      parsed.text !== null ? unescapeShorthand(parsed.text) : '';
 
     let childInput;
     if (expansion) {
       const {quote, escaped: escapedExpansion} = this.escapeForAttr(expansion);
-      childInput = `abbr(title=${quote}${escapedExpansion}${quote}) ${abbreviation})${afterAbbr}`;
+      childInput = `abbr(title=${quote}${escapedExpansion}${quote}) ${parsed.rawUrl})${afterAbbr}`;
     } else {
-      childInput = `abbr ${abbreviation})${afterAbbr}`;
+      childInput = `abbr ${parsed.rawUrl})${afterAbbr}`;
     }
     return this.desugarAsInterpolation(childInput, parsed.content.length);
   }
@@ -1308,9 +1328,8 @@ class Lexer {
       }
       throw ex;
     }
-    const content = unescapeShorthand(range.src);
     const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `${tag} ${content})${afterShorthand}`;
+    const childInput = `${tag} ${range.src})${afterShorthand}`;
     return this.desugarAsInterpolation(childInput, range.src.length);
   }
 

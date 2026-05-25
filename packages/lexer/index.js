@@ -837,10 +837,16 @@ class Lexer {
           else if (segment[ci] === ')' && escapedParenDepth > 0)
             escapedParenDepth--;
         }
-        for (let ci = 0; ci < earliest.literal.length; ci++) {
-          if (earliest.literal[ci] === '(') escapedParenDepth++;
-          else if (earliest.literal[ci] === ')' && escapedParenDepth > 0)
-            escapedParenDepth--;
+        // Sigil-specific escapes like \*( produce literals containing brackets
+        // that the end-of-interpolation scanner would count for depth. Track them.
+        // Standalone delimiter escapes (\(, \), \\, \', \") produce single-char
+        // literals that are text content, not bracket structure.
+        if (earliest.literal.length > 1) {
+          for (let ci = 0; ci < earliest.literal.length; ci++) {
+            if (earliest.literal[ci] === '(') escapedParenDepth++;
+            else if (earliest.literal[ci] === ')' && escapedParenDepth > 0)
+              escapedParenDepth--;
+          }
         }
 
         prefix = prefix + segment + earliest.literal;
@@ -993,13 +999,8 @@ class Lexer {
     if (this.interpolationAllowed) {
       let i;
 
-      // In child lexers (interpolated), \\ is left in the text token and
-      // handled by unescapeShorthand in desugarAsInterpolation.
-      // In the parent lexer, the escaped-candidate handler resolves it.
-      if (!this.interpolated) {
-        i = value.indexOf('\\\\', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
-      }
+      i = value.indexOf('\\\\', startPos);
+      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
 
       i = value.indexOf('\\#(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
@@ -1045,6 +1046,17 @@ class Lexer {
 
       i = value.indexOf('\\?(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '?('});
+
+      if (this.interpolated) {
+        i = value.indexOf('\\(', startPos);
+        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '('});
+        i = value.indexOf('\\)', startPos);
+        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ')'});
+        i = value.indexOf("\\'", startPos);
+        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: "'"});
+        i = value.indexOf('\\"', startPos);
+        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '"'});
+      }
 
       i = value.indexOf('`(', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'code'});
@@ -1208,14 +1220,8 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
     const child = this.spawnChildLexer(childInput);
     this.incrementColumn(contentLen);
-    let interpDepth = 0;
     for (let ti = 0; ti < child.tokens.length; ti++) {
-      const ct = child.tokens[ti];
-      if (ct.type === 'start-interpolation') interpDepth++;
-      else if (ct.type === 'end-interpolation') interpDepth--;
-      else if (ct.type === 'text' && interpDepth === 0)
-        ct.val = unescapeShorthand(ct.val);
-      this.tokens.push(ct);
+      this.tokens.push(child.tokens[ti]);
     }
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);

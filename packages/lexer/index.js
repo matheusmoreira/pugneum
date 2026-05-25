@@ -100,6 +100,11 @@ function escapeForRegex(ch) {
   return /[\\^$.*+?()[\]{}|]/.test(ch) ? '\\' + ch : ch;
 }
 
+const variableNamePattern = '[-a-zA-Z_?]';
+const variableNameRe = new RegExp(variableNamePattern);
+const variableRe = new RegExp('^#{(' + variableNamePattern + '+)}');
+const variableScanRe = new RegExp('(\\\\)?#{(' + variableNamePattern + '+)}');
+
 /**
  * Advance past one character inside a quote-aware bracket scan.
  * Handles escape sequences and quote toggling.
@@ -1054,7 +1059,7 @@ class Lexer {
         if (i !== -1) candidates.push({pos: i, kind: t.kind});
       }
 
-      const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value.substring(startPos));
+      const m = variableScanRe.exec(value.substring(startPos));
       if (m) {
         const absPos = m.index + startPos;
         if (m[1]) {
@@ -1670,7 +1675,7 @@ class Lexer {
 
   variable() {
     let captures;
-    if ((captures = /^#{([-a-zA-Z_?]+)}/.exec(this.input))) {
+    if ((captures = variableRe.exec(this.input))) {
       const tok = this.tok('variable', captures[1]);
       this.tokens.push(tok);
       this.incrementColumn(captures[0].length);
@@ -1796,7 +1801,7 @@ class Lexer {
 
       // read parameter name: only characters valid for variable interpolation
       let name = '';
-      while (i < str.length && /[-a-zA-Z_?]/.test(str[i])) {
+      while (i < str.length && variableNameRe.test(str[i])) {
         name += str[i++];
       }
 

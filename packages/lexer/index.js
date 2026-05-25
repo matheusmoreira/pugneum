@@ -57,18 +57,18 @@ const inlineShorthands = {
 };
 
 const parenShorthands = [
-  {sigil: '@', key: 'link'},
-  {sigil: '!', key: 'image'},
-  {sigil: '*', key: 'strong'},
-  {sigil: '_', key: 'emphasis'},
-  {sigil: '~', key: 'del'},
-  {sigil: '&', key: 'ins'},
-  {sigil: '^', key: 'sup'},
-  {sigil: '%', key: 'kbd'},
-  {sigil: ',', key: 'sub'},
-  {sigil: '?', key: 'abbr'},
-  {sigil: '`', key: 'code'},
-  {sigil: '#', key: 'interp'},
+  {sigil: '@', key: 'link', kind: 'link'},
+  {sigil: '!', key: 'image', kind: 'image'},
+  {sigil: '*', key: 'strong', kind: 'strong'},
+  {sigil: '_', key: 'emphasis', kind: 'emphasis'},
+  {sigil: '~', key: 'del', kind: 'del'},
+  {sigil: '&', key: 'ins', kind: 'ins'},
+  {sigil: '^', key: 'sup', kind: 'sup'},
+  {sigil: '%', key: 'kbd', kind: 'kbd'},
+  {sigil: ',', key: 'sub', kind: 'sub'},
+  {sigil: '?', key: 'abbr', kind: 'abbr'},
+  {sigil: '`', key: 'code', kind: 'code'},
+  {sigil: '#', key: 'interp', kind: 'interpolation'},
 ];
 
 const bracketShorthands = [
@@ -1021,47 +1021,17 @@ class Lexer {
       i = value.indexOf('\\\\', startPos);
       if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
 
-      i = value.indexOf('\\#(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '#('});
-
-      i = value.indexOf('\\@(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '@('});
+      for (const t of parenShorthands) {
+        i = value.indexOf('\\' + t.sigil + '(', startPos);
+        if (i !== -1)
+          candidates.push({pos: i, kind: 'escaped', literal: t.sigil + '('});
+      }
 
       for (const t of bracketShorthands) {
         i = value.indexOf('\\' + t.sigil + '[', startPos);
         if (i !== -1)
           candidates.push({pos: i, kind: 'escaped', literal: t.sigil + '['});
       }
-
-      i = value.indexOf('\\!(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '!('});
-
-      i = value.indexOf('\\*(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '*('});
-
-      i = value.indexOf('\\_(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '_('});
-
-      i = value.indexOf('\\`(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '`('});
-
-      i = value.indexOf('\\~(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '~('});
-
-      i = value.indexOf('\\&(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '&('});
-
-      i = value.indexOf('\\^(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '^('});
-
-      i = value.indexOf('\\%(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '%('});
-
-      i = value.indexOf('\\,(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ',('});
-
-      i = value.indexOf('\\?(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '?('});
 
       if (this.interpolated) {
         i = value.indexOf('\\(', startPos);
@@ -1074,46 +1044,15 @@ class Lexer {
         if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '"'});
       }
 
-      i = value.indexOf('`(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'code'});
-
-      i = value.indexOf('#(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'interpolation'});
-
-      i = value.indexOf('@(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'link'});
+      for (const t of parenShorthands) {
+        i = value.indexOf(t.sigil + '(', startPos);
+        if (i !== -1) candidates.push({pos: i, kind: t.kind});
+      }
 
       for (const t of bracketShorthands) {
         i = value.indexOf(t.sigil + '[', startPos);
         if (i !== -1) candidates.push({pos: i, kind: t.kind});
       }
-
-      i = value.indexOf('!(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'image'});
-
-      i = value.indexOf('*(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'strong'});
-
-      i = value.indexOf('_(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'emphasis'});
-
-      i = value.indexOf('~(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'del'});
-
-      i = value.indexOf('&(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'ins'});
-
-      i = value.indexOf('^(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'sup'});
-
-      i = value.indexOf('%(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'kbd'});
-
-      i = value.indexOf(',(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'sub'});
-
-      i = value.indexOf('?(', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'abbr'});
 
       const m = /(\\)?#{([-a-zA-Z_?]+)}/.exec(value.substring(startPos));
       if (m) {

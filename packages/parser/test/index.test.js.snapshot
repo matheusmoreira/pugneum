@@ -16299,6 +16299,59 @@ exports[`reference-link-shorthands.pg 1`] = `
       "line": 9,
       "column": 1,
       "filename": "reference-link-shorthands.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 10,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          },
+          {
+            "type": "ReferenceLink",
+            "name": "docs",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 10,
+                  "column": 10,
+                  "filename": "reference-link-shorthands.pg",
+                  "val": "path\\\\end"
+                }
+              ],
+              "line": 10,
+              "filename": "reference-link-shorthands.pg"
+            },
+            "attrs": [],
+            "line": 10,
+            "column": 3,
+            "filename": "reference-link-shorthands.pg"
+          },
+          {
+            "type": "Text",
+            "line": 10,
+            "column": 19,
+            "filename": "reference-link-shorthands.pg",
+            "val": ""
+          }
+        ],
+        "line": 10,
+        "filename": "reference-link-shorthands.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 10,
+      "column": 1,
+      "filename": "reference-link-shorthands.pg"
     }
   ],
   "line": 0,
@@ -17814,6 +17867,85 @@ exports[`shorthand-escaped-backslash.pg 1`] = `
       "attributeBlocks": [],
       "isInline": false,
       "line": 8,
+      "column": 1,
+      "filename": "shorthand-escaped-backslash.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 3,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          },
+          {
+            "type": "Tag",
+            "name": "em",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 9,
+                  "column": 8,
+                  "filename": "shorthand-escaped-backslash.pg",
+                  "val": "text \\\\"
+                },
+                {
+                  "type": "Tag",
+                  "name": "strong",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 9,
+                        "column": 24,
+                        "filename": "shorthand-escaped-backslash.pg",
+                        "val": "bold"
+                      }
+                    ],
+                    "line": 9,
+                    "filename": "shorthand-escaped-backslash.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": true,
+                  "line": 9,
+                  "column": 17,
+                  "filename": "shorthand-escaped-backslash.pg"
+                }
+              ],
+              "line": 9,
+              "filename": "shorthand-escaped-backslash.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 9,
+            "column": 5,
+            "filename": "shorthand-escaped-backslash.pg"
+          },
+          {
+            "type": "Text",
+            "line": 9,
+            "column": 20,
+            "filename": "shorthand-escaped-backslash.pg",
+            "val": ""
+          }
+        ],
+        "line": 9,
+        "filename": "shorthand-escaped-backslash.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 9,
       "column": 1,
       "filename": "shorthand-escaped-backslash.pg"
     }

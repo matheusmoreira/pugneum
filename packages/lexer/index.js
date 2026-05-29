@@ -43,6 +43,11 @@ const attributeName = new RegExp(
 
 const whitespaceRe = /[ \n\t]/;
 
+// Curly "smart" quotes that editors and AI tools auto-substitute for straight
+// quotes. They are not attribute delimiters; left here they end up inside the
+// value and silently produce broken output (e.g. href="‘/x’").
+const typographicQuoteRe = /[‘’“”]/;
+
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};
 
@@ -482,6 +487,10 @@ class Lexer {
     this.input = str.replace(/\r\n|\r/g, '\n');
     this.originalInput = this.input;
     this.filename = options.filename;
+    // Shared sink for non-fatal diagnostics. The same array is threaded
+    // through the loader and child lexers so warnings from included files
+    // and nested inline content are collected in one place.
+    this.warnings = options.warnings || [];
     this.interpolated = options.interpolated || false;
     this.depth = options.depth || 0;
     this.lineno = options.startingLine || 1;
@@ -503,6 +512,32 @@ class Lexer {
       source: this.originalInput,
     });
     throw err;
+  }
+
+  warn(code, message) {
+    this.warnings.push(
+      error.warning(code, message, {
+        line: this.lineno,
+        column: this.colno,
+        filename: this.filename,
+        source: this.originalInput,
+      }),
+    );
+  }
+
+  warnTypographicQuote(char) {
+    const codepoint =
+      'U+' + char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    this.warn(
+      'TYPOGRAPHIC_QUOTE_DELIMITER',
+      'Unicode typographic quote ' +
+        char +
+        ' (' +
+        codepoint +
+        ') is not an attribute delimiter; the value is used literally, which ' +
+        'usually produces broken output. Use a straight quote (\' or ") or ' +
+        'remove the quotes — your editor may have auto-replaced them.',
+    );
   }
 
   assert(value, message) {
@@ -1090,6 +1125,7 @@ class Lexer {
       depth: this.depth + 1,
       startingLine: this.lineno,
       startingColumn: this.colno,
+      warnings: this.warnings,
     });
     try {
       child.getTokens();
@@ -2108,6 +2144,8 @@ class Lexer {
       quote = str[i];
       this.incrementColumn(1);
       i++;
+    } else if (typographicQuoteRe.test(str[i])) {
+      this.warnTypographicQuote(str[i]);
     }
 
     // start looping through the key
@@ -2163,6 +2201,9 @@ class Lexer {
         this.incrementColumn(1);
         i++;
       } else {
+        if (typographicQuoteRe.test(str[i])) {
+          this.warnTypographicQuote(str[i]);
+        }
         quote = null;
       }
 

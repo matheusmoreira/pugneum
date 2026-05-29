@@ -95,3 +95,92 @@ describe('given keyword', () => {
     assert.strictEqual(givenTok.val, 'source');
   });
 });
+
+describe('typographic quote warnings in attributes', () => {
+  const LSQUO = '‘';
+  const RSQUO = '’';
+  const LDQUO = '“';
+  const RDQUO = '”';
+
+  function attr(tokens, name) {
+    return tokens.find((tok) => tok.type === 'attribute' && tok.name === name);
+  }
+
+  test('smart single quotes around a value warn and keep the value literal', () => {
+    const warnings = [];
+    const tokens = lex('a(href=' + LSQUO + '/x' + RSQUO + ')', {
+      filename: 'smart.pg',
+      warnings,
+    });
+    assert.strictEqual(attr(tokens, 'href').val, LSQUO + '/x' + RSQUO);
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+    assert.strictEqual(warnings[0].line, 1);
+    assert.strictEqual(warnings[0].filename, 'smart.pg');
+  });
+
+  test('smart double quotes around a value warn and keep the value literal', () => {
+    const warnings = [];
+    const tokens = lex('a(href=' + LDQUO + '/x' + RDQUO + ')', {
+      filename: 'smart.pg',
+      warnings,
+    });
+    assert.strictEqual(attr(tokens, 'href').val, LDQUO + '/x' + RDQUO);
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+
+  test('a lone right single quote on both sides still warns', () => {
+    const warnings = [];
+    lex('a(href=' + RSQUO + '/x' + RSQUO + ')', {
+      filename: 'smart.pg',
+      warnings,
+    });
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+
+  test('ASCII straight quotes produce no warning', () => {
+    const warnings = [];
+    lex('a(href=\'/x\' class="y")', {filename: 'ascii.pg', warnings});
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  test('a smart quote inside an ASCII-quoted value is content, not a delimiter, and does not warn', () => {
+    const warnings = [];
+    const tokens = lex('a(title="Baby' + RSQUO + 's GC")', {
+      filename: 'content.pg',
+      warnings,
+    });
+    assert.strictEqual(attr(tokens, 'title').val, 'Baby' + RSQUO + 's GC');
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  test('warnings collector is optional (no throw when omitted)', () => {
+    assert.doesNotThrow(() =>
+      lex('a(href=' + LSQUO + '/x' + RSQUO + ')', {filename: 'smart.pg'}),
+    );
+  });
+
+  test('warnings from nested inline content propagate to the shared collector', () => {
+    const warnings = [];
+    lex('p text !(/img.png alt)(title=' + LSQUO + 'x' + RSQUO + ') more', {
+      filename: 'inline.pg',
+      warnings,
+    });
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+
+  test('smart quotes around an attribute name warn (the broken name is otherwise silent)', () => {
+    const warnings = [];
+    const tokens = lex('a(' + LSQUO + 'data-x' + RSQUO + '=y)', {
+      filename: 'key.pg',
+      warnings,
+    });
+    // The smart quotes survive as part of the (broken) attribute name.
+    assert.ok(attr(tokens, LSQUO + 'data-x' + RSQUO));
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+});

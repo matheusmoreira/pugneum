@@ -1056,4 +1056,24 @@ describe('warnings', () => {
     assert.strictEqual(warnings.length, 0);
     assert.strictEqual(out, '');
   });
+
+  function unusedMixinWarnings(source) {
+    var warnings = [];
+    pg.render(source, {filename: 'p.pg', warnings: warnings});
+    return warnings.filter((w) => w.code === 'PUGNEUM:UNUSED_MIXIN');
+  }
+
+  it('warns when a mixin defined in the entry file is never called', () => {
+    assert.strictEqual(
+      unusedMixinWarnings('mixin unused()\n  p x\np hello').length,
+      1,
+    );
+  });
+
+  it('does not warn when a defined mixin is called', () => {
+    assert.strictEqual(
+      unusedMixinWarnings('mixin used()\n  p x\n+used()').length,
+      0,
+    );
+  });
 });

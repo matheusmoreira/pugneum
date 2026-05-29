@@ -54,6 +54,8 @@ class Compiler {
     this.options = options = options || {};
     this.node = node;
     this.mixins = Object.create(null);
+    this.usedMixins = new Set();
+    this.warnings = options.warnings || [];
     this.callStack = [];
   }
 
@@ -68,10 +70,40 @@ class Compiler {
     throw err;
   }
 
+  warn(code, message, node) {
+    const sources = this.options.sources;
+    this.warnings.push(
+      makeError.warning(code, message, {
+        line: node.line,
+        column: node.column,
+        filename: node.filename,
+        source:
+          (sources && sources[node.filename]) || this.options.source || '',
+      }),
+    );
+  }
+
   compile() {
     this.buf = [];
     this.visit(this.node);
+    this.warnUnusedMixins();
     return this.buf.join('');
+  }
+
+  // Only flag mixins defined in the entry file: mixins from included files are
+  // typically reusable library definitions that a given page may not call.
+  warnUnusedMixins() {
+    const entry = this.options.filename;
+    for (const name in this.mixins) {
+      const mixin = this.mixins[name];
+      if (!this.usedMixins.has(name) && mixin.filename === entry) {
+        this.warn(
+          'UNUSED_MIXIN',
+          "Mixin '" + name + "' is defined but never called",
+          mixin,
+        );
+      }
+    }
   }
 
   buffer(str) {
@@ -331,6 +363,7 @@ class Compiler {
       if (!declared) {
         this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
+      this.usedMixins.add(mixin.name);
 
       const args = mixin.args,
         len = declared.args.length;

@@ -195,4 +195,41 @@ describe('CLI', () => {
       fs.rmSync(tmp, {recursive: true});
     }
   });
+
+  test('does not warn about unused mixins defined in included library files', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'src', 'pages'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      // Library mixin lives outside the input dir; the page includes it but
+      // does not call it. That must not be flagged as unused.
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'lib.pg'),
+        'mixin helper()\n  p x',
+      );
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'pages', 'page.pg'),
+        'include /lib.pg\np hello',
+      );
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({
+          inputDirectory: 'src/pages',
+          outputDirectory: 'out',
+          baseDirectory: 'src',
+        }),
+      );
+      const result = spawnSync(process.execPath, [CLI], {
+        encoding: 'utf8',
+        cwd: tmp,
+        env: Object.assign({}, process.env, {HOME: os.tmpdir()}),
+        timeout: 10000,
+      });
+      assert.strictEqual(result.status, 0);
+      assert.doesNotMatch(result.stderr, /UNUSED_MIXIN/);
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
 });

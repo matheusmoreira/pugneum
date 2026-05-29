@@ -28,7 +28,6 @@ function renderPugneum(string, options) {
   let filtered = filter(linked, options.filters, options);
   let rendered = render(filtered, options);
 
-  dedupeWarnings(options.warnings);
   if (ownsWarnings) emitWarnings(options.warnings);
 
   return rendered;
@@ -40,23 +39,16 @@ function warningKey(warning) {
   );
 }
 
-// Collapse identical diagnostics in place. The same shared array is threaded
-// through every file in a build, so a layout included by many pages would
-// otherwise report the same warning once per page.
-function dedupeWarnings(warnings) {
+// Print each distinct diagnostic once. Dedup is an emission concern: one
+// shared array is threaded through every file in a build, so a layout included
+// by many pages collects the same warning once per page. Deduping here, rather
+// than after every render, keeps collection linear over the whole build.
+function emitWarnings(warnings) {
   const seen = new Set();
-  let kept = 0;
   for (let i = 0; i < warnings.length; i++) {
     const key = warningKey(warnings[i]);
     if (seen.has(key)) continue;
     seen.add(key);
-    warnings[kept++] = warnings[i];
-  }
-  warnings.length = kept;
-}
-
-function emitWarnings(warnings) {
-  for (let i = 0; i < warnings.length; i++) {
     process.stderr.write('warning ' + warnings[i].code + '\n');
     process.stderr.write(warnings[i].message + '\n\n');
   }

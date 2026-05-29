@@ -1076,4 +1076,39 @@ describe('warnings', () => {
       0,
     );
   });
+
+  it('emitWarnings collapses duplicate warnings to a single line', () => {
+    var dup = {
+      code: 'PUGNEUM:DUP',
+      message: 'f.pg:1:1\n\nmsg',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var out = captureStderr(function () {
+      pg.emitWarnings([Object.assign({}, dup), Object.assign({}, dup)]);
+    });
+    assert.strictEqual((out.match(/PUGNEUM:DUP/g) || []).length, 1);
+  });
+
+  it('emitWarnings keeps warnings that differ in location', () => {
+    var a = {
+      code: 'PUGNEUM:X',
+      message: 'f.pg:1:1\n\nm',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var b = {
+      code: 'PUGNEUM:X',
+      message: 'f.pg:2:1\n\nm',
+      filename: 'f.pg',
+      line: 2,
+      column: 1,
+    };
+    var out = captureStderr(function () {
+      pg.emitWarnings([a, b]);
+    });
+    assert.strictEqual((out.match(/PUGNEUM:X/g) || []).length, 2);
+  });
 });

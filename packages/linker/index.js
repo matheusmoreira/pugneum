@@ -21,8 +21,8 @@ function warn(code, message, node, sources, warnings) {
   );
 }
 
-// Whole-document checks that run once on the final, fully assembled tree.
-function checkDocument(ast, sources, warnings) {
+// Whole-document lints. Run once by link() on the final, fully assembled tree.
+function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
   walk(ast, function (node) {
     if (node.type !== 'Tag') return;
@@ -59,7 +59,18 @@ const DEFAULT_MAX_LINK_DEPTH = 256;
 
 module.exports = link;
 
+// Public entry: link the tree, then run whole-document lints exactly once on
+// the final result. linkInner recurses for template inheritance; keeping the
+// lint pass out here means "run once on the assembled tree" no longer depends
+// on the recursion depth counter.
 function link(ast, options) {
+  options = options || {};
+  const result = linkInner(ast, options);
+  lintDocument(result, options.sources, options.warnings || []);
+  return result;
+}
+
+function linkInner(ast, options) {
   options = options || {};
   const sources = options.sources;
   const warnings = options.warnings || [];
@@ -120,7 +131,7 @@ function link(ast, options) {
     });
 
     // Validate expected blocks BEFORE mutating parent via extend()
-    const parent = link(
+    const parent = linkInner(
       extendsNode.file.ast,
       Object.assign({}, options, {_linkDepth: depth + 1}),
     );
@@ -147,10 +158,8 @@ function link(ast, options) {
     });
     parent.nodes = mixins.concat(parent.nodes);
     parent.hasExtends = true;
-    if (depth === 0) checkDocument(parent, sources, warnings);
     return parent;
   }
-  if (depth === 0) checkDocument(ast, sources, warnings);
   return ast;
 }
 

@@ -48,6 +48,12 @@ const whitespaceRe = /[ \n\t]/;
 // value and silently produce broken output (e.g. href="‘/x’").
 const typographicQuoteRe = /[‘’“”]/;
 
+// Non-ASCII / invisible whitespace (NBSP, narrow NBSP, ideographic space,
+// zero-width space, etc.) that editors and copy-paste introduce. Structural
+// whitespace must be plain spaces or tabs, so these are never valid here.
+const nonAsciiWhitespaceRe =
+  /[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000\uFEFF]/;
+
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};
 
@@ -2458,6 +2464,19 @@ class Lexer {
   }
 
   fail() {
+    const first = this.input[0];
+    if (first && nonAsciiWhitespaceRe.test(first)) {
+      const codepoint =
+        'U+' + first.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+      this.error(
+        'NON_ASCII_WHITESPACE',
+        'Unexpected non-ASCII whitespace ' +
+          codepoint +
+          '. If this is indentation, use regular spaces or tabs — your ' +
+          'editor may have inserted it.',
+      );
+    }
+
     const inlinePatterns = [];
     for (const t of parenShorthands) {
       inlinePatterns.push([

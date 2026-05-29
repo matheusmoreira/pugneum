@@ -184,3 +184,34 @@ describe('typographic quote warnings in attributes', () => {
     assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
   });
 });
+
+describe('non-ASCII whitespace in indentation', () => {
+  const NBSP = ' ';
+
+  test('NBSP used as indentation throws a clear NON_ASCII_WHITESPACE error', () => {
+    assert.throws(
+      () => lex('ul\n' + NBSP + NBSP + 'li x', {filename: 't.pg'}),
+      (err) => err.code === 'PUGNEUM:NON_ASCII_WHITESPACE',
+    );
+  });
+
+  test('NBSP after a leading space also throws NON_ASCII_WHITESPACE', () => {
+    assert.throws(
+      () => lex('ul\n ' + NBSP + 'li x', {filename: 't.pg'}),
+      (err) => err.code === 'PUGNEUM:NON_ASCII_WHITESPACE',
+    );
+  });
+
+  test('the error message names the offending codepoint', () => {
+    assert.throws(
+      () => lex('ul\n' + NBSP + 'li x', {filename: 't.pg'}),
+      (err) => /U\+00A0/.test(err.msg),
+    );
+  });
+
+  test('NBSP inside text content is left alone (no error)', () => {
+    assert.doesNotThrow(() =>
+      lex('p hello' + NBSP + 'world', {filename: 't.pg'}),
+    );
+  });
+});

@@ -377,4 +377,24 @@ describe('warnings', () => {
       assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 0);
     });
   });
+
+  describe('document lints run once across includes', () => {
+    test('img-without-alt is counted once per occurrence, not multiplied by include depth', () => {
+      const dir = __dirname + '/fixtures';
+      const source = 'div\n  include /img-no-alt.pg\n  img(src=/main.png)';
+      const warnings = [];
+      const options = {
+        filename: dir + '/main.pg',
+        source,
+        lex,
+        parse,
+        basedir: dir,
+        warnings,
+      };
+      const loaded = load(parse(lex(source, options), options), options);
+      link(loaded, options);
+      // One img in the included file + one in the main file = exactly two.
+      assert.strictEqual(codes(warnings, 'IMG_WITHOUT_ALT').length, 2);
+    });
+  });
 });

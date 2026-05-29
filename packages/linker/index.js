@@ -248,7 +248,10 @@ function applyIncludes(ast, options) {
     function after(node, replace) {
       if (node.type === 'Include') {
         const depth = options._linkDepth || 0;
-        let childAST = link(
+        // linkInner, not link: the included subtree is linted as part of the
+        // final assembled tree by the top-level link() wrapper. Calling link()
+        // here would lint it again, multiplying warnings by include depth.
+        let childAST = linkInner(
           node.file.ast,
           Object.assign({}, options, {_linkDepth: depth + 1}),
         );

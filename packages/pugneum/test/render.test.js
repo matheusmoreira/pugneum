@@ -980,3 +980,80 @@ describe('test-cases/', () => {
     });
   });
 });
+
+describe('attribute value quoting', () => {
+  // Regression for the BUG.txt report: the three quote forms must be equivalent.
+  it('treats unquoted, single-quoted, and double-quoted values identically', () => {
+    var url = '/articles/babys-second-garbage-collector';
+    var expected = '<a href="' + url + '">T</a>';
+    assert.strictEqual(pg.render('a(href=' + url + ') T'), expected);
+    assert.strictEqual(pg.render("a(href='" + url + "') T"), expected);
+    assert.strictEqual(pg.render('a(href="' + url + '") T'), expected);
+  });
+
+  it('strips quotes from values containing reserved characters', () => {
+    assert.strictEqual(
+      pg.render("a(href='/a, b' title='x=y') T"),
+      '<a href="/a, b" title="x=y">T</a>',
+    );
+  });
+});
+
+describe('warnings', () => {
+  var LSQUO = '‘';
+  var RSQUO = '’';
+
+  function captureStderr(fn) {
+    var original = process.stderr.write;
+    var output = '';
+    process.stderr.write = function (chunk) {
+      output += chunk;
+      return true;
+    };
+    try {
+      fn();
+    } finally {
+      process.stderr.write = original;
+    }
+    return output;
+  }
+
+  it('collects typographic-quote warnings into a provided array and keeps the value literal', () => {
+    var warnings = [];
+    var html = pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T', {
+      filename: 'p.pg',
+      warnings: warnings,
+    });
+    assert.strictEqual(html, '<a href="' + LSQUO + '/x' + RSQUO + '">T</a>');
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+
+  it('does not print when the caller provides its own warnings array', () => {
+    var warnings = [];
+    var out = captureStderr(function () {
+      pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T', {
+        filename: 'p.pg',
+        warnings: warnings,
+      });
+    });
+    assert.strictEqual(out, '');
+  });
+
+  it('prints the warning to stderr when no collector is provided', () => {
+    var out = captureStderr(function () {
+      pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T', {filename: 'p.pg'});
+    });
+    assert.match(out, /TYPOGRAPHIC_QUOTE_DELIMITER/);
+    assert.match(out, /p\.pg:1/);
+  });
+
+  it('clean source produces no warnings and no stderr output', () => {
+    var warnings = [];
+    var out = captureStderr(function () {
+      pg.render('a(href="/x") T', {filename: 'clean.pg', warnings: warnings});
+    });
+    assert.strictEqual(warnings.length, 0);
+    assert.strictEqual(out, '');
+  });
+});

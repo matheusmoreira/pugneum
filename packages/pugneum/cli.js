@@ -146,7 +146,7 @@ function handleError(error) {
 try {
   const {baseDirectory, inputDirectory, outputDirectory, feeds} =
     readAndValidateInput('pugneum.json');
-  const pgOptions = {basedir: baseDirectory};
+  const pgOptions = {basedir: baseDirectory, warnings: []};
 
   const resolvedInputDir = fs.realpathSync(inputDirectory);
   const resolvedOutputDir = path.resolve(outputDirectory);
@@ -165,6 +165,9 @@ try {
     fs.mkdirSync(directory, {recursive: true});
     fs.writeFileSync(outputPath, output, {encoding: 'utf8'});
   });
+
+  // Surface non-fatal diagnostics collected across the whole build once.
+  pg.emitWarnings(pgOptions.warnings);
 
   if (feeds) {
     try {

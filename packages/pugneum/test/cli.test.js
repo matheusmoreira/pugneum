@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const {describe, test} = require('node:test');
-const {execFileSync} = require('child_process');
+const {execFileSync, spawnSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -122,6 +122,75 @@ describe('CLI', () => {
       const html = fs.readFileSync(path.join(tmp, 'out', 'real.html'), 'utf8');
       assert.strictEqual(html, '<p>ok</p>');
       assert.ok(!fs.existsSync(path.join(tmp, 'out', 'loop')));
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('warns once for a typographic quote in a shared layout but still builds', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'src', 'pages'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      // Shared partial with a smart-quoted attribute, included by two pages.
+      fs.writeFileSync(path.join(tmp, 'src', 'nav.pg'), 'a(href=‘/x’) link');
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'pages', 'one.pg'),
+        'include /nav.pg',
+      );
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'pages', 'two.pg'),
+        'include /nav.pg',
+      );
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({
+          inputDirectory: 'src/pages',
+          outputDirectory: 'out',
+          baseDirectory: 'src',
+        }),
+      );
+      const result = spawnSync(process.execPath, [CLI], {
+        encoding: 'utf8',
+        cwd: tmp,
+        env: Object.assign({}, process.env, {HOME: os.tmpdir()}),
+        timeout: 10000,
+      });
+      // Warnings are non-fatal: the build succeeds.
+      assert.strictEqual(result.status, 0);
+      // Both pages built.
+      assert.ok(fs.existsSync(path.join(tmp, 'out', 'one.html')));
+      assert.ok(fs.existsSync(path.join(tmp, 'out', 'two.html')));
+      // The warning is surfaced on stderr...
+      assert.match(result.stderr, /TYPOGRAPHIC_QUOTE_DELIMITER/);
+      // ...exactly once, despite two pages including the same partial.
+      const count = (result.stderr.match(/TYPOGRAPHIC_QUOTE_DELIMITER/g) || [])
+        .length;
+      assert.strictEqual(count, 1);
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('clean templates produce no warning output', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'a(href="/x") link');
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+      const result = spawnSync(process.execPath, [CLI], {
+        encoding: 'utf8',
+        cwd: tmp,
+        env: Object.assign({}, process.env, {HOME: os.tmpdir()}),
+        timeout: 10000,
+      });
+      assert.strictEqual(result.status, 0);
+      assert.doesNotMatch(result.stderr, /warning/);
     } finally {
       fs.rmSync(tmp, {recursive: true});
     }

@@ -400,3 +400,25 @@ test('INVALID_FILTER_TYPE when include uses pugneum type filter', () => {
       /cannot be used with include/.test(err.message),
   );
 });
+
+test('warnings from pugneum-type filter output reach the shared collector', () => {
+  const smartFilters = {
+    smart: {
+      type: 'pugneum',
+      filter: function () {
+        // Filter emits Pugneum source containing a smart-quoted attribute.
+        return 'a(href=‘/x’) link';
+      },
+    },
+  };
+  const source = 'div\n  :smart\n    ignored';
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const warnings = [];
+
+  filter(ast, smartFilters, {warnings});
+
+  const typographic = warnings.filter(
+    (w) => w.code === 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER',
+  );
+  assert.strictEqual(typographic.length, 1);
+});

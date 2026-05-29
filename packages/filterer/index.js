@@ -57,7 +57,7 @@ function validateStringOutput(result, name, type, node) {
   }
 }
 
-function applyFilterResult(node, type, result, name) {
+function applyFilterResult(node, type, result, name, options) {
   switch (type) {
     case 'text':
       validateStringOutput(result, name, type, node);
@@ -79,7 +79,10 @@ function applyFilterResult(node, type, result, name) {
       validateStringOutput(result, name, type, node);
       const lex = require('pugneum-lexer');
       const parse = require('pugneum-parser');
-      const tokens = lex(result, {filename: node.filename});
+      const tokens = lex(result, {
+        filename: node.filename,
+        warnings: options && options.warnings,
+      });
       const ast = parse(tokens, {filename: node.filename, source: result});
       node.type = 'Block';
       node.nodes = ast.nodes;
@@ -126,7 +129,7 @@ function applyFilters(ast, filters, options) {
         const resolved = resolveFilter(node.name, filters, node);
         validateFilterType(resolved, node.name, node);
         const result = runFilter(resolved, node.name, text, attrs, node);
-        applyFilterResult(node, resolved.type, result, node.name);
+        applyFilterResult(node, resolved.type, result, node.name, options);
       } else if (node.type === 'RawInclude' && node.filters.length) {
         const firstFilter = node.filters.pop();
         const attrs = getAttributes(firstFilter, options);

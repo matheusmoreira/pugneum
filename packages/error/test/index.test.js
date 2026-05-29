@@ -121,3 +121,55 @@ describe('invalid information', function () {
     }
   });
 });
+
+describe('warning', function () {
+  test('formats like an error but is a plain, non-throwing object', function () {
+    var warn = error.warning('TYPOGRAPHIC_QUOTE_DELIMITER', 'My message', {
+      line: 3,
+      column: 2,
+      filename: 'myfile',
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
+    assert.strictEqual(
+      warn.message,
+      'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message',
+    );
+    assert.strictEqual(warn.code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+    assert.strictEqual(warn.msg, 'My message');
+    assert.strictEqual(warn.line, 3);
+    assert.strictEqual(warn.column, 2);
+    assert.strictEqual(warn.filename, 'myfile');
+    assert.ok(
+      !(warn instanceof Error),
+      'warning must not be an Error instance',
+    );
+  });
+
+  test('shares an identical message format with error()', function () {
+    var opts = {
+      line: 3,
+      column: 2,
+      filename: 'myfile',
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    };
+    var err = error('SAME', 'Same message', opts);
+    var warn = error.warning('SAME', 'Same message', opts);
+    assert.strictEqual(warn.message, err.message);
+  });
+
+  test('toJSON omits source like error()', function () {
+    var warn = error.warning('CODE', 'msg', {
+      line: 1,
+      column: 4,
+      filename: 'f',
+      source: 'x',
+    });
+    assert.deepStrictEqual(warn.toJSON(), {
+      code: 'PUGNEUM:CODE',
+      msg: 'msg',
+      line: 1,
+      column: 4,
+      filename: 'f',
+    });
+  });
+});

@@ -10,6 +10,51 @@ function error(code, message, node, sources) {
   });
 }
 
+function warn(code, message, node, sources, warnings) {
+  warnings.push(
+    makeError.warning(code, message, {
+      line: node.line,
+      column: node.column,
+      filename: node.filename,
+      source: (sources && sources[node.filename]) || '',
+    }),
+  );
+}
+
+// Whole-document checks that run once on the final, fully assembled tree.
+function checkDocument(ast, sources, warnings) {
+  const seenIds = Object.create(null);
+  walk(ast, function (node) {
+    if (node.type !== 'Tag') return;
+    const attrs = node.attrs || [];
+    for (const attr of attrs) {
+      if (attr.name === 'id' && typeof attr.val === 'string') {
+        const loc = attr.line != null ? attr : node;
+        if (seenIds[attr.val]) {
+          warn(
+            'DUPLICATE_ID',
+            "Duplicate id '" + attr.val + "' (ids must be unique)",
+            loc,
+            sources,
+            warnings,
+          );
+        } else {
+          seenIds[attr.val] = true;
+        }
+      }
+    }
+    if (node.name === 'img' && !attrs.some((a) => a.name === 'alt')) {
+      warn(
+        'IMG_WITHOUT_ALT',
+        'img has no alt attribute (use alt="" for purely decorative images)',
+        node,
+        sources,
+        warnings,
+      );
+    }
+  });
+}
+
 const DEFAULT_MAX_LINK_DEPTH = 256;
 
 module.exports = link;
@@ -17,6 +62,7 @@ module.exports = link;
 function link(ast, options) {
   options = options || {};
   const sources = options.sources;
+  const warnings = options.warnings || [];
   const maxDepth =
     options.maxLinkDepth != null
       ? options.maxLinkDepth
@@ -49,9 +95,9 @@ function link(ast, options) {
     }
   }
   ast = applyIncludes(ast, options);
-  ast = resolveReferences(ast, sources);
-  ast = resolveToc(ast, sources);
-  ast = resolveFootnotes(ast, sources);
+  ast = resolveReferences(ast, sources, warnings);
+  ast = resolveToc(ast, sources, warnings);
+  ast = resolveFootnotes(ast, sources, warnings);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];
@@ -101,8 +147,10 @@ function link(ast, options) {
     });
     parent.nodes = mixins.concat(parent.nodes);
     parent.hasExtends = true;
+    if (depth === 0) checkDocument(parent, sources, warnings);
     return parent;
   }
+  if (depth === 0) checkDocument(ast, sources, warnings);
   return ast;
 }
 
@@ -239,8 +287,9 @@ function applyYield(ast, block, includeNode, options) {
   return ast;
 }
 
-function resolveReferences(ast, sources) {
+function resolveReferences(ast, sources, warnings) {
   const definitions = Object.create(null);
+  const used = Object.create(null);
   walk(ast, function (node) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
@@ -252,15 +301,22 @@ function resolveReferences(ast, sources) {
             sources,
           );
         }
-        definitions[def.name] = {url: def.url, defaultText: def.defaultText};
+        definitions[def.name] = {
+          url: def.url,
+          defaultText: def.defaultText,
+          node: def,
+        };
       }
     }
   });
 
-  return walk(ast, function before(node, replace) {
+  const result = walk(ast, function before(node, replace) {
     if (node.type === 'References') {
       replace([]);
       return false;
+    }
+    if (node.type === 'ReferenceLink' || node.type === 'ReferenceImage') {
+      used[node.name] = true;
     }
     if (node.type === 'ReferenceLink') {
       const def = definitions[node.name];
@@ -396,6 +452,19 @@ function resolveReferences(ast, sources) {
       });
     }
   });
+
+  for (const name in definitions) {
+    if (!used[name]) {
+      warn(
+        'UNUSED_REFERENCE',
+        "Reference '" + name + "' is defined but never used",
+        definitions[name].node,
+        sources,
+        warnings,
+      );
+    }
+  }
+  return result;
 }
 
 function toSuperscript(n) {
@@ -408,7 +477,7 @@ function toSuperscript(n) {
     .join('');
 }
 
-function resolveFootnotes(ast, sources) {
+function resolveFootnotes(ast, sources, warnings) {
   const definitions = Object.create(null);
   let footnotesBlockCount = 0;
 
@@ -579,6 +648,18 @@ function resolveFootnotes(ast, sources) {
     }
   }
 
+  for (const name in definitions) {
+    if (!(name in numberByName)) {
+      warn(
+        'UNUSED_FOOTNOTE',
+        "Footnote '" + name + "' is defined but never referenced",
+        definitions[name],
+        sources,
+        warnings,
+      );
+    }
+  }
+
   // Pass 3: replace Footnotes node with rendered section
   // All refs are now numbered so ordering is correct regardless of source position
   return walk(ast, function before(node, replace) {
@@ -730,7 +811,7 @@ function resolveFootnotes(ast, sources) {
   });
 }
 
-function resolveToc(ast, sources) {
+function resolveToc(ast, sources, warnings) {
   const headings = [];
 
   // Pass 1: collect headings with IDs
@@ -757,9 +838,16 @@ function resolveToc(ast, sources) {
   });
 
   if (headings.length === 0) {
-    // No headings with IDs — remove Toc node
+    // No headings with IDs — remove Toc node (and warn that it produced nothing)
     return walk(ast, function (node, replace) {
       if (node.type === 'Toc') {
+        warn(
+          'EMPTY_TOC',
+          'toc has no entries: no headings with an explicit id were found',
+          node,
+          sources,
+          warnings,
+        );
         replace([]);
         return false;
       }

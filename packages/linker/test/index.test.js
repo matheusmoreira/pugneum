@@ -271,3 +271,110 @@ describe('error handling', () => {
     );
   });
 });
+
+describe('warnings', () => {
+  function warningsFor(source, extra) {
+    const warnings = [];
+    const options = Object.assign(
+      {filename: 't.pg', source, lex, parse, basedir, warnings},
+      extra,
+    );
+    const tokens = lex(source, options);
+    const ast = parse(tokens, options);
+    const loaded = load(ast, options);
+    link(loaded, options);
+    return warnings;
+  }
+
+  function codes(warnings, code) {
+    return warnings.filter((w) => w.code === 'PUGNEUM:' + code);
+  }
+
+  describe('duplicate id', () => {
+    test('two elements with the same id warn once', () => {
+      const w = warningsFor('p#dup a\np#dup b');
+      assert.strictEqual(codes(w, 'DUPLICATE_ID').length, 1);
+    });
+
+    test('id from #shorthand collides with id= attribute', () => {
+      const w = warningsFor('p#x a\np(id="x") b');
+      assert.strictEqual(codes(w, 'DUPLICATE_ID').length, 1);
+    });
+
+    test('unique ids do not warn', () => {
+      const w = warningsFor('p#a x\np#b y\np(id="c") z');
+      assert.strictEqual(codes(w, 'DUPLICATE_ID').length, 0);
+    });
+
+    test('the warning points at the duplicate occurrence', () => {
+      const w = codes(warningsFor('p#dup a\np#dup b'), 'DUPLICATE_ID');
+      assert.strictEqual(w[0].line, 2);
+    });
+  });
+
+  describe('unused references and footnotes', () => {
+    test('a reference defined but never used warns', () => {
+      const w = warningsFor('references\n  foo https://x.com\n\np hello');
+      assert.strictEqual(codes(w, 'UNUSED_REFERENCE').length, 1);
+    });
+
+    test('a reference used as a link does not warn', () => {
+      const w = warningsFor('references\n  foo https://x.com\n\np @[foo]');
+      assert.strictEqual(codes(w, 'UNUSED_REFERENCE').length, 0);
+    });
+
+    test('a reference used as an image does not warn', () => {
+      const w = warningsFor('references\n  foo /img.png\n\np ![foo alt]');
+      assert.strictEqual(codes(w, 'UNUSED_REFERENCE').length, 0);
+    });
+
+    test('a footnote defined but never used warns', () => {
+      const w = warningsFor('p hello\n\nfootnotes\n  note Some text');
+      assert.strictEqual(codes(w, 'UNUSED_FOOTNOTE').length, 1);
+    });
+
+    test('a referenced footnote does not warn', () => {
+      const w = warningsFor('p text^[note]\n\nfootnotes\n  note Some text');
+      assert.strictEqual(codes(w, 'UNUSED_FOOTNOTE').length, 0);
+    });
+  });
+
+  describe('empty toc', () => {
+    test('a toc with no id-bearing headings warns', () => {
+      const w = warningsFor('toc\nh2 No id here\np text');
+      assert.strictEqual(codes(w, 'EMPTY_TOC').length, 1);
+    });
+
+    test('a toc with id-bearing headings does not warn', () => {
+      const w = warningsFor('toc\nh2#a One\nh2#b Two');
+      assert.strictEqual(codes(w, 'EMPTY_TOC').length, 0);
+    });
+
+    test('no toc keyword means no warning even without ids', () => {
+      const w = warningsFor('h2 No id\np text');
+      assert.strictEqual(codes(w, 'EMPTY_TOC').length, 0);
+    });
+  });
+
+  describe('img without alt', () => {
+    test('an img with no alt attribute warns', () => {
+      const w = warningsFor('img(src=/x.png)');
+      assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 1);
+    });
+
+    test('an img with alt text does not warn', () => {
+      const w = warningsFor('img(src=/x.png alt="a cat")');
+      assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 0);
+    });
+
+    test('an img with empty alt (decorative) does not warn', () => {
+      const w = warningsFor('img(src=/x.png alt="")');
+      assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 0);
+    });
+
+    test('a reference image (which always emits alt) does not warn', () => {
+      const w = warningsFor('references\n  pic /x.png\n\np ![pic a cat]');
+      assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 0);
+    });
+  });
+});

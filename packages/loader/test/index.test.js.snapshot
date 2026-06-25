@@ -12,7 +12,22 @@ exports[`pugneum-loader 1`] = `
         "filename": "foo.pg",
         "fullPath": "bar.pg",
         "str": "block bing\\n",
-        "raw": "block bing\\n",
+        "raw": {
+          "type": "Buffer",
+          "data": [
+            98,
+            108,
+            111,
+            99,
+            107,
+            32,
+            98,
+            105,
+            110,
+            103,
+            10
+          ]
+        },
         "ast": {
           "type": "Block",
           "nodes": [
@@ -47,7 +62,22 @@ exports[`pugneum-loader 1`] = `
             "column": 11,
             "fullPath": "bing.pg",
             "str": ".bing bong\\n",
-            "raw": ".bing bong\\n",
+            "raw": {
+              "type": "Buffer",
+              "data": [
+                46,
+                98,
+                105,
+                110,
+                103,
+                32,
+                98,
+                111,
+                110,
+                103,
+                10
+              ]
+            },
             "ast": {
               "type": "Block",
               "nodes": [
@@ -114,7 +144,43 @@ exports[`pugneum-loader 1`] = `
                   "column": 13,
                   "fullPath": "script.js",
                   "str": "document.write('hello world!');\\n",
-                  "raw": "document.write('hello world!');\\n"
+                  "raw": {
+                    "type": "Buffer",
+                    "data": [
+                      100,
+                      111,
+                      99,
+                      117,
+                      109,
+                      101,
+                      110,
+                      116,
+                      46,
+                      119,
+                      114,
+                      105,
+                      116,
+                      101,
+                      40,
+                      39,
+                      104,
+                      101,
+                      108,
+                      108,
+                      111,
+                      32,
+                      119,
+                      111,
+                      114,
+                      108,
+                      100,
+                      33,
+                      39,
+                      41,
+                      59,
+                      10
+                    ]
+                  }
                 },
                 "line": 6,
                 "column": 5,

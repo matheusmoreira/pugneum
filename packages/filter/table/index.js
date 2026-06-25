@@ -18,7 +18,10 @@ exports.filter = function pugneum_filter_table(text, attributes) {
     });
 
   if (lines.length === 0) {
-    throw new Error('Table filter: empty table body');
+    // The filterer wraps thrown messages as "Filter 'table' failed: <message>",
+    // so a "Table filter:" prefix here would stutter; keep messages bare like
+    // the ones thrown from lib/parse.js.
+    throw new Error('empty table body');
   }
 
   const parsed = parse(lines);
@@ -27,7 +30,7 @@ exports.filter = function pugneum_filter_table(text, attributes) {
     return s.rows.length > 0;
   });
   if (!hasRows) {
-    throw new Error('Table filter: no data rows found');
+    throw new Error('no data rows found');
   }
 
   return generate(parsed, attributes);

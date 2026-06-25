@@ -4,6 +4,18 @@ var assert = require('node:assert/strict');
 var {test, describe} = require('node:test');
 
 var tableFilter = require('../');
+var lex = require('pugneum-lexer');
+var parse = require('pugneum-parser');
+
+// The table filter is type:'pugneum' — the filterer re-lexes/re-parses its
+// output. Round-trip the generated source through the real lexer+parser so a
+// future change that emits subtly invalid Pugneum fails here rather than at
+// build time. Returns the parsed AST (throws if the source does not re-lex).
+function roundTrip(input, attrs) {
+  var src = tableFilter.filter(input, attrs || {});
+  var options = {filename: 'gen.pg', source: src};
+  return parse(lex(src, options), options);
+}
 
 describe('table filter', () => {
   test('exports type pugneum', () => {
@@ -173,6 +185,18 @@ describe('colgroup boundaries', () => {
     var tds = result.match(/td /g);
     assert.strictEqual(tds.length, 4);
   });
+
+  test('|| collapses to | in a data row (no separator) — no empty cell', () => {
+    // Isolated data-row test: with no separator row, `||` must produce two
+    // non-empty cells, not three cells with an empty middle one. Asserting the
+    // full tbody pins the behavior the test above only names.
+    var input = '| a || b |';
+    var result = tableFilter.filter(input, {});
+    assert.strictEqual(
+      result,
+      'table\n  tbody\n    tr\n      td a\n      td b',
+    );
+  });
 });
 
 describe('table structure', () => {
@@ -308,7 +332,12 @@ describe('section markers', () => {
 
   test('tfoot marker then === throws error', () => {
     var input = '| a |\n| --- |\ntfoot\n| b |\n| === |\n| c |';
-    assert.throws(() => tableFilter.filter(input, {}), /===.*once/i);
+    // The === appears exactly once, so the message must name the real cause
+    // (a tfoot marker already opened the foot), not "=== can only appear once".
+    assert.throws(
+      () => tableFilter.filter(input, {}),
+      /===.*follow.*tfoot|tfoot.*===/i,
+    );
   });
 });
 
@@ -366,5 +395,198 @@ describe('errors', () => {
       () => tableFilter.filter('| --- | --- |', {}),
       /no.*data.*rows/i,
     );
+  });
+});
+
+// A ')' inside a quoted attribute value (calc(), url(), rgb()) used to truncate
+// the old `\([^)]*\)` regexes, silently dropping or misparsing the construct.
+// Balanced-paren scanning fixes all five sites; each output must also re-lex.
+describe('balanced parens in attribute groups', () => {
+  test('caption(style="calc(...)") is recognized, not dropped', () => {
+    var input =
+      'caption(style="width:calc(100% - 1em)") Title\n| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /caption\(style="width:calc\(100% - 1em\)"\) Title/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('thead(style="calc(...)") marker keeps its attrs', () => {
+    var input = 'thead(style="width:calc(1px)")\n| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead\(style="width:calc\(1px\)"\)/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('tbody(style="calc(...)") marker keeps its attrs', () => {
+    var input = '| a |\n| --- |\ntbody(style="width:calc(1px)")\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tbody\(style="width:calc\(1px\)"\)/);
+  });
+
+  test('tr(style="calc(...)") prefix is recognized, not leaked into a cell', () => {
+    var input = '| a |\n| --- |\ntr(style="width:calc(100% - 2em)") | v |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /tr\(style="width:calc\(100% - 2em\)"\)/);
+    // The literal tr(...) must not appear as cell text.
+    assert.doesNotMatch(result, /td tr\(/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('separator ---(style="calc(...)")--- is recognized as a separator', () => {
+    var input = '| a |\n| ---(style="width:calc(1px)")--- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    // Not demoted to a data row: a thead/colgroup must appear.
+    assert.match(result, /thead/);
+    assert.match(result, /col\(style="width:calc\(1px\)"\)/);
+    assert.doesNotMatch(result, /td ---/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('a long run of unbalanced ( in a cell does not blow up (linear time)', () => {
+    // The old `\([^)]*\)` regexes backtracked O(n^2): ~80 KB stalled >10 s.
+    var input = '| --- |\n| ' + '('.repeat(200000) + ' |';
+    var t0 = Date.now();
+    tableFilter.filter(input, {});
+    var elapsed = Date.now() - t0;
+    assert.ok(elapsed < 2000, 'took ' + elapsed + 'ms (expected linear)');
+  });
+});
+
+// formatAttrs emits Pugneum source the filterer re-lexes; it must escape
+// backslashes (not just quotes) and reject keys that are not lexable names.
+describe('formatAttrs serialization', () => {
+  test('a value ending in a backslash re-lexes (no NO_END_BRACKET)', () => {
+    var input = '| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {'data-path': 'C:\\'});
+    assert.match(result, /^table\(data-path="C:\\\\"\)/);
+    assert.doesNotThrow(() => roundTrip(input, {'data-path': 'C:\\'}));
+  });
+
+  test('a value with backslash-quote re-lexes', () => {
+    var attrs = {title: 'a\\"b'};
+    assert.doesNotThrow(() => roundTrip('| a |\n| --- |\n| b |', attrs));
+  });
+
+  test('a key that is not a lexable attribute name is rejected', () => {
+    assert.throws(
+      () =>
+        tableFilter.filter('| a |\n| --- |\n| b |', {'x) tr.injected(': true}),
+      /invalid attribute name/i,
+    );
+  });
+});
+
+// Alignment is emitted as style="text-align:..."; combining it with an explicit
+// col `style` attr must merge, not emit two style attributes (DUPLICATE_ATTRIBUTE).
+describe('alignment + explicit style attr', () => {
+  test(':---(style="color:red")---: merges alignment into the style', () => {
+    var input = '| a |\n| :---(style="color:red")---: |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:center;color:red"\)/);
+    // Exactly one style attribute on the col.
+    var col = result.split('\n').find((l) => /col\(/.test(l));
+    assert.strictEqual((col.match(/style=/g) || []).length, 1);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('alignment + non-style attr still emits two attributes', () => {
+    var input = '| a |\n| :---(class="x")---: |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /col\(style="text-align:center" class="x"\)/);
+  });
+});
+
+// DECISION #4: cell/caption text keeps inline shorthands ACTIVE, but a literal
+// `#{` is neutralized so tabular data cannot crash with VARIABLE_OUTSIDE_MIXIN.
+describe('literal #{ in cell/caption text', () => {
+  test('a cell containing #{x} does not crash and re-lexes', () => {
+    var input = '| --- |\n| value #{x} here |';
+    var result = tableFilter.filter(input, {});
+    // The emitted source escapes the interpolation so the lexer treats it as
+    // literal text.
+    assert.match(result, /td value \\#\{x\} here/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('a caption containing #{n} does not crash and re-lexes', () => {
+    var input = 'caption ref #{n}\n| a |\n| --- |\n| b |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /caption ref \\#\{n\}/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('inline shorthands stay active in cell text', () => {
+    var input = '| --- |\n| *(bold) |';
+    var result = tableFilter.filter(input, {});
+    // *(bold) is left intact (the lexer turns it into <strong>); only #{ is
+    // neutralized.
+    assert.match(result, /td \*\(bold\)/);
+  });
+});
+
+// classifyCell must require a BALANCED (attrs) group for verbatim treatment, so
+// an unbalanced th(/td( becomes data instead of crashing the re-lex.
+describe('cell classification edge cases', () => {
+  test('unbalanced th( is treated as data, not a verbatim tag (no crash)', () => {
+    var input = '| a |\n| --- |\n| th(scope value |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td th\(scope value/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('a cell with a .class/#id is data, not an invalid tag (no re-lex crash)', () => {
+    // td.5 is NOT treated as a tag with class "5" (which would throw
+    // INVALID_CLASS_NAME on re-lex); it is plain cell data.
+    var input = '| --- |\n| td.5 |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td td\.5/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('\\theme keeps its literal text (backslash escape is precise)', () => {
+    // \theme is not a tagged-cell form, so the backslash is not stripped.
+    var input = '| --- |\n| \\theme |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td \\theme/);
+  });
+});
+
+// Section uniqueness is enforced uniformly across marker and separator paths.
+describe('section uniqueness', () => {
+  test('two thead markers throw', () => {
+    assert.throws(
+      () => tableFilter.filter('thead\n| 1 |\nthead\n| 2 |', {}),
+      /only one thead/i,
+    );
+  });
+
+  test('implicit thead (dash-sep) plus an explicit thead marker throws', () => {
+    var input = '| h |\n| --- |\nthead(class="x")\n| 2 |\n| b |';
+    assert.throws(() => tableFilter.filter(input, {}), /only one thead/i);
+  });
+
+  test('two tfoot markers throw', () => {
+    assert.throws(
+      () => tableFilter.filter('tfoot\n| 1 |\ntfoot\n| 2 |', {}),
+      /only one tfoot/i,
+    );
+  });
+
+  test('a tbody marker after a tfoot marker throws (tfoot must be last)', () => {
+    assert.throws(
+      () => tableFilter.filter('tfoot\n| 1 |\ntbody\n| 2 |', {}),
+      /tbody cannot appear after a tfoot/i,
+    );
+  });
+});
+
+// An empty separator cell is a type-neutral column, not a demotion to data.
+describe('empty separator cells', () => {
+  test('a blank middle separator cell still yields a thead', () => {
+    var input = '| a | b | c |\n| --- |   | --- |\n| 1 | 2 | 3 |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /thead/);
+    // The --- separator text must not leak as a data cell.
+    assert.doesNotMatch(result, /td ---/);
   });
 });

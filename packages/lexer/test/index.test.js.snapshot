@@ -12381,13 +12381,13 @@ exports[`footnotes-basic.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 3
       },
       "filename": "footnotes-basic.pg",
       "end": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 8
       }
     },
     "val": "note1"
@@ -12396,13 +12396,13 @@ exports[`footnotes-basic.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 9
       },
       "filename": "footnotes-basic.pg",
       "end": {
-        "line": 5,
-        "column": 30
+        "line": 4,
+        "column": 38
       }
     },
     "val": "This is the footnote content."
@@ -12412,12 +12412,12 @@ exports[`footnotes-basic.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 30
+        "column": 1
       },
       "filename": "footnotes-basic.pg",
       "end": {
         "line": 5,
-        "column": 30
+        "column": 1
       }
     }
   },
@@ -12426,12 +12426,12 @@ exports[`footnotes-basic.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 30
+        "column": 1
       },
       "filename": "footnotes-basic.pg",
       "end": {
         "line": 5,
-        "column": 30
+        "column": 1
       }
     }
   }
@@ -12590,13 +12590,13 @@ exports[`footnotes-multiple.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 3
       },
       "filename": "footnotes-multiple.pg",
       "end": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 8
       }
     },
     "val": "alpha"
@@ -12605,13 +12605,13 @@ exports[`footnotes-multiple.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 9
       },
       "filename": "footnotes-multiple.pg",
       "end": {
-        "line": 5,
-        "column": 15
+        "line": 4,
+        "column": 23
       }
     },
     "val": "Alpha content."
@@ -12620,13 +12620,13 @@ exports[`footnotes-multiple.pg 1`] = `
     "type": "footnote-def-end",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 15
+        "line": 4,
+        "column": 23
       },
       "filename": "footnotes-multiple.pg",
       "end": {
-        "line": 5,
-        "column": 15
+        "line": 4,
+        "column": 23
       }
     }
   },
@@ -12634,13 +12634,13 @@ exports[`footnotes-multiple.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 3
       },
       "filename": "footnotes-multiple.pg",
       "end": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 7
       }
     },
     "val": "beta"
@@ -12649,13 +12649,13 @@ exports[`footnotes-multiple.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 8
       },
       "filename": "footnotes-multiple.pg",
       "end": {
-        "line": 6,
-        "column": 14
+        "line": 5,
+        "column": 21
       }
     },
     "val": "Beta content."
@@ -12665,12 +12665,12 @@ exports[`footnotes-multiple.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 14
+        "column": 1
       },
       "filename": "footnotes-multiple.pg",
       "end": {
         "line": 6,
-        "column": 14
+        "column": 1
       }
     }
   },
@@ -12679,12 +12679,12 @@ exports[`footnotes-multiple.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 14
+        "column": 1
       },
       "filename": "footnotes-multiple.pg",
       "end": {
         "line": 6,
-        "column": 14
+        "column": 1
       }
     }
   }
@@ -12843,13 +12843,13 @@ exports[`footnotes-repeated.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 3
       },
       "filename": "footnotes-repeated.pg",
       "end": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 8
       }
     },
     "val": "note1"
@@ -12858,13 +12858,13 @@ exports[`footnotes-repeated.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 1
+        "line": 4,
+        "column": 9
       },
       "filename": "footnotes-repeated.pg",
       "end": {
-        "line": 5,
-        "column": 17
+        "line": 4,
+        "column": 25
       }
     },
     "val": "Shared footnote."
@@ -12874,12 +12874,12 @@ exports[`footnotes-repeated.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 17
+        "column": 1
       },
       "filename": "footnotes-repeated.pg",
       "end": {
         "line": 5,
-        "column": 17
+        "column": 1
       }
     }
   },
@@ -12888,12 +12888,12 @@ exports[`footnotes-repeated.pg 1`] = `
     "loc": {
       "start": {
         "line": 5,
-        "column": 17
+        "column": 1
       },
       "filename": "footnotes-repeated.pg",
       "end": {
         "line": 5,
-        "column": 17
+        "column": 1
       }
     }
   }
@@ -13023,13 +13023,13 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 3
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 14
       }
     },
     "val": "gc-tricolor"
@@ -13038,13 +13038,13 @@ exports[`footnotes.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 1
+        "line": 5,
+        "column": 15
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 6,
-        "column": 32
+        "line": 5,
+        "column": 46
       }
     },
     "val": "Introduced by Dijkstra in 1978."
@@ -13053,13 +13053,13 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-end",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 32
+        "line": 5,
+        "column": 46
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 6,
-        "column": 32
+        "line": 5,
+        "column": 46
       }
     }
   },
@@ -13067,28 +13067,42 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 1
+        "line": 6,
+        "column": 3
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 8,
-        "column": 1
+        "line": 6,
+        "column": 13
       }
     },
     "val": "gc-history"
   },
   {
-    "type": "text",
+    "type": "newline",
     "loc": {
       "start": {
-        "line": 8,
+        "line": 7,
         "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 8,
-        "column": 46
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "footnotes.pg",
+      "end": {
+        "line": 7,
+        "column": 50
       }
     },
     "val": "McCarthy's original Lisp used mark-and-sweep."
@@ -13097,13 +13111,13 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-end",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 46
+        "line": 7,
+        "column": 50
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 8,
-        "column": 46
+        "line": 7,
+        "column": 50
       }
     }
   },
@@ -13111,13 +13125,13 @@ exports[`footnotes.pg 1`] = `
     "type": "footnote-def-start",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 1
+        "line": 8,
+        "column": 3
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 9,
-        "column": 1
+        "line": 8,
+        "column": 14
       }
     },
     "val": "inline-only"
@@ -13126,13 +13140,13 @@ exports[`footnotes.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 1
+        "line": 8,
+        "column": 15
       },
       "filename": "footnotes.pg",
       "end": {
-        "line": 9,
-        "column": 31
+        "line": 8,
+        "column": 45
       }
     },
     "val": "Content on the name line only."
@@ -13142,12 +13156,12 @@ exports[`footnotes.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 31
+        "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
         "line": 9,
-        "column": 31
+        "column": 1
       }
     }
   },
@@ -13156,12 +13170,12 @@ exports[`footnotes.pg 1`] = `
     "loc": {
       "start": {
         "line": 9,
-        "column": 31
+        "column": 1
       },
       "filename": "footnotes.pg",
       "end": {
         "line": 9,
-        "column": 31
+        "column": 1
       }
     }
   }
@@ -23725,7 +23739,7 @@ exports[`invalid-class-name-2.pg 1`] = `
 
 exports[`invalid-class-name-3.pg 1`] = `
 {
-  "msg": "\\"ä\\" is not a valid class name.  Class names can only contain \\"_\\", \\"-\\", a-z and 0-9, and must contain at least one of \\"_\\", or a-z",
+  "msg": "\\"ä\\" is not a valid class name.  Class names can only contain \\"_\\", \\"-\\", a-z, A-Z and 0-9, and must contain at least one of \\"_\\", a-z or A-Z",
   "code": "PUGNEUM:INVALID_CLASS_NAME",
   "line": 1,
   "column": 1
@@ -52389,4 +52403,52 @@ exports[`yield.pg 1`] = `
     }
   }
 ]
+`;
+exports[`invalid-id-bare.pg 1`] = `
+{
+  "msg": "\\"\\" is not a valid ID.",
+  "code": "PUGNEUM:INVALID_ID",
+  "line": 1,
+  "column": 1
+}
+`;
+exports[`invalid-id-eol.pg 1`] = `
+{
+  "msg": "\\"\\" is not a valid ID.",
+  "code": "PUGNEUM:INVALID_ID",
+  "line": 1,
+  "column": 4
+}
+`;
+exports[`invalid-link-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in @() link URL.",
+  "code": "PUGNEUM:INVALID_LINK",
+  "line": 1,
+  "column": 3
+}
+`;
+exports[`invalid-image-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in !() image URL.",
+  "code": "PUGNEUM:INVALID_IMAGE",
+  "line": 1,
+  "column": 3
+}
+`;
+exports[`invalid-abbr-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in ?() abbr URL.",
+  "code": "PUGNEUM:INVALID_ABBR",
+  "line": 1,
+  "column": 3
+}
+`;
+exports[`invalid-footnote-ref.pg 1`] = `
+{
+  "msg": "Footnote reference ^[] requires an identifier.",
+  "code": "PUGNEUM:INVALID_FOOTNOTE_REF",
+  "line": 1,
+  "column": 3
+}
 `;

@@ -36,9 +36,12 @@ const noncharacter =
 
 // https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
 const attributeNamePunctuation = ' \'">/=';
+// The `u` flag is required because `noncharacter` contains astral code points
+// (\u{1FFFE}…\u{10FFFF}); without it the class would match their surrogate
+// halves as separate UTF-16 code units rather than the intended code points.
 const attributeName = new RegExp(
   '[^' + control + attributeNamePunctuation + noncharacter + ']',
-  'g',
+  'gu',
 );
 
 const whitespaceRe = /[ \n\t]/;
@@ -103,18 +106,38 @@ const bracketShorthands = [
     kind: 'footnote-ref',
     label: 'footnote references',
     handler: 'handleFootnoteRef',
-    nestedBrackets: true,
   },
 ];
+
+// Sigil -> kind lookups so findEarliestCandidate can classify a candidate in a
+// single left-to-right pass (O(1) per character) instead of running a separate
+// full-tail indexOf for every sigil (which was O(constructs) full scans per
+// call and O(n^2) on a line packed with escapes/shorthands).
+const parenShorthandBySigil = {};
+for (const t of parenShorthands) parenShorthandBySigil[t.sigil] = t.kind;
+const bracketShorthandBySigil = {};
+for (const t of bracketShorthands) bracketShorthandBySigil[t.sigil] = t.kind;
 
 function escapeForRegex(ch) {
   return /[\\^$.*+?()[\]{}|]/.test(ch) ? '\\' + ch : ch;
 }
 
+// Format a character as its `U+XXXX` Unicode codepoint label for diagnostics.
+function formatCodepoint(ch) {
+  return 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+}
+
 const variableNamePattern = '[-a-zA-Z_?]';
 const variableNameRe = new RegExp(variableNamePattern);
 const variableRe = new RegExp('^#{(' + variableNamePattern + '+)}');
-const variableScanRe = new RegExp('(\\\\)?#{(' + variableNamePattern + '+)}');
+// Sticky flag so `findEarliestCandidate` can test for a variable anchored at an
+// exact offset (`lastIndex = i`) in O(name) time, without allocating a
+// `value.substring()` copy or scanning the rest of the line. `lastIndex` is set
+// on every use, so the shared module-level regex is safe across lexers.
+const variableScanRe = new RegExp(
+  '(\\\\)?#{(' + variableNamePattern + '+)}',
+  'y',
+);
 
 /**
  * Advance past one character inside a quote-aware bracket scan.
@@ -370,25 +393,16 @@ function interpolationsAreClosed(str, state) {
       }
     }
 
-    // Bracket close
+    // Bracket close. Only sigil-led openers (`@[`/`![`/`^[`) bump the depth
+    // counter above, so a bare `]` closes the innermost open bracket shorthand.
+    // This mirrors parseBracketContent, which treats bare `[`/`]` as literal
+    // characters (not nesting). Keeping the two scanners in agreement prevents
+    // `^[note [x]` from being merged differently inline vs. across pipeless
+    // lines.
     if (ch === ']') {
       for (const t of bracketShorthands) {
         if (state[t.key] > 0) {
-          if (t.nestedBrackets && state[t.key + 'Bracket'] > 0) {
-            state[t.key + 'Bracket']--;
-          } else {
-            state[t.key]--;
-          }
-          continue outer;
-        }
-      }
-    }
-
-    // Nested bracket tracking for shorthands that support it
-    if (ch === '[') {
-      for (const t of bracketShorthands) {
-        if (t.nestedBrackets && state[t.key] > 0) {
-          state[t.key + 'Bracket']++;
+          state[t.key]--;
           continue outer;
         }
       }
@@ -427,7 +441,6 @@ function resetInterpolationState(state) {
   }
   for (const t of bracketShorthands) {
     state[t.key] = 0;
-    if (t.nestedBrackets) state[t.key + 'Bracket'] = 0;
   }
   return state;
 }
@@ -532,8 +545,7 @@ class Lexer {
   }
 
   warnTypographicQuote(char) {
-    const codepoint =
-      'U+' + char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    const codepoint = formatCodepoint(char);
     this.warn(
       'TYPOGRAPHIC_QUOTE_DELIMITER',
       'Unicode typographic quote ' +
@@ -544,10 +556,6 @@ class Lexer {
         'usually produces broken output. Use a straight quote (\' or ") or ' +
         'remove the quotes — your editor may have auto-replaced them.',
     );
-  }
-
-  assert(value, message) {
-    if (!value) this.error('ASSERT_FAILED', message);
   }
 
   assertNestingCorrect(exp) {
@@ -638,10 +646,10 @@ class Lexer {
   bracketExpression(skip) {
     skip = skip || 0;
     const start = this.input[skip];
-    if (start !== '(' && start !== '{' && start !== '[') {
+    const end = bracketPairs[start];
+    if (!end) {
       throw new Error('The start character should be "(", "{" or "["');
     }
-    const end = {'(': ')', '{': '}', '[': ']'}[start];
     let range;
     try {
       range = parseExpressionUntil(this.input, end, skip + 1);
@@ -827,7 +835,7 @@ class Lexer {
       this.error(
         'INVALID_ID',
         '"' +
-          /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
+          (/.[^ \t\(\#\.\:]*/.exec(this.input.slice(1)) || [''])[0] +
           '" is not a valid ID.',
       );
     }
@@ -855,8 +863,8 @@ class Lexer {
       this.error(
         'INVALID_CLASS_NAME',
         '"' +
-          /.[^ \t\(\#\.\:]*/.exec(this.input.slice(1))[0] +
-          '" is not a valid class name.  Class names can only contain "_", "-", a-z and 0-9, and must contain at least one of "_", or a-z',
+          (/.[^ \t\(\#\.\:]*/.exec(this.input.slice(1)) || [''])[0] +
+          '" is not a valid class name.  Class names can only contain "_", "-", a-z, A-Z and 0-9, and must contain at least one of "_", a-z or A-Z',
       );
     }
   }
@@ -1033,89 +1041,100 @@ class Lexer {
           escaped,
           earliest.match,
         );
+
+      default:
+        // The shorthand tables (parenShorthands/bracketShorthands) and this
+        // switch must be extended together. If a new shorthand kind is added
+        // to a table but its case is forgotten here, the switch would return
+        // undefined and corrupt the addText loop with an uncoded TypeError far
+        // from the mistake. Fail loudly and locally instead.
+        this.error(
+          'LEXER_BUG',
+          'Unhandled inline element kind: ' + earliest.kind,
+        );
     }
   }
 
   findEarliestCandidate(value, startPos, initialParenDepth) {
     startPos = startPos || 0;
-    const candidates = [];
+    const interpolated = this.interpolated;
+    const interpolationAllowed = this.interpolationAllowed;
 
-    if (this.interpolated) {
-      let parenDepth = initialParenDepth || 0;
-      for (let i = startPos; i < value.length; i++) {
-        const ch = value[i];
-        if (ch === '\\') {
-          i++;
-          continue;
+    // Single left-to-right scan returning the earliest inline candidate. The
+    // candidate kinds are positionally disjoint (each begins with a distinct
+    // character or sigil+delimiter pair), so the first position carrying any
+    // candidate is the earliest — no need to run a separate full-tail indexOf
+    // per construct and sort, which scanned O(constructs * tail) on every call
+    // and made a line of N escapes/shorthands O(N^2).
+    let parenDepth = initialParenDepth || 0;
+    for (let i = startPos; i < value.length; i++) {
+      const ch = value[i];
+
+      if (ch === '\\') {
+        if (interpolationAllowed) {
+          const next = value[i + 1];
+          if (next === '\\') {
+            return {pos: i, kind: 'escaped', literal: '\\'};
+          }
+          const after = value[i + 2];
+          if (after === '(' && parenShorthandBySigil[next] !== undefined) {
+            return {pos: i, kind: 'escaped', literal: next + '('};
+          }
+          if (after === '[' && bracketShorthandBySigil[next] !== undefined) {
+            return {pos: i, kind: 'escaped', literal: next + '['};
+          }
+          if (
+            interpolated &&
+            (next === '(' || next === ')' || next === "'" || next === '"')
+          ) {
+            return {pos: i, kind: 'escaped', literal: next};
+          }
+          if (next === '#' && after === '{') {
+            variableScanRe.lastIndex = i;
+            const em = variableScanRe.exec(value);
+            if (em && em[1]) {
+              return {pos: i, kind: 'escaped', literal: '#{'};
+            }
+          }
         }
+        // Backslash that is not a recognized escape: skip the escaped char so
+        // it cannot start a construct or count toward interpolation paren depth
+        // (matches the original paren-tracking pass, which skipped 2 on '\\').
+        i++;
+        continue;
+      }
+
+      if (interpolationAllowed) {
+        const next = value[i + 1];
+        if (next === '(' && parenShorthandBySigil[ch] !== undefined) {
+          return {pos: i, kind: parenShorthandBySigil[ch]};
+        }
+        if (next === '[' && bracketShorthandBySigil[ch] !== undefined) {
+          return {pos: i, kind: bracketShorthandBySigil[ch]};
+        }
+        if (ch === '#' && next === '{') {
+          variableScanRe.lastIndex = i;
+          const m = variableScanRe.exec(value);
+          if (m && !m[1]) {
+            return {pos: i, kind: 'variable', match: m};
+          }
+        }
+      }
+
+      if (interpolated) {
         if (ch === '(') {
           parenDepth++;
         } else if (ch === ')') {
           if (parenDepth > 0) {
             parenDepth--;
           } else {
-            candidates.push({pos: i, kind: 'end'});
-            break;
+            return {pos: i, kind: 'end'};
           }
         }
       }
     }
 
-    if (this.interpolationAllowed) {
-      let i;
-
-      i = value.indexOf('\\\\', startPos);
-      if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '\\'});
-
-      for (const t of parenShorthands) {
-        i = value.indexOf('\\' + t.sigil + '(', startPos);
-        if (i !== -1)
-          candidates.push({pos: i, kind: 'escaped', literal: t.sigil + '('});
-      }
-
-      for (const t of bracketShorthands) {
-        i = value.indexOf('\\' + t.sigil + '[', startPos);
-        if (i !== -1)
-          candidates.push({pos: i, kind: 'escaped', literal: t.sigil + '['});
-      }
-
-      if (this.interpolated) {
-        i = value.indexOf('\\(', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '('});
-        i = value.indexOf('\\)', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: ')'});
-        i = value.indexOf("\\'", startPos);
-        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: "'"});
-        i = value.indexOf('\\"', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: 'escaped', literal: '"'});
-      }
-
-      for (const t of parenShorthands) {
-        i = value.indexOf(t.sigil + '(', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: t.kind});
-      }
-
-      for (const t of bracketShorthands) {
-        i = value.indexOf(t.sigil + '[', startPos);
-        if (i !== -1) candidates.push({pos: i, kind: t.kind});
-      }
-
-      const m = variableScanRe.exec(value.substring(startPos));
-      if (m) {
-        const absPos = m.index + startPos;
-        if (m[1]) {
-          candidates.push({pos: absPos, kind: 'escaped', literal: '#{'});
-        } else {
-          m.index = absPos;
-          candidates.push({pos: absPos, kind: 'variable', match: m});
-        }
-      }
-    }
-
-    if (candidates.length === 0) return null;
-
-    candidates.sort((a, b) => a.pos - b.pos);
-    return candidates[0];
+    return null;
   }
 
   spawnChildLexer(input) {
@@ -1163,7 +1182,7 @@ class Lexer {
     return child.input;
   }
 
-  parseShorthandContent(rest, errorPrefix, errorCode) {
+  parseShorthandContent(rest, errorPrefix, errorCode, label) {
     let range;
     try {
       range = parseTextUntil(rest, ')', 1);
@@ -1181,7 +1200,7 @@ class Lexer {
       const quote = content[0];
       const endQuote = findClosingQuote(content, quote, 1);
       if (endQuote === -1) {
-        this.error(errorCode, `Unclosed quote in ${errorPrefix} URL.`);
+        this.error(errorCode, `Unclosed quote in ${label} URL.`);
       }
       url = content.substring(1, endQuote);
       text = content.substring(endQuote + 1).trimStart() || null;
@@ -1237,6 +1256,7 @@ class Lexer {
       rest,
       'End of line reached with no closing ) for @() link shorthand.',
       'INVALID_LINK',
+      '@() link',
     );
     const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
     const linkText = parsed.text !== null ? parsed.text : parsed.rawUrl;
@@ -1254,6 +1274,7 @@ class Lexer {
       rest,
       'End of line reached with no closing ) for !() image shorthand.',
       'INVALID_IMAGE',
+      '!() image',
     );
     let afterImage = parsed.after;
     const altText = parsed.text !== null ? unescapeShorthand(parsed.text) : '';
@@ -1292,6 +1313,7 @@ class Lexer {
       rest,
       'End of line reached with no closing ) for ?() abbr shorthand.',
       'INVALID_ABBR',
+      '?() abbr',
     );
     const afterAbbr = parsed.after;
 
@@ -1358,8 +1380,10 @@ class Lexer {
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
 
+    // The synthetic `code` tag occupies zero source columns (the
+    // `start-interpolation` above already advanced past the opener), so there
+    // is no column increment here.
     tok = this.tok('tag', 'code');
-    this.incrementColumn(0);
     this.tokens.push(this.tokEnd(tok));
 
     tok = this.tok('text', content);
@@ -1421,8 +1445,14 @@ class Lexer {
       this.incrementColumn(name.length + 1);
       const savedInterpolated = this.interpolated;
       this.interpolated = false;
-      this.addText('text', prepared, '', 0);
-      this.interpolated = savedInterpolated;
+      try {
+        // addText can throw (e.g. unclosed inline shorthand in the link text);
+        // restore in finally so the flag does not leak, mirroring the
+        // try/finally-guarded this.input swap for trailing attrs below.
+        this.addText('text', prepared, '', 0);
+      } finally {
+        this.interpolated = savedInterpolated;
+      }
     } else {
       this.incrementColumn(name.length);
     }
@@ -1978,7 +2008,7 @@ class Lexer {
   }
 
   /**
-   * Table of contents.
+   * Doctype.
    */
 
   doctype() {
@@ -1989,6 +2019,10 @@ class Lexer {
       return true;
     }
   }
+
+  /**
+   * Given.
+   */
 
   given() {
     let captures;
@@ -2001,7 +2035,11 @@ class Lexer {
         this.error('MALFORMED_GIVEN', 'given requires a block name');
       }
       const tok = this.tok('given', name);
-      let len = 'given '.length + name.length;
+      // Span "given", any (possibly multiple) spaces, and the name — not a
+      // hard-coded single space — so the token's loc.end.column is accurate
+      // when extra spaces separate the keyword from the name.
+      const namePos = captures[0].length - captures[1].length;
+      let len = namePos + name.length;
       this.incrementColumn(len);
       this.tokens.push(this.tokEnd(tok));
       this.consume(captures[0].length);
@@ -2012,6 +2050,10 @@ class Lexer {
       this.error('MALFORMED_GIVEN', 'given requires a block name');
     }
   }
+
+  /**
+   * Table of contents.
+   */
 
   toc() {
     const tok = this.scanEndOfLine(/^toc/, 'toc');
@@ -2059,59 +2101,59 @@ class Lexer {
     } while (this.input.length - stringPtr && isMatch);
     this.consume(stringPtr);
 
-    // Group lines into definitions
-    let currentName = null;
-    let contentLines = [];
+    // Group lines into definitions. Tokens are emitted eagerly, line by line,
+    // so each one is tagged with the line/column it physically occupies (the
+    // same discipline referencesBlock uses). Deferring emission until the next
+    // definition starts — after incrementLine has already advanced — is what
+    // mis-attributed every footnote token to the following line.
+    let defOpen = false;
 
-    const self = this;
-    function flushDefinition() {
-      if (currentName === null) return;
-
-      let tok = self.tok('footnote-def-start');
-      tok.val = currentName;
-      self.tokens.push(self.tokEnd(tok));
-
-      for (let ci = 0; ci < contentLines.length; ci++) {
-        if (ci > 0) {
-          self.incrementLine(1);
-          self.tokens.push(self.tokEnd(self.tok('newline')));
-        }
-        self.addText('text', contentLines[ci]);
-      }
-
-      self.tokens.push(self.tokEnd(self.tok('footnote-def-end')));
-      currentName = null;
-      contentLines = [];
-    }
+    const closeDefinition = () => {
+      if (!defOpen) return;
+      this.tokens.push(this.tokEnd(this.tok('footnote-def-end')));
+      defOpen = false;
+    };
 
     for (let li = 0; li < blockLines.length; li++) {
       const line = blockLines[li];
-      this.incrementLine(1);
 
-      if (!line.raw.trim()) continue;
+      if (!line.raw.trim()) {
+        this.incrementLine(1);
+        continue;
+      }
 
       if (line.indent <= defIndent) {
-        // New definition starts
-        flushDefinition();
+        // New definition starts. Close the previous one first, while the line
+        // counter still points at its last content line.
+        closeDefinition();
+        this.incrementLine(1);
+
         const content = line.raw.slice(defIndent);
         const spaceIdx = content.indexOf(' ');
-        if (spaceIdx === -1) {
-          currentName = content.trim();
-          this.incrementColumn(defIndent + currentName.length);
-        } else {
-          currentName = content.substring(0, spaceIdx);
-          const inlineContent = content.substring(spaceIdx + 1);
-          this.incrementColumn(defIndent + currentName.length + 1);
-          contentLines.push(inlineContent);
+        const name =
+          spaceIdx === -1 ? content.trim() : content.slice(0, spaceIdx);
+
+        this.incrementColumn(defIndent);
+        const startTok = this.tok('footnote-def-start');
+        startTok.val = name;
+        this.incrementColumn(name.length);
+        this.tokens.push(this.tokEnd(startTok));
+        defOpen = true;
+
+        if (spaceIdx !== -1) {
+          this.incrementColumn(1);
+          this.addText('text', content.substring(spaceIdx + 1));
         }
       } else {
-        // Continuation line
+        // Continuation line of the current definition.
+        this.incrementLine(1);
         const continuation = line.raw.slice(defIndent).trimStart();
+        this.tokens.push(this.tokEnd(this.tok('newline')));
         this.incrementColumn(line.indent);
-        contentLines.push(continuation);
+        this.addText('text', continuation);
       }
     }
-    flushDefinition();
+    closeDefinition();
   }
 
   skipWhitespace(str, i) {
@@ -2466,8 +2508,7 @@ class Lexer {
   fail() {
     const first = this.input[0];
     if (first && nonAsciiWhitespaceRe.test(first)) {
-      const codepoint =
-        'U+' + first.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+      const codepoint = formatCodepoint(first);
       this.error(
         'NON_ASCII_WHITESPACE',
         'Unexpected non-ASCII whitespace ' +

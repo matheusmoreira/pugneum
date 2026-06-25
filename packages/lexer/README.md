@@ -19,6 +19,12 @@ Convert pugneum string to array of tokens.
 `options` can contain the following properties:
 
  - `filename` (string): name of the pugneum file; used in error reporting.
+ - `warnings` (array): optional shared sink for non-fatal diagnostics. The lexer
+   pushes warning objects (as produced by `pugneum-error`'s `warning()`) into this
+   array — for example when a typographic "smart" quote is used where a straight
+   attribute delimiter was expected. The same array is threaded through included
+   files and nested inline content so all warnings are collected in one place. If
+   omitted, warnings are still collected internally but discarded.
 
 ```js
 console.log(JSON.stringify(lex('div(data-foo="bar")\n  p Hello', {filename: 'my-file.pg'}), null, 2))

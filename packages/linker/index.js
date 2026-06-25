@@ -1,24 +1,24 @@
 const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
 
-function error(code, message, node, sources) {
-  throw makeError(code, message, {
+// Build the {line, column, filename, source} context both error() and warn()
+// attach to a diagnostic. The source line is looked up per-filename so an error
+// in an included file shows that file's source, not the entry file's.
+function locContext(node, sources) {
+  return {
     line: node.line,
     column: node.column,
     filename: node.filename,
     source: (sources && sources[node.filename]) || '',
-  });
+  };
+}
+
+function error(code, message, node, sources) {
+  throw makeError(code, message, locContext(node, sources));
 }
 
 function warn(code, message, node, sources, warnings) {
-  warnings.push(
-    makeError.warning(code, message, {
-      line: node.line,
-      column: node.column,
-      filename: node.filename,
-      source: (sources && sources[node.filename]) || '',
-    }),
-  );
+  warnings.push(makeError.warning(code, message, locContext(node, sources)));
 }
 
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
@@ -65,8 +65,16 @@ module.exports = link;
 // on the recursion depth counter.
 function link(ast, options) {
   options = options || {};
+  // Establish a single warnings array on the options object (mirroring how the
+  // loader establishes options.sources). This guards against a non-array
+  // `warnings`, makes diagnostics reachable for a bare `link(ast)` caller, and
+  // ensures linkInner and lintDocument collect into the same array rather than
+  // two separate throwaway ones.
+  if (!Array.isArray(options.warnings)) {
+    options.warnings = [];
+  }
   const result = linkInner(ast, options);
-  lintDocument(result, options.sources, options.warnings || []);
+  lintDocument(result, options.sources, options.warnings);
   return result;
 }
 
@@ -78,6 +86,9 @@ function linkInner(ast, options) {
     options.maxLinkDepth != null
       ? options.maxLinkDepth
       : DEFAULT_MAX_LINK_DEPTH;
+  // _linkDepth is internal recursion state, never a caller-supplied option. It
+  // is incremented only on the two recursion edges (the Extends branch below
+  // and the Include branch in applyIncludes) and bounds both chains together.
   const depth = options._linkDepth || 0;
 
   if (depth >= maxDepth) {
@@ -102,11 +113,19 @@ function linkInner(ast, options) {
     const hasExtends = ast.nodes[0].type === 'Extends';
     checkExtendPosition(ast, hasExtends, sources);
     if (hasExtends) {
+      // Note: this and the parent-tree rewrites below mutate the input AST in
+      // place. That is safe only because the loader hands each Include/Extends
+      // site a freshly parsed, structuredClone'd, unshared tree (see
+      // loader/index.js). Do NOT introduce AST caching upstream without making
+      // these mutations copy-on-write.
       extendsNode = ast.nodes.shift();
     }
   }
   ast = applyIncludes(ast, options);
   ast = resolveReferences(ast, sources, warnings);
+  // resolveToc must run before resolveFootnotes: heading text is captured here
+  // and footnote [n] markers must not yet exist, or a heading like
+  // `h2#sec Title^[n]` would pick up the resolved "[1]" into its TOC entry.
   ast = resolveToc(ast, sources, warnings);
   ast = resolveFootnotes(ast, sources, warnings);
   ast.declaredBlocks = findDeclaredBlocks(ast);
@@ -174,17 +193,35 @@ function findDeclaredBlocks(ast) {
   return definitions;
 }
 
-function flattenParentBlocks(parentBlocks, accumulator) {
+// Flatten a NamedBlock's ancestor chain (grandparent -> parent -> ...) into a
+// single list. Template inheritance forms a DAG: the same block object is
+// reachable along multiple `.parents` paths, so without memoization the
+// recursion re-expands shared ancestors an exponentially growing number of
+// times (a chain of N `replace`-mode overrides crashes with RangeError once the
+// accumulator exceeds 2^32-1). `seen` dedupes visited blocks: a parent block
+// appears at most once in the flattened list, which is also the correct result.
+function flattenParentBlocks(parentBlocks, accumulator, seen) {
   accumulator = accumulator || [];
+  seen = seen || new Set();
   parentBlocks.forEach(function (parentBlock) {
+    if (seen.has(parentBlock)) return;
+    seen.add(parentBlock);
     if (parentBlock.parents) {
-      flattenParentBlocks(parentBlock.parents, accumulator);
+      flattenParentBlocks(parentBlock.parents, accumulator, seen);
     }
     accumulator.push(parentBlock);
   });
   return accumulator;
 }
 
+// Merge the child template's NamedBlock overrides into the parent's block
+// slots. `parentBlocks` maps a block name to its declared parent block(s);
+// flattenParentBlocks expands each into its full ancestor chain so the override
+// reaches every inherited level. The `stack` Set guards against a NamedBlock
+// nested inside another block of the SAME name: the inner occurrence is marked
+// `ignore` and its subtree is pruned (return false) so it is neither merged a
+// second time nor descended into, which would otherwise re-merge the same
+// content and corrupt the ancestor chain.
 function extend(parentBlocks, ast, sources) {
   const stack = new Set();
   walk(
@@ -192,7 +229,8 @@ function extend(parentBlocks, ast, sources) {
     function before(node) {
       if (node.type === 'NamedBlock') {
         if (stack.has(node.name)) {
-          return (node.ignore = true);
+          node.ignore = true;
+          return false;
         }
         stack.add(node.name);
         const parentBlockList = parentBlocks[node.name]
@@ -232,6 +270,10 @@ function extend(parentBlocks, ast, sources) {
 }
 
 function applyIncludes(ast, options) {
+  // RawInclude is handled in `before` (its content is a leaf string, nothing
+  // below it to descend into). Include is handled in `after` so the includer's
+  // passed-in `node.block` is fully walked before being yielded into the linked
+  // child subtree.
   return walk(
     ast,
     function before(node, replace) {
@@ -283,9 +325,14 @@ function applyYield(ast, block, includeNode, options) {
   let replaced = false;
   ast = walk(ast, null, function (node, replace) {
     if (node.type === 'YieldBlock') {
+      // Clone per yield site: an included template may contain more than one
+      // `yield`, and a shared mutable subtree would (a) duplicate any id-bearing
+      // node, tripping DUPLICATE_ID, and (b) be miscounted by later passes
+      // (e.g. a footnote ref in yielded content would render twice but get a
+      // single backlink). Each yield position gets an independent copy.
       replaced = true;
       node.type = 'Block';
-      node.nodes = [block];
+      node.nodes = [structuredClone(block)];
     }
   });
   if (!replaced) {
@@ -297,6 +344,22 @@ function applyYield(ast, block, includeNode, options) {
     );
   }
   return ast;
+}
+
+// Look up a reference definition by name, throwing the shared UNDEFINED_REFERENCE
+// error if it is missing. Used by both the ReferenceLink and ReferenceImage
+// branches so the error message and code stay in one place.
+function resolveDefOrThrow(node, definitions, sources) {
+  const def = definitions[node.name];
+  if (def === undefined) {
+    error(
+      'UNDEFINED_REFERENCE',
+      "Undefined reference '" + node.name + "'",
+      node,
+      sources,
+    );
+  }
+  return def;
 }
 
 function resolveReferences(ast, sources, warnings) {
@@ -331,15 +394,7 @@ function resolveReferences(ast, sources, warnings) {
       used[node.name] = true;
     }
     if (node.type === 'ReferenceLink') {
-      const def = definitions[node.name];
-      if (def === undefined) {
-        error(
-          'UNDEFINED_REFERENCE',
-          "Undefined reference '" + node.name + "'",
-          node,
-          sources,
-        );
-      }
+      const def = resolveDefOrThrow(node, definitions, sources);
       const url = def.url;
 
       let block = node.block;
@@ -388,15 +443,7 @@ function resolveReferences(ast, sources, warnings) {
       });
     }
     if (node.type === 'ReferenceImage') {
-      const def = definitions[node.name];
-      if (def === undefined) {
-        error(
-          'UNDEFINED_REFERENCE',
-          "Undefined reference '" + node.name + "'",
-          node,
-          sources,
-        );
-      }
+      const def = resolveDefOrThrow(node, definitions, sources);
       const url = def.url;
 
       let altBlock = node.block;
@@ -419,10 +466,10 @@ function resolveReferences(ast, sources, warnings) {
         };
       }
 
-      const altText = altBlock.nodes
-        .filter((n) => n.type === 'Text')
-        .map((n) => n.val)
-        .join('');
+      // Flatten the alt block to text via the same recursive helper TOC uses,
+      // so structured alt content (if it ever reaches here) is not silently
+      // dropped the way a top-level-Text-only filter would drop it.
+      const altText = extractText(altBlock.nodes);
 
       const attrs = [
         {
@@ -484,9 +531,28 @@ function toSuperscript(n) {
   return String(n)
     .split('')
     .map(function (d) {
-      return digits[parseInt(d)];
+      return digits[Number(d)];
     })
     .join('');
+}
+
+// Footnote anchor id scheme. The forward reference (`<sup><a id=…>`) and the
+// matching backlink (`<a href="#…">` in the rendered list item) MUST produce
+// identical strings for the same (name, index) or the bidirectional navigation
+// breaks silently. Keep both behind these helpers so the scheme can only be
+// changed in one place. NOTE: this encoding is not injective across the two id
+// families for adversarial footnote names (e.g. `x` referenced twice collides
+// with `x-2`, and a footnote named `reference-x` collides with `x`'s ref
+// anchor); making the families provably disjoint is tracked separately because
+// it also changes the shared /test-cases oracles.
+function footnoteDefId(name) {
+  return 'footnote-' + name;
+}
+
+function footnoteRefId(name, index) {
+  return index === 1
+    ? 'footnote-reference-' + name
+    : 'footnote-reference-' + name + '-' + index;
 }
 
 function resolveFootnotes(ast, sources, warnings) {
@@ -553,10 +619,7 @@ function resolveFootnotes(ast, sources, warnings) {
 
     const num = numberByName[name];
     const refIndex = ++refCountByName[name];
-    const refId =
-      refIndex === 1
-        ? 'footnote-reference-' + name
-        : 'footnote-reference-' + name + '-' + refIndex;
+    const refId = footnoteRefId(name, refIndex);
 
     const anchorNode = {
       type: 'Tag',
@@ -564,7 +627,7 @@ function resolveFootnotes(ast, sources, warnings) {
       attrs: [
         {
           name: 'href',
-          val: '#footnote-' + name,
+          val: '#' + footnoteDefId(name),
           line: node.line,
           column: node.column,
           filename: node.filename,
@@ -637,8 +700,10 @@ function resolveFootnotes(ast, sources, warnings) {
   });
 
   // Resolve refs inside definition blocks, but only for footnotes
-  // transitively reachable from body text. Fixpoint loop: process
-  // newly-discovered footnotes until no new ones appear.
+  // transitively reachable from body text. Fixpoint loop: each iteration numbers
+  // refs newly reachable through already-numbered footnotes. `nextNumber` is
+  // monotonic and bounded by the definition count, so the loop terminates; a
+  // footnote is rendered iff it is transitively reachable from body text.
   const resolved = Object.create(null);
   let changed = true;
   while (changed) {
@@ -691,10 +756,7 @@ function resolveFootnotes(ast, sources, warnings) {
 
         const backLinkNodes = [];
         for (let i = 1; i <= totalRefs; i++) {
-          const backId =
-            i === 1
-              ? 'footnote-reference-' + name
-              : 'footnote-reference-' + name + '-' + i;
+          const backId = footnoteRefId(name, i);
           const label = i === 1 ? '↩' : '↩' + toSuperscript(i);
           backLinkNodes.push({
             type: 'Tag',
@@ -747,7 +809,7 @@ function resolveFootnotes(ast, sources, warnings) {
           attrs: [
             {
               name: 'id',
-              val: 'footnote-' + name,
+              val: footnoteDefId(name),
               line: def.line,
               column: def.column,
               filename: def.filename,
@@ -834,7 +896,9 @@ function resolveToc(ast, sources, warnings) {
         node.attrs.find(function (a) {
           return a.name === 'id';
         });
-      if (!idAttr) return;
+      // Match lintDocument's id contract: a valueless/boolean id (val === true)
+      // is not a usable anchor target, so skip it rather than emit href="#true".
+      if (!idAttr || typeof idAttr.val !== 'string') return;
 
       let text = '';
       if (node.block && node.block.nodes) {
@@ -842,7 +906,7 @@ function resolveToc(ast, sources, warnings) {
       }
 
       headings.push({
-        level: parseInt(node.name[1]),
+        level: parseInt(node.name[1], 10),
         id: idAttr.val,
         text: text || idAttr.val,
       });

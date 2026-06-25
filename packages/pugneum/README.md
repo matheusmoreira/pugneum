@@ -51,6 +51,11 @@ That code compiles to:
 </html>
 ```
 
+> The HTML output blocks throughout this document are indented and
+> wrapped for readability. Pugneum actually emits compact, single-line
+> HTML with no inter-element whitespace; the tags, attributes, escaping,
+> and ordering shown are exact, but the formatting is not byte-for-byte.
+
 Pugneum is a variant of [pug],
 modified to be fully static.
 All dynamic features have been removed.
@@ -670,8 +675,10 @@ mixin button(url text)
 <a class="btn" href="/about">About</a>
 ```
 
-Variables can be used in both text content and attribute values
-with the `#{name}` syntax. Escape with `\#{` for literal output.
+Inside a mixin, variables can be used in both text content and
+attribute values with the `#{name}` syntax; the names refer to the
+mixin's arguments. Outside a mixin there is no variable scope, so
+`#{name}` is an error. Escape with `\#{` for literal output.
 
 Mixins can be called inline within text using `#(+mixin(args))`:
 
@@ -866,8 +873,9 @@ let html = pg.renderFile('page.pg');
 | --- | --- | --- |
 | `filename` | | Path to source file, required for includes and extends |
 | `basedir` | | Base directory for absolute include/extends paths |
-| `filters` | | Object mapping filter names to filter functions |
+| `filters` | | Object mapping filter names to filter objects `{type, filter}`, where `type` is one of `text`/`html`/`pugneum`/`syntax` and `filter(input, attrs)` returns the transformed output |
 | `filterOptions` | | Per-filter options object, keyed by filter name |
+| `warnings` | | Array to collect non-fatal diagnostics into. If provided, the caller owns emission (nothing is written to stderr); if omitted, diagnostics are deduplicated and printed to stderr |
 
 ## License
 

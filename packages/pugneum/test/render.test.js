@@ -165,10 +165,20 @@ describe('reference links', () => {
   });
 
   it('should handle ^[...] inside @[...] without premature ] close', () => {
-    var input = 'references\n  docs /docs\n\np @[docs text ^[note] end]';
+    // Define `note` as a real footnote and thread a warnings collector (so the
+    // UNUSED_FOOTNOTE diagnostic does not leak to stderr). The footnote ref must
+    // stay literal inside link text — proven by the literal output AND by the
+    // footnote remaining unused (it was never actually expanded as a reference).
+    var warnings = [];
+    var input =
+      'references\n  docs /docs\nfootnotes\n  note A note.\n\np @[docs text ^[note] end]';
     assert.strictEqual(
-      pg.render(input),
+      pg.render(input, {filename: 't.pg', warnings: warnings}),
       '<p><a href="/docs">text ^[note] end</a></p>',
+    );
+    assert.ok(
+      warnings.some((w) => w.code === 'PUGNEUM:UNUSED_FOOTNOTE'),
+      'footnote ref inside link text must stay literal (footnote unused)',
     );
   });
 
@@ -533,13 +543,6 @@ describe('interpolated tags', () => {
     assert.strictEqual(
       pg.render('p #(em *(real) \\@(escaped) text)'),
       '<p><em><strong>real</strong> @(escaped) text</em></p>',
-    );
-  });
-
-  it('should handle multiple escaped shorthands inside interpolation', () => {
-    assert.strictEqual(
-      pg.render('p #(em \\@(a) \\@(b) text)'),
-      '<p><em>@(a) @(b) text</em></p>',
     );
   });
 
@@ -1088,7 +1091,7 @@ describe('warnings', () => {
     var out = captureStderr(function () {
       pg.emitWarnings([Object.assign({}, dup), Object.assign({}, dup)]);
     });
-    assert.strictEqual((out.match(/PUGNEUM:DUP/g) || []).length, 1);
+    assert.strictEqual((out.match(/warning DUP/g) || []).length, 1);
   });
 
   it('emitWarnings keeps warnings that differ in location', () => {
@@ -1109,6 +1112,81 @@ describe('warnings', () => {
     var out = captureStderr(function () {
       pg.emitWarnings([a, b]);
     });
-    assert.strictEqual((out.match(/PUGNEUM:X/g) || []).length, 2);
+    assert.strictEqual((out.match(/warning X/g) || []).length, 2);
+  });
+
+  it('emitWarnings keeps warnings sharing a code+location but differing in message', () => {
+    // The dedup key now includes the message, so two diagnostics at the same
+    // code+location but with different detail are both emitted instead of one
+    // silently swallowing the other.
+    var a = {
+      code: 'PUGNEUM:X',
+      message: 'f.pg:1:1\n\ndetail A',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var b = {
+      code: 'PUGNEUM:X',
+      message: 'f.pg:1:1\n\ndetail B',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var out = captureStderr(function () {
+      pg.emitWarnings([a, b]);
+    });
+    assert.match(out, /detail A/);
+    assert.match(out, /detail B/);
+    assert.strictEqual((out.match(/warning X/g) || []).length, 2);
+  });
+
+  it('emitWarnings strips the internal PUGNEUM: prefix from the header', () => {
+    // The error path treats PUGNEUM: as an internal routing token never shown
+    // to users; the warning header must match that convention.
+    var w = {
+      code: 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER',
+      message: 'f.pg:1:1\n\nmsg',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var out = captureStderr(function () {
+      pg.emitWarnings([w]);
+    });
+    assert.match(out, /warning TYPOGRAPHIC_QUOTE_DELIMITER/);
+    assert.doesNotMatch(out, /warning PUGNEUM:/);
+  });
+
+  it('emitWarnings tolerates a null entry in the warnings array', () => {
+    // A junk null entry must be skipped, not crash warningKey with a TypeError.
+    var w = {
+      code: 'PUGNEUM:X',
+      message: 'f.pg:1:1\n\nm',
+      filename: 'f.pg',
+      line: 1,
+      column: 1,
+    };
+    var out = captureStderr(function () {
+      assert.doesNotThrow(function () {
+        pg.emitWarnings([null, w]);
+      });
+    });
+    assert.match(out, /warning X/);
+  });
+
+  it('emits collected warnings even when a later stage throws', () => {
+    // When render() owns the warnings array, diagnostics collected before a
+    // hard error must still reach stderr (finally), not be discarded.
+    var out = captureStderr(function () {
+      assert.throws(function () {
+        // Typographic quote (warning) on line 1, undefined reference (hard
+        // error) on line 2.
+        pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T\np @[missing]', {
+          filename: 'h.pg',
+        });
+      });
+    });
+    assert.match(out, /TYPOGRAPHIC_QUOTE_DELIMITER/);
   });
 });

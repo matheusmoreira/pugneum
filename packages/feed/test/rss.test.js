@@ -35,7 +35,35 @@ test('generates valid RSS feed', (t) => {
   t.assert.snapshot(xml);
 });
 
+test('entry keywords are emitted as RSS categories', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'A test feed',
+    author: 'A',
+    entries: [
+      {
+        url: 'https://example.com/p',
+        title: 'P',
+        published: '2026-01-01',
+        author: 'A',
+        content: '<p>x</p>',
+        keywords: ['alpha', 'beta'],
+      },
+    ],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+
+  var rss = generateRss(feed);
+
+  assert.ok(rss.includes('<category>alpha</category>'));
+  assert.ok(rss.includes('<category>beta</category>'));
+});
+
 test('generates valid RSS feed with no entries', (t) => {
+  // With no entries the feed-level <lastBuildDate> comes from buildDate (the
+  // production caller always sets buildDate and never sets `updated`).
   var feed = {
     url: 'https://example.com/',
     title: 'Empty Site',
@@ -44,12 +72,30 @@ test('generates valid RSS feed with no entries', (t) => {
     language: 'en',
     entries: [],
     rssPath: 'rss.xml',
-    updated: '2026-01-01',
+    buildDate: '2026-01-01T00:00:00Z',
   };
 
   var xml = generateRss(feed);
 
   t.assert.snapshot(xml);
+});
+
+test('empty feed with no buildDate does not emit "Invalid Date"', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Empty Site',
+    description: 'No articles yet',
+    author: 'Test Author',
+    language: 'en',
+    entries: [],
+    rssPath: 'rss.xml',
+  };
+
+  var rss = generateRss(feed);
+
+  // The empty-feed branch must reuse the guarded date fallback rather than
+  // formatting `new Date(undefined)`, which yields the literal "Invalid Date".
+  assert.ok(!rss.includes('Invalid Date'));
 });
 
 test('RSS description is required', () => {
@@ -67,6 +113,32 @@ test('RSS description is required', () => {
     () => generateRss(feed),
     (err) => err.code === 'PUGNEUM:FEED_MISSING_DESCRIPTION',
   );
+});
+
+test('zoneless datetime is interpreted as UTC, not local time', () => {
+  // RFC-822 output of a zoneless datetime must reflect the UTC instant, not the
+  // build host's local interpretation.
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Test',
+    description: 'A test feed',
+    author: 'Author',
+    entries: [
+      {
+        url: 'https://example.com/post',
+        title: 'Post',
+        published: '2026-03-15T10:30:00',
+        author: 'Author',
+        content: '<p>Content</p>',
+      },
+    ],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-01T00:00:00.000Z',
+  };
+
+  var rss = generateRss(feed);
+
+  assert.ok(rss.includes('<pubDate>Sun, 15 Mar 2026 10:30:00 GMT</pubDate>'));
 });
 
 test('invalid date string falls back to buildDate', () => {

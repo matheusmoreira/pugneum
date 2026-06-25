@@ -1,5 +1,6 @@
 const makeError = require('pugneum-error');
 const {escapeXml, escapeCdata} = require('./xml');
+const {parseDate, feedTimestamp} = require('./date');
 
 module.exports = function generateRss(feed) {
   if (!feed.description) {
@@ -26,6 +27,7 @@ module.exports = function generateRss(feed) {
         escapeCdata(entry.content) +
         ']]></content:encoded>',
       '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
+      categoryLines(entry.keywords, '      '),
       '    </item>',
     ]
       .filter((line) => line !== null)
@@ -47,7 +49,7 @@ module.exports = function generateRss(feed) {
 
   lines.push(
     '    <lastBuildDate>' +
-      escapeXml(feedLastBuildDate(feed)) +
+      escapeXml(feedTimestamp(feed).toUTCString()) +
       '</lastBuildDate>',
     '    <generator>pugneum-feed</generator>',
     '    <atom:link href="' +
@@ -64,22 +66,17 @@ module.exports = function generateRss(feed) {
   return lines.join('\n');
 };
 
-function feedLastBuildDate(feed) {
-  if (feed.entries.length > 0) {
-    return toRFC822(feed.entries[0].published, feed.buildDate);
-  }
-  if (feed.updated) {
-    return toRFC822(feed.updated, feed.buildDate);
-  }
-  return new Date(feed.buildDate).toUTCString();
+function toRFC822(dateStr, fallback) {
+  return parseDate(dateStr, fallback).toUTCString();
 }
 
-function toRFC822(dateStr, fallback) {
-  if (!dateStr) return new Date(fallback || Date.now()).toUTCString();
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
-    ? dateStr + 'T00:00:00Z'
-    : dateStr;
-  const d = new Date(normalized);
-  if (isNaN(d.getTime())) return new Date(fallback || Date.now()).toUTCString();
-  return d.toUTCString();
+// Emit one <category> per keyword (RSS 2.0), or null when there are none so the
+// surrounding .filter() drops the line.
+function categoryLines(keywords, indent) {
+  if (!keywords || keywords.length === 0) {
+    return null;
+  }
+  return keywords
+    .map((kw) => indent + '<category>' + escapeXml(kw) + '</category>')
+    .join('\n');
 }

@@ -1,9 +1,25 @@
 var path = require('path');
+var fs = require('fs');
+var os = require('os');
+var crypto = require('crypto');
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var extract = require('../lib/extract');
 
 var fixturesDir = path.join(__dirname, 'fixtures');
+
+function writeTemp(content) {
+  var p = path.join(
+    os.tmpdir(),
+    'pugneum-extract-' + crypto.randomUUID() + '.html',
+  );
+  fs.writeFileSync(p, content);
+  return p;
+}
+
+var HEAD =
+  '<base href="https://x.com/"><title>T</title>' +
+  '<meta name="description" content="d"><meta name="author" content="a">';
 
 describe('index page extraction', () => {
   test('extracts feed metadata from index page', () => {
@@ -35,6 +51,49 @@ describe('index page extraction', () => {
     assert.ok(!hrefs.includes('/'));
     assert.ok(!hrefs.includes('/about'));
   });
+
+  test('a nested matched element is skipped as a descendant', () => {
+    // The outer article carries data-published-at and so does a nested <time>;
+    // only the top-level article must become an entry. Exercises the
+    // ancestor-Set dedup that replaced the O(N^2) pairwise filter.
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head>' +
+        HEAD +
+        '</head><body>' +
+        '<article data-published-at="2026-01-02">' +
+        '<a href="outer.html">Outer</a>' +
+        '<time data-published-at="2026-01-01"><a href="inner.html">Inner</a></time>' +
+        '</article>' +
+        '</body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.strictEqual(result.entries.length, 1);
+      assert.strictEqual(result.entries[0].href, 'outer.html');
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
+
+  test('a leading anchor without href does not drop the entry', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head>' +
+        HEAD +
+        '</head><body>' +
+        '<li data-published-at="2026-01-01">' +
+        '<a name="top"></a><a href="real.html">Real Title</a>' +
+        '</li>' +
+        '</body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.strictEqual(result.entries.length, 1);
+      assert.strictEqual(result.entries[0].href, 'real.html');
+      assert.strictEqual(result.entries[0].title, 'Real Title');
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
 });
 
 describe('article page enrichment', () => {
@@ -64,5 +123,19 @@ describe('article page enrichment', () => {
     assert.strictEqual(result.author, 'Test Author');
     assert.deepStrictEqual(result.keywords, []);
     assert.ok(result.content.includes('<h1>Second Article</h1>'));
+  });
+
+  test('keywords drops empty segments from a sloppy comma list', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><title>K</title>' +
+        '<meta name="keywords" content="a, ,b,,c"></head>' +
+        '<body><article>x</article></body></html>',
+    );
+    try {
+      var result = extract.articlePage(p, 'article');
+      assert.deepStrictEqual(result.keywords, ['a', 'b', 'c']);
+    } finally {
+      fs.unlinkSync(p);
+    }
   });
 });

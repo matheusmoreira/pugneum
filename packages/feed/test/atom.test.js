@@ -34,6 +34,57 @@ test('generates valid Atom feed', (t) => {
   t.assert.snapshot(xml);
 });
 
+test('date-only published is pinned to midnight UTC', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'd',
+    author: 'A',
+    entries: [
+      {
+        url: 'https://example.com/p',
+        title: 'P',
+        published: '2026-03-15',
+        author: 'A',
+        content: '<p>x</p>',
+      },
+    ],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-01T00:00:00.000Z',
+  };
+
+  var xml = generateAtom(feed);
+
+  assert.ok(xml.includes('<published>2026-03-15T00:00:00.000Z</published>'));
+});
+
+test('zoneless datetime is interpreted as UTC, not local time', () => {
+  // A datetime with no timezone designator must be treated as UTC so the feed
+  // is reproducible regardless of the build machine's timezone. With local-time
+  // parsing the emitted instant would shift by the host offset.
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'd',
+    author: 'A',
+    entries: [
+      {
+        url: 'https://example.com/p',
+        title: 'P',
+        published: '2026-03-15T10:30:00',
+        author: 'A',
+        content: '<p>x</p>',
+      },
+    ],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-01T00:00:00.000Z',
+  };
+
+  var xml = generateAtom(feed);
+
+  assert.ok(xml.includes('<published>2026-03-15T10:30:00.000Z</published>'));
+});
+
 test('invalid date string falls back to buildDate', () => {
   var feed = {
     url: 'https://example.com/',
@@ -60,7 +111,54 @@ test('invalid date string falls back to buildDate', () => {
   assert.ok(xml.includes('2026-01-15T12:00:00.000Z'));
 });
 
+test('feed language is emitted as xml:lang on the root', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'd',
+    author: 'A',
+    language: 'en',
+    entries: [],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+
+  var xml = generateAtom(feed);
+
+  assert.ok(
+    xml.includes('<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">'),
+  );
+});
+
+test('entry keywords are emitted as Atom categories', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'd',
+    author: 'A',
+    entries: [
+      {
+        url: 'https://example.com/p',
+        title: 'P',
+        published: '2026-01-01',
+        author: 'A',
+        content: '<p>x</p>',
+        keywords: ['alpha', 'beta'],
+      },
+    ],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+
+  var xml = generateAtom(feed);
+
+  assert.ok(xml.includes('<category term="alpha"/>'));
+  assert.ok(xml.includes('<category term="beta"/>'));
+});
+
 test('generates valid Atom feed with no entries', (t) => {
+  // With no entries the feed-level <updated> comes from buildDate (the
+  // production caller always sets buildDate and never sets `updated`).
   var feed = {
     url: 'https://example.com/',
     title: 'Empty Site',
@@ -68,10 +166,28 @@ test('generates valid Atom feed with no entries', (t) => {
     author: 'Test Author',
     entries: [],
     atomPath: 'atom.xml',
-    updated: '2026-01-01',
+    buildDate: '2026-01-01T00:00:00Z',
   };
 
   var xml = generateAtom(feed);
 
   t.assert.snapshot(xml);
+});
+
+test('empty feed with no buildDate does not emit "Invalid Date"', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Empty Site',
+    description: 'No articles yet',
+    author: 'Test Author',
+    entries: [],
+    atomPath: 'atom.xml',
+  };
+
+  var xml = generateAtom(feed);
+
+  // The empty-feed branch must reuse the guarded date fallback, never leak the
+  // literal "Invalid Date" string nor emit an empty <updated> element.
+  assert.ok(!xml.includes('Invalid Date'));
+  assert.doesNotMatch(xml, /<updated><\/updated>/);
 });

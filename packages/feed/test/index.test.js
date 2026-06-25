@@ -57,6 +57,25 @@ describe('extract.indexPage robustness', () => {
     }
   });
 
+  test('empty data-published-at attribute excludes the entry', () => {
+    // An empty date is treated the same as an absent one: a dated feed should
+    // not carry an undated entry. This pins that intentional behavior.
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
+        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
+        '<li data-published-at=""><a href="undated.html">Undated</a></li>' +
+        '<li data-published-at="2026-01-02"><a href="dated.html">Dated</a></li>' +
+        '</body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.strictEqual(result.entries.length, 1);
+      assert.strictEqual(result.entries[0].href, 'dated.html');
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
+
   test('anchor without href is excluded from entries', () => {
     var p = writeTemp(
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
@@ -117,6 +136,75 @@ describe('resolveRelativeUrls', () => {
       '<img src="https://example.com/images/photo.jpg">',
     );
   });
+
+  test('data-href is not rewritten and the real href still is', () => {
+    // Regex over serialized HTML matched any attribute ending in href/src and
+    // preferred the rightmost one, corrupting data-* and leaving the real link
+    // relative. The DOM rewrite keys on the exact attribute name.
+    var html = '<a href="/real" data-href="/widget">x</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<a href="https://example.com/real" data-href="/widget">x</a>',
+    );
+  });
+
+  test('lone data-src attribute is left untouched', () => {
+    var html = '<img data-src="/lazy.jpg">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(result, '<img data-src="/lazy.jpg">');
+  });
+
+  test('single-quoted attribute is resolved', () => {
+    var html = "<a href='/sq.html'>x</a>";
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(result, '<a href="https://example.com/sq.html">x</a>');
+  });
+
+  test('href is resolved even when an earlier attribute value contains >', () => {
+    // The old regex stopped at the first '>' in an attribute value and never
+    // reached href; the DOM rewrite is immune. (A bare '>' is valid in an
+    // attribute value, so the serializer leaves it literal.)
+    var html = '<a title="a > b" href="/x.html">z</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<a title="a > b" href="https://example.com/x.html">z</a>',
+    );
+  });
+
+  test('srcset relative URLs are resolved, descriptors preserved', () => {
+    var html = '<img srcset="/a.jpg 1x, /b.jpg 2x" src="/a.jpg">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img srcset="https://example.com/a.jpg 1x, https://example.com/b.jpg 2x" src="https://example.com/a.jpg">',
+    );
+  });
+
+  test('source srcset relative URL is resolved', () => {
+    var html = '<source srcset="/img.jpg">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(result, '<source srcset="https://example.com/img.jpg">');
+  });
+
+  test('video poster and src are resolved', () => {
+    var html = '<video poster="/p.png" src="/v.mp4"></video>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<video poster="https://example.com/p.png" src="https://example.com/v.mp4"></video>',
+    );
+  });
+
+  test('XML-significant characters stay escaped in surrounding markup', () => {
+    var html = '<p>a &amp; b &lt; c</p><a href="/z">t</a>';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<p>a &amp; b &lt; c</p><a href="https://example.com/z">t</a>',
+    );
+  });
 });
 
 describe('end-to-end feed generation', () => {
@@ -165,7 +253,88 @@ describe('config overrides', () => {
   });
 });
 
+describe('end-to-end URL resolution', () => {
+  test('root-relative URLs in article content are absolutized in the feed', () => {
+    var dir = path.join(__dirname, 'fixtures-urls');
+    fs.mkdirSync(path.join(dir, 'articles'), {recursive: true});
+    fs.writeFileSync(
+      path.join(dir, 'index.html'),
+      '<!DOCTYPE html><html lang="en"><head>' +
+        '<base href="https://example.com/">' +
+        '<title>Site</title>' +
+        '<meta name="description" content="d">' +
+        '<meta name="author" content="A">' +
+        '</head><body>' +
+        '<li data-published-at="2026-01-01"><a href="articles/post.html">Post</a></li>' +
+        '</body></html>',
+    );
+    fs.writeFileSync(
+      path.join(dir, 'articles', 'post.html'),
+      '<!DOCTYPE html><html><head><title>Post</title>' +
+        '<meta name="description" content="s"></head><body><article>' +
+        '<a href="/other.html">link</a>' +
+        '<img src="/img.png" srcset="/a.png 1x, /b.png 2x">' +
+        '<a data-href="/keep">keep</a>' +
+        '</article></body></html>',
+    );
+
+    try {
+      generateFeeds({
+        outputDirectory: dir,
+        feeds: {enabled: true},
+        writeDirectory: dir,
+      });
+      var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
+      // Root-relative href/src/srcset are absolutized...
+      assert.ok(atom.includes('https://example.com/other.html'));
+      assert.ok(atom.includes('https://example.com/img.png'));
+      assert.ok(atom.includes('https://example.com/a.png 1x'));
+      assert.ok(atom.includes('https://example.com/b.png 2x'));
+      // ...but data-href is left exactly as authored.
+      assert.ok(atom.includes('data-href=&quot;/keep&quot;'));
+    } finally {
+      fs.rmSync(dir, {recursive: true});
+    }
+  });
+});
+
 describe('error handling', () => {
+  test('throws FEED_INVALID_URL for a path-only base href', () => {
+    var dir = path.join(__dirname, 'fixtures-relbase');
+    fs.mkdirSync(dir, {recursive: true});
+    fs.writeFileSync(
+      path.join(dir, 'index.html'),
+      '<!DOCTYPE html><html><head>' +
+        '<base href="/blog/">' +
+        '<title>T</title>' +
+        '<meta name="description" content="d"></head><body></body></html>',
+    );
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: dir,
+          feeds: {enabled: true},
+          writeDirectory: dir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
+    );
+
+    fs.rmSync(dir, {recursive: true});
+  });
+
+  test('throws FEED_INVALID_URL for a protocol-relative feeds.url', () => {
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: fixturesDir,
+          feeds: {enabled: true, url: '//cdn.example.com/'},
+          writeDirectory: outputDir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
+    );
+  });
+
   test('throws when base URL is unresolvable', () => {
     var noBaseDir = path.join(__dirname, 'fixtures-no-base');
     fs.mkdirSync(noBaseDir, {recursive: true});

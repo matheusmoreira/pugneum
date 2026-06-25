@@ -1,18 +1,16 @@
 const {escapeXml} = require('./xml');
+const {parseDate, feedTimestamp} = require('./date');
 
 module.exports = function generateAtom(feed) {
   const entries = feed.entries.map((entry) => {
+    const timestamp = toISO8601(entry.published, feed.buildDate);
     return [
       '  <entry>',
       '    <title>' + escapeXml(entry.title) + '</title>',
       '    <link href="' + escapeXml(entry.url) + '" rel="alternate"/>',
       '    <id>' + escapeXml(entry.url) + '</id>',
-      '    <published>' +
-        escapeXml(toISO8601(entry.published, feed.buildDate)) +
-        '</published>',
-      '    <updated>' +
-        escapeXml(toISO8601(entry.published, feed.buildDate)) +
-        '</updated>',
+      '    <published>' + escapeXml(timestamp) + '</published>',
+      '    <updated>' + escapeXml(timestamp) + '</updated>',
       entry.summary
         ? '    <summary>' + escapeXml(entry.summary) + '</summary>'
         : null,
@@ -20,15 +18,21 @@ module.exports = function generateAtom(feed) {
       '    <author>',
       '      <name>' + escapeXml(entry.author) + '</name>',
       '    </author>',
+      categoryLines(entry.keywords, '    '),
       '  </entry>',
     ]
       .filter((line) => line !== null)
       .join('\n');
   });
 
+  // Carry the language as xml:lang on the root, mirroring RSS's <language>.
+  const langAttr = feed.language
+    ? ' xml:lang="' + escapeXml(feed.language) + '"'
+    : '';
+
   const lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
-    '<feed xmlns="http://www.w3.org/2005/Atom">',
+    '<feed xmlns="http://www.w3.org/2005/Atom"' + langAttr + '>',
     '  <title>' + escapeXml(feed.title) + '</title>',
   ];
 
@@ -40,7 +44,7 @@ module.exports = function generateAtom(feed) {
     '  <link href="' + escapeXml(feed.url) + '" rel="alternate"/>',
     '  <link href="' + escapeXml(feed.url + feed.atomPath) + '" rel="self"/>',
     '  <id>' + escapeXml(feed.url) + '</id>',
-    '  <updated>' + feedUpdated(feed) + '</updated>',
+    '  <updated>' + escapeXml(feedTimestamp(feed).toISOString()) + '</updated>',
     '  <author>',
     '    <name>' + escapeXml(feed.author) + '</name>',
     '  </author>',
@@ -56,22 +60,17 @@ module.exports = function generateAtom(feed) {
   return lines.join('\n');
 };
 
-function feedUpdated(feed) {
-  if (feed.entries.length > 0) {
-    return escapeXml(toISO8601(feed.entries[0].published, feed.buildDate));
-  }
-  if (feed.updated) {
-    return escapeXml(toISO8601(feed.updated, feed.buildDate));
-  }
-  return escapeXml(feed.buildDate);
+function toISO8601(dateStr, fallback) {
+  return parseDate(dateStr, fallback).toISOString();
 }
 
-function toISO8601(dateStr, fallback) {
-  if (!dateStr) return fallback || new Date().toISOString();
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
-    ? dateStr + 'T00:00:00Z'
-    : dateStr;
-  const d = new Date(normalized);
-  if (isNaN(d.getTime())) return fallback || new Date().toISOString();
-  return d.toISOString();
+// Emit one <category term="..."/> per keyword (Atom 1.0 §4.2.2), or null when
+// there are none so the surrounding .filter() drops the line.
+function categoryLines(keywords, indent) {
+  if (!keywords || keywords.length === 0) {
+    return null;
+  }
+  return keywords
+    .map((kw) => indent + '<category term="' + escapeXml(kw) + '"/>')
+    .join('\n');
 }

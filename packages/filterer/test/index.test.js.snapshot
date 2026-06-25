@@ -10,7 +10,6 @@ exports[`filters can be used 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "name": "custom",
             "line": 3,
             "column": 3,
             "filename": "index.test.js",

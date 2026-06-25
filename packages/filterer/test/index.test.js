@@ -422,3 +422,328 @@ test('warnings from pugneum-type filter output reach the shared collector', () =
   );
   assert.strictEqual(typographic.length, 1);
 });
+
+// --- Nested filters: outer filter must consume inner structured output ---
+// Previously a pugneum/syntax inner filter was rewritten into a Block node
+// (no .val) and getBodyAsText (n.val || '') silently dropped it, so a
+// string-consuming outer filter received ''. The inner output is now rendered
+// to HTML and handed to the outer filter.
+
+test('html outer filter consumes a nested pugneum inner filter (was silently dropped)', () => {
+  const filters = {
+    outer: {type: 'html', filter: (str) => '[OUTER:' + str + ']'},
+    innerpug: {type: 'pugneum', filter: () => 'strong hi'},
+  };
+  const source = `
+p
+  :outer:innerpug
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, filters);
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  // Inner pugneum 'strong hi' renders to <strong>hi</strong>, wrapped by outer.
+  assert.strictEqual(textNode.val, '[OUTER:<strong>hi</strong>]');
+});
+
+test('html outer filter consumes a nested syntax inner filter (was silently dropped)', () => {
+  const filters = {
+    outer: {type: 'html', filter: (str) => '[OUTER:' + str + ']'},
+    innersyn: {
+      type: 'syntax',
+      filter: () => [
+        {
+          type: 'Tag',
+          name: 'em',
+          attrs: [],
+          attributeBlocks: [],
+          isInline: true,
+          block: {
+            type: 'Block',
+            nodes: [{type: 'Text', val: 'syn', line: 1, column: 1, filename}],
+            line: 1,
+            filename,
+          },
+          line: 1,
+          column: 1,
+          filename,
+        },
+      ],
+    },
+  };
+  const source = `
+p
+  :outer:innersyn
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, filters);
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(textNode.val, '[OUTER:<em>syn</em>]');
+});
+
+test('text outer filter escapes the HTML of a nested pugneum inner filter', () => {
+  const filters = {
+    txt: {type: 'text', filter: (str) => str},
+    innerpug: {type: 'pugneum', filter: () => 'strong hi'},
+  };
+  const source = `
+p
+  :txt:innerpug
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, filters);
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  // text outer escapes the inner <strong>hi</strong> HTML it received.
+  assert.strictEqual(textNode.val, '&lt;strong&gt;hi&lt;/strong&gt;');
+});
+
+test('text outer filter escapes the HTML of a nested syntax inner filter', () => {
+  const filters = {
+    txt: {type: 'text', filter: (str) => str},
+    innersyn: {
+      type: 'syntax',
+      filter: () => [
+        {
+          type: 'Tag',
+          name: 'em',
+          attrs: [],
+          attributeBlocks: [],
+          isInline: true,
+          block: {
+            type: 'Block',
+            nodes: [{type: 'Text', val: 'x', line: 1, column: 1, filename}],
+            line: 1,
+            filename,
+          },
+          line: 1,
+          column: 1,
+          filename,
+        },
+      ],
+    },
+  };
+  const source = `
+p
+  :txt:innersyn
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, filters);
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(textNode.val, '&lt;em&gt;x&lt;/em&gt;');
+});
+
+test('filterer errors carry the source code frame', () => {
+  const source = `
+p
+  :bogusfilter
+    test
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {}, {source}),
+    (err) =>
+      err.code === 'PUGNEUM:UNKNOWN_FILTER' &&
+      // The ±3-line code frame (error/index.js) renders the offending line with
+      // a "> N|" marker only when source is threaded through; previously every
+      // filterer error hard-coded source:'' so this frame was absent.
+      />\s*3\|/.test(err.message) &&
+      /bogusfilter/.test(err.message),
+  );
+});
+
+test('filterer errors use options.sources for an included node filename', () => {
+  // A Filter node whose filename has its own entry in options.sources should
+  // get that source for its code frame, not options.source.
+  const ast = {
+    type: 'Block',
+    nodes: [
+      {
+        type: 'Filter',
+        name: 'nope',
+        block: {type: 'Block', nodes: []},
+        attrs: [],
+        line: 1,
+        column: 1,
+        filename: 'partial.pg',
+      },
+    ],
+    line: 1,
+    filename: 'partial.pg',
+  };
+  const opts = {source: 'entry source', sources: {'partial.pg': ':nope'}};
+  assert.throws(
+    () => filter(ast, {}, opts),
+    (err) => err.code === 'PUGNEUM:UNKNOWN_FILTER' && /:nope/.test(err.message),
+  );
+});
+
+test('filter that throws a primitive (null) is wrapped as FILTER_ERROR', () => {
+  const exploding = {
+    type: 'html',
+    filter: function () {
+      throw null;
+    },
+  };
+  const source = `
+p
+  :exploding
+    test
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  assert.throws(
+    () => filter(ast, {exploding}),
+    (err) => err.code === 'PUGNEUM:FILTER_ERROR',
+  );
+});
+
+test('rewritten filter node carries no stale name property', () => {
+  const source = `
+p
+  :custom
+    body
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const output = filter(ast, customFilters);
+
+  const textNode = output.nodes[0].block.nodes[0];
+  assert.strictEqual(textNode.type, 'Text');
+  assert.strictEqual(textNode.name, undefined);
+});
+
+test('syntax filter emitting a blockless Filter node does not crash with a raw TypeError', () => {
+  const filters = {
+    outer: {
+      type: 'syntax',
+      filter: () => [{type: 'Filter', name: 'inner', attrs: []}],
+    },
+    inner: {type: 'html', filter: () => 'Z'},
+  };
+  const source = `
+p
+  :outer
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  // Must surface a coded PUGNEUM error (or succeed), never a bare TypeError
+  // from dereferencing node.block.nodes on a blockless Filter.
+  try {
+    const output = filter(ast, filters);
+    // If it succeeds, the inner filter ran on an empty body.
+    assert.ok(output);
+  } catch (err) {
+    assert.ok(
+      err.code && err.code.startsWith('PUGNEUM:'),
+      'expected a coded PUGNEUM error, got: ' + err,
+    );
+  }
+});
+
+// --- Positive include-filter coverage (the RawInclude chain path) ---
+
+function rawIncludeAst(filters, str) {
+  return {
+    type: 'Block',
+    nodes: [
+      {
+        type: 'RawInclude',
+        filters: filters,
+        file: {fullPath: 'data.txt', str: str},
+        line: 1,
+        column: 1,
+        filename,
+      },
+    ],
+    line: 1,
+    filename,
+  };
+}
+
+test('single html-type include filter passes file content through raw', () => {
+  const wrap = {type: 'html', filter: (s) => '<b>' + s + '</b>'};
+  const ast = rawIncludeAst([{name: 'wrap', attrs: []}], 'a & b');
+  const output = filter(ast, {wrap});
+  const node = output.nodes[0];
+  assert.strictEqual(node.type, 'Text');
+  assert.strictEqual(node.val, '<b>a & b</b>');
+});
+
+test('single text-type include filter escapes the final output', () => {
+  const ident = {type: 'text', filter: (s) => s};
+  const ast = rawIncludeAst([{name: 'ident', attrs: []}], '<x> & "y"');
+  const output = filter(ast, {ident});
+  const node = output.nodes[0];
+  assert.strictEqual(node.type, 'Text');
+  assert.strictEqual(node.val, '&lt;x&gt; &amp; &quot;y&quot;');
+});
+
+test('include filter chain applies right-to-left (innermost wraps file first)', () => {
+  const filters = {
+    a: {type: 'html', filter: (s) => 'A(' + s + ')'},
+    b: {type: 'html', filter: (s) => 'B(' + s + ')'},
+    c: {type: 'html', filter: (s) => 'C(' + s + ')'},
+  };
+  // Source order [a, b, c] => a(b(c(RAW))).
+  const ast = rawIncludeAst(
+    [
+      {name: 'a', attrs: []},
+      {name: 'b', attrs: []},
+      {name: 'c', attrs: []},
+    ],
+    'X',
+  );
+  const output = filter(ast, filters);
+  assert.strictEqual(output.nodes[0].val, 'A(B(C(X)))');
+});
+
+test('include chain output-validation error names the failing (outermost) filter', () => {
+  const filters = {
+    // a is outermost (applied last) and returns a non-string.
+    a: {type: 'html', filter: () => 999},
+    b: {type: 'html', filter: (s) => s},
+  };
+  const ast = rawIncludeAst(
+    [
+      {name: 'a', attrs: []},
+      {name: 'b', attrs: []},
+    ],
+    'X',
+  );
+  assert.throws(
+    () => filter(ast, filters),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /Filter 'a'/.test(err.message),
+  );
+});
+
+test('include chain validates intermediate (non-final) filter output', () => {
+  const filters = {
+    // outer consumes; inner (applied first) returns a non-string.
+    outer: {type: 'html', filter: (s) => 'O(' + s + ')'},
+    inner: {type: 'html', filter: () => undefined},
+  };
+  const ast = rawIncludeAst(
+    [
+      {name: 'outer', attrs: []},
+      {name: 'inner', attrs: []},
+    ],
+    'X',
+  );
+  assert.throws(
+    () => filter(ast, filters),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /Filter 'inner'/.test(err.message),
+  );
+});

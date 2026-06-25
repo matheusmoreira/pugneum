@@ -10,7 +10,6 @@ exports[`per filter options are applied, even to nested filters 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "name": "first",
             "line": 3,
             "column": 3,
             "filename": "per-filter-options-applied-to-nested-filters.test.js",

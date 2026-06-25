@@ -14,11 +14,27 @@ var filter = require('pugneum-filterer');
 
 ### `applyFilters(ast, filters, options)`
 
-Renders all `Filter` nodes in a pugneum abstract syntax tree.
+Applies filters to a pugneum abstract syntax tree, mutating it in
+place and also returning it. Two kinds of node are processed:
 
-`options` is an optional object whose keys are filter names
-and whose values are objects merged into the attributes
-passed to that filter.
+- `Filter` nodes — block filters written as `:name`. All four filter
+  types (`text`, `html`, `pugneum`, `syntax`) are allowed.
+- `RawInclude` nodes carrying filters — include filters written as
+  `include:name path`. These are restricted to `text` and `html`
+  types. A chain such as `include:a:b path` applies right-to-left:
+  the rightmost filter (`b`) wraps the file contents first, then `a`
+  wraps that result.
+
+```
+var ast = applyFilters(ast, filters, {filterOptions: {custom: {opt: 'x'}}});
+```
+
+`options` is an optional object. Per-filter options are read from
+`options.filterOptions`, an object whose keys are filter names and
+whose values are objects merged into the attributes passed to that
+filter. (Top-level option keys are never passed to filters.) The
+`options.warnings` array, if provided, collects warnings raised while
+re-lexing `pugneum`-type filter output.
 
 `filters` is an object mapping names to filter descriptor objects:
 
@@ -56,8 +72,12 @@ Every filter must declare a `type` property:
 }
 ```
 
-If `binary` is specified as true, the filter receives a raw input buffer
-containing binary data instead of already decoded text.
+If `binary` is specified as true, an include filter (`include:name`)
+receives the raw file contents (`file.raw`) instead of the decoded
+string. The `binary` flag is only consulted on the include path; it
+has no effect on `:name` block filters, whose input is always the
+filter body text. Whether the raw contents are a `Buffer` or a string
+depends on the configured loader `read()` function.
 
 The built-in `verbatim` filter passes text through unchanged.
 It is always available without any configuration.

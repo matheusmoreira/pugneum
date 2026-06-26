@@ -627,16 +627,22 @@ describe('footnote transitive fixpoint and multi-reference rendering', () => {
     return warnings.filter((w) => w.code === 'PUGNEUM:UNUSED_FOOTNOTE');
   }
 
-  test('a footnote reachable only through another footnote is numbered and rendered (fixpoint)', () => {
-    // Body refs `a`; def a contains a ref to `b`; b is reachable ONLY transitively.
-    // The fixpoint loop must number b on a later iteration and render its <li>; b
-    // must NOT be reported UNUSED_FOOTNOTE.
+  test('a footnote reachable only through a CHAIN of footnotes is numbered and rendered (fixpoint)', () => {
+    // Body refs `a`; a refs b; b refs c; c refs d — so b, c and d are reachable
+    // ONLY transitively, each a further iteration deep. The fixpoint while-loop
+    // must RE-ITERATE until d is numbered: a single pass would discover only b
+    // (the keys added mid-iteration are not re-enumerated) and silently drop c
+    // and d. All four render in def order and NONE warns UNUSED_FOOTNOTE — a
+    // one-level a->b chain (the prior fixture) passes even single-pass, so it
+    // could not pin this; the depth-3 chain does.
     const {linked, warnings} = linkSource(
-      'p Body text^[a]\n\nfootnotes\n  a See also^[b]\n  b The deep note',
+      'p Body text^[a]\n\nfootnotes\n  a See^[b]\n  b also^[c]\n  c deeper^[d]\n  d The deep note',
     );
     assert.deepStrictEqual(footnoteListItemIds(linked), [
       'footnote-a',
       'footnote-b',
+      'footnote-c',
+      'footnote-d',
     ]);
     assert.strictEqual(unusedFootnotes(warnings).length, 0);
   });

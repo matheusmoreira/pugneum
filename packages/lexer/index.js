@@ -354,10 +354,20 @@ function findClosingQuote(str, quote, start) {
  * @returns {string}
  */
 function unescapeShorthand(str) {
-  // Strip the backslash from an escaped shorthand sigil so the literal survives:
-  // \( \) \\ \' \" and \# (so an escaped \#{ renders as the literal text #{,
-  // including inside `(...) code spans — used by the table filter to neutralize
-  // interpolation in cell data).
+  // Strip the backslash from an escaped shorthand delimiter so the literal
+  // survives: \( \) \\ \' \". NOTE: \# is deliberately NOT stripped here — the
+  // link/image/abbr shorthands route their content into a child ATTRIBUTE that
+  // is interpolated later, where a surviving \#{ is handled correctly; stripping
+  // it here would re-expose a live #{ and crash (CALL_STACK_UNDERFLOW). Literal
+  // code-span content uses unescapeCodeSpan instead.
+  return str.replace(/\\([()\\'"])/g, '$1');
+}
+
+// Code-span content is literal text and is NOT re-interpolated downstream, so an
+// escaped \#{ must become the literal #{ right here — this is how a table cell's
+// neutralized `#{` renders correctly inside `(...). Same as unescapeShorthand
+// plus \# -> #.
+function unescapeCodeSpan(str) {
   return str.replace(/\\([()\\'"#])/g, '$1');
 }
 
@@ -1378,7 +1388,7 @@ class Lexer {
       }
       throw ex;
     }
-    const content = unescapeShorthand(range.src);
+    const content = unescapeCodeSpan(range.src);
 
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);

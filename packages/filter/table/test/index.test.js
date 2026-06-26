@@ -551,6 +551,22 @@ describe('literal #{ in cell/caption text', () => {
     assert.doesNotThrow(() => roundTrip(input));
     assert.doesNotThrow(() => renderTable(input));
   });
+
+  test('#{ inside link/image/abbr shorthands in a cell renders literally (attribute sinks)', () => {
+    // @()/!()/?() route content into href/alt/title ATTRIBUTES that interpolate
+    // later, so the escaped \#{ must survive the shorthand unescape (which must
+    // NOT strip \#) and be resolved at attribute time. Regression guard: a shared
+    // \#-># unescape re-exposed a live #{ here and crashed CALL_STACK_UNDERFLOW.
+    assert.match(
+      renderTable('| --- |\n| @(http://x/#{n} go) |'),
+      /<a href="http:\/\/x\/#\{n\}">go<\/a>/,
+    );
+    assert.match(
+      renderTable('| --- |\n| !(a.png alt #{n}) |'),
+      /<img src="a\.png" alt="alt #\{n\}">/,
+    );
+    assert.doesNotThrow(() => renderTable('| --- |\n| ?(API uses #{tok}) |'));
+  });
 });
 
 // classifyCell must require a BALANCED (attrs) group for verbatim treatment, so

@@ -356,6 +356,112 @@ describe('error handling', () => {
     fs.rmSync(noBaseDir, {recursive: true});
   });
 
+  test('error messages do not carry a stray leading "0"', () => {
+    // Feed errors have no source-template location. pugneum-error builds its
+    // header from present parts, so passing line:0 (finite but not a real line)
+    // used to push a literal "0", rendering every message as "0\n\n<message>".
+    // The message must equal the raw message text with no header prefix.
+    var noBaseDir = path.join(__dirname, 'fixtures-no-base-msg');
+    fs.mkdirSync(noBaseDir, {recursive: true});
+    fs.writeFileSync(
+      path.join(noBaseDir, 'index.html'),
+      '<!DOCTYPE html><html><head><title>No Base</title>' +
+        '<meta name="description" content="test"></head><body></body></html>',
+    );
+
+    try {
+      assert.throws(
+        () =>
+          generateFeeds({
+            outputDirectory: noBaseDir,
+            feeds: {enabled: true},
+            writeDirectory: noBaseDir,
+          }),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:FEED_MISSING_URL');
+          // No "0\n\n" (or any) header in front of the message.
+          assert.strictEqual(err.message, err.msg);
+          assert.doesNotMatch(err.message, /^0\n/);
+          return true;
+        },
+      );
+    } finally {
+      fs.rmSync(noBaseDir, {recursive: true});
+    }
+  });
+
+  test('extensionless article href resolves via the .html fallback', () => {
+    // A common SSG pattern: index links to "articles/post" (no extension) and the
+    // file on disk is "articles/post.html". index.js appends ".html" when the bare
+    // path is absent. Exercises that previously-untested fallback end-to-end.
+    var dir = path.join(__dirname, 'fixtures-html-fallback');
+    fs.mkdirSync(path.join(dir, 'articles'), {recursive: true});
+    fs.writeFileSync(
+      path.join(dir, 'index.html'),
+      '<!DOCTYPE html><html lang="en"><head>' +
+        '<base href="https://example.com/"><title>T</title>' +
+        '<meta name="description" content="d">' +
+        '<meta name="author" content="A"></head><body>' +
+        '<li data-published-at="2026-01-01"><a href="articles/post">No ext</a></li>' +
+        '</body></html>',
+    );
+    fs.writeFileSync(
+      path.join(dir, 'articles', 'post.html'),
+      '<!DOCTYPE html><html><head><title>Post</title>' +
+        '<meta name="description" content="s"></head><body>' +
+        '<article><p>hi</p></article></body></html>',
+    );
+
+    try {
+      generateFeeds({
+        outputDirectory: dir,
+        feeds: {enabled: true},
+        writeDirectory: dir,
+      });
+      var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
+      // The entry was built from the .html file: its link is the (extensionless)
+      // href resolved against the base, and title/content came from the article
+      // page (the article body content is XML-escaped inside <content>).
+      assert.ok(atom.includes('https://example.com/articles/post'));
+      assert.ok(atom.includes('<title>Post</title>'));
+      assert.ok(
+        atom.includes('<content type="html">&lt;p&gt;hi&lt;/p&gt;</content>'),
+      );
+    } finally {
+      fs.rmSync(dir, {recursive: true});
+    }
+  });
+
+  test('throws FEED_ARTICLE_NOT_FOUND when an article href is a directory', () => {
+    // The href resolves to an existing path, but it is a directory, not a file.
+    // index.js guards this with statSync(...).isFile().
+    var dir = path.join(__dirname, 'fixtures-article-dir');
+    fs.mkdirSync(path.join(dir, 'articles', 'post.html'), {recursive: true});
+    fs.writeFileSync(
+      path.join(dir, 'index.html'),
+      '<!DOCTYPE html><html lang="en"><head>' +
+        '<base href="https://example.com/"><title>T</title>' +
+        '<meta name="description" content="d">' +
+        '<meta name="author" content="A"></head><body>' +
+        '<li data-published-at="2026-01-01"><a href="articles/post.html">Dir</a></li>' +
+        '</body></html>',
+    );
+
+    try {
+      assert.throws(
+        () =>
+          generateFeeds({
+            outputDirectory: dir,
+            feeds: {enabled: true},
+            writeDirectory: dir,
+          }),
+        (err) => err.code === 'PUGNEUM:FEED_ARTICLE_NOT_FOUND',
+      );
+    } finally {
+      fs.rmSync(dir, {recursive: true});
+    }
+  });
+
   test('throws FEED_ARTICLE_NOT_FOUND for missing article', () => {
     var missingDir = path.join(__dirname, 'fixtures-missing-article');
     fs.mkdirSync(missingDir, {recursive: true});

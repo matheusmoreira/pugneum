@@ -4,10 +4,12 @@ const {parseDate, feedTimestamp} = require('./date');
 
 module.exports = function generateRss(feed) {
   if (!feed.description) {
+    // No source location (a config/HTML-metadata failure); passing line:0 would
+    // prefix the message with a stray "0" header. See feedError in index.js.
     throw makeError(
       'FEED_MISSING_DESCRIPTION',
       'RSS requires a channel description. Add a <meta name="description"> to your index page or set feeds.description in pugneum.json.',
-      {line: 0, column: 0, filename: ''},
+      {},
     );
   }
 

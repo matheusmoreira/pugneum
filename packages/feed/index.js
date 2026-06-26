@@ -7,11 +7,14 @@ const extract = require('./lib/extract');
 const generateAtom = require('./lib/atom');
 const generateRss = require('./lib/rss');
 
-// Feed errors are filesystem/config failures with no source-template location,
-// so they all share an empty location object (the project convention, also used
-// by the loader). This wrapper keeps that single decision in one place.
+// Feed errors are filesystem/config failures with no source-template location.
+// Pass NO location: pugneum-error renders the `filename:line:column` header only
+// from present parts, so an absent line/column/filename yields a clean message
+// with no header. (Passing `line: 0` would push a literal "0" into the header —
+// line 0 is finite but not a real source line — prefixing every message with a
+// stray "0\n\n".) This wrapper keeps that single decision in one place.
 function feedError(code, message) {
-  return makeError(code, message, {line: 0, column: 0, filename: ''});
+  return makeError(code, message, {});
 }
 
 // Security boundary: a resolved path must stay inside an allowed base directory.

@@ -1,6 +1,46 @@
 module.exports = makeError;
 module.exports.warning = makeWarning;
 
+// One-entry memo of `src.split('\n')` keyed by the source string. The real hot
+// path is a single document that produces many located diagnostics on the same
+// source (e.g. N DUPLICATE_ID warnings from the linker): without this, every
+// diagnostic re-splits the whole source, making the total cost O(N * lines).
+// Memoizing only the MOST-RECENT source is O(1) memory and collapses that case
+// to a single split. String keys compared with === are by value, so two equal
+// source strings hit the cache and the line array is byte-identical to a fresh
+// split; a WeakMap is unusable here because string keys are illegal.
+var lastSource = null;
+var lastLines = null;
+// Observable miss counter: incremented only on an actual split (cache miss), so
+// tests can assert the split is reused across repeated same-source calls. Not
+// part of the rendered output or the public error/warning shape.
+var splitMisses = 0;
+
+function splitLines(src) {
+  if (src === lastSource) return lastLines;
+  splitMisses++;
+  lastSource = src;
+  lastLines = src.split('\n');
+  return lastLines;
+}
+
+// Internal, non-enumerable hook for tests only (does not affect output or the
+// error/warning object shape). `misses` reports how many real splits happened;
+// `reset` clears the memo so a test starts from a known state.
+Object.defineProperty(module.exports, '_splitLinesMemo', {
+  enumerable: false,
+  value: {
+    get misses() {
+      return splitMisses;
+    },
+    reset: function () {
+      lastSource = null;
+      lastLines = null;
+      splitMisses = 0;
+    },
+  },
+});
+
 function formatMessage(message, options) {
   // Normalize line/column to numbers for all internal comparisons and
   // arithmetic; the raw values are still copied onto the result object so the
@@ -19,7 +59,7 @@ function formatMessage(message, options) {
     parts.push(line + (column ? ':' + column : ''));
   }
   const header = parts.join(':');
-  const lines = typeof src === 'string' ? src.split('\n') : null;
+  const lines = typeof src === 'string' ? splitLines(src) : null;
   if (lines && line >= 1 && line <= lines.length) {
     const start = Math.max(line - 4, 0);
     const end = Math.min(lines.length, line + 3);

@@ -278,3 +278,78 @@ describe('robust against odd inputs', function () {
     assert.strictEqual(warn.code, 'PUGNEUM:MY_CODE');
   });
 });
+
+describe('source line-split memoization', function () {
+  // A document that emits many located diagnostics on the same source (e.g. N
+  // DUPLICATE_ID warnings from the linker) must not re-split the whole source
+  // once per diagnostic — that is O(N * lines). formatMessage memoizes the split
+  // for the most-recent source string, so N same-source calls split exactly once.
+  var src = 'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9';
+
+  test('repeated same-source calls produce byte-identical output', function () {
+    var expected = error('MY_CODE', 'My message', {
+      line: 5,
+      column: 2,
+      source: src,
+    }).message;
+    for (var i = 0; i < 50; i++) {
+      assert.strictEqual(
+        error('MY_CODE', 'My message', {line: 5, column: 2, source: src})
+          .message,
+        expected,
+      );
+    }
+    // warnings share the same formatter, so the path is identical for them too
+    assert.strictEqual(
+      error.warning('MY_CODE', 'My message', {line: 5, column: 2, source: src})
+        .message,
+      expected,
+    );
+  });
+
+  test('the source is split only once across many same-source diagnostics', function () {
+    error._splitLinesMemo.reset();
+    var N = 200;
+    for (var i = 0; i < N; i++) {
+      // vary line/column so each diagnostic is distinct but the source is shared
+      error('DUPLICATE_ID', 'dup #' + i, {
+        line: (i % 9) + 1,
+        column: 1,
+        source: src,
+      });
+    }
+    // Without the memo this would be N splits; with it, exactly one.
+    assert.strictEqual(error._splitLinesMemo.misses, 1);
+  });
+
+  test('a changed source re-splits, and switching back re-splits again', function () {
+    error._splitLinesMemo.reset();
+    var a = 'a1\na2\na3';
+    var b = 'b1\nb2\nb3';
+    error('C', 'm', {line: 1, source: a}); // miss 1 (a)
+    error('C', 'm', {line: 1, source: a}); // hit
+    error('C', 'm', {line: 1, source: b}); // miss 2 (b evicts a)
+    error('C', 'm', {line: 1, source: b}); // hit
+    error('C', 'm', {line: 1, source: a}); // miss 3 (a again, was evicted)
+    assert.strictEqual(error._splitLinesMemo.misses, 3);
+    // output for the re-split source is still correct
+    assert.strictEqual(
+      error('C', 'My message', {line: 2, source: a}).message,
+      '2\n    1| a1\n  > 2| a2\n    3| a3\n\nMy message',
+    );
+  });
+
+  test('a non-string source never populates the memo (no false cache hit)', function () {
+    error._splitLinesMemo.reset();
+    // non-string sources take the no-context branch and must not be split/cached
+    error('C', 'm', {line: 1, source: 12345});
+    error('C', 'm', {line: 1, source: Buffer.from('x\ny')});
+    assert.strictEqual(error._splitLinesMemo.misses, 0);
+    // a following string source still works and is the first real split
+    assert.strictEqual(
+      error('C', 'My message', {line: 1, source: 'only'}).message,
+      '1\n  > 1| only\n\nMy message',
+    );
+    assert.strictEqual(error._splitLinesMemo.misses, 1);
+  });
+});

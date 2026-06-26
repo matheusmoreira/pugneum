@@ -6,6 +6,7 @@ var {test, describe} = require('node:test');
 var tableFilter = require('../');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
+var render = require('pugneum-renderer');
 
 // The table filter is type:'pugneum' — the filterer re-lexes/re-parses its
 // output. Round-trip the generated source through the real lexer+parser so a
@@ -521,6 +522,34 @@ describe('literal #{ in cell/caption text', () => {
     // *(bold) is left intact (the lexer turns it into <strong>); only #{ is
     // neutralized.
     assert.match(result, /td \*\(bold\)/);
+  });
+
+  // The over-escape leak only manifests after render (the intermediate source
+  // looks fine), so render the filter output through the full pipeline.
+  function renderTable(input) {
+    var src = tableFilter.filter(input, {});
+    var options = {filename: 'gen.pg', source: src};
+    return render(parse(lex(src, options), options), options);
+  }
+
+  test('a TAGGED cell containing #{x} does not crash and renders it literally', () => {
+    var input = '| --- |\n| th(scope="col") cost #{usd} |';
+    assert.doesNotThrow(() => roundTrip(input));
+    assert.match(renderTable(input), /<th[^>]*>cost #\{usd\}<\/th>/);
+  });
+
+  test('#{ inside a `(...) code span renders literally with no leaked backslash', () => {
+    var html = renderTable('| --- |\n| `(fmt #{n} end)` |');
+    assert.match(html, /<code>fmt #\{n\} end<\/code>/);
+    assert.doesNotMatch(html, /\\#\{/);
+  });
+
+  test('an even-length backslash run before #{ cannot smuggle a live interpolation', () => {
+    // `\\#{x}` is a literal backslash + a would-be interpolation; escaping must
+    // account for the run so the re-lex does not crash with VARIABLE_OUTSIDE_MIXIN.
+    var input = '| --- |\n| path \\\\#{x} |';
+    assert.doesNotThrow(() => roundTrip(input));
+    assert.doesNotThrow(() => renderTable(input));
   });
 });
 

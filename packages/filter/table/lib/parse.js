@@ -218,7 +218,9 @@ function taggedCellHeadLength(cell) {
 }
 
 // Classify a cell as tagged, escaped, or bare.
-// Returns {verbatim: string} or {tag: string, text: string}.
+// Returns {verbatim: head, text: string} for a tagged cell (head = tag+attrs,
+// text = trailing text incl. its leading space, or ''), or {tag, text} for an
+// escaped \th/\td or a bare cell.
 function classifyCell(cell, defaultTag) {
   // Escaped \th / \td: a leading backslash whose UNESCAPED form would be a
   // tagged cell. Strip the backslash and emit as data so the literal text
@@ -227,9 +229,13 @@ function classifyCell(cell, defaultTag) {
   if (cell[0] === '\\' && taggedCellHeadLength(cell.slice(1)) !== -1) {
     return {tag: defaultTag, text: cell.slice(1)};
   }
-  // Tagged cell: emit verbatim, letting the real lexer parse tag/attrs.
-  if (taggedCellHeadLength(cell) !== -1) {
-    return {verbatim: cell};
+  // Tagged cell: the head (tag + balanced attrs) is returned verbatim for the
+  // real lexer to parse; the trailing text is returned separately so generate.js
+  // can neutralize a literal `#{` in it without touching the head (the head's
+  // attribute values are not cell-escaped).
+  const headLen = taggedCellHeadLength(cell);
+  if (headLen !== -1) {
+    return {verbatim: cell.slice(0, headLen), text: cell.slice(headLen)};
   }
   // Bare cell
   return {tag: defaultTag, text: cell};

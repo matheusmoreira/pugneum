@@ -354,7 +354,11 @@ function findClosingQuote(str, quote, start) {
  * @returns {string}
  */
 function unescapeShorthand(str) {
-  return str.replace(/\\([()\\'"])/g, '$1');
+  // Strip the backslash from an escaped shorthand sigil so the literal survives:
+  // \( \) \\ \' \" and \# (so an escaped \#{ renders as the literal text #{,
+  // including inside `(...) code spans — used by the table filter to neutralize
+  // interpolation in cell data).
+  return str.replace(/\\([()\\'"#])/g, '$1');
 }
 
 /**

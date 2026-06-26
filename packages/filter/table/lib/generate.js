@@ -106,13 +106,20 @@ function formatAttrs(attrs) {
 // Pugneum, where `#{name}` is variable interpolation that is illegal outside a
 // mixin (VARIABLE_OUTSIDE_MIXIN) — so a table documenting shell prompts or
 // Pugneum syntax would otherwise crash the whole build. The lexer treats a
-// backslash-escaped `\#{` as the literal text `#{`, so we prepend a backslash
-// to each unescaped `#{`. A `#{` already preceded by a backslash is left alone
-// (the author already escaped it; double-escaping would reintroduce the crash).
-// Inline shorthand sigils (`*(`, `@(`, ...) are deliberately left ACTIVE per the
-// cell contract; only `#{` is neutralized.
+// backslash-escaped `\#{` as the literal text `#{` everywhere it re-lexes cell
+// text — plain text, inline-shorthand content, and `(...) code spans alike (see
+// unescapeShorthand) — so we prepend a backslash to each LIVE `#{`. "Live" means
+// an even-length run of preceding backslashes (including zero); an odd run is
+// already escaped, and escaping it again would yield `\\#{` = a literal
+// backslash followed by live interpolation (the crash, reintroduced).
+// Inline shorthand sigils (`*(`, `@(`, ...) stay ACTIVE per the cell contract;
+// only `#{` is neutralized. Applied to every re-lexed cell-text path (bare cell,
+// tagged-cell trailing text, caption); a `#{` inside a tagged head's attribute
+// value is the rarer, unhandled case.
 function escapeCellText(text) {
-  return text.replace(/(?<!\\)#\{/g, '\\#{');
+  return text.replace(/(\\*)(#\{)/g, function (match, slashes, hash) {
+    return slashes.length % 2 === 0 ? slashes + '\\' + hash : match;
+  });
 }
 
 // Generate indented Pugneum lines for a section (thead, tbody, or tfoot),
@@ -132,7 +139,15 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
       const classified = classifyCell(cell, defaultCellTag);
       let cellLine;
       if (classified.verbatim !== undefined) {
-        cellLine = indent + '    ' + classified.verbatim;
+        // Tagged cell: the head (tag + attrs) is verbatim Pugneum the real lexer
+        // parses; only the trailing text is re-lexed as inline content, so
+        // neutralize a literal `#{` there (classified.text keeps its leading
+        // space, or is '' when the cell is head-only).
+        cellLine =
+          indent +
+          '    ' +
+          classified.verbatim +
+          escapeCellText(classified.text);
       } else {
         cellLine = indent + '    ' + classified.tag;
         if (classified.tag === 'th' && sectionTag === 'thead') {

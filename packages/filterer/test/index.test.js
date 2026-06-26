@@ -6,9 +6,24 @@ var {test} = require('node:test');
 
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
+var link = require('pugneum-linker');
+var render = require('pugneum-renderer');
 var filter = require('../');
 
 var filename = path.basename(__filename);
+
+// Run the slice of the pipeline that exercises a pugneum-type filter end to end:
+// lex -> parse -> link (document pass) -> filter -> render. The document link
+// pass runs BEFORE the filterer (and consumes the document's references/
+// footnotes blocks), which is exactly the condition under which a pugneum
+// filter's @[ref]/^[fn]/toc output used to reach the renderer unresolved.
+function renderPipeline(source, filters, opts) {
+  const options = Object.assign({filename, source, warnings: []}, opts);
+  const ast = parse(lex(source, options), options);
+  const linked = link(ast, options);
+  const filtered = filter(linked, filters, options);
+  return render(filtered, options);
+}
 
 var customFilters = {
   custom: {
@@ -745,5 +760,138 @@ test('include chain validates intermediate (non-final) filter output', () => {
     (err) =>
       err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
       /Filter 'inner'/.test(err.message),
+  );
+});
+
+// --- pugneum-type filter output is re-linked so embedded reference/footnote/
+// --- toc/include constructs resolve instead of crashing the renderer.
+//
+// The document linker pass runs before the filterer and consumes the document's
+// references/footnotes blocks, so a @[ref]/^[fn]/toc emitted by a pugneum filter
+// previously reached the renderer unresolved and threw a raw, uncoded TypeError
+// ("...is of type ReferenceLink, which is not supported..."). The filterer now
+// re-runs the linker on the filter sub-AST.
+
+test('toc inside pugneum filter output resolves to a nav (was raw TypeError)', () => {
+  // The fragment carries the heading it indexes, so the toc resolves fully.
+  const filters = {
+    tocgen: {type: 'pugneum', filter: () => 'h2#sec Section\ntoc'},
+  };
+  const html = renderPipeline('div\n  :tocgen\n    ignored', filters);
+  assert.match(html, /<nav role="doc-toc"/);
+  assert.match(html, /<a href="#sec">Section<\/a>/);
+  assert.doesNotMatch(html, /Toc/);
+});
+
+test('@[ref] inside pugneum filter output resolves when the fragment defines it', () => {
+  // A pugneum filter whose output is a self-contained fragment: it emits both
+  // the reference use and a references block defining it. The re-link resolves
+  // the ReferenceLink into an <a href>.
+  const filters = {
+    reffer: {
+      type: 'pugneum',
+      filter: () =>
+        'p see @[site here]\nreferences\n  site https://example.com',
+    },
+  };
+  const html = renderPipeline('div\n  :reffer\n    ignored', filters);
+  assert.match(html, /<a href="https:\/\/example\.com">here<\/a>/);
+  assert.doesNotMatch(html, /ReferenceLink/);
+});
+
+test('^[footnote] inside pugneum filter output resolves when the fragment defines it', () => {
+  const filters = {
+    fngen: {
+      type: 'pugneum',
+      filter: () => 'p text^[n]\nfootnotes\n  n a note',
+    },
+  };
+  const html = renderPipeline('div\n  :fngen\n    ignored', filters);
+  // Forward reference marker and the rendered endnotes section both appear.
+  assert.match(html, /role="doc-noteref"/);
+  assert.match(html, /role="doc-endnotes"/);
+  assert.match(html, /id="footnote-n"/);
+  assert.doesNotMatch(html, /FootnoteRef/);
+});
+
+test('![ref] image inside pugneum filter output resolves when the fragment defines it', () => {
+  const filters = {
+    imggen: {
+      type: 'pugneum',
+      filter: () => 'p ![logo the logo]\nreferences\n  logo /logo.png',
+    },
+  };
+  const html = renderPipeline('div\n  :imggen\n    ignored', filters);
+  assert.match(html, /<img[^>]*src="\/logo\.png"/);
+  assert.match(html, /alt="the logo"/);
+  assert.doesNotMatch(html, /ReferenceImage/);
+});
+
+test('pugneum filter @[ref] with no definition gives a coded error, not a raw TypeError', () => {
+  // The definition lives only in the outer document, which the re-link cannot
+  // see. Graceful degradation: a coded UNDEFINED_REFERENCE diagnostic rather
+  // than the renderer's raw, uncoded TypeError leaking internal node names.
+  const filters = {
+    reffer: {type: 'pugneum', filter: () => 'p see @[gone here]'},
+  };
+  const source = 'div\n  :reffer\n    ignored\nreferences\n  gone /x';
+  assert.throws(
+    () => renderPipeline(source, filters),
+    (err) =>
+      err.code === 'PUGNEUM:UNDEFINED_REFERENCE' &&
+      // It must be a proper coded error, never the renderer's bare TypeError.
+      err.code.startsWith('PUGNEUM:') &&
+      !/which is not supported by the pugneum compiler/.test(err.message),
+  );
+});
+
+test('plain pugneum filter output (no linker construct) renders unchanged', () => {
+  // The guard skips the re-link entirely when no linker-resolved node is
+  // present, so ordinary filter output (the common case, e.g. the table
+  // filter) is byte-identical to before — no link/lint pass runs.
+  const filters = {
+    plain: {type: 'pugneum', filter: () => 'strong hi'},
+  };
+  const html = renderPipeline('p\n  :plain\n    ignored', filters);
+  assert.strictEqual(html, '<p><strong>hi</strong></p>');
+});
+
+test('pugneum filter nested in pugneum filter re-links without infinite recursion', () => {
+  // The inner pugneum filter emits a fragment with a toc + heading; the outer
+  // pugneum filter wraps that. The walker re-processes the inner :inner filter
+  // inside the outer's output, re-entering parsePugneum. The recursion guard
+  // must keep this bounded (no RangeError / stack overflow) and still resolve
+  // the toc.
+  const filters = {
+    outer: {type: 'pugneum', filter: (s) => 'section\n  :inner\n    ' + s},
+    inner: {type: 'pugneum', filter: () => 'h2#z Zed\ntoc'},
+  };
+  const html = renderPipeline('div\n  :outer\n    seed', filters);
+  assert.match(html, /<section>/);
+  assert.match(html, /<nav role="doc-toc"/);
+  assert.match(html, /<a href="#z">Zed<\/a>/);
+});
+
+test('pugneum-filter unit re-link resolves toc directly via applyFilters', () => {
+  // A unit-level check that does not depend on render/link wiring in the
+  // pipeline helper: a pugneum filter emitting `toc` plus a heading must be
+  // rewritten to a Block whose subtree contains the resolved <nav>, not a
+  // surviving Toc node.
+  const filters = {
+    t: {type: 'pugneum', filter: () => 'h3#h Head\ntoc'},
+  };
+  const source = 'div\n  :t\n    ignored';
+  const ast = parse(lex(source, {filename, source}), {filename, source});
+  const out = filter(ast, filters, {filename, source});
+  const types = [];
+  (function collect(n) {
+    types.push(n.type);
+    if (n.block && n.block.nodes) n.block.nodes.forEach(collect);
+    if (n.nodes) n.nodes.forEach(collect);
+  })(out);
+  assert.ok(!types.includes('Toc'), 'Toc node must be resolved away');
+  assert.ok(
+    types.some((tp) => tp === 'Tag'),
+    'resolved nav/ol/li/a Tag nodes must be present',
   );
 });

@@ -36,7 +36,7 @@ source string
   → renderer   generates HTML string from final AST
 ```
 
-Orchestrated in `packages/pugneum/index.js` (38 lines — the entire pipeline in one function).
+Orchestrated in `packages/pugneum/index.js` (82 lines): `renderPugneum` runs the entire pipeline in one function, alongside `renderPugneumFile`, `emitWarnings`, and the `warningKey` dedup helper.
 
 Cross-cutting packages:
 - **walker** — depth-first AST traversal with before/after hooks, used by loader, linker, and filterer
@@ -64,7 +64,7 @@ Uses Node.js native test runner (`node:test`) with `node:assert/strict`. No exte
 
 ## Code Style
 
-Prettier with: `singleQuote: true`, `bracketSpacing: false`, `trailingComma: 'all'`. Node.js >=18, CommonJS (`require`/`exports`).
+Prettier with: `singleQuote: true`, `bracketSpacing: false`, `trailingComma: 'all'`. Node.js >=22, CommonJS (`require`/`exports`).
 
 ## Template Syntax (unique to pugneum)
 
@@ -106,5 +106,5 @@ Shorthands nest: `*(strongly _(emphasized `(code)))` works. Balanced parentheses
 ### Other syntax
 - `mixin name(arg1 arg2?)` — `?` is part of the name, referenced as `#{arg2?}`; trailing args are implicitly optional
 - Named mixin blocks — `block name` inside a mixin defines a named slot; callers fill slots with `block name`, `append name`, or `prepend name`; a mixin may combine an unnamed `block` with named blocks, in which case caller content not inside a named block fills the unnamed slot
-- `given name` — inside a mixin, renders its subtree only if the caller provides content for the named block; enables structural conditional rendering without expressions (wrapper elements absent when a slot is unused)
+- `given name` — inside a mixin, renders its subtree only if the caller names the block `name` (presence; an empty `block name` still fires it, yielding an empty wrapper); enables structural conditional rendering without expressions (wrapper elements absent when the slot is never named)
 - `toc` — table of contents generated from headings with IDs; placed where the `toc` keyword appears; only headings with explicit `id` attributes are included

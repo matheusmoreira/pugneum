@@ -59,29 +59,59 @@ const DEFAULT_MAX_LINK_DEPTH = 256;
 
 module.exports = link;
 
-// Public entry: link the tree, then run whole-document lints exactly once on
-// the final result. linkInner recurses for template inheritance; keeping the
-// lint pass out here means "run once on the assembled tree" no longer depends
-// on the recursion depth counter.
+// Public entry. `link` assembles the tree (template inheritance + includes) and
+// then resolves document-level constructs (references/footnotes/toc) + lints —
+// the full single-call behaviour most callers want. The pipeline (packages/
+// pugneum) instead calls `link.assemble` and, AFTER the filterer has run,
+// `link.resolve`, so the constructs a pugneum-type filter emits (@[ref]/^[fn]/toc
+// inside e.g. a table cell) participate in the same resolution as the rest of
+// the tree instead of reaching the renderer unresolved. Splitting the passes is
+// also why resolution is now document-global — one pass over the assembled tree
+// rather than per-include-level, so references/footnotes/toc cross include/extends.
 function link(ast, options) {
+  options = establishWarnings(options);
+  return resolveDocument(linkInner(ast, options), options);
+}
+
+// Assembly only: template inheritance (extends/blocks) + includes. No reference/
+// footnote/toc resolution and no whole-document lint — those run later, in
+// resolve(), over the fully assembled + filtered tree.
+link.assemble = function (ast, options) {
+  options = establishWarnings(options);
+  return linkInner(ast, options);
+};
+
+// Document-level resolution over the final assembled + filtered tree: references,
+// then TOC, then footnotes, then the whole-document lint. resolveToc must run
+// before resolveFootnotes (heading text is captured before footnote [n] markers
+// exist, so a heading like `h2#sec Title^[n]` does not pull a resolved "[1]" into
+// its TOC entry). lintDocument runs last so it sees resolution-generated ids
+// (footnote ids, etc.).
+function resolveDocument(ast, options) {
+  options = establishWarnings(options);
+  const sources = options.sources;
+  const warnings = options.warnings;
+  ast = resolveReferences(ast, sources, warnings);
+  ast = resolveToc(ast, sources, warnings);
+  ast = resolveFootnotes(ast, sources, warnings);
+  lintDocument(ast, sources, warnings);
+  return ast;
+}
+link.resolve = resolveDocument;
+
+// Establish a single warnings array on the options object (mirroring how the
+// loader establishes options.sources): guards against a non-array `warnings`,
+// makes diagnostics reachable for a bare caller, and ensures every pass collects
+// into the same array.
+function establishWarnings(options) {
   options = options || {};
-  // Establish a single warnings array on the options object (mirroring how the
-  // loader establishes options.sources). This guards against a non-array
-  // `warnings`, makes diagnostics reachable for a bare `link(ast)` caller, and
-  // ensures linkInner and lintDocument collect into the same array rather than
-  // two separate throwaway ones.
-  if (!Array.isArray(options.warnings)) {
-    options.warnings = [];
-  }
-  const result = linkInner(ast, options);
-  lintDocument(result, options.sources, options.warnings);
-  return result;
+  if (!Array.isArray(options.warnings)) options.warnings = [];
+  return options;
 }
 
 function linkInner(ast, options) {
   options = options || {};
   const sources = options.sources;
-  const warnings = options.warnings || [];
   const maxDepth =
     options.maxLinkDepth != null
       ? options.maxLinkDepth
@@ -122,12 +152,6 @@ function linkInner(ast, options) {
     }
   }
   ast = applyIncludes(ast, options);
-  ast = resolveReferences(ast, sources, warnings);
-  // resolveToc must run before resolveFootnotes: heading text is captured here
-  // and footnote [n] markers must not yet exist, or a heading like
-  // `h2#sec Title^[n]` would pick up the resolved "[1]" into its TOC entry.
-  ast = resolveToc(ast, sources, warnings);
-  ast = resolveFootnotes(ast, sources, warnings);
   ast.declaredBlocks = findDeclaredBlocks(ast);
   if (extendsNode) {
     const mixins = [];

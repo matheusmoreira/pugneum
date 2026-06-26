@@ -12,17 +12,19 @@ var filter = require('../');
 
 var filename = path.basename(__filename);
 
-// Run the slice of the pipeline that exercises a pugneum-type filter end to end:
-// lex -> parse -> link (document pass) -> filter -> render. The document link
-// pass runs BEFORE the filterer (and consumes the document's references/
-// footnotes blocks), which is exactly the condition under which a pugneum
-// filter's @[ref]/^[fn]/toc output used to reach the renderer unresolved.
+// Run the slice of the pipeline that exercises a pugneum-type filter end to end,
+// in the real pipeline order: lex -> parse -> link.assemble (inheritance/
+// includes) -> filter -> link.resolve (references/footnotes/toc) -> render.
+// Resolution runs AFTER the filterer, over the fully assembled + filtered tree,
+// so a @[ref]/^[fn]/toc a pugneum filter emits resolves alongside the rest of the
+// document — including definitions that live in the OUTER document.
 function renderPipeline(source, filters, opts) {
   const options = Object.assign({filename, source, warnings: []}, opts);
   const ast = parse(lex(source, options), options);
-  const linked = link(ast, options);
-  const filtered = filter(linked, filters, options);
-  return render(filtered, options);
+  const assembled = link.assemble(ast, options);
+  const filtered = filter(assembled, filters, options);
+  const resolved = link.resolve(filtered, options);
+  return render(resolved, options);
 }
 
 var customFilters = {
@@ -763,14 +765,14 @@ test('include chain validates intermediate (non-final) filter output', () => {
   );
 });
 
-// --- pugneum-type filter output is re-linked so embedded reference/footnote/
-// --- toc/include constructs resolve instead of crashing the renderer.
+// --- reference/footnote/toc constructs a pugneum-type filter emits resolve over
+// --- the assembled tree, because document-level resolution (link.resolve) runs
+// --- AFTER the filterer (see renderPipeline / packages/pugneum).
 //
-// The document linker pass runs before the filterer and consumes the document's
-// references/footnotes blocks, so a @[ref]/^[fn]/toc emitted by a pugneum filter
-// previously reached the renderer unresolved and threw a raw, uncoded TypeError
-// ("...is of type ReferenceLink, which is not supported..."). The filterer now
-// re-runs the linker on the filter sub-AST.
+// Previously a @[ref]/^[fn]/toc emitted by a pugneum filter reached the renderer
+// unresolved and threw a raw, uncoded TypeError ("...is of type ReferenceLink,
+// which is not supported..."); now they resolve alongside the rest of the
+// document, including against definitions that live only in the outer document.
 
 test('toc inside pugneum filter output resolves to a nav (was raw TypeError)', () => {
   // The fragment carries the heading it indexes, so the toc resolves fully.
@@ -785,8 +787,8 @@ test('toc inside pugneum filter output resolves to a nav (was raw TypeError)', (
 
 test('@[ref] inside pugneum filter output resolves when the fragment defines it', () => {
   // A pugneum filter whose output is a self-contained fragment: it emits both
-  // the reference use and a references block defining it. The re-link resolves
-  // the ReferenceLink into an <a href>.
+  // the reference use and a references block defining it. Resolution turns the
+  // ReferenceLink into an <a href>.
   const filters = {
     reffer: {
       type: 'pugneum',
@@ -827,48 +829,69 @@ test('![ref] image inside pugneum filter output resolves when the fragment defin
   assert.doesNotMatch(html, /ReferenceImage/);
 });
 
-test('pugneum filter @[ref] with no definition gives a coded error, not a raw TypeError', () => {
-  // The definition lives only in the outer document, which the re-link cannot
-  // see. Graceful degradation: a coded UNDEFINED_REFERENCE diagnostic rather
-  // than the renderer's raw, uncoded TypeError leaking internal node names.
+test('@[ref] in filter output resolves against an OUTER-DOCUMENT references block', () => {
+  // The headline of #4: the reference definition lives ONLY in the outer
+  // document. Because resolution runs after the filterer over the whole assembled
+  // tree, the @[ref] a pugneum filter emits resolves against the document's
+  // references block — a full resolution, not a degrade to a coded error.
   const filters = {
-    reffer: {type: 'pugneum', filter: () => 'p see @[gone here]'},
+    reffer: {type: 'pugneum', filter: () => 'p see @[site here]'},
   };
-  const source = 'div\n  :reffer\n    ignored\nreferences\n  gone /x';
+  const source =
+    'div\n  :reffer\n    ignored\nreferences\n  site https://example.com';
+  const html = renderPipeline(source, filters);
+  assert.match(html, /<a href="https:\/\/example\.com">here<\/a>/);
+  assert.doesNotMatch(html, /ReferenceLink/);
+});
+
+test('a @[ref] defined NOWHERE still errors with a coded UNDEFINED_REFERENCE', () => {
+  // Resolution is global, so "undefined" means undefined across the whole
+  // document — and it is still a clean coded error, never the renderer's raw
+  // TypeError leaking internal node names.
+  const filters = {
+    reffer: {type: 'pugneum', filter: () => 'p see @[ghost here]'},
+  };
   assert.throws(
-    () => renderPipeline(source, filters),
+    () => renderPipeline('div\n  :reffer\n    ignored', filters),
     (err) =>
       err.code === 'PUGNEUM:UNDEFINED_REFERENCE' &&
-      // It must be a proper coded error, never the renderer's bare TypeError.
-      err.code.startsWith('PUGNEUM:') &&
       !/which is not supported by the pugneum compiler/.test(err.message),
   );
 });
 
-test('pugneum filter ^[footnote] with no definition gives a coded error, not a raw TypeError', () => {
-  // Symmetric to the @[ref] degrade above: a footnote whose definition lives
-  // only in the outer document degrades to a coded UNDEFINED_FOOTNOTE, never a
-  // raw TypeError leaking internal node names.
+test('^[footnote] in filter output resolves against an OUTER-DOCUMENT footnotes block', () => {
+  // Symmetric to the @[ref] case: a footnote a pugneum filter emits resolves
+  // against the document's footnotes block and is numbered together with the
+  // rest of the document's footnotes.
   const filters = {
-    fnner: {type: 'pugneum', filter: () => 'p text^[gone]'},
+    fnner: {type: 'pugneum', filter: () => 'p text^[n]'},
   };
-  const source = 'div\n  :fnner\n    ignored\nfootnotes\n  gone a note';
+  const source = 'div\n  :fnner\n    ignored\nfootnotes\n  n a note';
+  const html = renderPipeline(source, filters);
+  assert.match(html, /role="doc-noteref"/);
+  assert.match(html, /role="doc-endnotes"/);
+  assert.match(html, /id="footnote-n"/);
+  assert.doesNotMatch(html, /FootnoteRef/);
+});
+
+test('a ^[footnote] defined NOWHERE still errors with a coded UNDEFINED_FOOTNOTE', () => {
+  const filters = {
+    fnner: {type: 'pugneum', filter: () => 'p text^[ghost]'},
+  };
   assert.throws(
-    () => renderPipeline(source, filters),
+    () => renderPipeline('div\n  :fnner\n    ignored', filters),
     (err) =>
       err.code === 'PUGNEUM:UNDEFINED_FOOTNOTE' &&
-      err.code.startsWith('PUGNEUM:') &&
       !/which is not supported by the pugneum compiler/.test(err.message),
   );
 });
 
-test('include/extends in pugneum filter output is a clean coded error, not a raw re-link crash', () => {
-  // A loader construct cannot be resolved by the filterer re-link: file
-  // resolution runs BEFORE filters, so the include target was never loaded
-  // (node.file.ast is unset) and re-running the linker on it would deref
-  // undefined and crash with a raw, uncoded "Cannot read properties of
-  // undefined" TypeError. The filterer must reject it up front with a coded
-  // UNSUPPORTED_FILTER_CONSTRUCT pointing at the filter invocation.
+test('include/extends in pugneum filter output is a clean coded error', () => {
+  // A loader construct cannot be resolved downstream: file resolution (the
+  // loader) runs BEFORE filters, so the include target is never loaded. The
+  // filterer rejects it up front with a coded UNSUPPORTED_FILTER_CONSTRUCT
+  // pointing at the filter invocation, rather than letting an unresolved node
+  // reach the renderer.
   for (const directive of ['include nope.pg', 'extends layout.pg']) {
     const filters = {bad: {type: 'pugneum', filter: () => directive}};
     assert.throws(
@@ -882,9 +905,9 @@ test('include/extends in pugneum filter output is a clean coded error, not a raw
 });
 
 test('plain pugneum filter output (no linker construct) renders unchanged', () => {
-  // The guard skips the re-link entirely when no linker-resolved node is
-  // present, so ordinary filter output (the common case, e.g. the table
-  // filter) is byte-identical to before — no link/lint pass runs.
+  // Ordinary filter output (the common case, e.g. the table filter emits only
+  // Tag/Text) carries no reference/footnote/toc node, so the resolve pass is a
+  // no-op over it and it renders byte-identically.
   const filters = {
     plain: {type: 'pugneum', filter: () => 'strong hi'},
   };
@@ -892,12 +915,11 @@ test('plain pugneum filter output (no linker construct) renders unchanged', () =
   assert.strictEqual(html, '<p><strong>hi</strong></p>');
 });
 
-test('pugneum filter nested in pugneum filter re-links without infinite recursion', () => {
+test('nested pugneum filters: the inner toc resolves over the assembled tree', () => {
   // The inner pugneum filter emits a fragment with a toc + heading; the outer
-  // pugneum filter wraps that. The walker re-processes the inner :inner filter
-  // inside the outer's output, re-entering parsePugneum. The recursion guard
-  // must keep this bounded (no RangeError / stack overflow) and still resolve
-  // the toc.
+  // pugneum filter wraps it. The filterer walk processes both; the single
+  // post-filter resolve pass then resolves the toc over the whole tree. (No
+  // re-link recursion — the filterer no longer links anything itself.)
   const filters = {
     outer: {type: 'pugneum', filter: (s) => 'section\n  :inner\n    ' + s},
     inner: {type: 'pugneum', filter: () => 'h2#z Zed\ntoc'},
@@ -908,26 +930,37 @@ test('pugneum filter nested in pugneum filter re-links without infinite recursio
   assert.match(html, /<a href="#z">Zed<\/a>/);
 });
 
-test('pugneum-filter unit re-link resolves toc directly via applyFilters', () => {
-  // A unit-level check that does not depend on render/link wiring in the
-  // pipeline helper: a pugneum filter emitting `toc` plus a heading must be
-  // rewritten to a Block whose subtree contains the resolved <nav>, not a
-  // surviving Toc node.
+test('filter() leaves the Toc node unresolved; link.resolve resolves it', () => {
+  // Pins the boundary: the filterer produces the parsed sub-AST with the Toc node
+  // INTACT (it no longer resolves linker constructs itself); the post-filter
+  // link.resolve pass turns it into a <nav>.
   const filters = {
     t: {type: 'pugneum', filter: () => 'h3#h Head\ntoc'},
   };
   const source = 'div\n  :t\n    ignored';
-  const ast = parse(lex(source, {filename, source}), {filename, source});
-  const out = filter(ast, filters, {filename, source});
-  const types = [];
-  (function collect(n) {
-    types.push(n.type);
-    if (n.block && n.block.nodes) n.block.nodes.forEach(collect);
-    if (n.nodes) n.nodes.forEach(collect);
-  })(out);
-  assert.ok(!types.includes('Toc'), 'Toc node must be resolved away');
-  assert.ok(
-    types.some((tp) => tp === 'Tag'),
-    'resolved nav/ol/li/a Tag nodes must be present',
+  const options = {filename, source, warnings: []};
+  const assembled = link.assemble(
+    parse(lex(source, options), options),
+    options,
   );
+  const filtered = filter(assembled, filters, options);
+
+  function typesIn(tree) {
+    const types = [];
+    (function collect(n) {
+      types.push(n.type);
+      if (n.block && n.block.nodes) n.block.nodes.forEach(collect);
+      if (n.nodes) n.nodes.forEach(collect);
+    })(tree);
+    return types;
+  }
+
+  assert.ok(
+    typesIn(filtered).includes('Toc'),
+    'filter() must leave the Toc node unresolved',
+  );
+  const resolved = link.resolve(filtered, options);
+  const types = typesIn(resolved);
+  assert.ok(!types.includes('Toc'), 'link.resolve must resolve the Toc away');
+  assert.ok(types.includes('Tag'), 'resolved nav/ol/li/a Tag nodes present');
 });

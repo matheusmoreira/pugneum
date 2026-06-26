@@ -25,9 +25,13 @@ function renderPugneum(string, options) {
     let tokens = lex(string, options);
     let ast = parse(tokens, options);
     let loaded = load(ast, options);
-    let linked = link(loaded, options);
-    let filtered = filter(linked, options.filters, options);
-    let rendered = render(filtered, options);
+    // Assemble (inheritance/includes) BEFORE filtering, then resolve
+    // references/footnotes/toc AFTER, so constructs a pugneum-type filter emits
+    // (e.g. @[ref]/^[fn]/toc in a table cell) join the document-level resolution.
+    let assembled = link.assemble(loaded, options);
+    let filtered = filter(assembled, options.filters, options);
+    let resolved = link.resolve(filtered, options);
+    let rendered = render(resolved, options);
     return rendered;
   } finally {
     // Emit even on the error path: warnings collected from earlier stages must

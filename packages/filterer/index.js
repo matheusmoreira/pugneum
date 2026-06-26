@@ -7,11 +7,11 @@ const packagePrefix = 'pugneum-filter-';
 
 const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
 
-// Node types that the loader/linker resolve and that the renderer therefore
-// cannot render directly. A pugneum-type filter re-lexes/re-parses its output
-// AFTER the linker has already run on the document, so any of these emitted by
-// filter output would otherwise reach the renderer unresolved and crash with a
-// raw TypeError. parsePugneum re-runs the linker on the sub-AST when it contains
+// Node types the LINKER resolves that the renderer therefore cannot render
+// directly. A pugneum-type filter re-lexes/re-parses its output AFTER the
+// linker has already run on the document, so any of these emitted by filter
+// output would otherwise reach the renderer unresolved and crash with a raw
+// TypeError. parsePugneum re-runs the linker on the sub-AST when it contains
 // one of these so @[ref] / ![ref] / ^[footnote] / toc / a references or
 // footnotes block inside e.g. a table cell resolve instead of crashing.
 const linkerResolvedTypes = new Set([
@@ -21,21 +21,30 @@ const linkerResolvedTypes = new Set([
   'ReferenceImage',
   'Footnotes',
   'FootnoteRef',
+]);
+
+// Loader constructs need the LOADER (disk file resolution), which runs BEFORE
+// the filterer — so a pugneum-type filter cannot emit them resolvably: by
+// filter time the target was never read, node.file.ast is unset, and re-running
+// the linker alone would crash on it with a raw TypeError. These are rejected
+// with a clean coded error instead (see relinkFilterOutput).
+const loaderConstructTypes = new Set([
   'Include',
   'Extends',
   'RawInclude',
   'FileReference',
 ]);
 
-function containsLinkerConstruct(ast) {
-  let found = false;
+// First node in `ast` whose type is in `types`, or null. Stops at the first hit.
+function firstNodeOfType(ast, types) {
+  let hit = null;
   walk(ast, function (node) {
-    if (linkerResolvedTypes.has(node.type)) {
-      found = true;
+    if (types.has(node.type)) {
+      hit = node;
       return false; // first hit is enough; stop descending this branch
     }
   });
-  return found;
+  return hit;
 }
 
 // Build the location/source context object shared by every error() call in
@@ -168,9 +177,10 @@ function applyFilterResult(node, type, result, name, options) {
 // document's linker pass has already finished (and already consumed the
 // document's references/footnotes definition blocks) by the time this runs.
 // If the filter output contains a linker-resolved construct (@[ref], ^[fn],
-// toc, an include, ...), we re-run the linker on the freshly parsed sub-AST so
-// those nodes resolve instead of reaching the renderer unresolved and crashing
-// with a raw TypeError. A self-contained fragment — one that carries its own
+// toc, ...), we re-run the linker on the freshly parsed sub-AST so those nodes
+// resolve instead of reaching the renderer unresolved and crashing with a raw
+// TypeError. A loader construct (include/extends) cannot be resolved here and
+// is rejected with a coded error. A self-contained fragment — one that carries its own
 // `references`/`footnotes` block, or a `toc` plus the headings it indexes —
 // resolves fully. A reference/footnote whose definition lives only in the outer
 // document cannot resolve here (the linker collects definitions from the walked
@@ -187,14 +197,20 @@ function parsePugneum(result, node, options) {
   });
   const tokens = lex(result, reopts);
   const ast = parse(tokens, reopts);
-  return relinkFilterOutput(ast, reopts);
+  return relinkFilterOutput(ast, reopts, node, options);
 }
 
 // Re-run the linker on a pugneum-filter sub-AST so embedded reference/footnote/
-// toc/include constructs resolve. Skipped entirely (returning the parsed AST
-// untouched) when the fragment holds no linker-resolved construct — the common
-// case (e.g. the table filter emits only Tag/Text) — so plain filter output is
+// toc constructs resolve. Skipped entirely (returning the parsed AST untouched)
+// when the fragment holds no linker-resolved construct — the common case (e.g.
+// the table filter emits only Tag/Text) — so plain filter output is
 // byte-identical to before and pays no link/lint cost.
+//
+// A loader construct (include/extends/raw-include) in filter output is rejected
+// with a coded error, reported against the filter invocation site: file
+// resolution runs before filters, so the target was never loaded and the linker
+// alone cannot resolve it — re-linking it would deref an unset node.file.ast and
+// crash with a raw TypeError.
 //
 // Recursion guard: a pugneum filter nested inside a pugneum filter must not
 // re-link without bound. The linker never invokes the filterer, so re-linking
@@ -204,9 +220,19 @@ function parsePugneum(result, node, options) {
 // `_filtererRelinking` flag, set on the link options, short-circuits any such
 // nested re-link so the depth is bounded by the filter-nesting depth, never the
 // link recursion.
-function relinkFilterOutput(ast, reopts) {
+function relinkFilterOutput(ast, reopts, node, options) {
   if (reopts._filtererRelinking) return ast;
-  if (!containsLinkerConstruct(ast)) return ast;
+  const loaderNode = firstNodeOfType(ast, loaderConstructTypes);
+  if (loaderNode) {
+    throw error(
+      'UNSUPPORTED_FILTER_CONSTRUCT',
+      'A pugneum-type filter cannot emit an include/extends directive: file ' +
+        'resolution runs before filters, so the referenced file is never ' +
+        'loaded. Emit the content directly, or use an include:filter.',
+      nodeLocation(node, options),
+    );
+  }
+  if (!firstNodeOfType(ast, linkerResolvedTypes)) return ast;
   const link = require('pugneum-linker');
   const linkOpts = Object.assign({}, reopts, {_filtererRelinking: true});
   return link(ast, linkOpts);

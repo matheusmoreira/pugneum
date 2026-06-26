@@ -845,6 +845,42 @@ test('pugneum filter @[ref] with no definition gives a coded error, not a raw Ty
   );
 });
 
+test('pugneum filter ^[footnote] with no definition gives a coded error, not a raw TypeError', () => {
+  // Symmetric to the @[ref] degrade above: a footnote whose definition lives
+  // only in the outer document degrades to a coded UNDEFINED_FOOTNOTE, never a
+  // raw TypeError leaking internal node names.
+  const filters = {
+    fnner: {type: 'pugneum', filter: () => 'p text^[gone]'},
+  };
+  const source = 'div\n  :fnner\n    ignored\nfootnotes\n  gone a note';
+  assert.throws(
+    () => renderPipeline(source, filters),
+    (err) =>
+      err.code === 'PUGNEUM:UNDEFINED_FOOTNOTE' &&
+      err.code.startsWith('PUGNEUM:') &&
+      !/which is not supported by the pugneum compiler/.test(err.message),
+  );
+});
+
+test('include/extends in pugneum filter output is a clean coded error, not a raw re-link crash', () => {
+  // A loader construct cannot be resolved by the filterer re-link: file
+  // resolution runs BEFORE filters, so the include target was never loaded
+  // (node.file.ast is unset) and re-running the linker on it would deref
+  // undefined and crash with a raw, uncoded "Cannot read properties of
+  // undefined" TypeError. The filterer must reject it up front with a coded
+  // UNSUPPORTED_FILTER_CONSTRUCT pointing at the filter invocation.
+  for (const directive of ['include nope.pg', 'extends layout.pg']) {
+    const filters = {bad: {type: 'pugneum', filter: () => directive}};
+    assert.throws(
+      () => renderPipeline('div\n  :bad\n    ignored', filters),
+      (err) =>
+        err.code === 'PUGNEUM:UNSUPPORTED_FILTER_CONSTRUCT' &&
+        !/Cannot read properties of undefined/.test(err.message),
+      'expected a coded error for: ' + directive,
+    );
+  }
+});
+
 test('plain pugneum filter output (no linker construct) renders unchanged', () => {
   // The guard skips the re-link entirely when no linker-resolved node is
   // present, so ordinary filter output (the common case, e.g. the table

@@ -20,6 +20,18 @@ const MAX_MIXIN_DEPTH = 256;
 //
 // Tag and attribute names are validated by the lexer against the HTML
 // spec regex and are safe by construction.
+//
+// Void / self-closing elements: the selfClosing table below, together with
+// a node's own selfClosing flag, is the other HTML-correctness mechanism in
+// this file. Such elements are emitted with a trailing self-closing slash
+// and reject substantive content (VOID_ELEMENT_WITH_CONTENT).
+//
+// Value contract: the renderer expects attribute values (attr.val) to be
+// either a string or the boolean true (a valueless/boolean attribute), and
+// mixin variable values to be a string or null (null = omit). These are the
+// only shapes the lexer/parser produce. Any other value (false, a number,
+// an object) is not part of the contract; it would be String()-coerced and
+// emitted literally rather than treated as an omit/boolean.
 
 function escapeAttrValue(str) {
   return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -59,28 +71,25 @@ class Compiler {
     this.callStack = [];
   }
 
-  error(code, message, node) {
+  // Build the location/source descriptor for a node's diagnostic. The source
+  // text is resolved per-file from options.sources, falling back to a single
+  // options.source, then to '' (no ±3-line context).
+  locate(node) {
     const sources = this.options.sources;
-    const err = makeError(code, message, {
+    return {
       line: node.line,
       column: node.column,
       filename: node.filename,
       source: (sources && sources[node.filename]) || this.options.source || '',
-    });
-    throw err;
+    };
+  }
+
+  error(code, message, node) {
+    throw makeError(code, message, this.locate(node));
   }
 
   warn(code, message, node) {
-    const sources = this.options.sources;
-    this.warnings.push(
-      makeError.warning(code, message, {
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-        source:
-          (sources && sources[node.filename]) || this.options.source || '',
-      }),
-    );
+    this.warnings.push(makeError.warning(code, message, this.locate(node)));
   }
 
   compile() {
@@ -206,6 +215,11 @@ class Compiler {
                 );
             }
           }
+          // Caller-supplied content must render in the caller's lexical scope,
+          // so temporarily drop this mixin's frame (restored in finally). The
+          // named-block entry was deleted above (and is restored here) so a
+          // same-named NamedBlock nested in the caller content renders its own
+          // default instead of recursively re-substituting.
           this.callStack.pop();
           try {
             for (const node of nodes) {
@@ -236,13 +250,12 @@ class Compiler {
     this.visitAttributes(tag.attrs);
 
     if (tag.selfClosing || selfClosing[tag.name]) {
-      this.buffer('>');
-
+      // Void elements may carry whitespace-only content (formatting) but not
+      // substantive content. Each child is a node, not necessarily a Tag.
       if (
         tag.block &&
-        !(tag.block.type === 'Block' && tag.block.nodes.length === 0) &&
-        tag.block.nodes.some(function (tag) {
-          return tag.type !== 'Text' || !/^\s*$/.test(tag.val);
+        (tag.block.nodes || []).some(function (child) {
+          return child.type !== 'Text' || !/^\s*$/.test(child.val);
         })
       ) {
         this.error(
@@ -254,6 +267,12 @@ class Compiler {
           tag,
         );
       }
+
+      // Close with a self-closing slash. HTML void elements (<br/>, <img/>)
+      // accept it, and SVG foreign-content elements (<rect/>, <circle/>, …)
+      // REQUIRE it: without the slash an SVG start tag stays open and its
+      // following siblings are parsed as children, misnesting the shapes.
+      this.buffer(' />');
     } else {
       this.buffer('>');
       this.visit(tag.block, tag);
@@ -267,21 +286,27 @@ class Compiler {
     this.buffer(text.val);
   }
 
-  visitComment(comment) {
-    if (!comment.buffer) return;
+  // The single HTML-comment envelope: guard, delimiters, and the
+  // security-relevant sanitize step (§13.1.6) live here so the plain and
+  // block comment paths cannot drift apart.
+  emitComment(node, extra) {
+    if (!node.buffer) return;
     this.buffer('<!--');
-    this.buffer(sanitizeCommentContent(comment.val || ''));
+    this.buffer(sanitizeCommentContent((node.val || '') + (extra || '')));
     this.buffer('-->');
   }
 
-  visitYieldBlock(block) {}
+  visitComment(comment) {
+    this.emitComment(comment, '');
+  }
+
+  // YieldBlock is an include's unfilled yield point. The linker rewrites
+  // filled yields into Block nodes, so an unfilled yield reaching the renderer
+  // deliberately emits nothing.
+  visitYieldBlock() {}
 
   visitBlockComment(comment) {
-    if (!comment.buffer) return;
-    const blockContent = this.renderToString(comment.block);
-    this.buffer('<!--');
-    this.buffer(sanitizeCommentContent((comment.val || '') + blockContent));
-    this.buffer('-->');
+    this.emitComment(comment, this.renderToString(comment.block));
   }
 
   visitAttributes(attrs) {
@@ -364,6 +389,22 @@ class Compiler {
         this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
       this.usedMixins.add(mixin.name);
+
+      // Class/id/attribute shorthand on a call (e.g. +box.highlight, +box#main)
+      // is parsed onto mixin.attrs but has no defined target element, so it
+      // would otherwise be silently dropped. Reject it explicitly rather than
+      // lose the author's intent without a trace.
+      if (
+        (mixin.attrs && mixin.attrs.length > 0) ||
+        (mixin.attributeBlocks && mixin.attributeBlocks.length > 0)
+      ) {
+        this.error(
+          'UNSUPPORTED_MIXIN_CALL_ATTRIBUTES',
+          `Attributes on a call to mixin '${mixin.name}' are not supported; ` +
+            'apply classes, ids and attributes to an element inside the mixin instead',
+          mixin,
+        );
+      }
 
       const args = mixin.args,
         len = declared.args.length;
@@ -478,15 +519,17 @@ class Compiler {
         mixinBlock,
       );
     }
+    // Pop so the caller's yielded content renders in the caller's scope (one
+    // frame up), restored in finally. namedBlocks !== null means this mixin
+    // mixes named blocks with an unnamed slot, so MixinBlock yields only the
+    // unnamed remainder; otherwise it yields the whole caller block.
     const current = this.callStack.pop();
-    const target =
-      current.namedBlocks !== null ? current.unnamedBlock : current.block;
-    if (!target || !target.nodes || !target.nodes.length) {
-      this.callStack.push(current);
-      return;
-    }
     try {
-      this.visit(target);
+      const target =
+        current.namedBlocks !== null ? current.unnamedBlock : current.block;
+      if (target && target.nodes && target.nodes.length) {
+        this.visit(target);
+      }
     } finally {
       this.callStack.push(current);
     }
@@ -518,12 +561,13 @@ class Compiler {
 
   collectNamedBlockNames(node, names) {
     if (!node) return;
-    if (node.type === 'NamedBlock') {
+    // NamedBlock declares a fillable slot; Given declares a presence name a
+    // caller may fill. Both contribute a declarable block name.
+    if (node.type === 'NamedBlock' || node.type === 'Given') {
       names.add(node.name);
     }
-    if (node.type === 'Given') {
-      names.add(node.name);
-    }
+    // Stop at nested mixin declarations: their named blocks belong to that
+    // mixin, not this one.
     if (node.type === 'Mixin') return;
     if (node.nodes) {
       for (let i = 0; i < node.nodes.length; ++i) {

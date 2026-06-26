@@ -120,7 +120,7 @@ describe('attributes', () => {
     var attrs = [{name: 'disabled', val: true, line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
-      '<input disabled>',
+      '<input disabled />',
     );
   });
 
@@ -161,20 +161,20 @@ describe('attributes', () => {
 
 describe('void elements', () => {
   test('self-closing by tag name', () => {
-    assert.strictEqual(render(block([tag('br')])), '<br>');
-    assert.strictEqual(render(block([tag('hr')])), '<hr>');
-    assert.strictEqual(render(block([tag('img')])), '<img>');
+    assert.strictEqual(render(block([tag('br')])), '<br />');
+    assert.strictEqual(render(block([tag('hr')])), '<hr />');
+    assert.strictEqual(render(block([tag('img')])), '<img />');
   });
 
   test('self-closing by property', () => {
     assert.strictEqual(
       render(block([tag('custom', [], [], {selfClosing: true})])),
-      '<custom>',
+      '<custom />',
     );
   });
 
   test('void element with whitespace-only content is allowed', () => {
-    assert.strictEqual(render(block([tag('br', [], [text('  ')])])), '<br>');
+    assert.strictEqual(render(block([tag('br', [], [text('  ')])])), '<br />');
   });
 
   test('void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
@@ -195,7 +195,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('rect', attrs)])),
-      '<rect x="0" y="0" width="100" height="50">',
+      '<rect x="0" y="0" width="100" height="50" />',
     );
   });
 
@@ -207,7 +207,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('circle', attrs)])),
-      '<circle cx="50" cy="50" r="25">',
+      '<circle cx="50" cy="50" r="25" />',
     );
   });
 
@@ -220,7 +220,7 @@ describe('SVG void elements', () => {
     ];
     assert.strictEqual(
       render(block([tag('line', attrs)])),
-      '<line x1="0" y1="0" x2="100" y2="100">',
+      '<line x1="0" y1="0" x2="100" y2="100" />',
     );
   });
 
@@ -228,18 +228,18 @@ describe('SVG void elements', () => {
     var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
-      '<path d="M0 0 L100 100">',
+      '<path d="M0 0 L100 100" />',
     );
   });
 
   test('SVG container elements are NOT self-closing', () => {
     assert.strictEqual(
       render(block([tag('svg', [], [tag('rect')])])),
-      '<svg><rect></svg>',
+      '<svg><rect /></svg>',
     );
     assert.strictEqual(
       render(block([tag('g', [], [tag('circle')])])),
-      '<g><circle></g>',
+      '<g><circle /></g>',
     );
     assert.strictEqual(
       render(block([tag('text', [], [text('hello')])])),
@@ -289,6 +289,25 @@ describe('SVG void elements', () => {
     assert.throws(
       () => render(block([tag('rect', [], [text('content')])])),
       (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
+    );
+  });
+
+  test('sibling SVG shapes do not misnest (self-closing slash separates them)', () => {
+    // Without the trailing slash, <rect> stays open in SVG foreign content and
+    // the following <rect> is parsed as its child rather than its sibling.
+    var a = [{name: 'id', val: 'a', line: 1, column: 1}];
+    var b = [{name: 'id', val: 'b', line: 1, column: 1}];
+    assert.strictEqual(
+      render(block([tag('svg', [], [tag('rect', a), tag('rect', b)])])),
+      '<svg><rect id="a" /><rect id="b" /></svg>',
+    );
+  });
+
+  test('SVG animation element followed by a shape stays a sibling', () => {
+    var attrs = [{name: 'attributeName', val: 'x', line: 1, column: 1}];
+    assert.strictEqual(
+      render(block([tag('svg', [], [tag('animate', attrs), tag('rect')])])),
+      '<svg><animate attributeName="x" /><rect /></svg>',
     );
   });
 });
@@ -505,7 +524,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([declaration, call])), '<hr>');
+    assert.strictEqual(render(block([declaration, call])), '<hr />');
   });
 
   test('mixin block (caller content)', () => {
@@ -629,6 +648,48 @@ describe('mixin errors', () => {
       () => render(block([declaration, call])),
       (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
     );
+  });
+
+  test('class shorthand on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
+    // +box.highlight — the .highlight is parsed onto the call's attrs and must
+    // not be silently dropped.
+    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
+    var call = mixinCallOpts('box', [], null, {
+      attrs: [{name: 'class', val: 'highlight', line: 2, column: 1}],
+    });
+    assert.throws(
+      () => render(block([declaration, call])),
+      (err) => err.code === 'PUGNEUM:UNSUPPORTED_MIXIN_CALL_ATTRIBUTES',
+    );
+  });
+
+  test('id shorthand on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
+    // +box#main
+    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
+    var call = mixinCallOpts('box', [], null, {
+      attrs: [{name: 'id', val: 'main', line: 2, column: 1}],
+    });
+    assert.throws(
+      () => render(block([declaration, call])),
+      (err) => err.code === 'PUGNEUM:UNSUPPORTED_MIXIN_CALL_ATTRIBUTES',
+    );
+  });
+
+  test('attributeBlocks on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
+    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
+    var call = mixinCallOpts('box', [], null, {
+      attributeBlocks: [{}],
+    });
+    assert.throws(
+      () => render(block([declaration, call])),
+      (err) => err.code === 'PUGNEUM:UNSUPPORTED_MIXIN_CALL_ATTRIBUTES',
+    );
+  });
+
+  test('plain mixin call with no shorthand attributes still renders', () => {
+    var declaration = mixinDecl('box', [], [tag('div', [], [text('x')])]);
+    var call = mixinCallOpts('box', []);
+    assert.strictEqual(render(block([declaration, call])), '<div>x</div>');
   });
 });
 
@@ -920,7 +981,7 @@ describe('interpolated tags', () => {
     assert.strictEqual(render(block([node])), '<em>stressed</em>');
   });
 
-  test('self-closing interpolated tag', () => {
+  test('void-name interpolated tag is self-closing via the void table', () => {
     var node = {
       type: 'InterpolatedTag',
       expr: 'br',
@@ -933,7 +994,26 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<br>');
+    assert.strictEqual(render(block([node])), '<br />');
+  });
+
+  test('selfClosing flag propagates through visitInterpolatedTag', () => {
+    // Non-void name, so the only thing that can close it is the selfClosing
+    // flag being copied onto the synthesized Tag. A regression dropping it in
+    // the Object.assign would emit <foo></foo> instead.
+    var node = {
+      type: 'InterpolatedTag',
+      expr: 'foo',
+      attrs: [],
+      attributeBlocks: [],
+      block: block([]),
+      selfClosing: true,
+      isInline: false,
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '<foo />');
   });
 
   test('does not mutate the input AST node', () => {
@@ -1212,7 +1292,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('icon', ['arrow']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<img src="/icons/arrow.svg">',
+      '<img src="/icons/arrow.svg" />',
     );
   });
 
@@ -1296,7 +1376,7 @@ describe('optional arguments and attributes', () => {
       [tag('input', [attr('type', '#{type}'), attr('disabled', true)])],
     );
     var call = mixinCall('input', []);
-    assert.strictEqual(render(block([decl, call])), '<input disabled>');
+    assert.strictEqual(render(block([decl, call])), '<input disabled />');
   });
 
   test('static attributes unaffected when variable attribute omitted', () => {
@@ -1955,6 +2035,132 @@ describe('given keyword', () => {
     assert.throws(
       () => render(block([given])),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_CALL',
+    );
+  });
+});
+
+describe('unused mixin warnings', () => {
+  test('unused entry-file mixin pushes one UNUSED_MIXIN warning', () => {
+    const decl = mixinDecl('unused', [], [tag('p', [], [text('x')])]);
+    const warnings = [];
+    const out = render(block([decl, tag('p', [], [text('hi')])]), {
+      filename: 'test',
+      warnings,
+    });
+    assert.strictEqual(out, '<p>hi</p>');
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:UNUSED_MIXIN');
+    assert.match(warnings[0].msg, /Mixin 'unused' is defined but never called/);
+  });
+
+  test('a called mixin produces no warning', () => {
+    const decl = mixinDecl('used', [], [tag('p', [], [text('x')])]);
+    const call = mixinCall('used', []);
+    const warnings = [];
+    render(block([decl, call]), {filename: 'test', warnings});
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  test('mixin defined in a different file is not flagged', () => {
+    // filename !== options.filename means it is a library mixin from an
+    // included file; it must not warn even though it is never called.
+    const decl = mixinDecl('lib', [], [tag('p', [], [text('x')])]);
+    decl.filename = 'included.pg';
+    const warnings = [];
+    render(block([decl, tag('p', [], [text('hi')])]), {
+      filename: 'entry.pg',
+      warnings,
+    });
+    assert.strictEqual(warnings.length, 0);
+  });
+
+  test('warnings are discarded when no collector is supplied', () => {
+    // Must not throw when options/warnings is absent; the warning is collected
+    // into an internal throwaway array.
+    const decl = mixinDecl('unused', [], [tag('p', [], [text('x')])]);
+    assert.strictEqual(render(block([decl]), {filename: 'test'}), '');
+  });
+});
+
+describe('defensive error paths', () => {
+  test('unknown block mode throws UNKNOWN_BLOCK_MODE', () => {
+    const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
+      usesNamedBlocks: true,
+    });
+    const call = mixinCallOpts(
+      'wrap',
+      [],
+      [namedBlock('slot', 'bogus', [text('X')])],
+    );
+    assert.throws(
+      () => render(block([decl, call])),
+      (err) => err.code === 'PUGNEUM:UNKNOWN_BLOCK_MODE',
+    );
+  });
+
+  test('MixinBlock outside a mixin call throws CALL_STACK_UNDERFLOW', () => {
+    const node = {type: 'MixinBlock', line: 1, column: 1, filename: 'test'};
+    assert.throws(
+      () => render(block([node])),
+      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
+    );
+  });
+});
+
+describe('mixin depth and recursion boundaries', () => {
+  // Pin the exact MAX_MIXIN_DEPTH limit (256): a chain of 256 frames renders,
+  // 257 overflows. A boundary test well past the edge would not catch an
+  // off-by-one regression.
+  function chain(depth) {
+    const nodes = [];
+    for (let i = 0; i < depth; i++) {
+      nodes.push(mixinDecl('m' + i, [], [mixinCall('m' + (i + 1), [])]));
+    }
+    nodes.push(mixinDecl('m' + depth, [], [text('end')]));
+    nodes.push(mixinCall('m0', []));
+    return block(nodes);
+  }
+
+  test('deepest legal mixin chain (256 frames) renders', () => {
+    assert.strictEqual(render(chain(255)), 'end');
+  });
+
+  test('one frame deeper (257) throws MIXIN_STACK_OVERFLOW', () => {
+    assert.throws(
+      () => render(chain(256)),
+      (err) => err.code === 'PUGNEUM:MIXIN_STACK_OVERFLOW',
+    );
+  });
+
+  test('repeated sibling calls of one mixin are not recursion', () => {
+    const h = mixinDecl('h', [], [text('h')]);
+    const w = mixinDecl('w', [], [mixinCall('h', []), mixinCall('h', [])]);
+    assert.strictEqual(render(block([h, w, mixinCall('w', [])])), 'hh');
+  });
+
+  test('diamond mixin calls are allowed (not recursion)', () => {
+    const h = mixinDecl('h', [], [text('h')]);
+    const a = mixinDecl('a', [], [mixinCall('h', [])]);
+    const b = mixinDecl('b', [], [mixinCall('h', [])]);
+    const w = mixinDecl('w', [], [mixinCall('a', []), mixinCall('b', [])]);
+    assert.strictEqual(render(block([h, a, b, w, mixinCall('w', [])])), 'hh');
+  });
+});
+
+describe('attribute escaping after substitution', () => {
+  test('mixin-arg value with breakout characters is escaped in attribute', () => {
+    // Security-relevant: resolveAttrValue runs first, escapeAttrValue second.
+    // A value containing " and & must be escaped so it cannot break out of the
+    // quoted attribute.
+    const decl = mixinDecl(
+      'link',
+      [{name: 'u'}],
+      [tag('a', [attr('title', '#{u}')], [text('x')])],
+    );
+    const call = mixinCall('link', ['evil" onmouseover="alert(1)&y']);
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<a title="evil&quot; onmouseover=&quot;alert(1)&amp;y">x</a>',
     );
   });
 });

@@ -76,6 +76,67 @@ describe('error paths', () => {
     );
   });
 
+  test('INVALID_TOKEN from the _parseExpr default fires on a bogus leading token', () => {
+    // Splicing the bogus token after `div` enters tag()'s tag-position default
+    // (message "Unexpected token `...`"). A bogus token in expression position
+    // (index 0) instead hits the _parseExpr dispatch default, whose distinct
+    // message is "unexpected token \"...\"". Pin that branch by its message so
+    // a regression collapsing it into another arm cannot pass silently.
+    const loc = {start: {line: 1, column: 1}};
+    const tokens = [
+      {type: 'bogus', loc},
+      {type: 'eos', loc},
+    ];
+    assert.throws(
+      () => parse(tokens, {filename: 'test.pg'}),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_TOKEN' &&
+        /unexpected token "bogus"/.test(err.msg),
+    );
+  });
+
+  test('INVALID_TOKEN messages distinguish the ref-link/ref-image/footnote scan loops', () => {
+    // parseRefLinkContent, parseRefImageContent and the parseFootnotes inner
+    // loop each have their own INVALID_TOKEN default with a distinct noun.
+    // These reach() through a hand-built token stream only; assert the message
+    // so each branch is individually pinned (they were previously untested).
+    const loc = {start: {line: 1, column: 1}};
+    const expectMsg = (tokens, re) =>
+      assert.throws(
+        () => parse(tokens, {filename: 'test.pg'}),
+        (err) => err.code === 'PUGNEUM:INVALID_TOKEN' && re.test(err.msg),
+      );
+
+    expectMsg(
+      [
+        {type: 'start-ref-link', val: 'x', loc},
+        {type: 'footnotes', loc},
+        {type: 'end-ref-link', loc},
+        {type: 'eos', loc},
+      ],
+      /Unexpected token in reference link: footnotes/,
+    );
+    expectMsg(
+      [
+        {type: 'start-ref-image', val: 'x', loc},
+        {type: 'footnotes', loc},
+        {type: 'end-ref-image', loc},
+        {type: 'eos', loc},
+      ],
+      /Unexpected token in reference image: footnotes/,
+    );
+    expectMsg(
+      [
+        {type: 'footnotes', loc},
+        {type: 'footnote-def-start', val: 'n', loc},
+        {type: 'toc', loc},
+        {type: 'footnote-def-end', loc},
+        {type: 'eos', loc},
+      ],
+      /Unexpected token in footnote definition: toc/,
+    );
+  });
+
   test('MIXIN_WITHOUT_BODY for mixin with no indented block', () => {
     assert.throws(
       () => parseSource('mixin foo'),
@@ -252,6 +313,30 @@ describe('blind sweep fixes', () => {
     tokens.push({type: 'eos', loc});
     const ast = parse(tokens, {filename: 'test'});
     assert.strictEqual(ast.nodes[0].block.nodes.length, N);
+  });
+
+  test('a multi-line footnote body does not gain a spurious leading space', (t) => {
+    // parseFootnotes joins multi-line footnote bodies with a single space, but
+    // the space is a separator: it must appear BETWEEN content, never lead it.
+    // When the body starts on the line after the name, the lexer emits a
+    // leading newline token; converting it unconditionally to a space
+    // prepended a stray U+0020 (rendered footnote " first line second line").
+    const source = [
+      'p ^[n] z',
+      '',
+      'footnotes',
+      '  n',
+      '    one',
+      '    two',
+    ].join('\n');
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const def = ast.nodes.find((n) => n.type === 'Footnotes').definitions[0];
+    const vals = def.block.nodes
+      .filter((n) => n.type === 'Text')
+      .map((n) => n.val);
+    // No leading separator; the interior newline still joins the two lines.
+    assert.deepStrictEqual(vals, ['one', ' ', 'two']);
   });
 
   test('a block with many text children under one indent parses linearly to the right node count', (t) => {

@@ -749,13 +749,23 @@ class Parser {
             break;
           case 'newline':
             this.advance();
-            block.nodes.push({
-              type: 'Text',
-              val: ' ',
-              line: next.loc.start.line,
-              column: next.loc.start.column,
-              filename: this.filename,
-            });
+            // A newline inside a footnote definition joins the surrounding
+            // lines with a single space. It is a separator, so it must only
+            // appear BETWEEN pieces of content, never lead the body: when the
+            // definition's content starts on the line after the name, the
+            // lexer emits a leading newline token, and converting it to a
+            // space prepended a spurious U+0020 to the rendered footnote (e.g.
+            // " first line second line"). Mirror collectInlineContent: emit
+            // the joining space only when content already precedes it.
+            if (block.nodes.length > 0) {
+              block.nodes.push({
+                type: 'Text',
+                val: ' ',
+                line: next.loc.start.line,
+                column: next.loc.start.column,
+                filename: this.filename,
+              });
+            }
             break;
           case 'start-interpolation':
             this.advance();

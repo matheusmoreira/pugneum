@@ -5392,13 +5392,6 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "val": " ",
-                "line": 7,
-                "column": 1,
-                "filename": "footnotes.pg"
-              },
-              {
-                "type": "Text",
                 "line": 7,
                 "column": 5,
                 "filename": "footnotes.pg",

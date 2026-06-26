@@ -366,9 +366,13 @@ function unescapeShorthand(str) {
 // Code-span content is literal text and is NOT re-interpolated downstream, so an
 // escaped \#{ must become the literal #{ right here — this is how a table cell's
 // neutralized `#{` renders correctly inside `(...). Same as unescapeShorthand
-// plus \# -> #.
+// plus \#{ -> #{. The \# strip is scoped to a following `{` on purpose: `#` is
+// only special as the head of an interpolation, so a bare \# elsewhere in a code
+// span (e.g. `\#general`) keeps its backslash, exactly as base and every other
+// shorthand do — only the interpolation sigil the table filter neutralizes is
+// unescaped here.
 function unescapeCodeSpan(str) {
-  return str.replace(/\\([()\\'"#])/g, '$1');
+  return str.replace(/\\([()\\'"])|\\(#)(?=\{)/g, '$1$2');
 }
 
 /**

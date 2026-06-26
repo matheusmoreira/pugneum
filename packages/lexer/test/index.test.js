@@ -64,6 +64,31 @@ test('many escaped shorthands in single text node', (t) => {
   t.assert.ok(!joined.includes('<strong>'));
 });
 
+describe('code span escaping (unescapeCodeSpan)', () => {
+  // The table filter neutralizes a live #{ by emitting \#{ into the code span it
+  // generates; the lexer strips that backslash so the span shows a literal #{.
+  test('\\#{ unescapes to a literal #{ inside a `(...) code span', () => {
+    const tokens = lex('p `(price \\#{n})`', {filename: 'codespan.pg'});
+    const content = tokens.find(
+      (tok) => tok.type === 'text' && /price/.test(tok.val),
+    );
+    assert.ok(content);
+    assert.strictEqual(content.val, 'price #{n}');
+  });
+
+  // But the \# strip is scoped to a following `{`: a bare escaped hash keeps its
+  // backslash, exactly like base and every other shorthand. Regression guard — a
+  // broad \#-># strip silently dropped the backslash from e.g. `\#general`.
+  test('a bare \\# (not heading an interpolation) keeps its backslash', () => {
+    const tokens = lex('p `(channel \\#general)`', {filename: 'codespan.pg'});
+    const content = tokens.find(
+      (tok) => tok.type === 'text' && /channel/.test(tok.val),
+    );
+    assert.ok(content);
+    assert.strictEqual(content.val, 'channel \\#general');
+  });
+});
+
 describe('given keyword', () => {
   test('given produces token with block name', (t) => {
     const tokens = lex('given source\n  p text', {filename: 'test'});

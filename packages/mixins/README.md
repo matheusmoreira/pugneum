@@ -31,6 +31,14 @@ include @pugneum-mixins/quote.pg
 
 Without `block source`, the `<figcaption>` is omitted entirely.
 
+`+quote` is the variant *with* a URL: the `source` content is
+wrapped in an `<a href>`. Use `+plain-quote` when there is no
+URL — calling `+quote` without one produces a `source` link
+(`<a>`) that has no `href` and is therefore not a real link.
+Source content given to `+quote` must not itself be
+interactive (e.g. another link), since it nests inside the
+outer `<a>`.
+
 ### `+plain-quote`
 
 Unlinked citation: no URL, no `<a>` tag.
@@ -106,6 +114,11 @@ include @pugneum-mixins/breadcrumb.pg
 File tree visualization. Directories support an optional
 `block description` annotation.
 
+`+file-system` takes an optional CSS class. Multiple classes
+must be quoted, since an unquoted argument list splits on
+whitespace: write `+file-system('tree wide')`, not
+`+file-system(tree wide)`.
+
 ```pugneum
 include @pugneum-mixins/file-system.pg
 
@@ -116,6 +129,35 @@ include @pugneum-mixins/file-system.pg
     +file(index.js)
     +file(render.js)
 ```
+
+## Notes
+
+These mixins follow pugneum's core model: the template author
+is the HTML author. A few consequences are worth calling out.
+
+**Text arguments and slot text are emitted raw.** The `name`
+in `+file`/`+directory`, the `summary` in `+details`, the code
+fed to `+code`, and any text in a breadcrumb or quote slot are
+written to the output verbatim — `<`, `>` and `&` are not
+escaped. (Attribute values such as `href`/`cite`/`class` *are*
+escaped.) If a value may contain HTML metacharacters or is not
+fully trusted, pre-escape it or pass it through an escaping
+filter (`+code` content is typically produced by
+`:prismjs`/`:highlight.js`, which escape). Do not feed
+untrusted data straight into these text positions.
+
+**Multi-word arguments must be quoted.** An unquoted argument
+list splits on whitespace, so `+details(System Requirements)`
+and `+file-system(tree wide)` raise
+`PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH`. Quote them:
+`+details('System Requirements')`, `+file-system('tree wide')`.
+
+**Required-looking arguments are optional.** Per pugneum,
+trailing mixin arguments may be omitted. Omitting `name`,
+`href` or a quote `url` does not error; it renders an empty or
+attribute-less element (e.g. `+breadcrumb` with no href yields
+a non-link `<a>`). Supply these arguments unless an empty
+element is intended.
 
 ## License
 

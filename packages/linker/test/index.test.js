@@ -598,6 +598,97 @@ describe('footnote error paths', () => {
   });
 });
 
+describe('footnote transitive fixpoint and multi-reference rendering', () => {
+  // The resolveFootnotes pass-2 while-loop (the file's most algorithmically risky
+  // code) and the toSuperscript / footnoteRefId(-N) scheme had no direct structural
+  // assertions. These pin the observed (correct) behavior so a regression in the
+  // fixpoint reachability, the backlink superscript labels, or the ref-id suffixing
+  // is caught here rather than only via a downstream HTML snapshot.
+  function linkSource(source) {
+    const warnings = [];
+    const options = {filename: 'fn.pg', source, lex, parse, basedir, warnings};
+    const loaded = load(parse(lex(source, options), options), options);
+    const linked = link(loaded, options);
+    return {linked, warnings};
+  }
+
+  function footnoteListItemIds(ast) {
+    const ids = [];
+    walk(ast, function (node) {
+      if (node.type === 'Tag' && node.name === 'li' && node.attrs) {
+        const id = node.attrs.find((a) => a.name === 'id');
+        if (id) ids.push(id.val);
+      }
+    });
+    return ids;
+  }
+
+  function unusedFootnotes(warnings) {
+    return warnings.filter((w) => w.code === 'PUGNEUM:UNUSED_FOOTNOTE');
+  }
+
+  test('a footnote reachable only through another footnote is numbered and rendered (fixpoint)', () => {
+    // Body refs `a`; def a contains a ref to `b`; b is reachable ONLY transitively.
+    // The fixpoint loop must number b on a later iteration and render its <li>; b
+    // must NOT be reported UNUSED_FOOTNOTE.
+    const {linked, warnings} = linkSource(
+      'p Body text^[a]\n\nfootnotes\n  a See also^[b]\n  b The deep note',
+    );
+    assert.deepStrictEqual(footnoteListItemIds(linked), [
+      'footnote-a',
+      'footnote-b',
+    ]);
+    assert.strictEqual(unusedFootnotes(warnings).length, 0);
+  });
+
+  test('a footnote reachable only through an UNREACHED footnote is dropped and warns', () => {
+    // a is referenced (plain); b is never referenced and only b refs c. Because b is
+    // never reached, the fixpoint never descends into b, so c stays unreached too:
+    // only `a` renders, and BOTH b and c warn UNUSED_FOOTNOTE.
+    const {linked, warnings} = linkSource(
+      'p a^[a]\n\nfootnotes\n  a plain\n  b refs^[c]\n  c deep',
+    );
+    assert.deepStrictEqual(footnoteListItemIds(linked), ['footnote-a']);
+    const unusedNames = unusedFootnotes(warnings)
+      .map((w) => /Footnote '([^']+)'/.exec(w.message)[1])
+      .sort();
+    assert.deepStrictEqual(unusedNames, ['b', 'c']);
+  });
+
+  test('one footnote referenced three times: distinct -N ref ids and ↩/↩²/↩³ backlinks', () => {
+    const {linked} = linkSource(
+      'p a^[n] b^[n] c^[n]\n\nfootnotes\n  n the note',
+    );
+
+    const refIds = [];
+    const backlinkLabels = [];
+    walk(linked, function (node) {
+      if (node.type !== 'Tag' || !node.attrs) return;
+      const role = node.attrs.find((a) => a.name === 'role');
+      if (!role) return;
+      if (role.val === 'doc-noteref') {
+        const id = node.attrs.find(
+          (a) => a.name === 'id' && typeof a.val === 'string',
+        );
+        if (id) refIds.push(id.val);
+      }
+      if (role.val === 'doc-backlink' && node.block) {
+        const text = node.block.nodes[0];
+        if (text && text.type === 'Text') backlinkLabels.push(text.val);
+      }
+    });
+
+    // Forward-ref anchor ids: first is unsuffixed, the rest carry the 1-based index.
+    assert.deepStrictEqual(refIds, [
+      'footnote-reference-n',
+      'footnote-reference-n-2',
+      'footnote-reference-n-3',
+    ]);
+    // One backlink per reference, the 2nd/3rd superscripted.
+    assert.deepStrictEqual(backlinkLabels, ['↩', '↩²', '↩³']);
+  });
+});
+
 describe('toc id-value handling', () => {
   function warningsFor(source) {
     const warnings = [];

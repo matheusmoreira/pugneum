@@ -44,16 +44,31 @@ function sanitizeCommentContent(str) {
   return result;
 }
 
-const selfClosing = (
-  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr, ' +
-  'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
-  'animate, animateMotion, animateTransform, set'
-)
-  .split(', ')
-  .reduce(function (voidElements, element) {
-    voidElements[element] = true;
-    return voidElements;
+function nameSet(names) {
+  return names.split(', ').reduce(function (set, element) {
+    set[element] = true;
+    return set;
   }, Object.create(null));
+}
+
+// HTML void elements render with a bare '>' (HTML5 forbids the trailing slash).
+const htmlVoid = nameSet(
+  'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr',
+);
+
+// SVG self-closing (foreign-content) elements render with ' />': without the
+// slash an SVG start tag stays open and its following siblings misnest.
+const svgSelfClosing = nameSet(
+  'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
+    'animate, animateMotion, animateTransform, set',
+);
+
+// Any element that takes no substantive content (the content-rejection guard).
+const selfClosing = Object.assign(
+  Object.create(null),
+  htmlVoid,
+  svgSelfClosing,
+);
 
 module.exports = compileToHTML;
 
@@ -268,11 +283,10 @@ class Compiler {
         );
       }
 
-      // Close with a self-closing slash. HTML void elements (<br/>, <img/>)
-      // accept it, and SVG foreign-content elements (<rect/>, <circle/>, …)
-      // REQUIRE it: without the slash an SVG start tag stays open and its
-      // following siblings are parsed as children, misnesting the shapes.
-      this.buffer(' />');
+      // HTML void elements get a bare '>' (HTML5 forbids the trailing slash);
+      // SVG foreign-content elements REQUIRE ' />' or the start tag stays open
+      // and parses its following siblings as children, misnesting the shapes.
+      this.buffer(svgSelfClosing[tag.name] ? ' />' : '>');
     } else {
       this.buffer('>');
       this.visit(tag.block, tag);

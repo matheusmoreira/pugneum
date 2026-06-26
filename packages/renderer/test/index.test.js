@@ -120,7 +120,7 @@ describe('attributes', () => {
     var attrs = [{name: 'disabled', val: true, line: 1, column: 1}];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
-      '<input disabled />',
+      '<input disabled>',
     );
   });
 
@@ -161,20 +161,20 @@ describe('attributes', () => {
 
 describe('void elements', () => {
   test('self-closing by tag name', () => {
-    assert.strictEqual(render(block([tag('br')])), '<br />');
-    assert.strictEqual(render(block([tag('hr')])), '<hr />');
-    assert.strictEqual(render(block([tag('img')])), '<img />');
+    assert.strictEqual(render(block([tag('br')])), '<br>');
+    assert.strictEqual(render(block([tag('hr')])), '<hr>');
+    assert.strictEqual(render(block([tag('img')])), '<img>');
   });
 
   test('self-closing by property', () => {
     assert.strictEqual(
       render(block([tag('custom', [], [], {selfClosing: true})])),
-      '<custom />',
+      '<custom>',
     );
   });
 
   test('void element with whitespace-only content is allowed', () => {
-    assert.strictEqual(render(block([tag('br', [], [text('  ')])])), '<br />');
+    assert.strictEqual(render(block([tag('br', [], [text('  ')])])), '<br>');
   });
 
   test('void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
@@ -524,7 +524,7 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([declaration, call])), '<hr />');
+    assert.strictEqual(render(block([declaration, call])), '<hr>');
   });
 
   test('mixin block (caller content)', () => {
@@ -994,7 +994,7 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<br />');
+    assert.strictEqual(render(block([node])), '<br>');
   });
 
   test('selfClosing flag propagates through visitInterpolatedTag', () => {
@@ -1013,7 +1013,7 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<foo />');
+    assert.strictEqual(render(block([node])), '<foo>');
   });
 
   test('does not mutate the input AST node', () => {
@@ -1292,7 +1292,7 @@ describe('optional arguments and attributes', () => {
     var call = mixinCall('icon', ['arrow']);
     assert.strictEqual(
       render(block([decl, call])),
-      '<img src="/icons/arrow.svg" />',
+      '<img src="/icons/arrow.svg">',
     );
   });
 
@@ -1376,7 +1376,7 @@ describe('optional arguments and attributes', () => {
       [tag('input', [attr('type', '#{type}'), attr('disabled', true)])],
     );
     var call = mixinCall('input', []);
-    assert.strictEqual(render(block([decl, call])), '<input disabled />');
+    assert.strictEqual(render(block([decl, call])), '<input disabled>');
   });
 
   test('static attributes unaffected when variable attribute omitted', () => {

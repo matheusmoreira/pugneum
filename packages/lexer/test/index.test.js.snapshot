@@ -24021,10 +24021,10 @@ exports[`layout.append.pg 1`] = `
       "filename": "layout.append.pg",
       "end": {
         "line": 2,
-        "column": 41
+        "column": 39
       }
     },
-    "val": "../fixtures/append/app-layout.pg"
+    "val": "/fixtures/append/app-layout.pg"
   },
   {
     "type": "newline",
@@ -24274,10 +24274,10 @@ exports[`layout.append.without-block.pg 1`] = `
       "filename": "layout.append.without-block.pg",
       "end": {
         "line": 2,
-        "column": 55
+        "column": 53
       }
     },
-    "val": "../fixtures/append-without-block/app-layout.pg"
+    "val": "/fixtures/append-without-block/app-layout.pg"
   },
   {
     "type": "newline",
@@ -24513,10 +24513,10 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
       "filename": "layout.multi.append.prepend.block.pg",
       "end": {
         "line": 1,
-        "column": 59
+        "column": 57
       }
     },
-    "val": "../fixtures/multi-append-prepend-block/redefine.pg"
+    "val": "/fixtures/multi-append-prepend-block/redefine.pg"
   },
   {
     "type": "newline",
@@ -25217,10 +25217,10 @@ exports[`layout.prepend.pg 1`] = `
       "filename": "layout.prepend.pg",
       "end": {
         "line": 2,
-        "column": 42
+        "column": 40
       }
     },
-    "val": "../fixtures/prepend/app-layout.pg"
+    "val": "/fixtures/prepend/app-layout.pg"
   },
   {
     "type": "newline",
@@ -25470,10 +25470,10 @@ exports[`layout.prepend.without-block.pg 1`] = `
       "filename": "layout.prepend.without-block.pg",
       "end": {
         "line": 2,
-        "column": 56
+        "column": 54
       }
     },
-    "val": "../fixtures/prepend-without-block/app-layout.pg"
+    "val": "/fixtures/prepend-without-block/app-layout.pg"
   },
   {
     "type": "newline",

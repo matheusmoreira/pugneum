@@ -1,3 +1,245 @@
+exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Block",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "html",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "head",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "title",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "Text",
+                            "line": 3,
+                            "column": 11,
+                            "filename": "layout.pg",
+                            "val": "My Application"
+                          }
+                        ],
+                        "line": 3,
+                        "filename": "layout.pg"
+                      },
+                      "attrs": [],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 3,
+                      "column": 5,
+                      "filename": "layout.pg"
+                    },
+                    {
+                      "type": "Block",
+                      "nodes": [],
+                      "line": 4,
+                      "column": 5,
+                      "filename": "layout.pg"
+                    }
+                  ],
+                  "line": 2,
+                  "filename": "layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 2,
+                "column": 3,
+                "filename": "layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "body",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Tag",
+                              "name": "h1",
+                              "block": {
+                                "type": "Block",
+                                "nodes": [
+                                  {
+                                    "type": "Text",
+                                    "line": 1,
+                                    "column": 4,
+                                    "filename": "include-from-root.pg",
+                                    "val": "hello"
+                                  }
+                                ],
+                                "line": 1,
+                                "filename": "include-from-root.pg"
+                              },
+                              "attrs": [],
+                              "attributeBlocks": [],
+                              "isInline": false,
+                              "line": 1,
+                              "column": 1,
+                              "filename": "include-from-root.pg"
+                            }
+                          ],
+                          "line": 0,
+                          "filename": "include-from-root.pg",
+                          "declaredBlocks": {}
+                        }
+                      ],
+                      "line": 6,
+                      "column": 5,
+                      "filename": "layout.pg"
+                    }
+                  ],
+                  "line": 5,
+                  "filename": "layout.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 3,
+                "filename": "layout.pg"
+              }
+            ],
+            "line": 1,
+            "filename": "layout.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 1,
+          "column": 1,
+          "filename": "layout.pg"
+        }
+      ],
+      "line": 0,
+      "filename": "layout.pg",
+      "declaredBlocks": {
+        "head": [
+          {
+            "type": "NamedBlock",
+            "nodes": [],
+            "line": 4,
+            "filename": "layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 5
+          }
+        ],
+        "content": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Block",
+                "nodes": [
+                  {
+                    "type": "Tag",
+                    "name": "h1",
+                    "block": {
+                      "type": "Block",
+                      "nodes": [
+                        {
+                          "type": "Text",
+                          "line": 1,
+                          "column": 4,
+                          "filename": "include-from-root.pg",
+                          "val": "hello"
+                        }
+                      ],
+                      "line": 1,
+                      "filename": "include-from-root.pg"
+                    },
+                    "attrs": [],
+                    "attributeBlocks": [],
+                    "isInline": false,
+                    "line": 1,
+                    "column": 1,
+                    "filename": "include-from-root.pg"
+                  }
+                ],
+                "line": 0,
+                "filename": "include-from-root.pg",
+                "declaredBlocks": {}
+              }
+            ],
+            "line": 3,
+            "filename": "extends-from-root.pg",
+            "name": "content",
+            "mode": "replace",
+            "column": 1,
+            "parents": [
+              {
+                "type": "NamedBlock",
+                "nodes": [
+                  {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "h1",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "Text",
+                              "line": 1,
+                              "column": 4,
+                              "filename": "include-from-root.pg",
+                              "val": "hello"
+                            }
+                          ],
+                          "line": 1,
+                          "filename": "include-from-root.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 1,
+                        "column": 1,
+                        "filename": "include-from-root.pg"
+                      }
+                    ],
+                    "line": 0,
+                    "filename": "include-from-root.pg",
+                    "declaredBlocks": {}
+                  }
+                ],
+                "line": 6,
+                "filename": "layout.pg",
+                "name": "content",
+                "mode": "replace",
+                "column": 5
+              }
+            ]
+          }
+        ]
+      },
+      "hasExtends": true
+    }
+  ],
+  "line": 0,
+  "filename": "include-extends-from-root.pg",
+  "declaredBlocks": {}
+}
+`;
+
 exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] = `
 {
   "type": "Block",

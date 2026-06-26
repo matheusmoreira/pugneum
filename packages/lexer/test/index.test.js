@@ -290,9 +290,7 @@ describe('footnote reference bracket parsing', () => {
     // The two pipeless lines stay separate: a newline token sits between them
     // and the second line survives as its own text token. (Under the bug the
     // lines were merged, so there was no separating newline.)
-    const texts = tokens
-      .filter((t) => t.type === 'text')
-      .map((t) => t.val);
+    const texts = tokens.filter((t) => t.type === 'text').map((t) => t.val);
     assert.ok(texts.includes('next line'));
     const newlines = tokens.filter((t) => t.type === 'newline');
     assert.strictEqual(newlines.length, 1);

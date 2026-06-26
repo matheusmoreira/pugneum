@@ -9694,7 +9694,7 @@ exports[`layout.append.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "../fixtures/append/app-layout.pg",
+        "path": "/fixtures/append/app-layout.pg",
         "line": 2,
         "column": 9,
         "filename": "layout.append.pg"
@@ -9775,7 +9775,7 @@ exports[`layout.append.without-block.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "../fixtures/append-without-block/app-layout.pg",
+        "path": "/fixtures/append-without-block/app-layout.pg",
         "line": 2,
         "column": 9,
         "filename": "layout.append.without-block.pg"
@@ -9856,7 +9856,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "../fixtures/multi-append-prepend-block/redefine.pg",
+        "path": "/fixtures/multi-append-prepend-block/redefine.pg",
         "line": 1,
         "column": 9,
         "filename": "layout.multi.append.prepend.block.pg"
@@ -10143,7 +10143,7 @@ exports[`layout.prepend.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "../fixtures/prepend/app-layout.pg",
+        "path": "/fixtures/prepend/app-layout.pg",
         "line": 2,
         "column": 9,
         "filename": "layout.prepend.pg"
@@ -10224,7 +10224,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "../fixtures/prepend-without-block/app-layout.pg",
+        "path": "/fixtures/prepend-without-block/app-layout.pg",
         "line": 2,
         "column": 9,
         "filename": "layout.prepend.without-block.pg"

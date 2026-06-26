@@ -1,4 +1,4 @@
-extends /auxiliary/layout.pg
+extends /cases/auxiliary/layout.pg
 
 block content
-    include /auxiliary/include-from-root.pg
+    include /cases/auxiliary/include-from-root.pg

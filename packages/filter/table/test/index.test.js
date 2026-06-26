@@ -550,6 +550,10 @@ describe('literal #{ in cell/caption text', () => {
     var input = '| --- |\n| path \\\\#{x} |';
     assert.doesNotThrow(() => roundTrip(input));
     assert.doesNotThrow(() => renderTable(input));
+    // ...and the rendered output keeps the author's literal backslash: a run of
+    // two collapses to one with #{x} inert, NOT stripped to a bare #{x}. Guards a
+    // backslash-count regression the doesNotThrow checks alone would let through.
+    assert.match(renderTable(input), /<td>path \\#\{x\}<\/td>/);
   });
 
   test('#{ inside link/image/abbr shorthands in a cell renders literally (attribute sinks)', () => {
@@ -565,7 +569,10 @@ describe('literal #{ in cell/caption text', () => {
       renderTable('| --- |\n| !(a.png alt #{n}) |'),
       /<img src="a\.png" alt="alt #\{n\}">/,
     );
-    assert.doesNotThrow(() => renderTable('| --- |\n| ?(API uses #{tok}) |'));
+    assert.match(
+      renderTable('| --- |\n| ?(API uses #{tok}) |'),
+      /<abbr title="uses #\{tok\}">API<\/abbr>/,
+    );
   });
 });
 

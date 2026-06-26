@@ -107,6 +107,28 @@ describe('CLI', () => {
     }
   });
 
+  test('basedir defaults to inputDirectory: a relative include escaping it is denied (decision #1)', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'secret.pg'), 'p secret');
+      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'include ../secret.pg');
+      // No baseDirectory in config: the CLI defaults basedir to inputDirectory
+      // (src), so `../secret.pg` escapes the build root and default-deny rejects
+      // it (a template error, exit 6).
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+      const result = runExpectFail([], {cwd: tmp});
+      assert.strictEqual(result.status, 6);
+      assert.match(result.stderr, /escapes project root|PATH_ESCAPE/);
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
   test('skips symlinks in input directory', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
     try {

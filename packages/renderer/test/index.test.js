@@ -1934,6 +1934,36 @@ describe('given keyword', () => {
     assert.strictEqual(render(block([decl, call])), 'Body only');
   });
 
+  test('given FIRES on an empty caller block (presence, not content — decision #2)', () => {
+    // Decision #2: `given` fires when the caller NAMES the block, even with no
+    // content — the (empty) wrapper still renders. Same mixin as the skip test,
+    // but the caller now supplies an empty `footer` block.
+    const decl = mixinDef(
+      'card',
+      [],
+      [
+        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
+        {
+          type: 'Given',
+          name: 'footer',
+          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: true},
+    );
+    const call = mixinCallOpts(
+      'card',
+      [],
+      [text('Body'), namedBlock('footer', 'replace', [])],
+    );
+    const out = render(block([decl, call]));
+    assert.match(out, /Body/);
+    assert.match(out, /<footer><\/footer>/);
+  });
+
   test('given with named-only mixin (no unnamed block)', () => {
     const decl = mixinDef(
       'wrap',

@@ -120,8 +120,7 @@ describe('required-looking arguments are optional and degrade silently', () => {
   });
 
   test('+breadcrumb with no href renders a non-link <a> (href dropped)', () => {
-    var input =
-      'include ../breadcrumb.pg\n\n+breadcrumbs\n  +breadcrumb Home';
+    var input = 'include ../breadcrumb.pg\n\n+breadcrumbs\n  +breadcrumb Home';
     var html = render(input);
     assert.ok(html.includes('<li><a>Home</a></li>'));
     assert.ok(!html.includes('href='));

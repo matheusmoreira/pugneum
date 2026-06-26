@@ -642,3 +642,161 @@ describe('empty separator cells', () => {
     assert.doesNotMatch(result, /td ---/);
   });
 });
+
+// DECIDED ITEM: a live interpolation `#{...}` inside a VERBATIM attribute group
+// (a tagged cell head, a caption/section/tr/separator attr group, or a filter
+// attribute value) used to reach the renderer and crash with the raw, uncoded
+// PUGNEUM:CALL_STACK_UNDERFLOW ("variable used outside mixin") pointing at
+// synthetic generated source. The decision was to RAISE A CLEAN coded error
+// (not neutralize). The filter must throw INTERPOLATION_IN_TABLE_HEAD up front.
+describe('live #{ in a verbatim attribute group is a clean coded error', () => {
+  // Assert the filter throws the coded error AND that it is NOT the old raw
+  // CALL_STACK_UNDERFLOW crash.
+  function assertCodedInterpolationError(input, attrs) {
+    assert.throws(
+      () => tableFilter.filter(input, attrs || {}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:INTERPOLATION_IN_TABLE_HEAD');
+        assert.notStrictEqual(err.code, 'PUGNEUM:CALL_STACK_UNDERFLOW');
+        assert.match(err.message, /interpolation/i);
+        return true;
+      },
+    );
+  }
+
+  test('cell head td(title="#{q}") throws the coded error, not a crash', () => {
+    assertCodedInterpolationError('| --- |\n| td(title="#{q}") x |');
+  });
+
+  test('cell head th(data-a="#{p}") throws the coded error', () => {
+    assertCodedInterpolationError('| th(data-a="#{p}") text |\n| --- |\n| x |');
+  });
+
+  test('a #{ in the middle of an attribute value is caught too', () => {
+    assertCodedInterpolationError('| --- |\n| td(class="a#{n}b") x |');
+  });
+
+  test('caption(attrs) with #{ throws the coded error', () => {
+    assertCodedInterpolationError(
+      'caption(class="#{c}") Title\n| a |\n| --- |\n| b |',
+    );
+  });
+
+  test('thead/tbody/tfoot marker attrs with #{ throw the coded error', () => {
+    assertCodedInterpolationError('thead(class="#{c}")\n| a |\n| --- |\n| b |');
+    assertCodedInterpolationError('| a |\n| --- |\ntbody(class="#{c}")\n| b |');
+    assertCodedInterpolationError(
+      '| a |\n| --- |\n| b |\ntfoot(class="#{c}")\n| c |',
+    );
+  });
+
+  test('tr(attrs) prefix with #{ throws the coded error', () => {
+    assertCodedInterpolationError('| a |\n| --- |\ntr(class="#{c}") | v |');
+  });
+
+  test('separator col attrs ---(class="#{c}")--- throw the coded error', () => {
+    assertCodedInterpolationError('| a |\n| ---(class="#{c}")--- |\n| b |');
+  });
+
+  test('a filter attribute value with #{ throws the coded error', () => {
+    // Reachable via programmatic filterOptions.
+    assertCodedInterpolationError('| a |\n| --- |\n| b |', {title: '#{x}'});
+  });
+
+  // The fix must NOT break currently-working input: an author who escapes the
+  // interpolation (`\#{`) keeps a literal `#{...}` in the output. Render through
+  // the full pipeline to prove the escaped form survives and is not rejected.
+  function renderTable(input, attrs) {
+    var src = tableFilter.filter(input, attrs || {});
+    var options = {filename: 'gen.pg', source: src};
+    return render(parse(lex(src, options), options), options);
+  }
+
+  test('an ESCAPED \\#{ in a cell head still renders a literal #{', () => {
+    var input = '| --- |\n| td(title="\\#{q}") x |';
+    assert.doesNotThrow(() => tableFilter.filter(input, {}));
+    assert.match(renderTable(input), /<td title="#\{q\}">x<\/td>/);
+  });
+
+  test('an ESCAPED \\#{ in a separator col attr still renders literally', () => {
+    var input = '| a |\n| ---(class="\\#{c}")--- |\n| b |';
+    assert.doesNotThrow(() => tableFilter.filter(input, {}));
+    assert.match(renderTable(input), /<col class="#\{c\}">/);
+  });
+
+  test('a # not opening an interpolation (#tag) is fine in a head', () => {
+    var input = '| --- |\n| td(data-x="#tag") v |';
+    assert.doesNotThrow(() => tableFilter.filter(input, {}));
+    assert.match(renderTable(input), /<td data-x="#tag">v<\/td>/);
+  });
+
+  test('a #{ in cell TEXT is still neutralized, not rejected (decision #4 intact)', () => {
+    // The head is plain; the trailing #{ is TEXT, which is neutralized — it must
+    // NOT trip the head-interpolation error.
+    var input = '| --- |\n| td(class="k") cost #{usd} |';
+    assert.doesNotThrow(() => tableFilter.filter(input, {}));
+    assert.match(renderTable(input), /<td class="k">cost #\{usd\}<\/td>/);
+  });
+});
+
+// The README documents "header cells in a thead get scope=col automatically".
+// A bare cell got it, but an EXPLICIT th/th(...) head took the verbatim branch
+// and silently lost scope — inconsistent within one thead and contradicting the
+// package's own docs.
+describe('explicit th cells in thead get scope="col"', () => {
+  test('bare th and explicit th cells in thead are both scoped', () => {
+    var input = '| th Name | Count |\n| --- | --- |\n| a | 1 |';
+    var result = tableFilter.filter(input, {});
+    // BOTH header cells carry scope="col" (the explicit `th Name` no longer
+    // loses it). Two scope="col" tokens, both on th in the thead.
+    var headLines = result
+      .split('\n')
+      .filter((l) => /^\s+th/.test(l) && /Name|Count/.test(l));
+    assert.strictEqual(headLines.length, 2);
+    headLines.forEach((l) => assert.match(l, /th\(scope="col"\)/));
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('explicit th(attrs) head in thead merges scope without duplicating', () => {
+    var input = '| th(class="k") Name |\n| --- |\n| a |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th\(scope="col" class="k"\) Name/);
+    // Exactly one scope on the header cell — no DUPLICATE_ATTRIBUTE on re-lex.
+    var th = result.split('\n').find((l) => /th\(/.test(l));
+    assert.strictEqual((th.match(/scope=/g) || []).length, 1);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('an author-set scope on a th head is preserved, not duplicated', () => {
+    // th(scope="row") in a thead must keep the author's value and NOT get a
+    // second scope (which would crash the re-lex with DUPLICATE_ATTRIBUTE).
+    var input = '| th(scope="row") Name |\n| --- |\n| a |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th\(scope="row"\) Name/);
+    assert.doesNotMatch(result, /scope="col"/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('data-scope is not mistaken for scope (scope="col" still added)', () => {
+    var input = '| th(data-scope="x") Name |\n| --- |\n| a |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /th\(scope="col" data-scope="x"\) Name/);
+    assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('an explicit td head in thead is NOT given scope', () => {
+    var input = '| td(class="k") Name |\n| --- |\n| a |';
+    var result = tableFilter.filter(input, {});
+    assert.match(result, /td\(class="k"\) Name/);
+    assert.doesNotMatch(result, /scope=/);
+  });
+
+  test('an explicit th head in tbody is NOT given scope', () => {
+    var input = '| a |\n| --- |\n| th(class="k") row |';
+    var result = tableFilter.filter(input, {});
+    // The thead's bare `a` becomes th(scope="col"); the tbody th(class) must not.
+    var tbodyTh = result.split('\n').find((l) => /th\(class="k"\)/.test(l));
+    assert.ok(tbodyTh, 'expected the tbody th(class="k") line');
+    assert.doesNotMatch(tbodyTh, /scope=/);
+  });
+});

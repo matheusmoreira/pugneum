@@ -17,7 +17,7 @@ function feedError(code, message) {
 // Security boundary: a resolved path must stay inside an allowed base directory.
 // Reject classic `..` escapes and the sibling-prefix trap (`/out` vs `/out-evil`)
 // via the trailing path.sep. Stated once and called for each path we touch.
-function assertWithin(baseResolved, candidatePath, message) {
+function assertNoTraversal(baseResolved, candidatePath, message) {
   const resolved = path.resolve(candidatePath);
   if (!resolved.startsWith(baseResolved + path.sep)) {
     throw feedError('FEED_PATH_TRAVERSAL', message);
@@ -82,7 +82,7 @@ module.exports = function generateFeeds(options) {
     let articlePath = path.join(outputDir, entry.href);
 
     // Prevent path traversal: article path must stay within output directory
-    assertWithin(
+    assertNoTraversal(
       resolvedOutputDir,
       articlePath,
       'Article href escapes output directory: ' + entry.href,
@@ -145,12 +145,12 @@ module.exports = function generateFeeds(options) {
 
   // Prevent path traversal: feed output paths must stay within write directory
   const resolvedWriteDir = path.resolve(writeDir);
-  assertWithin(
+  assertNoTraversal(
     resolvedWriteDir,
     path.join(writeDir, atomPath),
     'Feed output path escapes write directory',
   );
-  assertWithin(
+  assertNoTraversal(
     resolvedWriteDir,
     path.join(writeDir, rssPath),
     'Feed output path escapes write directory',

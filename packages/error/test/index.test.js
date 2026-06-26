@@ -173,3 +173,108 @@ describe('warning', function () {
     });
   });
 });
+
+describe('source-context window', function () {
+  // A >=9-line source with an interior line is the only shape that exposes the
+  // window's symmetry; every other test clamps at the source edges.
+  var src = 'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9';
+
+  test('shows a symmetric +/-3 lines around an interior offending line', function () {
+    var err = error('MY_CODE', 'My message', {line: 5, source: src});
+    assert.strictEqual(
+      err.message,
+      '5\n' +
+        '    2| L2\n' +
+        '    3| L3\n' +
+        '    4| L4\n' +
+        '  > 5| L5\n' +
+        '    6| L6\n' +
+        '    7| L7\n' +
+        '    8| L8\n' +
+        '\nMy message',
+    );
+  });
+});
+
+describe('robust against odd inputs', function () {
+  var src = 'foo\nbar\nbaz\nbash\nbing';
+
+  test('a fractional column does not throw from the builder', function () {
+    var err = error('MY_CODE', 'My message', {
+      line: 3,
+      column: 0.5,
+      source: src,
+    });
+    // floor(preamble.length + 0.5) - 1 = floor(7.5) - 1 = 6 dashes
+    assert.strictEqual(
+      err.message,
+      '3:0.5\n    1| foo\n    2| bar\n  > 3| baz\n------^\n    4| bash\n    5| bing\n\nMy message',
+    );
+  });
+
+  test('a string column underlines the same position as a numeric one', function () {
+    var numeric = error('MY_CODE', 'My message', {
+      line: 3,
+      column: 2,
+      source: src,
+    }).message;
+    var string = error('MY_CODE', 'My message', {
+      line: 3,
+      column: '2',
+      source: src,
+    }).message;
+    assert.strictEqual(string, numeric);
+    // and the caret is the aligned dashes, never the garbage "72^"
+    assert.match(string, /\n--------\^\n/);
+  });
+
+  test('a non-string source degrades to the no-context branch instead of throwing', function () {
+    assert.strictEqual(
+      error('MY_CODE', 'My message', {line: 1, column: 1, source: 12345})
+        .message,
+      '1:1\n\nMy message',
+    );
+    assert.strictEqual(
+      error('MY_CODE', 'My message', {
+        line: 1,
+        source: Buffer.from('a\nb\nc'),
+      }).message,
+      '1\n\nMy message',
+    );
+  });
+
+  test('a string line still highlights the offending line', function () {
+    var err = error('MY_CODE', 'My message', {line: '3', source: src});
+    assert.strictEqual(
+      err.message,
+      '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
+    );
+  });
+
+  test('a missing or non-numeric line never renders the literal "undefined"', function () {
+    assert.strictEqual(error('MY_CODE', 'My message').message, 'My message');
+    assert.strictEqual(
+      error('MY_CODE', 'My message', {source: src}).message,
+      'My message',
+    );
+    assert.strictEqual(
+      error('MY_CODE', 'My message', {line: {}, source: src}).message,
+      'My message',
+    );
+    // a present filename is still shown, with no dangling colon
+    assert.strictEqual(
+      error('MY_CODE', 'My message', {filename: 'f'}).message,
+      'f\n\nMy message',
+    );
+  });
+
+  test('an explicit null options object is treated like a missing one', function () {
+    var err = error('MY_CODE', 'My message', null);
+    assert.strictEqual(err.message, 'My message');
+    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
+    assert.strictEqual(err.msg, 'My message');
+    var warn = error.warning('MY_CODE', 'My message', null);
+    assert.strictEqual(warn.message, 'My message');
+    assert.strictEqual(warn.code, 'PUGNEUM:MY_CODE');
+  });
+});

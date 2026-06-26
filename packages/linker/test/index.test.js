@@ -9,7 +9,10 @@ var load = require('pugneum-loader');
 var walk = require('pugneum-walker');
 var link = require('../');
 
-var basedir = __dirname + '/cases';
+// Project root for these tests = the test/ dir, which contains both cases/ and
+// fixtures/. Cases reach fixtures via `extends ../fixtures/...`; default-deny
+// containment allows that as long as it stays within this root.
+var basedir = __dirname;
 
 function linkFile(filename) {
   let source = fs.readFileSync(filename, 'utf8');

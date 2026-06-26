@@ -23710,6 +23710,15 @@ exports[`interpolation.escape.pg 1`] = `
 ]
 `;
 
+exports[`invalid-abbr-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in ?() abbr URL.",
+  "code": "PUGNEUM:INVALID_ABBR",
+  "line": 1,
+  "column": 3
+}
+`;
+
 exports[`invalid-attribute-name.pg 1`] = `
 {
   "msg": "Code points not allowed in HTML attribute names: >",
@@ -23746,12 +23755,57 @@ exports[`invalid-class-name-3.pg 1`] = `
 }
 `;
 
+exports[`invalid-footnote-ref.pg 1`] = `
+{
+  "msg": "Footnote reference ^[] requires an identifier.",
+  "code": "PUGNEUM:INVALID_FOOTNOTE_REF",
+  "line": 1,
+  "column": 3
+}
+`;
+
+exports[`invalid-id-bare.pg 1`] = `
+{
+  "msg": "\\"\\" is not a valid ID.",
+  "code": "PUGNEUM:INVALID_ID",
+  "line": 1,
+  "column": 1
+}
+`;
+
+exports[`invalid-id-eol.pg 1`] = `
+{
+  "msg": "\\"\\" is not a valid ID.",
+  "code": "PUGNEUM:INVALID_ID",
+  "line": 1,
+  "column": 4
+}
+`;
+
 exports[`invalid-id.pg 1`] = `
 {
   "msg": "\\"ä\\" is not a valid ID.",
   "code": "PUGNEUM:INVALID_ID",
   "line": 1,
   "column": 1
+}
+`;
+
+exports[`invalid-image-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in !() image URL.",
+  "code": "PUGNEUM:INVALID_IMAGE",
+  "line": 1,
+  "column": 3
+}
+`;
+
+exports[`invalid-link-unclosed-quote.pg 1`] = `
+{
+  "msg": "Unclosed quote in @() link URL.",
+  "code": "PUGNEUM:INVALID_LINK",
+  "line": 1,
+  "column": 3
 }
 `;
 
@@ -52403,52 +52457,4 @@ exports[`yield.pg 1`] = `
     }
   }
 ]
-`;
-exports[`invalid-id-bare.pg 1`] = `
-{
-  "msg": "\\"\\" is not a valid ID.",
-  "code": "PUGNEUM:INVALID_ID",
-  "line": 1,
-  "column": 1
-}
-`;
-exports[`invalid-id-eol.pg 1`] = `
-{
-  "msg": "\\"\\" is not a valid ID.",
-  "code": "PUGNEUM:INVALID_ID",
-  "line": 1,
-  "column": 4
-}
-`;
-exports[`invalid-link-unclosed-quote.pg 1`] = `
-{
-  "msg": "Unclosed quote in @() link URL.",
-  "code": "PUGNEUM:INVALID_LINK",
-  "line": 1,
-  "column": 3
-}
-`;
-exports[`invalid-image-unclosed-quote.pg 1`] = `
-{
-  "msg": "Unclosed quote in !() image URL.",
-  "code": "PUGNEUM:INVALID_IMAGE",
-  "line": 1,
-  "column": 3
-}
-`;
-exports[`invalid-abbr-unclosed-quote.pg 1`] = `
-{
-  "msg": "Unclosed quote in ?() abbr URL.",
-  "code": "PUGNEUM:INVALID_ABBR",
-  "line": 1,
-  "column": 3
-}
-`;
-exports[`invalid-footnote-ref.pg 1`] = `
-{
-  "msg": "Footnote reference ^[] requires an identifier.",
-  "code": "PUGNEUM:INVALID_FOOTNOTE_REF",
-  "line": 1,
-  "column": 3
-}
 `;

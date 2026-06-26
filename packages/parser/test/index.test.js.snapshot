@@ -5096,17 +5096,17 @@ exports[`footnotes-basic.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 5,
-                "column": 1,
+                "line": 4,
+                "column": 9,
                 "filename": "footnotes-basic.pg",
                 "val": "This is the footnote content."
               }
             ],
-            "line": 5,
+            "line": 4,
             "filename": "footnotes-basic.pg"
           },
-          "line": 5,
-          "column": 1,
+          "line": 4,
+          "column": 3,
           "filename": "footnotes-basic.pg"
         }
       ],
@@ -5186,17 +5186,17 @@ exports[`footnotes-multiple.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 5,
-                "column": 1,
+                "line": 4,
+                "column": 9,
                 "filename": "footnotes-multiple.pg",
                 "val": "Alpha content."
               }
             ],
-            "line": 5,
+            "line": 4,
             "filename": "footnotes-multiple.pg"
           },
-          "line": 5,
-          "column": 1,
+          "line": 4,
+          "column": 3,
           "filename": "footnotes-multiple.pg"
         },
         {
@@ -5206,17 +5206,17 @@ exports[`footnotes-multiple.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 6,
-                "column": 1,
+                "line": 5,
+                "column": 8,
                 "filename": "footnotes-multiple.pg",
                 "val": "Beta content."
               }
             ],
-            "line": 6,
+            "line": 5,
             "filename": "footnotes-multiple.pg"
           },
-          "line": 6,
-          "column": 1,
+          "line": 5,
+          "column": 3,
           "filename": "footnotes-multiple.pg"
         }
       ],
@@ -5296,17 +5296,17 @@ exports[`footnotes-repeated.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 5,
-                "column": 1,
+                "line": 4,
+                "column": 9,
                 "filename": "footnotes-repeated.pg",
                 "val": "Shared footnote."
               }
             ],
-            "line": 5,
+            "line": 4,
             "filename": "footnotes-repeated.pg"
           },
-          "line": 5,
-          "column": 1,
+          "line": 4,
+          "column": 3,
           "filename": "footnotes-repeated.pg"
         }
       ],
@@ -5372,17 +5372,17 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 6,
-                "column": 1,
+                "line": 5,
+                "column": 15,
                 "filename": "footnotes.pg",
                 "val": "Introduced by Dijkstra in 1978."
               }
             ],
-            "line": 6,
+            "line": 5,
             "filename": "footnotes.pg"
           },
-          "line": 6,
-          "column": 1,
+          "line": 5,
+          "column": 3,
           "filename": "footnotes.pg"
         },
         {
@@ -5392,17 +5392,24 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 8,
+                "val": " ",
+                "line": 7,
                 "column": 1,
+                "filename": "footnotes.pg"
+              },
+              {
+                "type": "Text",
+                "line": 7,
+                "column": 5,
                 "filename": "footnotes.pg",
                 "val": "McCarthy's original Lisp used mark-and-sweep."
               }
             ],
-            "line": 8,
+            "line": 6,
             "filename": "footnotes.pg"
           },
-          "line": 8,
-          "column": 1,
+          "line": 6,
+          "column": 3,
           "filename": "footnotes.pg"
         },
         {
@@ -5412,17 +5419,17 @@ exports[`footnotes.pg 1`] = `
             "nodes": [
               {
                 "type": "Text",
-                "line": 9,
-                "column": 1,
+                "line": 8,
+                "column": 15,
                 "filename": "footnotes.pg",
                 "val": "Content on the name line only."
               }
             ],
-            "line": 9,
+            "line": 8,
             "filename": "footnotes.pg"
           },
-          "line": 9,
-          "column": 1,
+          "line": 8,
+          "column": 3,
           "filename": "footnotes.pg"
         }
       ],

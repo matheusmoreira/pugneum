@@ -228,21 +228,21 @@ function resolve(filename, source, options) {
   const baseDir = isAbsolute ? options.basedir : path.dirname(source.trim());
   filename = path.join(baseDir, filename);
 
-  // Default-deny containment: include/extends must stay within the project
-  // root. Absolute paths resolve against basedir; relative paths resolve
-  // against the including file's directory and must not climb out of basedir
-  // either. The only sanctioned way to reach content outside the project is an
-  // npm-installed package via an @-prefixed library include (resolveLibrary).
-  // Relative includes are constrained against basedir when one is configured,
-  // otherwise against the including file's own directory.
-  const containmentRoot = isAbsolute
-    ? options.basedir
-    : options.basedir || baseDir;
-  assertWithin(
-    filename,
-    containmentRoot,
-    'Include path escapes project root: ' + filename,
-  );
+  // Default-deny containment: include/extends must stay within basedir (the
+  // project root — baseDirectory in the CLI config, which defaults to
+  // inputDirectory). Absolute paths already require basedir; relative paths
+  // must not climb out of it either. The only sanctioned way to reach content
+  // outside the project is an npm-installed package via an @-prefixed library
+  // include (resolveLibrary). When no basedir is configured (a programmatic
+  // render with no build root), there is nothing to contain against, so the
+  // relative include simply resolves against the including file's directory.
+  if (options.basedir) {
+    assertWithin(
+      filename,
+      options.basedir,
+      'Include path escapes project root: ' + filename,
+    );
+  }
 
   return filename;
 }

@@ -190,7 +190,9 @@ function flushWarnings() {
 try {
   const {baseDirectory, inputDirectory, outputDirectory, feeds} =
     readAndValidateInput('pugneum.json');
-  pgOptions.basedir = baseDirectory;
+  // baseDirectory is the include-containment root; default it to the input
+  // tree so default-deny is always on even when the config omits it.
+  pgOptions.basedir = baseDirectory || inputDirectory;
 
   const resolvedInputDir = fs.realpathSync(inputDirectory);
   const resolvedOutputDir = path.resolve(outputDirectory);

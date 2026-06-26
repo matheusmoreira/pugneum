@@ -1,245 +1,3 @@
-exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Block",
-      "nodes": [
-        {
-          "type": "Tag",
-          "name": "html",
-          "block": {
-            "type": "Block",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "head",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Tag",
-                      "name": "title",
-                      "block": {
-                        "type": "Block",
-                        "nodes": [
-                          {
-                            "type": "Text",
-                            "line": 3,
-                            "column": 11,
-                            "filename": "layout.pg",
-                            "val": "My Application"
-                          }
-                        ],
-                        "line": 3,
-                        "filename": "layout.pg"
-                      },
-                      "attrs": [],
-                      "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 3,
-                      "column": 5,
-                      "filename": "layout.pg"
-                    },
-                    {
-                      "type": "Block",
-                      "nodes": [],
-                      "line": 4,
-                      "column": 5,
-                      "filename": "layout.pg"
-                    }
-                  ],
-                  "line": 2,
-                  "filename": "layout.pg"
-                },
-                "attrs": [],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 2,
-                "column": 3,
-                "filename": "layout.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "body",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Block",
-                          "nodes": [
-                            {
-                              "type": "Tag",
-                              "name": "h1",
-                              "block": {
-                                "type": "Block",
-                                "nodes": [
-                                  {
-                                    "type": "Text",
-                                    "line": 1,
-                                    "column": 4,
-                                    "filename": "include-from-root.pg",
-                                    "val": "hello"
-                                  }
-                                ],
-                                "line": 1,
-                                "filename": "include-from-root.pg"
-                              },
-                              "attrs": [],
-                              "attributeBlocks": [],
-                              "isInline": false,
-                              "line": 1,
-                              "column": 1,
-                              "filename": "include-from-root.pg"
-                            }
-                          ],
-                          "line": 0,
-                          "filename": "include-from-root.pg",
-                          "declaredBlocks": {}
-                        }
-                      ],
-                      "line": 6,
-                      "column": 5,
-                      "filename": "layout.pg"
-                    }
-                  ],
-                  "line": 5,
-                  "filename": "layout.pg"
-                },
-                "attrs": [],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.pg"
-              }
-            ],
-            "line": 1,
-            "filename": "layout.pg"
-          },
-          "attrs": [],
-          "attributeBlocks": [],
-          "isInline": false,
-          "line": 1,
-          "column": 1,
-          "filename": "layout.pg"
-        }
-      ],
-      "line": 0,
-      "filename": "layout.pg",
-      "declaredBlocks": {
-        "head": [
-          {
-            "type": "NamedBlock",
-            "nodes": [],
-            "line": 4,
-            "filename": "layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 5
-          }
-        ],
-        "content": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Block",
-                "nodes": [
-                  {
-                    "type": "Tag",
-                    "name": "h1",
-                    "block": {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Text",
-                          "line": 1,
-                          "column": 4,
-                          "filename": "include-from-root.pg",
-                          "val": "hello"
-                        }
-                      ],
-                      "line": 1,
-                      "filename": "include-from-root.pg"
-                    },
-                    "attrs": [],
-                    "attributeBlocks": [],
-                    "isInline": false,
-                    "line": 1,
-                    "column": 1,
-                    "filename": "include-from-root.pg"
-                  }
-                ],
-                "line": 0,
-                "filename": "include-from-root.pg",
-                "declaredBlocks": {}
-              }
-            ],
-            "line": 3,
-            "filename": "extends-from-root.pg",
-            "name": "content",
-            "mode": "replace",
-            "column": 1,
-            "parents": [
-              {
-                "type": "NamedBlock",
-                "nodes": [
-                  {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "Tag",
-                        "name": "h1",
-                        "block": {
-                          "type": "Block",
-                          "nodes": [
-                            {
-                              "type": "Text",
-                              "line": 1,
-                              "column": 4,
-                              "filename": "include-from-root.pg",
-                              "val": "hello"
-                            }
-                          ],
-                          "line": 1,
-                          "filename": "include-from-root.pg"
-                        },
-                        "attrs": [],
-                        "attributeBlocks": [],
-                        "isInline": false,
-                        "line": 1,
-                        "column": 1,
-                        "filename": "include-from-root.pg"
-                      }
-                    ],
-                    "line": 0,
-                    "filename": "include-from-root.pg",
-                    "declaredBlocks": {}
-                  }
-                ],
-                "line": 6,
-                "filename": "layout.pg",
-                "name": "content",
-                "mode": "replace",
-                "column": 5
-              }
-            ]
-          }
-        ]
-      },
-      "hasExtends": true
-    }
-  ],
-  "line": 0,
-  "filename": "include-extends-from-root.pg",
-  "declaredBlocks": {}
-}
-`;
-
 exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] = `
 {
   "type": "Block",
@@ -741,7 +499,35 @@ exports[`cases from pugneum sources > include-filter-stylus.pg 1`] = `
               "column": 18,
               "fullPath": "some.styl",
               "str": "@import \\"some-included\\"\\n",
-              "raw": "@import \\"some-included\\"\\n"
+              "raw": {
+                "type": "Buffer",
+                "data": [
+                  64,
+                  105,
+                  109,
+                  112,
+                  111,
+                  114,
+                  116,
+                  32,
+                  34,
+                  115,
+                  111,
+                  109,
+                  101,
+                  45,
+                  105,
+                  110,
+                  99,
+                  108,
+                  117,
+                  100,
+                  101,
+                  100,
+                  34,
+                  10
+                ]
+              }
             },
             "line": 2,
             "column": 3,
@@ -809,7 +595,59 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                     "column": 25,
                     "fullPath": "some.md",
                     "str": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n",
-                    "raw": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n"
+                    "raw": {
+                      "type": "Buffer",
+                      "data": [
+                        74,
+                        117,
+                        115,
+                        116,
+                        32,
+                        95,
+                        115,
+                        111,
+                        109,
+                        101,
+                        95,
+                        32,
+                        109,
+                        97,
+                        114,
+                        107,
+                        100,
+                        111,
+                        119,
+                        110,
+                        32,
+                        42,
+                        42,
+                        116,
+                        101,
+                        115,
+                        116,
+                        115,
+                        42,
+                        42,
+                        46,
+                        10,
+                        10,
+                        87,
+                        105,
+                        116,
+                        104,
+                        32,
+                        110,
+                        101,
+                        119,
+                        32,
+                        108,
+                        105,
+                        110,
+                        101,
+                        46,
+                        10
+                      ]
+                    }
                   },
                   "line": 3,
                   "column": 5,
@@ -841,7 +679,53 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                           "column": 42,
                           "fullPath": "include-filter-coffee.coffee",
                           "str": "math =\\n  square: (value) -> value * value\\n",
-                          "raw": "math =\\n  square: (value) -> value * value\\n"
+                          "raw": {
+                            "type": "Buffer",
+                            "data": [
+                              109,
+                              97,
+                              116,
+                              104,
+                              32,
+                              61,
+                              10,
+                              32,
+                              32,
+                              115,
+                              113,
+                              117,
+                              97,
+                              114,
+                              101,
+                              58,
+                              32,
+                              40,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              41,
+                              32,
+                              45,
+                              62,
+                              32,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              32,
+                              42,
+                              32,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              10
+                            ]
+                          }
                         },
                         "line": 5,
                         "column": 7,
@@ -892,7 +776,53 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                           "column": 43,
                           "fullPath": "include-filter-coffee.coffee",
                           "str": "math =\\n  square: (value) -> value * value\\n",
-                          "raw": "math =\\n  square: (value) -> value * value\\n"
+                          "raw": {
+                            "type": "Buffer",
+                            "data": [
+                              109,
+                              97,
+                              116,
+                              104,
+                              32,
+                              61,
+                              10,
+                              32,
+                              32,
+                              115,
+                              113,
+                              117,
+                              97,
+                              114,
+                              101,
+                              58,
+                              32,
+                              40,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              41,
+                              32,
+                              45,
+                              62,
+                              32,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              32,
+                              42,
+                              32,
+                              118,
+                              97,
+                              108,
+                              117,
+                              101,
+                              10
+                            ]
+                          }
                         },
                         "line": 7,
                         "column": 7,
@@ -1868,7 +1798,156 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
                     "column": 22,
                     "fullPath": "includable.js",
                     "str": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n",
-                    "raw": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n"
+                    "raw": {
+                      "type": "Buffer",
+                      "data": [
+                        118,
+                        97,
+                        114,
+                        32,
+                        83,
+                        84,
+                        82,
+                        73,
+                        78,
+                        71,
+                        95,
+                        83,
+                        85,
+                        66,
+                        83,
+                        84,
+                        73,
+                        84,
+                        85,
+                        84,
+                        73,
+                        79,
+                        78,
+                        83,
+                        32,
+                        61,
+                        32,
+                        123,
+                        10,
+                        32,
+                        32,
+                        47,
+                        47,
+                        32,
+                        116,
+                        97,
+                        98,
+                        108,
+                        101,
+                        32,
+                        111,
+                        102,
+                        32,
+                        99,
+                        104,
+                        97,
+                        114,
+                        97,
+                        99,
+                        116,
+                        101,
+                        114,
+                        32,
+                        115,
+                        117,
+                        98,
+                        115,
+                        116,
+                        105,
+                        116,
+                        117,
+                        116,
+                        105,
+                        111,
+                        110,
+                        115,
+                        10,
+                        32,
+                        32,
+                        39,
+                        92,
+                        116,
+                        39,
+                        58,
+                        32,
+                        39,
+                        92,
+                        92,
+                        116,
+                        39,
+                        44,
+                        10,
+                        32,
+                        32,
+                        39,
+                        92,
+                        114,
+                        39,
+                        58,
+                        32,
+                        39,
+                        92,
+                        92,
+                        114,
+                        39,
+                        44,
+                        10,
+                        32,
+                        32,
+                        39,
+                        92,
+                        110,
+                        39,
+                        58,
+                        32,
+                        39,
+                        92,
+                        92,
+                        110,
+                        39,
+                        44,
+                        10,
+                        32,
+                        32,
+                        39,
+                        34,
+                        39,
+                        58,
+                        32,
+                        39,
+                        92,
+                        92,
+                        34,
+                        39,
+                        44,
+                        10,
+                        32,
+                        32,
+                        39,
+                        92,
+                        92,
+                        39,
+                        58,
+                        32,
+                        39,
+                        92,
+                        92,
+                        92,
+                        92,
+                        39,
+                        44,
+                        10,
+                        125,
+                        59,
+                        10
+                      ]
+                    }
                   },
                   "line": 10,
                   "column": 5,

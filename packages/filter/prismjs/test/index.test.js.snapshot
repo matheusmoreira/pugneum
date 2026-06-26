@@ -28,7 +28,6 @@ exports[`syntax-highlighting-works.pg 1`] = `
                           "nodes": [
                             {
                               "type": "Text",
-                              "name": "highlight",
                               "line": 5,
                               "column": 9,
                               "filename": "syntax-highlighting-works.pg",

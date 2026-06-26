@@ -977,7 +977,10 @@ describe('test-cases/', () => {
         .readFileSync(htmlPath, 'utf8')
         .trim()
         .replace(/\r/g, '');
-      var options = {filename: pgPath, basedir: testCasesDir};
+      // basedir = the parent of test-cases/, which also holds the sibling
+      // fixtures/ that layout cases reach via `extends ../fixtures/...`.
+      // Default-deny contains includes to this root.
+      var options = {filename: pgPath, basedir: path.dirname(testCasesDir)};
       var actual = pg.renderFile(pgPath, options);
       assert.strictEqual(actual.trim(), expected);
     });

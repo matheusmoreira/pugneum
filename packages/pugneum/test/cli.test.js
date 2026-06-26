@@ -113,7 +113,10 @@ describe('CLI', () => {
       fs.mkdirSync(path.join(tmp, 'src'));
       fs.mkdirSync(path.join(tmp, 'out'));
       fs.writeFileSync(path.join(tmp, 'secret.pg'), 'p secret');
-      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'include ../secret.pg');
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'page.pg'),
+        'include ../secret.pg',
+      );
       // No baseDirectory in config: the CLI defaults basedir to inputDirectory
       // (src), so `../secret.pg` escapes the build root and default-deny rejects
       // it (a template error, exit 6).

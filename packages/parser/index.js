@@ -37,6 +37,12 @@ function parse(tokens, options) {
   return parser.parse();
 }
 
+// Used to compute a mixin's usesNamedBlocks / usesUnnamedBlock flags by
+// searching its body for NamedBlock / MixinBlock / Given nodes. The stop at
+// nested Mixin nodes is load-bearing: a mixin's block flags must reflect only
+// its OWN body, so an inner mixin definition's (or call's) named/unnamed blocks
+// must not leak onto the outer mixin's flags. Do not reuse this as a generic
+// "subtree contains X" walker without accounting for that boundary.
 function containsNodeType(node, type) {
   if (!node) return false;
   if (node.type === type) return true;
@@ -91,6 +97,18 @@ const inlineTags = [
   'wbr',
 ];
 
+// Token types that begin a piece of inline content inside a text block.
+// Used by collectInlineContent to decide whether a consumed newline still
+// separates two pieces of inline content (in which case the '\n' separator
+// must be emitted) or is merely a trailing newline before outdent/eos.
+const inlineStartTokens = new Set([
+  'text',
+  'start-interpolation',
+  'start-ref-link',
+  'start-ref-image',
+  'start-footnote-ref',
+]);
+
 class Parser {
   constructor(tokens, options) {
     options = options || {};
@@ -109,6 +127,12 @@ class Parser {
     this.source = options.source;
     this.inMixin = 0;
     this.inMixinCall = 0;
+    // Stack of the enclosing mixin constructs in lexical nesting order: 'def'
+    // for a mixin definition body, 'call' for a mixin call block. The top of
+    // the stack is the innermost enclosing mixin construct, which is what
+    // decides `given` validity. Cumulative counters cannot express "innermost"
+    // and mis-decide nested definition-inside-call / call-inside-definition.
+    this.mixinCtx = [];
     this.depth = 0;
   }
 
@@ -204,18 +228,29 @@ class Parser {
   }
 
   /**
+   * Dispatch on the leading token. Kept in sync with the switch in
+   * _parseExpr (the authoritative dispatch table):
+   *
    *   tag
    * | mixin
+   * | block
+   * | mixin-block
+   * | given
    * | variable
+   * | extends
    * | include
+   * | references
+   * | footnotes
+   * | toc
    * | filter
    * | comment
-   * | text
+   * | text | start-interpolation | start-ref-link | start-ref-image | start-footnote-ref
    * | dot
+   * | call
+   * | interpolation
    * | yield
    * | id
    * | class
-   * | interpolation
    */
 
   parseExpr() {
@@ -312,7 +347,12 @@ class Parser {
         case 'newline': {
           if (!options || !options.block) break loop;
           const tok = this.advance();
-          if (this.peek().type === 'text') {
+          // Emit the line separator whenever more inline content follows, not
+          // only when the next line begins with a literal text token. A
+          // continued line that starts with an interpolation (#{var}) or an
+          // inline reference/footnote sigil is still inline content, and
+          // dropping the '\n' here glues the two lines' words together.
+          if (inlineStartTokens.has(this.peek().type)) {
             nodes.push(this.textNode(tok, '\n'));
           }
           break;
@@ -489,14 +529,15 @@ class Parser {
 
   parseGiven() {
     const tok = this.expect('given');
-    if (!this.inMixin) {
+    const ctx = this.mixinCtx[this.mixinCtx.length - 1];
+    if (ctx === undefined) {
       this.error(
         'GIVEN_OUTSIDE_MIXIN',
         'The given keyword can only be used inside a mixin definition.',
         tok,
       );
     }
-    if (this.inMixin <= this.inMixinCall) {
+    if (ctx !== 'def') {
       this.error(
         'GIVEN_OUTSIDE_MIXIN',
         'The given keyword cannot be used inside a mixin call block.',
@@ -825,9 +866,11 @@ class Parser {
     };
 
     this.inMixinCall++;
+    this.mixinCtx.push('call');
     try {
       this.tag(mixin);
     } finally {
+      this.mixinCtx.pop();
       this.inMixinCall--;
     }
     if (mixin.block.nodes.length === 0) mixin.block = null;
@@ -845,10 +888,12 @@ class Parser {
 
     if ('indent' === this.peek().type) {
       this.inMixin++;
+      this.mixinCtx.push('def');
       let block;
       try {
         block = this.block();
       } finally {
+        this.mixinCtx.pop();
         this.inMixin--;
       }
 
@@ -878,7 +923,7 @@ class Parser {
   }
 
   /**
-   * indent (text | newline)* outdent
+   * indent (text | newline | interpolation | ref-link | ref-image | footnote-ref)* outdent
    */
 
   parseTextBlock() {
@@ -932,7 +977,9 @@ class Parser {
       } else {
         const expr = this.parseExpr();
         if (expr.type === 'Block') {
-          block.nodes = block.nodes.concat(expr.nodes);
+          for (let i = 0; i < expr.nodes.length; ++i) {
+            block.nodes.push(expr.nodes[i]);
+          }
         } else {
           block.nodes.push(expr);
         }
@@ -1046,7 +1093,13 @@ class Parser {
       case 'start-footnote-ref':
         const text = this.parseText();
         if (text.type === 'Block') {
-          tag.block.nodes.push.apply(tag.block.nodes, text.nodes);
+          // In-place push rather than push.apply(...spread): a single line
+          // packed with inline shorthands can collect more nodes than V8's
+          // apply argument-spread limit, which would throw a raw RangeError
+          // (no PUGNEUM code) instead of parsing or aborting honestly.
+          for (let i = 0; i < text.nodes.length; ++i) {
+            tag.block.nodes.push(text.nodes[i]);
+          }
         } else {
           tag.block.nodes.push(text);
         }

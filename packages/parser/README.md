@@ -40,7 +40,6 @@ console.log(JSON.stringify(ast, null, '  '))
     {
       "type": "Tag",
       "name": "div",
-      "selfClosing": false,
       "block": {
         "type": "Block",
         "nodes": [],

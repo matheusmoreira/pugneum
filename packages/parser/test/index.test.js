@@ -176,4 +176,99 @@ describe('given keyword', () => {
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
     );
   });
+
+  // given validity must be decided by the innermost enclosing mixin construct,
+  // not by comparing the cumulative inMixin/inMixinCall counters (which cannot
+  // express "innermost" and mis-decide both directions).
+  test('given inside a mixin DEFINITION nested in a call block is accepted', (t) => {
+    // inMixin == 1, inMixinCall == 1 here, so the old `inMixin <= inMixinCall`
+    // check wrongly rejected this valid definition-scoped given.
+    const source =
+      'mixin host\n  block\n+host\n  mixin nested\n    given slot\n      p y';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const call = ast.nodes.find((n) => n.type === 'Mixin' && n.call);
+    const nested = call.block.nodes.find((n) => n.type === 'Mixin');
+    const given = nested.block.nodes.find((n) => n.type === 'Given');
+    assert.ok(given, 'given inside the nested definition should be parsed');
+    assert.strictEqual(given.name, 'slot');
+  });
+
+  test('given lexically inside a call block (with more defs than calls stacked) throws', (t) => {
+    // inMixin == 2, inMixinCall == 1 here, so the old `inMixin <= inMixinCall`
+    // check (2 <= 1 === false) wrongly accepted this call-scoped given.
+    const source = 'mixin a\n  mixin b\n    +c\n      given slot\n        p hi';
+    const tokens = lex(source, {filename: 'test'});
+    assert.throws(
+      () => parse(tokens, {filename: 'test', source}),
+      (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
+    );
+  });
+});
+
+describe('blind sweep fixes', () => {
+  test('continued text-block line beginning with #{var} keeps the line separator', (t) => {
+    // collectInlineContent must emit the joining '\n' whenever more inline
+    // content follows, not only when the next token is literal text. Gating on
+    // 'text' alone dropped the separator before an interpolation, gluing the
+    // two lines' words together (e.g. <p>alphaVALUE beta</p>).
+    const source = 'mixin m(x)\n  p\n    | alpha\n    | #{x} beta';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const p = ast.nodes[0].block.nodes.find(
+      (n) => n.type === 'Tag' && n.name === 'p',
+    );
+    const kinds = p.block.nodes.map((n) =>
+      n.type === 'Text' ? JSON.stringify(n.val) : n.type,
+    );
+    assert.deepStrictEqual(kinds, ['"alpha"', '"\\n"', 'Variable', '" beta"']);
+  });
+
+  test('a trailing newline before the end of a text block is not turned into a separator', (t) => {
+    // The new gate must still suppress the separator when nothing inline
+    // follows the newline (outdent/eos), so no spurious trailing '\n' appears.
+    const source = 'mixin m(x)\n  p\n    | alpha\n    | beta\n  div';
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    const p = ast.nodes[0].block.nodes.find(
+      (n) => n.type === 'Tag' && n.name === 'p',
+    );
+    const vals = p.block.nodes
+      .filter((n) => n.type === 'Text')
+      .map((n) => n.val);
+    assert.deepStrictEqual(vals, ['alpha', '\n', 'beta']);
+  });
+
+  test('a single long inline-shorthand line parses without a raw RangeError', (t) => {
+    // tag() must flush collected inline nodes with an in-place push loop, not
+    // push.apply(...spread): a line with more inline nodes than V8's apply
+    // argument-spread limit threw a raw RangeError (no PUGNEUM code) instead of
+    // parsing. A synthetic token stream of many text tokens on one logical line
+    // reproduces the exact flush at the crash site.
+    const N = 150000;
+    const loc = {start: {line: 1, column: 1}, end: {line: 1, column: 1}};
+    const tokens = [{type: 'tag', val: 'p', loc}];
+    for (let i = 0; i < N; ++i) tokens.push({type: 'text', val: 'a', loc});
+    tokens.push({type: 'eos', loc});
+    const ast = parse(tokens, {filename: 'test'});
+    assert.strictEqual(ast.nodes[0].block.nodes.length, N);
+  });
+
+  test('a block with many text children under one indent parses linearly to the right node count', (t) => {
+    // block() must accumulate Block-typed children with in-place push rather
+    // than reallocating via Array.concat (O(n^2)). This is a regression guard
+    // on the node count for the path that produced the quadratic blow-up:
+    // alternating a tag with a multi-inline piped line inside a mixin body.
+    const N = 400;
+    const lines = ['mixin m(v)'];
+    for (let i = 0; i < N; ++i) {
+      lines.push('  div');
+      lines.push('  | a #{v} b');
+    }
+    const source = lines.join('\n');
+    const tokens = lex(source, {filename: 'test'});
+    const ast = parse(tokens, {filename: 'test', source});
+    // N `div` tags + N piped-text Blocks (each contributing 3 nodes) = 4N nodes.
+    assert.strictEqual(ast.nodes[0].block.nodes.length, 4 * N);
+  });
 });

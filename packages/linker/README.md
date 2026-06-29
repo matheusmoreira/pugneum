@@ -68,15 +68,20 @@ The linker also resolves:
 
 ### Scope of references and footnotes
 
-Reference (`@[name]`, `![name]`) and footnote (`^[name]`) definitions are
-resolved **per file**: a `@[name]`/`^[name]` use is matched only against a
-`references`/`footnotes` block in the **same** physical file. A use whose
-definition lives in a parent layout (`extends`), in an included partial, or in
-the including file (for a use inside an included partial) raises
-`UNDEFINED_REFERENCE` / `UNDEFINED_FOOTNOTE`. Keep each `references`/`footnotes`
-block in the same file as the uses it serves. (By contrast, `toc` collects
-headings across `include` boundaries because includes are spliced in before the
-toc is resolved.)
+Reference (`@[name]`, `![name]`), footnote (`^[name]`), and `toc` resolution
+runs as a single pass over the **fully assembled document** — after `extends`
+and `include` are spliced in and filters have run. Resolution is therefore
+**document-global**: a `@[name]`/`^[name]` use matches any
+`references`/`footnotes` block in the assembled tree, regardless of which
+physical file the use or the definition came from (a use in an included partial
+resolves against a block in the including file, and vice versa). A use with no
+matching definition anywhere in the document raises `UNDEFINED_REFERENCE` /
+`UNDEFINED_FOOTNOTE`; because the namespace is document-wide, duplicate names
+collide across files (`DUPLICATE_REFERENCE` / `DUPLICATE_FOOTNOTE`), and only
+one `footnotes` block is allowed per document (`DUPLICATE_FOOTNOTES_BLOCK`).
+Running after the filterer is also what lets references, footnotes, and `toc`
+emitted by a `pugneum`-type filter (e.g. a `:table` cell) resolve against the
+document's blocks.
 
 ## License
 

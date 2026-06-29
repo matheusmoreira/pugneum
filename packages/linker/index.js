@@ -590,7 +590,7 @@ function resolveFootnotes(ast, sources, warnings) {
       if (footnotesBlockCount > 1) {
         error(
           'DUPLICATE_FOOTNOTES_BLOCK',
-          'Only one footnotes block is allowed per file',
+          'Only one footnotes block is allowed per document',
           node,
           sources,
         );

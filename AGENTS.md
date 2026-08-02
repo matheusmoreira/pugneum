@@ -1,6 +1,13 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Repository guidance for coding and review agents.
+
+## Working agreement
+
+- Treat the checked-out product branch as the source of truth.
+- Keep plans, review ledgers, prompts, and other private working artifacts in the registered orphan `ai` worktree; never merge that branch into product history.
+- Preserve unrelated worktree changes, stage explicit paths only, and never push without explicit permission.
+- Prefer small, focused implementation commits after the relevant tests and formatting checks pass.
 
 ## Project
 
@@ -31,12 +38,13 @@ source string
   → lexer      tokenizes into token array
   → parser     builds AST from tokens
   → loader     resolves file dependencies (include/extends), recursively lexing+parsing them
-  → linker     links ASTs together (template inheritance, includes, named blocks, reference links/images)
-  → filterer   applies filters (highlight.js, prismjs, table, etc.) with typed dispatch
+  → linker.assemble  assembles inheritance, includes, and named blocks
+  → filterer         applies filters (highlight.js, prismjs, table, etc.) with typed dispatch
+  → linker.resolve   resolves document-global references, footnotes, and table of contents
   → renderer   generates HTML string from final AST
 ```
 
-Orchestrated in `packages/pugneum/index.js` (82 lines): `renderPugneum` runs the entire pipeline in one function, alongside `renderPugneumFile`, `emitWarnings`, and the `warningKey` dedup helper.
+Orchestrated in `packages/pugneum/index.js`: `renderPugneum` runs the entire pipeline in one function, alongside `renderPugneumFile`, `emitWarnings`, and the `warningKey` dedup helper. Resolution deliberately happens after filtering so Pugneum-producing filters participate in the document-global reference, footnote, and TOC pass.
 
 Cross-cutting packages:
 - **walker** — depth-first AST traversal with before/after hooks, used by loader, linker, and filterer

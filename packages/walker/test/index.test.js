@@ -683,6 +683,27 @@ describe('malformed known nodes throw a located error, not a raw TypeError', fun
 });
 
 describe('array replacement re-walk fates (documented contract)', function () {
+  test('a large replacement array is spliced without an argument-count ceiling', function () {
+    var original = {type: 'Text', val: 'original'};
+    var replacements = Array.from({length: 150000}, function (_, index) {
+      return {type: 'Text', val: String(index)};
+    });
+    var ast = walk(
+      {type: 'Block', nodes: [original]},
+      function before(node, replace) {
+        if (node === original) {
+          replace(replacements);
+          return false;
+        }
+      },
+    );
+
+    assert.strictEqual(ast.nodes.length, replacements.length);
+    assert.strictEqual(ast.nodes[0], replacements[0]);
+    assert.strictEqual(ast.nodes[74999], replacements[74999]);
+    assert.strictEqual(ast.nodes[149999], replacements[149999]);
+  });
+
   test('replace([...]) in after inserts nodes but does NOT re-walk them', function () {
     var seen = [];
     walk(

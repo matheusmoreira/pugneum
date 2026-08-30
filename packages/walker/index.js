@@ -234,7 +234,9 @@ function walkAST(ast, before, after, options) {
     for (const node of nodes) {
       const result = walkAST(node, before, after, options);
       if (Array.isArray(result)) {
-        merged.push(...result);
+        for (const replacement of result) {
+          merged.push(replacement);
+        }
       } else {
         merged.push(result);
       }

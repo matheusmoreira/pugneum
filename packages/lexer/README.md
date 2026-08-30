@@ -113,10 +113,28 @@ console.log(JSON.stringify(lex('div(data-foo="bar")\n  p Hello', {filename: 'my-
 ]
 ```
 
-Every token has a `type` and a `loc`; token-specific fields such as `val`,
+### Token stream contract (v1)
+
+`lex()` returns a flat array of tokens. Every token has a string `type` and a
+`loc` object containing `start`, `end`, and the supplied `filename` (or
+`undefined` when none was supplied). Token-specific fields such as `val`,
 `name`, or `args` are added where applicable. Lines and columns are one-based,
 and `loc.end` is end-exclusive. Locations always refer to the normalized
 physical input, remain in source order, and stay within physical source bounds.
+
+A successful stream has these balance and termination guarantees:
+
+- `indent` and `outdent` tokens balance without an underflow.
+- `start-attributes`, `start-pipeless-text`, `start-interpolation`,
+  `start-ref-link`, `start-ref-image`, and `start-footnote-ref` are properly
+  nested with their corresponding `end-*` tokens.
+- Exactly one zero-width `eos` token terminates the array. Empty input therefore
+  returns an array containing only `eos`.
+
+Inline constructs are scanned by nested lexers internally, but their tokens are
+flattened into the one returned array between the applicable boundary tokens;
+no child `eos` token is exposed. Inline nesting deeper than 256 levels throws
+`PUGNEUM:NESTING_TOO_DEEP` instead of returning a partial stream.
 
 Inline shorthand is lowered to ordinary tag and attribute tokens. Structure
 that has no literal spelling in the input uses a zero-width location at the

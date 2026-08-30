@@ -56,6 +56,72 @@ function assertPhysicalTokenLocations(source, tokens, label) {
   });
 }
 
+function assertDocumentedTokenStreamContract(tokens, filename) {
+  const boundaryPairs = {
+    'start-attributes': 'end-attributes',
+    'start-pipeless-text': 'end-pipeless-text',
+    'start-interpolation': 'end-interpolation',
+    'start-ref-link': 'end-ref-link',
+    'start-ref-image': 'end-ref-image',
+    'start-footnote-ref': 'end-footnote-ref',
+  };
+  const boundaryEnds = new Set(Object.values(boundaryPairs));
+  const expectedEnds = [];
+  let indentDepth = 0;
+  let eosCount = 0;
+
+  assert.ok(Array.isArray(tokens), filename + ' returns an array');
+  tokens.forEach((token, index) => {
+    const context = filename + ' token ' + index;
+    assert.ok(token && typeof token === 'object' && !Array.isArray(token));
+    assert.strictEqual(typeof token.type, 'string', context + ' type');
+    assert.ok(token.loc && typeof token.loc === 'object', context + ' loc');
+    assert.strictEqual(token.loc.filename, filename, context + ' filename');
+
+    ['start', 'end'].forEach((edge) => {
+      assert.ok(token.loc[edge], context + ' ' + edge);
+      assert.ok(
+        Number.isInteger(token.loc[edge].line) && token.loc[edge].line >= 1,
+        context + ' ' + edge + ' line',
+      );
+      assert.ok(
+        Number.isInteger(token.loc[edge].column) && token.loc[edge].column >= 1,
+        context + ' ' + edge + ' column',
+      );
+    });
+
+    if (boundaryPairs[token.type]) {
+      expectedEnds.push(boundaryPairs[token.type]);
+    } else if (boundaryEnds.has(token.type)) {
+      assert.strictEqual(token.type, expectedEnds.pop(), context + ' balance');
+    }
+
+    if (token.type === 'indent') indentDepth++;
+    if (token.type === 'outdent') {
+      assert.ok(indentDepth > 0, context + ' indentation underflow');
+      indentDepth--;
+    }
+    if (token.type === 'eos') {
+      eosCount++;
+      assert.strictEqual(index, tokens.length - 1, context + ' terminal eos');
+      assert.deepStrictEqual(token.loc.start, token.loc.end);
+    }
+  });
+
+  assert.deepStrictEqual(expectedEnds, [], filename + ' boundary balance');
+  assert.strictEqual(indentDepth, 0, filename + ' indentation balance');
+  assert.strictEqual(eosCount, 1, filename + ' eos count');
+}
+
+test('shared streams satisfy the documented v1 envelope and balance', () => {
+  sharedCases.forEach((filename) => {
+    assertDocumentedTokenStreamContract(
+      lex(readShared(filename), {filename}),
+      filename,
+    );
+  });
+});
+
 sharedCases.forEach(function (testCase) {
   test(testCase, (t) => {
     var result = lex(readShared(testCase), {

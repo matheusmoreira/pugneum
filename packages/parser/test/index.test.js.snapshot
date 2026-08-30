@@ -7323,7 +7323,8 @@ exports[`footnotes-basic.pg 1`] = `
               }
             ],
             "line": 4,
-            "filename": "footnotes-basic.pg"
+            "filename": "footnotes-basic.pg",
+            "isFootnoteBody": true
           },
           "line": 4,
           "column": 3,
@@ -7413,7 +7414,8 @@ exports[`footnotes-multiple.pg 1`] = `
               }
             ],
             "line": 4,
-            "filename": "footnotes-multiple.pg"
+            "filename": "footnotes-multiple.pg",
+            "isFootnoteBody": true
           },
           "line": 4,
           "column": 3,
@@ -7433,7 +7435,8 @@ exports[`footnotes-multiple.pg 1`] = `
               }
             ],
             "line": 5,
-            "filename": "footnotes-multiple.pg"
+            "filename": "footnotes-multiple.pg",
+            "isFootnoteBody": true
           },
           "line": 5,
           "column": 3,
@@ -7523,7 +7526,8 @@ exports[`footnotes-repeated.pg 1`] = `
               }
             ],
             "line": 4,
-            "filename": "footnotes-repeated.pg"
+            "filename": "footnotes-repeated.pg",
+            "isFootnoteBody": true
           },
           "line": 4,
           "column": 3,
@@ -7599,7 +7603,8 @@ exports[`footnotes.pg 1`] = `
               }
             ],
             "line": 5,
-            "filename": "footnotes.pg"
+            "filename": "footnotes.pg",
+            "isFootnoteBody": true
           },
           "line": 5,
           "column": 3,
@@ -7619,7 +7624,8 @@ exports[`footnotes.pg 1`] = `
               }
             ],
             "line": 6,
-            "filename": "footnotes.pg"
+            "filename": "footnotes.pg",
+            "isFootnoteBody": true
           },
           "line": 6,
           "column": 3,
@@ -7639,7 +7645,8 @@ exports[`footnotes.pg 1`] = `
               }
             ],
             "line": 8,
-            "filename": "footnotes.pg"
+            "filename": "footnotes.pg",
+            "isFootnoteBody": true
           },
           "line": 8,
           "column": 3,

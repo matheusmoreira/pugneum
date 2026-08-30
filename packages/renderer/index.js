@@ -262,8 +262,49 @@ class Compiler {
   }
 
   visitBlock(block) {
+    if (block.isFootnoteBody) {
+      this.renderFootnoteBody(block);
+      return;
+    }
     for (let i = 0; i < block.nodes.length; ++i) {
       this.visit(block.nodes[i], block);
+    }
+  }
+
+  renderFootnoteBody(block) {
+    let segmentStart = 0;
+    let wroteContent = false;
+
+    for (let index = 0; index <= block.nodes.length; index++) {
+      const node = block.nodes[index];
+      if (
+        index < block.nodes.length &&
+        (node.type !== 'Text' || node.isFootnoteSeparator !== true)
+      ) {
+        continue;
+      }
+
+      const saved = this.buf;
+      this.buf = [];
+      let rendered;
+      try {
+        for (let child = segmentStart; child < index; child++) {
+          this.visit(block.nodes[child], block);
+        }
+        rendered = this.buf.join('');
+      } finally {
+        this.buf = saved;
+      }
+
+      // Source indentation and blank definition lines are not footnote
+      // content. Preserve every non-ASCII-whitespace code point, including a
+      // deliberate non-breaking space.
+      if (/[^ \t\r\n\f]/.test(rendered)) {
+        if (wroteContent) this.buffer(' ');
+        this.buffer(rendered);
+        wroteContent = true;
+      }
+      segmentStart = index + 1;
     }
   }
 

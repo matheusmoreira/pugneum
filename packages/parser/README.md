@@ -115,8 +115,8 @@ row says otherwise. A field is always present unless marked optional.
 
 | Node | Parser-owned fields |
 | --- | --- |
-| `Block` | `nodes: Node[]`, `line: number`, `filename: string \| undefined`; no `column` |
-| `Text` | `val: string` |
+| `Block` | `nodes: Node[]`, `line: number`, `filename: string \| undefined`; no `column`; optional `isFootnoteBody: true` |
+| `Text` | `val: string`; optional `isFootnoteSeparator: true` |
 | `Tag` | `name: string`, `block: Block`, `attrs: Attribute[]`, `attributeBlocks: []`, `isInline: boolean`, optional `textOnly: true` |
 | `InterpolatedTag` | `expr: string`, `block: Block`, `attrs: Attribute[]`, `attributeBlocks: []`, `isInline: false`, optional `textOnly: true` |
 | `Comment` | `val: string`, `buffer: boolean` |
@@ -142,7 +142,11 @@ row says otherwise. A field is always present unless marked optional.
 
 `Text.val` is nonempty in parser output. Zero-length lexer boundary fragments
 are discarded, while explicit structural separators such as preserved text
-block newlines and normalized footnote spaces remain ordinary `Text` nodes.
+block newlines remain ordinary `Text` nodes. A footnote definition's `Block`
+has `isFootnoteBody: true`; its physical line joins are `Text(" ")` nodes with
+`isFootnoteSeparator: true`. Those joins remain semantic boundaries until the
+renderer resolves nullable mixin variables, so they never become leading or
+terminal output.
 
 The parser retains `InterpolatedTag` support for compatible token producers
 that emit a direct `interpolation` token. The current lexer v1 stream lowers

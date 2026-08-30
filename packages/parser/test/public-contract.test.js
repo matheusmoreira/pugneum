@@ -14,7 +14,10 @@ var manifest = require('../../../test-cases/manifest.json');
 var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
 
 var nodeShapes = {
-  Block: ['filename,line,nodes,type'],
+  Block: [
+    'filename,line,nodes,type',
+    'filename,isFootnoteBody,line,nodes,type',
+  ],
   BlockComment: ['block,buffer,column,filename,line,type,val'],
   Comment: ['buffer,column,filename,line,type,val'],
   Extends: ['column,file,filename,line,type'],
@@ -44,7 +47,10 @@ var nodeShapes = {
     'attributeBlocks,attrs,block,column,filename,isInline,line,name,type',
     'attributeBlocks,attrs,block,column,filename,isInline,line,name,textOnly,type',
   ],
-  Text: ['column,filename,line,type,val'],
+  Text: [
+    'column,filename,line,type,val',
+    'column,filename,isFootnoteSeparator,line,type,val',
+  ],
   Toc: ['column,filename,line,type'],
   Variable: ['column,filename,line,name,type'],
   YieldBlock: ['column,filename,line,type'],

@@ -947,6 +947,18 @@ describe('link shorthand', () => {
 });
 
 describe('footnotes', () => {
+  function renderedFootnoteBody(result, name) {
+    const bodyStart = result.indexOf('role="doc-endnote">');
+    const contentStart = bodyStart + 'role="doc-endnote">'.length;
+    const backlinkStart = result.indexOf(
+      '<a href="#footnote-reference-' + name + '"',
+      contentStart,
+    );
+    assert.notStrictEqual(bodyStart, -1);
+    assert.notStrictEqual(backlinkStart, -1);
+    return result.slice(contentStart, backlinkStart);
+  }
+
   it('should render a basic footnote', () => {
     const result = pg.render('p Note^[fn1].\n\nfootnotes\n  fn1 Content.');
     assert.match(result, /<sup><a href="#footnote-fn1"/);
@@ -997,6 +1009,53 @@ describe('footnotes', () => {
       'p Note^[fn1].\n\nfootnotes\n  fn1 This is *(important).',
     );
     assert.match(result, /<strong>important<\/strong>/);
+  });
+
+  it('should ignore name-line separator whitespace before a continuation', () => {
+    for (const definitionHead of ['n', 'n ', 'n   ']) {
+      const result = pg.render(
+        'p Note^[n].\nfootnotes\n  ' + definitionHead + '\n    continuation',
+      );
+      assert.strictEqual(renderedFootnoteBody(result, 'n'), 'continuation');
+    }
+  });
+
+  it('should join around omitted and provided optional variables', () => {
+    const definition = [
+      'mixin note(value)',
+      '  p Note^[n].',
+      '  footnotes',
+      '    n #{value}',
+      '      continuation',
+    ].join('\n');
+
+    assert.strictEqual(
+      renderedFootnoteBody(pg.render(definition + '\n+note'), 'n'),
+      'continuation',
+    );
+    assert.strictEqual(
+      renderedFootnoteBody(pg.render(definition + '\n+note(first)'), 'n'),
+      'first continuation',
+    );
+  });
+
+  it('should not carry an empty terminal line into generated backlinks', () => {
+    const definition = [
+      'mixin note(value)',
+      '  p Note^[n].',
+      '  footnotes',
+      '    n first',
+      '      #{value}',
+    ].join('\n');
+
+    assert.strictEqual(
+      renderedFootnoteBody(pg.render(definition + '\n+note'), 'n'),
+      'first',
+    );
+    assert.strictEqual(
+      renderedFootnoteBody(pg.render(definition + '\n+note(last)'), 'n'),
+      'first last',
+    );
   });
 
   it('should work with footnotes block before call sites', () => {

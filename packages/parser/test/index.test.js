@@ -660,11 +660,33 @@ describe('blind sweep fixes', () => {
     const tokens = lex(source, {filename: 'test'});
     const ast = parse(tokens, {filename: 'test', source});
     const def = ast.nodes.find((n) => n.type === 'Footnotes').definitions[0];
+    assert.strictEqual(def.block.isFootnoteBody, true);
     const vals = def.block.nodes
       .filter((n) => n.type === 'Text')
       .map((n) => n.val);
     // No leading separator; the interior newline still joins the two lines.
     assert.deepStrictEqual(vals, ['one', ' ', 'two']);
+    assert.strictEqual(def.block.nodes[1].isFootnoteSeparator, true);
+  });
+
+  test('footnote joins are pending, coalesced, and never terminal', () => {
+    const source = ['p ^[n] z', '', 'footnotes', '  n first', '    '].join(
+      '\n',
+    );
+    const ast = parse(lex(source, {filename: 'test'}), {
+      filename: 'test',
+      source,
+    });
+    const def = ast.nodes.find((n) => n.type === 'Footnotes').definitions[0];
+
+    assert.strictEqual(def.block.isFootnoteBody, true);
+    assert.deepStrictEqual(
+      def.block.nodes.map((node) => ({
+        val: node.val,
+        separator: node.isFootnoteSeparator === true,
+      })),
+      [{val: 'first', separator: false}],
+    );
   });
 
   test('a block with many text children under one indent parses linearly to the right node count', (t) => {

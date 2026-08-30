@@ -820,6 +820,18 @@ class Parser {
       const defTok = this.advance();
       const name = defTok.val;
       const block = this.emptyBlock(defTok.loc.start.line);
+      block.isFootnoteBody = true;
+      let pendingSeparator;
+
+      const appendNode = (node) => {
+        if (pendingSeparator) {
+          const separator = this.textNode(pendingSeparator, ' ');
+          separator.isFootnoteSeparator = true;
+          block.nodes.push(separator);
+          pendingSeparator = undefined;
+        }
+        block.nodes.push(node);
+      };
 
       while (
         this.peek().type !== 'footnote-def-end' &&
@@ -827,42 +839,38 @@ class Parser {
       ) {
         const next = this.peek();
         switch (next.type) {
-          case 'text':
-            this.appendText(block.nodes, this.advance());
+          case 'text': {
+            const text = this.advance();
+            if (text.val !== '') appendNode(this.textNode(text));
             break;
-          case 'newline':
-            this.advance();
-            // A newline inside a footnote definition joins the surrounding
-            // lines with a single space. It is a separator, so it must only
-            // appear BETWEEN pieces of content, never lead the body: when the
-            // definition's content starts on the line after the name, the
-            // lexer emits a leading newline token, and converting it to a
-            // space prepended a spurious U+0020 to the rendered footnote (e.g.
-            // " first line second line"). Mirror collectInlineContent: emit
-            // the joining space only when content already precedes it.
-            if (block.nodes.length > 0) {
-              block.nodes.push({
-                type: 'Text',
-                val: ' ',
-                line: next.loc.start.line,
-                column: next.loc.start.column,
-                filename: this.filename,
-              });
+          }
+          case 'newline': {
+            const newline = this.advance();
+            // A physical line break is a pending semantic boundary, not
+            // unconditional output. Leading and terminal boundaries disappear,
+            // repeated boundaries coalesce, and the renderer decides whether
+            // the surrounding segments produce content after mixin variables
+            // have resolved.
+            if (block.nodes.length > 0 && !pendingSeparator) {
+              pendingSeparator = newline;
             }
             break;
-          case 'start-interpolation':
+          }
+          case 'start-interpolation': {
             this.advance();
-            block.nodes.push(this.parseExpr());
+            const expression = this.parseExpr();
             this.expect('end-interpolation');
+            appendNode(expression);
             break;
+          }
           case 'start-ref-link':
-            block.nodes.push(this.parseRefLink());
+            appendNode(this.parseRefLink());
             break;
           case 'start-ref-image':
-            block.nodes.push(this.parseRefImage());
+            appendNode(this.parseRefImage());
             break;
           case 'start-footnote-ref':
-            block.nodes.push(this.parseFootnoteRef());
+            appendNode(this.parseFootnoteRef());
             break;
           default:
             this.error(

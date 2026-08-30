@@ -36,6 +36,14 @@ function text(val) {
   return {type: 'Text', val: val, line: 1, column: 1, filename: 'test'};
 }
 
+function footnoteBody(nodes) {
+  return Object.assign(block(nodes), {isFootnoteBody: true});
+}
+
+function footnoteSeparator() {
+  return Object.assign(text(' '), {isFootnoteSeparator: true});
+}
+
 // Helper: NamedBlock node
 function namedBlock(name, mode, nodes) {
   return {
@@ -148,6 +156,56 @@ describe('basic rendering', () => {
     assert.strictEqual(
       render(block([tag('div', [], [tag('span', [], [text('x')])])])),
       '<div><span>x</span></div>',
+    );
+  });
+});
+
+describe('footnote line joining', () => {
+  test('joins only segments that produce meaningful output', () => {
+    assert.strictEqual(
+      render(
+        footnoteBody([
+          footnoteSeparator(),
+          text('  '),
+          footnoteSeparator(),
+          text('first'),
+          footnoteSeparator(),
+          text(''),
+          footnoteSeparator(),
+          text('last'),
+          footnoteSeparator(),
+        ]),
+      ),
+      'first last',
+    );
+  });
+
+  test('waits for optional mixin variables to resolve', () => {
+    const declaration = mixinDef(
+      'note',
+      [{name: 'value'}],
+      [
+        footnoteBody([
+          {
+            type: 'Variable',
+            name: 'value',
+            line: 1,
+            column: 1,
+            filename: 'test',
+          },
+          footnoteSeparator(),
+          text('continuation'),
+        ]),
+      ],
+    );
+
+    assert.strictEqual(
+      render(block([declaration, mixinCallOpts('note', [])])),
+      'continuation',
+    );
+    assert.strictEqual(
+      render(block([declaration, mixinCallOpts('note', ['first'])])),
+      'first continuation',
     );
   });
 });

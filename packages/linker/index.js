@@ -873,7 +873,16 @@ function resolveFootnotes(ast, sources, warnings) {
           });
         }
 
-        const liContentNodes = def.block ? def.block.nodes.slice() : [];
+        // Parser-produced footnote bodies carry deferred line separators that
+        // the renderer resolves after optional mixin variables are bound. Keep
+        // that Block intact so its boundary remains scoped to source content
+        // and cannot attach to a generated backlink. Continue accepting the
+        // legacy flat shape for callers that construct linker ASTs directly.
+        const liContentNodes = def.block
+          ? def.block.isFootnoteBody
+            ? [def.block]
+            : def.block.nodes.slice()
+          : [];
         liContentNodes.push.apply(liContentNodes, backLinkNodes);
 
         return {

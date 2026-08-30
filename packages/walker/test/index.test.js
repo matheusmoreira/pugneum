@@ -941,7 +941,17 @@ describe('malformed known nodes fail before hooks with exact location', function
       '$.definitions[0]',
     ],
     ['Tag.block', {type: 'Tag', name: 'p', attrs: [], block: null}, '$.block'],
+    [
+      'Block.isFootnoteBody',
+      {type: 'Block', nodes: [], isFootnoteBody: 'yes'},
+      '$.isFootnoteBody',
+    ],
     ['Text.val', {type: 'Text', val: null}, '$.val'],
+    [
+      'Text.isFootnoteSeparator',
+      {type: 'Text', val: ' ', isFootnoteSeparator: 1},
+      '$.isFootnoteSeparator',
+    ],
     ['Variable.name', {type: 'Variable', name: null}, '$.name'],
   ];
   cases.forEach(function (entry) {

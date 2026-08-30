@@ -524,6 +524,7 @@ function validateNodeShape(node, path, state) {
   validateLocation(node, path);
   switch (node.type) {
     case 'Block':
+      expectOptionalBoolean(node, 'isFootnoteBody', path);
       addNodeArray(node, 'nodes', path, children);
       break;
     case 'NamedBlock':
@@ -618,6 +619,7 @@ function validateNodeShape(node, path, state) {
       break;
     case 'Text':
       expectString(node, 'val', path);
+      expectOptionalBoolean(node, 'isFootnoteSeparator', path);
       break;
     case 'Variable':
       expectString(node, 'name', path);

@@ -450,17 +450,93 @@ describe('argument overload detection', function () {
 });
 
 describe('input contract', function () {
-  test('a bare array at the root is rejected', function () {
-    // Previously this called before() with the array as `node` (when a before
-    // hook was given) or fell through to the `Unexpected node type undefined`
-    // default branch (when before was null) -- two different fates for the
-    // same input. Now it is rejected up front, consistently.
-    assert.throws(function () {
-      walk([{type: 'Text', val: 'x'}], function before() {});
-    }, /single AST node, not an array/);
-    assert.throws(function () {
-      walk([{type: 'Text', val: 'x'}], null, function after() {});
-    }, /single AST node, not an array/);
+  test('invalid roots fail before hooks or options mutation', function () {
+    var invalidRoots = [
+      null,
+      undefined,
+      false,
+      0,
+      'Text',
+      {},
+      {type: null},
+      {type: 1},
+      [{type: 'Text', val: 'x'}],
+    ];
+
+    invalidRoots.forEach(function (invalidRoot) {
+      var beforeRan = false;
+      var options = {};
+      assert.throws(
+        () =>
+          walk(
+            invalidRoot,
+            function before() {
+              beforeRan = true;
+            },
+            null,
+            options,
+          ),
+        {
+          name: 'TypeError',
+          message: 'ast must be a single node object with a string type',
+        },
+      );
+      assert.strictEqual(beforeRan, false);
+      assert.deepStrictEqual(options, {});
+    });
+  });
+
+  test('invalid options containers fail before traversal', function () {
+    var invalidOptions = [null, false, 0, '', [], function options() {}];
+
+    invalidOptions.forEach(function (invalidOption) {
+      var ast = {type: 'Text', val: 'original'};
+      var beforeRan = false;
+      assert.throws(
+        () =>
+          walk(
+            ast,
+            function before(node) {
+              beforeRan = true;
+              node.val = 'mutated';
+            },
+            null,
+            invalidOption,
+          ),
+        {
+          name: 'TypeError',
+          message: 'options must be a non-null, non-array object or undefined',
+        },
+      );
+      assert.strictEqual(beforeRan, false);
+      assert.deepStrictEqual(ast, {type: 'Text', val: 'original'});
+    });
+
+    var ast = {type: 'Text', val: 'x'};
+    assert.strictEqual(walk(ast, null, null, undefined), ast);
+  });
+
+  test('option fields have exact public types', function () {
+    [null, 0, 1, 'false', {}, []].forEach(function (includeDependencies) {
+      var options = Object.freeze({includeDependencies});
+      assert.throws(() => walk({type: 'Text', val: 'x'}, null, options), {
+        name: 'TypeError',
+        message: 'options.includeDependencies must be a boolean or undefined',
+      });
+    });
+
+    [false, true].forEach(function (includeDependencies) {
+      var ast = {type: 'Text', val: 'x'};
+      assert.strictEqual(walk(ast, null, {includeDependencies}), ast);
+    });
+
+    [null, false, 0, '', {}].forEach(function (parents) {
+      var options = Object.freeze({parents});
+      assert.throws(() => walk({type: 'Text', val: 'x'}, null, options), {
+        name: 'TypeError',
+        message: 'options.parents must be an array or undefined',
+      });
+    });
   });
 
   test('replace.arrayAllowed is a strict boolean at the root', function () {

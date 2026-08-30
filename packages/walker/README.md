@@ -105,6 +105,11 @@ There are three distinct cases:
   under `includeDependencies`, so ancestors from the including file remain
   visible at the file boundary.
 
+When supplied, `options` must be a non-null, non-array object.
+`includeDependencies` must be a boolean or `undefined`, and `parents` must be
+an array or `undefined`. Invalid option shapes throw a `TypeError` before any
+hook runs or caller-owned state changes.
+
 ### `walk.validate(ast, options)`
 
 Validate a complete AST graph without mutating it or recursively consuming the
@@ -130,8 +135,9 @@ Validator options are:
 
 The walker assumes well-formed pugneum parser output:
 
-- `ast` must be a single node, not a bare array.
-  A bare array at the root is rejected with an error.
+- `ast` must be a non-null, non-array node object whose `type` is a string.
+  Invalid root shapes are rejected with a `TypeError` before hooks or options
+  are touched.
 - `includeDependencies` only follows an already populated `FileReference.ast`.
   It does not read or parse files; run the loader first (or attach a valid AST
   explicitly). A file reference without `ast` remains a leaf even when the

@@ -93,14 +93,9 @@ function walkAST(ast, before, after, options) {
   }
   assertHook('before', before);
   assertHook('after', after);
-  options = options || {includeDependencies: false};
+  options = normalizeOptions(options);
+  assertRootNode(ast);
   const parents = (options.parents = options.parents || []);
-
-  if (Array.isArray(ast)) {
-    throw new Error(
-      'walkAST expects a single AST node, not an array (got an array at the root)',
-    );
-  }
 
   // String compares rather than a per-call RegExp: arrayAllowed is recomputed
   // on every node and the walker is the linker's hottest inner loop. Equivalent
@@ -251,6 +246,37 @@ function walkAST(ast, before, after, options) {
 function assertHook(name, hook) {
   if (hook != null && typeof hook !== 'function') {
     throw new TypeError(name + ' must be a function, null, or undefined');
+  }
+}
+
+function normalizeOptions(options) {
+  if (options === undefined) return {includeDependencies: false};
+  if (
+    options === null ||
+    typeof options !== 'object' ||
+    Array.isArray(options)
+  ) {
+    throw new TypeError(
+      'options must be a non-null, non-array object or undefined',
+    );
+  }
+  if (
+    options.includeDependencies !== undefined &&
+    typeof options.includeDependencies !== 'boolean'
+  ) {
+    throw new TypeError(
+      'options.includeDependencies must be a boolean or undefined',
+    );
+  }
+  if (options.parents !== undefined && !Array.isArray(options.parents)) {
+    throw new TypeError('options.parents must be an array or undefined');
+  }
+  return options;
+}
+
+function assertRootNode(ast) {
+  if (!isNode(ast) || typeof ast.type !== 'string') {
+    throw new TypeError('ast must be a single node object with a string type');
   }
 }
 

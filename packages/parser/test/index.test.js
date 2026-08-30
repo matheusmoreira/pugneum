@@ -11,7 +11,11 @@ var testCasesDir = path.resolve(__dirname, '../../../test-cases');
 var fixtureManifest = require('../../../test-cases/manifest.json');
 var testCases = fixtureManifest.render
   .map((name) => name + '.pg')
-  .concat(fixtureManifest.syntax);
+  .concat(
+    fixtureManifest.syntax,
+    fixtureManifest.dependencies.filter((name) => name.endsWith('.pg')),
+  )
+  .sort();
 
 function read(filename) {
   return fs.readFileSync(path.join(testCasesDir, filename), 'utf8');
@@ -24,6 +28,26 @@ testCases.forEach(function (filename) {
       ast = parse(tokens, {filename: filename});
 
     t.assert.snapshot(ast);
+  });
+});
+
+test('shared nested empty source parses as an empty root block', () => {
+  var filename = 'fixtures/empty.pg';
+  var ast = parse(lex(read(filename), {filename}), {filename});
+  assert.strictEqual(ast.type, 'Block');
+  assert.deepStrictEqual(ast.nodes, []);
+  assert.strictEqual(ast.filename, filename);
+});
+
+test('shared nested doctype parses as canonical leading text', () => {
+  var filename = 'auxiliary/blocks-in-blocks-layout.pg';
+  var ast = parse(lex(read(filename), {filename}), {filename});
+  assert.deepStrictEqual(ast.nodes[0], {
+    type: 'Text',
+    line: 1,
+    column: 1,
+    filename,
+    val: '<!DOCTYPE html>',
   });
 });
 

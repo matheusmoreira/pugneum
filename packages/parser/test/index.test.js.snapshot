@@ -1471,6 +1471,1465 @@ exports[`attrs.unescaped.pg 1`] = `
 }
 `;
 
+exports[`auxiliary/blocks-in-blocks-layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Text",
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "val": "<!DOCTYPE html>"
+    },
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "head",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "title",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 4,
+                        "column": 11,
+                        "filename": "auxiliary/blocks-in-blocks-layout.pg",
+                        "val": "Default title"
+                      }
+                    ],
+                    "line": 4,
+                    "filename": "auxiliary/blocks-in-blocks-layout.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 4,
+                  "column": 5,
+                  "filename": "auxiliary/blocks-in-blocks-layout.pg"
+                }
+              ],
+              "line": 3,
+              "filename": "auxiliary/blocks-in-blocks-layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 3,
+            "column": 3,
+            "filename": "auxiliary/blocks-in-blocks-layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [
+                    {
+                      "type": "Tag",
+                      "name": "div",
+                      "block": {
+                        "type": "Block",
+                        "nodes": [
+                          {
+                            "type": "NamedBlock",
+                            "nodes": [],
+                            "line": 8,
+                            "filename": "auxiliary/blocks-in-blocks-layout.pg",
+                            "name": "content",
+                            "mode": "replace",
+                            "column": 9
+                          }
+                        ],
+                        "line": 7,
+                        "filename": "auxiliary/blocks-in-blocks-layout.pg"
+                      },
+                      "attrs": [
+                        {
+                          "name": "class",
+                          "val": "container",
+                          "line": 7,
+                          "column": 7,
+                          "filename": "auxiliary/blocks-in-blocks-layout.pg"
+                        }
+                      ],
+                      "attributeBlocks": [],
+                      "isInline": false,
+                      "line": 7,
+                      "column": 7,
+                      "filename": "auxiliary/blocks-in-blocks-layout.pg"
+                    }
+                  ],
+                  "line": 6,
+                  "filename": "auxiliary/blocks-in-blocks-layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 5,
+              "filename": "auxiliary/blocks-in-blocks-layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "auxiliary/blocks-in-blocks-layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "auxiliary/blocks-in-blocks-layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "auxiliary/blocks-in-blocks-layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/blocks-in-blocks-layout.pg"
+}
+`;
+
+exports[`auxiliary/dialog.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "window.pg",
+        "line": 2,
+        "column": 9,
+        "filename": "auxiliary/dialog.pg"
+      },
+      "line": 2,
+      "column": 1,
+      "filename": "auxiliary/dialog.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "div",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "NamedBlock",
+                "nodes": [],
+                "line": 6,
+                "filename": "auxiliary/dialog.pg",
+                "name": "content",
+                "mode": "replace",
+                "column": 5
+              }
+            ],
+            "line": 5,
+            "filename": "auxiliary/dialog.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "dialog",
+              "line": 5,
+              "column": 3,
+              "filename": "auxiliary/dialog.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "auxiliary/dialog.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "auxiliary/dialog.pg",
+      "name": "window-content",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/dialog.pg"
+}
+`;
+
+exports[`auxiliary/empty-block.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "NamedBlock",
+      "nodes": [],
+      "line": 1,
+      "filename": "auxiliary/empty-block.pg",
+      "name": "test",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/empty-block.pg"
+}
+`;
+
+exports[`auxiliary/extends-empty-block-1.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "empty-block.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "auxiliary/extends-empty-block-1.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/extends-empty-block-1.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "div",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 4,
+                "column": 9,
+                "filename": "auxiliary/extends-empty-block-1.pg",
+                "val": "test1"
+              }
+            ],
+            "line": 4,
+            "filename": "auxiliary/extends-empty-block-1.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 5,
+          "filename": "auxiliary/extends-empty-block-1.pg"
+        }
+      ],
+      "line": 3,
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "name": "test",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/extends-empty-block-1.pg"
+}
+`;
+
+exports[`auxiliary/extends-empty-block-2.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "empty-block.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "auxiliary/extends-empty-block-2.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/extends-empty-block-2.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "div",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 4,
+                "column": 9,
+                "filename": "auxiliary/extends-empty-block-2.pg",
+                "val": "test2"
+              }
+            ],
+            "line": 4,
+            "filename": "auxiliary/extends-empty-block-2.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 5,
+          "filename": "auxiliary/extends-empty-block-2.pg"
+        }
+      ],
+      "line": 3,
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "name": "test",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/extends-empty-block-2.pg"
+}
+`;
+
+exports[`auxiliary/extends-from-root.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "/auxiliary/layout.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "auxiliary/extends-from-root.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/extends-from-root.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Include",
+          "file": {
+            "type": "FileReference",
+            "filename": "auxiliary/extends-from-root.pg",
+            "path": "/auxiliary/include-from-root.pg",
+            "line": 4,
+            "column": 13
+          },
+          "line": 4,
+          "column": 5,
+          "filename": "auxiliary/extends-from-root.pg",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 4,
+            "filename": "auxiliary/extends-from-root.pg"
+          }
+        }
+      ],
+      "line": 3,
+      "filename": "auxiliary/extends-from-root.pg",
+      "name": "content",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/extends-from-root.pg"
+}
+`;
+
+exports[`auxiliary/include-from-root.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "h1",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 4,
+            "filename": "auxiliary/include-from-root.pg",
+            "val": "hello"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/include-from-root.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/include-from-root.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/include-from-root.pg"
+}
+`;
+
+exports[`auxiliary/inheritance.extend.mixin.block.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "article",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "article",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "MixinBlock",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": false,
+      "usesUnnamedBlock": true,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+    },
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "head",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "title",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 7,
+                        "column": 11,
+                        "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+                        "val": "My Application"
+                      }
+                    ],
+                    "line": 7,
+                    "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 7,
+                  "column": 5,
+                  "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                },
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 8,
+                  "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+                  "name": "head",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Mixin",
+                  "name": "article",
+                  "args": [],
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "NamedBlock",
+                        "nodes": [],
+                        "line": 11,
+                        "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+                        "name": "content",
+                        "mode": "replace",
+                        "column": 7
+                      }
+                    ],
+                    "line": 10,
+                    "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                  },
+                  "call": true,
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "line": 10,
+                  "column": 5,
+                  "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                }
+              ],
+              "line": 9,
+              "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 9,
+            "column": 3,
+            "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+          }
+        ],
+        "line": 5,
+        "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 5,
+      "column": 1,
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+}
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-grand-grandparent.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "h1",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "line": 1,
+            "column": 4,
+            "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+            "val": "grand-grandparent"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [],
+      "line": 2,
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "name": "grand-grandparent",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg"
+}
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-grandparent.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "inheritance.extend.recursive-grand-grandparent.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "h2",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 4,
+                "column": 8,
+                "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+                "val": "grandparent"
+              }
+            ],
+            "line": 4,
+            "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 5,
+          "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg"
+        },
+        {
+          "type": "NamedBlock",
+          "nodes": [],
+          "line": 5,
+          "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+          "name": "grandparent",
+          "mode": "replace",
+          "column": 5
+        }
+      ],
+      "line": 3,
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "name": "grand-grandparent",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg"
+}
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-parent.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "inheritance.extend.recursive-grandparent.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "auxiliary/inheritance.extend.recursive-parent.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "h3",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 4,
+                "column": 8,
+                "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+                "val": "parent"
+              }
+            ],
+            "line": 4,
+            "filename": "auxiliary/inheritance.extend.recursive-parent.pg"
+          },
+          "attrs": [],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 5,
+          "filename": "auxiliary/inheritance.extend.recursive-parent.pg"
+        },
+        {
+          "type": "NamedBlock",
+          "nodes": [],
+          "line": 5,
+          "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+          "name": "parent",
+          "mode": "replace",
+          "column": 5
+        }
+      ],
+      "line": 3,
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "name": "grandparent",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/inheritance.extend.recursive-parent.pg"
+}
+`;
+
+exports[`auxiliary/layout.include.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "head",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "title",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 3,
+                        "column": 11,
+                        "filename": "auxiliary/layout.include.pg",
+                        "val": "My Application"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "auxiliary/layout.include.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/layout.include.pg"
+                },
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "auxiliary/layout.include.pg",
+                  "name": "head",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/layout.include.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/layout.include.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "auxiliary/layout.include.pg",
+                  "name": "content",
+                  "mode": "replace",
+                  "column": 5
+                },
+                {
+                  "type": "Include",
+                  "file": {
+                    "type": "FileReference",
+                    "filename": "auxiliary/layout.include.pg",
+                    "path": "window.pg",
+                    "line": 7,
+                    "column": 13
+                  },
+                  "line": 7,
+                  "column": 5,
+                  "filename": "auxiliary/layout.include.pg",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [],
+                    "line": 7,
+                    "filename": "auxiliary/layout.include.pg"
+                  }
+                }
+              ],
+              "line": 5,
+              "filename": "auxiliary/layout.include.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "auxiliary/layout.include.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/layout.include.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/layout.include.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/layout.include.pg"
+}
+`;
+
+exports[`auxiliary/layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "head",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "title",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 3,
+                        "column": 11,
+                        "filename": "auxiliary/layout.pg",
+                        "val": "My Application"
+                      }
+                    ],
+                    "line": 3,
+                    "filename": "auxiliary/layout.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/layout.pg"
+                },
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "auxiliary/layout.pg",
+                  "name": "head",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/layout.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 6,
+                  "filename": "auxiliary/layout.pg",
+                  "name": "content",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 5,
+              "filename": "auxiliary/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 5,
+            "column": 3,
+            "filename": "auxiliary/layout.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/layout.pg"
+}
+`;
+
+exports[`auxiliary/mixin-at-end-of-file.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "slide",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "section",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "MixinBlock",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/mixin-at-end-of-file.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/mixin-at-end-of-file.pg"
+            },
+            "attrs": [
+              {
+                "name": "class",
+                "val": "slide",
+                "line": 2,
+                "column": 10,
+                "filename": "auxiliary/mixin-at-end-of-file.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/mixin-at-end-of-file.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "auxiliary/mixin-at-end-of-file.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": false,
+      "usesUnnamedBlock": true,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/mixin-at-end-of-file.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/mixin-at-end-of-file.pg"
+}
+`;
+
+exports[`auxiliary/mixins.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Mixin",
+      "name": "foo",
+      "args": [],
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/mixins.pg",
+                  "val": "bar"
+                }
+              ],
+              "line": 3,
+              "filename": "auxiliary/mixins.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 3,
+            "column": 3,
+            "filename": "auxiliary/mixins.pg"
+          }
+        ],
+        "line": 3,
+        "filename": "auxiliary/mixins.pg"
+      },
+      "call": false,
+      "usesNamedBlocks": false,
+      "usesUnnamedBlock": false,
+      "line": 2,
+      "column": 1,
+      "filename": "auxiliary/mixins.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/mixins.pg"
+}
+`;
+
+exports[`auxiliary/pet.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "h1",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 2,
+                  "column": 6,
+                  "filename": "auxiliary/pet.pg",
+                  "val": "{{name}}"
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/pet.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/pet.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "p",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/pet.pg",
+                  "val": "{{name}} is a {{species}} that is {{age}} old"
+                }
+              ],
+              "line": 3,
+              "filename": "auxiliary/pet.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 3,
+            "column": 3,
+            "filename": "auxiliary/pet.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/pet.pg"
+      },
+      "attrs": [
+        {
+          "name": "class",
+          "val": "pet",
+          "line": 1,
+          "column": 1,
+          "filename": "auxiliary/pet.pg"
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/pet.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/pet.pg"
+}
+`;
+
+exports[`auxiliary/window.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "div",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "a",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Text",
+                  "line": 3,
+                  "column": 21,
+                  "filename": "auxiliary/window.pg",
+                  "val": "Close"
+                }
+              ],
+              "line": 3,
+              "filename": "auxiliary/window.pg"
+            },
+            "attrs": [
+              {
+                "name": "href",
+                "val": "#",
+                "line": 3,
+                "column": 5,
+                "filename": "auxiliary/window.pg"
+              },
+              {
+                "name": "class",
+                "val": "close",
+                "line": 3,
+                "column": 14,
+                "filename": "auxiliary/window.pg"
+              }
+            ],
+            "attributeBlocks": [],
+            "isInline": true,
+            "line": 3,
+            "column": 3,
+            "filename": "auxiliary/window.pg"
+          },
+          {
+            "type": "NamedBlock",
+            "nodes": [],
+            "line": 4,
+            "filename": "auxiliary/window.pg",
+            "name": "window-content",
+            "mode": "replace",
+            "column": 3
+          }
+        ],
+        "line": 2,
+        "filename": "auxiliary/window.pg"
+      },
+      "attrs": [
+        {
+          "name": "class",
+          "val": "window",
+          "line": 2,
+          "column": 1,
+          "filename": "auxiliary/window.pg"
+        }
+      ],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "auxiliary/window.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/window.pg"
+}
+`;
+
+exports[`auxiliary/yield-nested.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Tag",
+            "name": "head",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "title",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [],
+                    "line": 3,
+                    "filename": "auxiliary/yield-nested.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 3,
+                  "column": 5,
+                  "filename": "auxiliary/yield-nested.pg"
+                }
+              ],
+              "line": 2,
+              "filename": "auxiliary/yield-nested.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 2,
+            "column": 3,
+            "filename": "auxiliary/yield-nested.pg"
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "Tag",
+                  "name": "h1",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Text",
+                        "line": 5,
+                        "column": 8,
+                        "filename": "auxiliary/yield-nested.pg",
+                        "val": "Page"
+                      }
+                    ],
+                    "line": 5,
+                    "filename": "auxiliary/yield-nested.pg"
+                  },
+                  "attrs": [],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 5,
+                  "column": 5,
+                  "filename": "auxiliary/yield-nested.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "div",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [
+                            {
+                              "type": "YieldBlock",
+                              "line": 8,
+                              "column": 9,
+                              "filename": "auxiliary/yield-nested.pg"
+                            }
+                          ],
+                          "line": 7,
+                          "filename": "auxiliary/yield-nested.pg"
+                        },
+                        "attrs": [
+                          {
+                            "name": "id",
+                            "val": "content-wrapper",
+                            "line": 7,
+                            "column": 7,
+                            "filename": "auxiliary/yield-nested.pg"
+                          }
+                        ],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 7,
+                        "column": 7,
+                        "filename": "auxiliary/yield-nested.pg"
+                      }
+                    ],
+                    "line": 6,
+                    "filename": "auxiliary/yield-nested.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "id",
+                      "val": "content",
+                      "line": 6,
+                      "column": 5,
+                      "filename": "auxiliary/yield-nested.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 6,
+                  "column": 5,
+                  "filename": "auxiliary/yield-nested.pg"
+                },
+                {
+                  "type": "Tag",
+                  "name": "div",
+                  "block": {
+                    "type": "Block",
+                    "nodes": [
+                      {
+                        "type": "Tag",
+                        "name": "stuff",
+                        "block": {
+                          "type": "Block",
+                          "nodes": [],
+                          "line": 10,
+                          "filename": "auxiliary/yield-nested.pg"
+                        },
+                        "attrs": [],
+                        "attributeBlocks": [],
+                        "isInline": false,
+                        "line": 10,
+                        "column": 7,
+                        "filename": "auxiliary/yield-nested.pg"
+                      }
+                    ],
+                    "line": 9,
+                    "filename": "auxiliary/yield-nested.pg"
+                  },
+                  "attrs": [
+                    {
+                      "name": "id",
+                      "val": "footer",
+                      "line": 9,
+                      "column": 5,
+                      "filename": "auxiliary/yield-nested.pg"
+                    }
+                  ],
+                  "attributeBlocks": [],
+                  "isInline": false,
+                  "line": 9,
+                  "column": 5,
+                  "filename": "auxiliary/yield-nested.pg"
+                }
+              ],
+              "line": 4,
+              "filename": "auxiliary/yield-nested.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 4,
+            "column": 3,
+            "filename": "auxiliary/yield-nested.pg"
+          }
+        ],
+        "line": 1,
+        "filename": "auxiliary/yield-nested.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 1,
+      "column": 1,
+      "filename": "auxiliary/yield-nested.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "auxiliary/yield-nested.pg"
+}
+`;
+
 exports[`basic.pg 1`] = `
 {
   "type": "Block",
@@ -5061,12 +6520,810 @@ exports[`filters.verbatim.pg 1`] = `
 }
 `;
 
+exports[`fixtures/append-without-block/app-layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "layout.pg",
+        "line": 2,
+        "column": 9,
+        "filename": "fixtures/append-without-block/app-layout.pg"
+      },
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/append-without-block/app-layout.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "fixtures/append-without-block/app-layout.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "app.js",
+              "line": 5,
+              "column": 10,
+              "filename": "fixtures/append-without-block/app-layout.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "fixtures/append-without-block/app-layout.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "name": "head",
+      "mode": "append",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/append-without-block/app-layout.pg"
+}
+`;
+
+exports[`fixtures/append-without-block/layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "fixtures/append-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "fixtures/append-without-block/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "fixtures/append-without-block/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "fixtures/append-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "fixtures/append-without-block/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "fixtures/append-without-block/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "fixtures/append-without-block/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "fixtures/append-without-block/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "fixtures/append-without-block/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "fixtures/append-without-block/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "fixtures/append-without-block/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/append-without-block/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/append-without-block/layout.pg"
+}
+`;
+
+exports[`fixtures/append/app-layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "layout.pg",
+        "line": 2,
+        "column": 9,
+        "filename": "fixtures/append/app-layout.pg"
+      },
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/append/app-layout.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "fixtures/append/app-layout.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "app.js",
+              "line": 5,
+              "column": 10,
+              "filename": "fixtures/append/app-layout.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "fixtures/append/app-layout.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "fixtures/append/app-layout.pg",
+      "name": "head",
+      "mode": "append",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/append/app-layout.pg"
+}
+`;
+
+exports[`fixtures/append/layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "fixtures/append/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "fixtures/append/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "fixtures/append/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "fixtures/append/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "fixtures/append/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "fixtures/append/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "fixtures/append/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "fixtures/append/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "fixtures/append/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "fixtures/append/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "fixtures/append/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/append/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/append/layout.pg"
+}
+`;
+
 exports[`fixtures/empty.pg 1`] = `
 {
   "type": "Block",
   "nodes": [],
   "line": 0,
   "filename": "fixtures/empty.pg"
+}
+`;
+
+exports[`fixtures/multi-append-prepend-block/redefine.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "root.pg",
+        "line": 1,
+        "column": 9,
+        "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+      },
+      "line": 1,
+      "column": 1,
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "div",
+          "block": {
+            "type": "Block",
+            "nodes": [
+              {
+                "type": "Text",
+                "line": 5,
+                "column": 5,
+                "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+                "val": "Defined content"
+              }
+            ],
+            "line": 4,
+            "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+          },
+          "attrs": [
+            {
+              "name": "class",
+              "val": "content",
+              "line": 4,
+              "column": 2,
+              "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 4,
+          "column": 2,
+          "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+        }
+      ],
+      "line": 3,
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "name": "content",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/multi-append-prepend-block/redefine.pg"
+}
+`;
+
+exports[`fixtures/multi-append-prepend-block/root.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Text",
+          "line": 2,
+          "column": 4,
+          "filename": "fixtures/multi-append-prepend-block/root.pg",
+          "val": "default content"
+        }
+      ],
+      "line": 1,
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "name": "content",
+      "mode": "replace",
+      "column": 1
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "fixtures/multi-append-prepend-block/root.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "/app.js",
+              "line": 5,
+              "column": 9,
+              "filename": "fixtures/multi-append-prepend-block/root.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 2,
+          "filename": "fixtures/multi-append-prepend-block/root.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "name": "head",
+      "mode": "replace",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/multi-append-prepend-block/root.pg"
+}
+`;
+
+exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "layout.pg",
+        "line": 2,
+        "column": 9,
+        "filename": "fixtures/prepend-without-block/app-layout.pg"
+      },
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/prepend-without-block/app-layout.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "fixtures/prepend-without-block/app-layout.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "app.js",
+              "line": 5,
+              "column": 10,
+              "filename": "fixtures/prepend-without-block/app-layout.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "fixtures/prepend-without-block/app-layout.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "name": "head",
+      "mode": "prepend",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/prepend-without-block/app-layout.pg"
+}
+`;
+
+exports[`fixtures/prepend-without-block/layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "fixtures/prepend-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "fixtures/prepend-without-block/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "fixtures/prepend-without-block/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "fixtures/prepend-without-block/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "fixtures/prepend-without-block/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "fixtures/prepend-without-block/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "fixtures/prepend-without-block/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "fixtures/prepend-without-block/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "fixtures/prepend-without-block/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "fixtures/prepend-without-block/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "fixtures/prepend-without-block/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/prepend-without-block/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/prepend-without-block/layout.pg"
+}
+`;
+
+exports[`fixtures/prepend/app-layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Extends",
+      "file": {
+        "type": "FileReference",
+        "path": "layout.pg",
+        "line": 2,
+        "column": 9,
+        "filename": "fixtures/prepend/app-layout.pg"
+      },
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/prepend/app-layout.pg"
+    },
+    {
+      "type": "NamedBlock",
+      "nodes": [
+        {
+          "type": "Tag",
+          "name": "script",
+          "block": {
+            "type": "Block",
+            "nodes": [],
+            "line": 5,
+            "filename": "fixtures/prepend/app-layout.pg"
+          },
+          "attrs": [
+            {
+              "name": "src",
+              "val": "app.js",
+              "line": 5,
+              "column": 10,
+              "filename": "fixtures/prepend/app-layout.pg"
+            }
+          ],
+          "attributeBlocks": [],
+          "isInline": false,
+          "line": 5,
+          "column": 3,
+          "filename": "fixtures/prepend/app-layout.pg"
+        }
+      ],
+      "line": 4,
+      "filename": "fixtures/prepend/app-layout.pg",
+      "name": "head",
+      "mode": "prepend",
+      "column": 1
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/prepend/app-layout.pg"
+}
+`;
+
+exports[`fixtures/prepend/layout.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Tag",
+      "name": "html",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "NamedBlock",
+            "nodes": [
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 4,
+                  "filename": "fixtures/prepend/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/jquery.js",
+                    "line": 4,
+                    "column": 12,
+                    "filename": "fixtures/prepend/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 4,
+                "column": 5,
+                "filename": "fixtures/prepend/layout.pg"
+              },
+              {
+                "type": "Tag",
+                "name": "script",
+                "block": {
+                  "type": "Block",
+                  "nodes": [],
+                  "line": 5,
+                  "filename": "fixtures/prepend/layout.pg"
+                },
+                "attrs": [
+                  {
+                    "name": "src",
+                    "val": "vendor/caustic.js",
+                    "line": 5,
+                    "column": 12,
+                    "filename": "fixtures/prepend/layout.pg"
+                  }
+                ],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
+                "column": 5,
+                "filename": "fixtures/prepend/layout.pg"
+              }
+            ],
+            "line": 3,
+            "filename": "fixtures/prepend/layout.pg",
+            "name": "head",
+            "mode": "replace",
+            "column": 3
+          },
+          {
+            "type": "Tag",
+            "name": "body",
+            "block": {
+              "type": "Block",
+              "nodes": [
+                {
+                  "type": "NamedBlock",
+                  "nodes": [],
+                  "line": 7,
+                  "filename": "fixtures/prepend/layout.pg",
+                  "name": "body",
+                  "mode": "replace",
+                  "column": 5
+                }
+              ],
+              "line": 6,
+              "filename": "fixtures/prepend/layout.pg"
+            },
+            "attrs": [],
+            "attributeBlocks": [],
+            "isInline": false,
+            "line": 6,
+            "column": 3,
+            "filename": "fixtures/prepend/layout.pg"
+          }
+        ],
+        "line": 2,
+        "filename": "fixtures/prepend/layout.pg"
+      },
+      "attrs": [],
+      "attributeBlocks": [],
+      "isInline": false,
+      "line": 2,
+      "column": 1,
+      "filename": "fixtures/prepend/layout.pg"
+    }
+  ],
+  "line": 0,
+  "filename": "fixtures/prepend/layout.pg"
 }
 `;
 

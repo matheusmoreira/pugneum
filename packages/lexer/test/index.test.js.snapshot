@@ -4107,6 +4107,3244 @@ exports[`attrs.unescaped.pg 1`] = `
 ]
 `;
 
+exports[`auxiliary/blocks-in-blocks-layout.pg 1`] = `
+[
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    },
+    "val": "<!DOCTYPE html>"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 3,
+        "column": 7
+      }
+    },
+    "val": "head"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 10
+      }
+    },
+    "val": "title"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 24
+      }
+    },
+    "val": "Default title"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 7,
+        "column": 7
+      }
+    },
+    "val": 6
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 7
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 7,
+        "column": 17
+      }
+    },
+    "val": "container"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 8,
+        "column": 9
+      }
+    },
+    "val": 8
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 9
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 8,
+        "column": 22
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/blocks-in-blocks-layout.pg",
+      "end": {
+        "line": 9,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/dialog.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 2,
+        "column": 18
+      }
+    },
+    "val": "window.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 4,
+        "column": 21
+      }
+    },
+    "val": "window-content",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    },
+    "val": "dialog"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/dialog.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/empty-block.pg 1`] = `
+[
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/empty-block.pg",
+      "end": {
+        "line": 1,
+        "column": 11
+      }
+    },
+    "val": "test",
+    "mode": "replace"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/empty-block.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/empty-block.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/extends-empty-block-1.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 1,
+        "column": 23
+      }
+    },
+    "val": "empty-block.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 3,
+        "column": 11
+      }
+    },
+    "val": "test",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 4,
+        "column": 8
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 9
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 4,
+        "column": 14
+      }
+    },
+    "val": "test1"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-1.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/extends-empty-block-2.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 1,
+        "column": 23
+      }
+    },
+    "val": "empty-block.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 3,
+        "column": 11
+      }
+    },
+    "val": "test",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 4,
+        "column": 8
+      }
+    },
+    "val": "div"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 9
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 4,
+        "column": 14
+      }
+    },
+    "val": "test2"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-empty-block-2.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/extends-from-root.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 1,
+        "column": 29
+      }
+    },
+    "val": "/auxiliary/layout.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "include",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 13
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 4,
+        "column": 44
+      }
+    },
+    "val": "/auxiliary/include-from-root.pg"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/extends-from-root.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/include-from-root.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/include-from-root.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": "h1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      },
+      "filename": "auxiliary/include-from-root.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    },
+    "val": "hello"
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/include-from-root.pg",
+      "end": {
+        "line": 1,
+        "column": 9
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/inheritance.extend.mixin.block.pg 1`] = `
+[
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "val": "article",
+    "args": []
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 2,
+        "column": 10
+      }
+    },
+    "val": "article"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "mixin-block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 5,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "head"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 7,
+        "column": 10
+      }
+    },
+    "val": "title"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 11
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 7,
+        "column": 25
+      }
+    },
+    "val": "My Application"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 8,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 8,
+        "column": 15
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 9,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 3
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 9,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 10,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "call",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 10,
+        "column": 13
+      }
+    },
+    "val": "article",
+    "args": []
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 11,
+        "column": 7
+      }
+    },
+    "val": 6
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 11,
+        "column": 7
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 11,
+        "column": 20
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 12,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 12,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 12,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+      "end": {
+        "line": 12,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-grand-grandparent.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "end": {
+        "line": 1,
+        "column": 3
+      }
+    },
+    "val": "h1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "end": {
+        "line": 1,
+        "column": 21
+      }
+    },
+    "val": "grand-grandparent"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "end": {
+        "line": 2,
+        "column": 24
+      }
+    },
+    "val": "grand-grandparent",
+    "mode": "replace"
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 24
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grand-grandparent.pg",
+      "end": {
+        "line": 2,
+        "column": 24
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-grandparent.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 1,
+        "column": 58
+      }
+    },
+    "val": "inheritance.extend.recursive-grand-grandparent.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 3,
+        "column": 24
+      }
+    },
+    "val": "grand-grandparent",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 4,
+        "column": 7
+      }
+    },
+    "val": "h2"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 8
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 4,
+        "column": 19
+      }
+    },
+    "val": "grandparent"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "val": "grandparent",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-grandparent.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/inheritance.extend.recursive-parent.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 1,
+        "column": 52
+      }
+    },
+    "val": "inheritance.extend.recursive-grandparent.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 3,
+        "column": 18
+      }
+    },
+    "val": "grandparent",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 4,
+        "column": 7
+      }
+    },
+    "val": "h3"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 8
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 4,
+        "column": 14
+      }
+    },
+    "val": "parent"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 5,
+        "column": 17
+      }
+    },
+    "val": "parent",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/inheritance.extend.recursive-parent.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/layout.include.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    },
+    "val": "head"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    },
+    "val": "title"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 11
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 3,
+        "column": 25
+      }
+    },
+    "val": "My Application"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 4,
+        "column": 15
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "include",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 7,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 13
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 7,
+        "column": 22
+      }
+    },
+    "val": "window.pg"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.include.pg",
+      "end": {
+        "line": 8,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/layout.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    },
+    "val": "head"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    },
+    "val": "title"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 11
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 25
+      }
+    },
+    "val": "My Application"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 15
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 18
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 18
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 18
+      },
+      "filename": "auxiliary/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 18
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/mixin-at-end-of-file.pg 1`] = `
+[
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 1,
+        "column": 12
+      }
+    },
+    "val": "slide",
+    "args": []
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 2,
+        "column": 10
+      }
+    },
+    "val": "section"
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 10
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 2,
+        "column": 16
+      }
+    },
+    "val": "slide"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "mixin-block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 10
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 10
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 10
+      },
+      "filename": "auxiliary/mixin-at-end-of-file.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/mixins.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "mixin",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 2,
+        "column": 12
+      }
+    },
+    "val": "foo",
+    "args": []
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 3,
+        "column": 4
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    },
+    "val": "bar"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 8
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 8
+      },
+      "filename": "auxiliary/mixins.pg",
+      "end": {
+        "line": 3,
+        "column": 8
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/pet.pg 1`] = `
+[
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    },
+    "val": "pet"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "h1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 6
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 2,
+        "column": 14
+      }
+    },
+    "val": "{{name}}"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 3,
+        "column": 4
+      }
+    },
+    "val": "p"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 3,
+        "column": 50
+      }
+    },
+    "val": "{{name}} is a {{species}} that is {{age}} old"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 50
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 3,
+        "column": 50
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 50
+      },
+      "filename": "auxiliary/pet.pg",
+      "end": {
+        "line": 3,
+        "column": 50
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/window.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    },
+    "val": "window"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 4
+      }
+    },
+    "val": "a"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 4
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "name": "href",
+    "val": "#"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 13
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 14
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 20
+      }
+    },
+    "val": "close"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 21
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 3,
+        "column": 26
+      }
+    },
+    "val": "Close"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 4,
+        "column": 23
+      }
+    },
+    "val": "window-content",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 23
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 4,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 23
+      },
+      "filename": "auxiliary/window.pg",
+      "end": {
+        "line": 4,
+        "column": 23
+      }
+    }
+  }
+]
+`;
+
+exports[`auxiliary/yield-nested.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 2,
+        "column": 7
+      }
+    },
+    "val": "head"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 3,
+        "column": 10
+      }
+    },
+    "val": "title"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 4,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 3
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 4,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "h1"
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 8
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    },
+    "val": "Page"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "id",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 6,
+        "column": 13
+      }
+    },
+    "val": "content"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 7,
+        "column": 7
+      }
+    },
+    "val": 6
+  },
+  {
+    "type": "id",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 7
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 7,
+        "column": 23
+      }
+    },
+    "val": "content-wrapper"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 8,
+        "column": 9
+      }
+    },
+    "val": 8
+  },
+  {
+    "type": "yield",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 9
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 8,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 9,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 9,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "id",
+    "loc": {
+      "start": {
+        "line": 9,
+        "column": 5
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 9,
+        "column": 12
+      }
+    },
+    "val": "footer"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 1
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 7
+      }
+    },
+    "val": 6
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 7
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 12
+      }
+    },
+    "val": "stuff"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 12
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 12
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 12
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 12
+      },
+      "filename": "auxiliary/yield-nested.pg",
+      "end": {
+        "line": 10,
+        "column": 12
+      }
+    }
+  }
+]
+`;
+
 exports[`basic.pg 1`] = `
 [
   {
@@ -12321,6 +15559,994 @@ exports[`filters.verbatim.pg 1`] = `
 ]
 `;
 
+exports[`fixtures/append-without-block/app-layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 18
+      }
+    },
+    "val": "layout.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    },
+    "val": "head",
+    "mode": "append"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "name": "src",
+    "val": "app.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/append-without-block/layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 12
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "vendor/jquery.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 34
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 11
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "vendor/caustic.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 35
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/append/app-layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 18
+      }
+    },
+    "val": "layout.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 18
+      }
+    },
+    "val": "head",
+    "mode": "append"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "name": "src",
+    "val": "app.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/append/layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 12
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "vendor/jquery.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 34
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 11
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "vendor/caustic.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 35
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/append/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  }
+]
+`;
+
 exports[`fixtures/empty.pg 1`] = `
 [
   {
@@ -12334,6 +16560,1343 @@ exports[`fixtures/empty.pg 1`] = `
       "end": {
         "line": 1,
         "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/multi-append-prepend-block/redefine.pg 1`] = `
+[
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "val": "root.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 3,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 4,
+        "column": 2
+      }
+    },
+    "val": 1
+  },
+  {
+    "type": "class",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 2
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 4,
+        "column": 10
+      }
+    },
+    "val": "content"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 5,
+        "column": 20
+      }
+    },
+    "val": "Defined content"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/redefine.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/multi-append-prepend-block/root.pg 1`] = `
+[
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 1,
+        "column": 14
+      }
+    },
+    "val": "content",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 2,
+        "column": 2
+      }
+    },
+    "val": 1
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 4
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 2,
+        "column": 19
+      }
+    },
+    "val": "default content"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 2
+      }
+    },
+    "val": 1
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 2
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 8
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 8
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "name": "src",
+    "val": "/app.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 23
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 23
+      },
+      "filename": "fixtures/multi-append-prepend-block/root.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 18
+      }
+    },
+    "val": "layout.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "prepend"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "name": "src",
+    "val": "app.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/prepend-without-block/layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 12
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "vendor/jquery.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 34
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 11
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "vendor/caustic.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 35
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend-without-block/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/prepend/app-layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "extends",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 8
+      }
+    }
+  },
+  {
+    "type": "path",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 9
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 2,
+        "column": 18
+      }
+    },
+    "val": "layout.pg"
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 4,
+        "column": 19
+      }
+    },
+    "val": "head",
+    "mode": "prepend"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 9
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 9
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 10
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 10
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 22
+      }
+    },
+    "name": "src",
+    "val": "app.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 22
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 5,
+        "column": 23
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/app-layout.pg",
+      "end": {
+        "line": 6,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/prepend/layout.pg 1`] = `
+[
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 2,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 3
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 3,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 12
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "vendor/jquery.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 34
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 4,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 5
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 11
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 12
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "vendor/caustic.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 35
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 5,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 3
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 6,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 5
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 15
+      },
+      "filename": "fixtures/prepend/layout.pg",
+      "end": {
+        "line": 7,
+        "column": 15
       }
     }
   }

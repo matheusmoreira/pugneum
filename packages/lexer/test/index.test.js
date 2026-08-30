@@ -10,14 +10,50 @@ var dir = path.resolve(__dirname, '../../../test-cases');
 var fixtureManifest = require('../../../test-cases/manifest.json');
 var sharedCases = fixtureManifest.render
   .map((name) => name + '.pg')
-  .concat(fixtureManifest.syntax);
+  .concat(
+    fixtureManifest.syntax,
+    fixtureManifest.dependencies.filter((name) => name.endsWith('.pg')),
+  )
+  .sort();
+
+function readShared(filename) {
+  return fs.readFileSync(path.join(dir, filename), 'utf8');
+}
 
 sharedCases.forEach(function (testCase) {
   test(testCase, (t) => {
-    var result = lex(fs.readFileSync(path.join(dir, testCase), 'utf8'), {
+    var result = lex(readShared(testCase), {
       filename: testCase,
     });
     t.assert.snapshot(result);
+  });
+});
+
+test('shared nested empty source emits only a located end token', () => {
+  var filename = 'fixtures/empty.pg';
+  assert.deepStrictEqual(lex(readShared(filename), {filename}), [
+    {
+      type: 'eos',
+      loc: {
+        start: {line: 1, column: 1},
+        filename,
+        end: {line: 1, column: 1},
+      },
+    },
+  ]);
+});
+
+test('shared nested doctype keeps its canonical text and physical span', () => {
+  var filename = 'auxiliary/blocks-in-blocks-layout.pg';
+  var first = lex(readShared(filename), {filename})[0];
+  assert.deepStrictEqual(first, {
+    type: 'text',
+    loc: {
+      start: {line: 1, column: 1},
+      filename,
+      end: {line: 1, column: 13},
+    },
+    val: '<!DOCTYPE html>',
   });
 });
 

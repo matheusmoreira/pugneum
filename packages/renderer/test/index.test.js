@@ -1,8 +1,12 @@
 'use strict';
 
 var assert = require('node:assert/strict');
+var fs = require('node:fs');
+var path = require('node:path');
 var {describe, test} = require('node:test');
 var render = require('../');
+
+var packageRoot = path.resolve(__dirname, '..');
 
 // Helper: minimal Block wrapper
 function block(nodes) {
@@ -1098,6 +1102,32 @@ describe('named block', () => {
 });
 
 describe('error handling', () => {
+  test('README direct-render boundary matches the implemented node visitors', () => {
+    var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
+    var implementation = fs.readFileSync(
+      path.join(packageRoot, 'index.js'),
+      'utf8',
+    );
+    var directRow = readme.match(/^\| Direct renderer \| (.+) \|$/m);
+    assert.ok(directRow, 'README must contain the direct-renderer node row');
+    var documented = Array.from(
+      directRow[1].matchAll(/`([A-Za-z]+)`/g),
+      (match) => match[1],
+    ).sort();
+    var implemented = Array.from(
+      implementation.matchAll(/^  visit([A-Z][A-Za-z]+)\(/gm),
+      (match) => match[1],
+    )
+      .filter((name) => name !== 'Node' && name !== 'Attributes')
+      .sort();
+
+    assert.deepStrictEqual(documented, implemented);
+    assert.match(
+      readme,
+      /`lex` -> `parse` -> `load` -> `link\.assemble` -> `filter` -> `link\.resolve` -> `render`/,
+    );
+  });
+
   test('null node throws TypeError', () => {
     assert.throws(
       () => render(block([null])),

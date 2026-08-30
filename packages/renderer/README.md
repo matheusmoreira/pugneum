@@ -17,10 +17,28 @@ var render = require('pugneum-renderer');
 Compile the given pugneum abstract syntax tree,
 rendering it into an HTML string.
 
-`ast` is a fully loaded and linked pugneum abstract syntax tree:
-any includes, extends and filters must already be resolved
-(by the loader, linker and filterer). Templates that use none of
-those, like the example below, may be rendered straight from the parser.
+`ast` must be a renderer-ready pugneum abstract syntax tree. The complete
+source pipeline used by the `pugneum` facade is:
+
+`lex` -> `parse` -> `load` -> `link.assemble` -> `filter` -> `link.resolve` -> `render`
+
+Each pre-render stage removes or rewrites node families the renderer does not
+consume:
+
+| Required work before render | Parser node types |
+| --- | --- |
+| Direct renderer | `Block`, `BlockComment`, `Comment`, `Given`, `InterpolatedTag`, `Mixin`, `MixinBlock`, `NamedBlock`, `Tag`, `Text`, `Variable`, `YieldBlock` |
+| Load and assemble files/templates | `Extends`, `Include`, `RawInclude`, `FileReference` |
+| Apply filters | `Filter`, `IncludeFilter`, and a filtered `RawInclude` |
+| Resolve after filtering | `References`, `ReferenceLink`, `ReferenceImage`, `Footnotes`, `FootnoteRef`, `Toc` |
+
+Direct rendering of parser output is safe only when the entire tree contains
+nodes from the `Direct renderer` row and satisfies their normal structural
+requirements. Merely omitting includes, extends, and filters is not sufficient:
+references, footnotes, and TOC nodes also require `link.resolve`. Prefer the
+`pugneum` facade for general source templates. The deliberately primitive
+example below contains only `Block`, `Tag`, and `Text` nodes, so it can be
+rendered directly.
 
 ```js
 var lex = require('pugneum-lexer');

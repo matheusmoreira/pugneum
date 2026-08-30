@@ -18,6 +18,29 @@ function roundTrip(input, attrs) {
   return parse(lex(src, options), options);
 }
 
+function renderRoundTrip(input, attrs) {
+  var src = tableFilter.filter(input, attrs || {});
+  var options = {filename: 'gen.pg', source: src, warnings: []};
+  var ast = parse(lex(src, options), options);
+  return {src, ast, html: render(ast, options)};
+}
+
+function collectNodes(root, type, result) {
+  result = result || [];
+  if (!root || typeof root !== 'object') return result;
+  if (root.type === type) result.push(root);
+  Object.keys(root).forEach((key) => {
+    if (key === 'loc') return;
+    var value = root[key];
+    if (Array.isArray(value)) {
+      value.forEach((entry) => collectNodes(entry, type, result));
+    } else if (value && typeof value === 'object') {
+      collectNodes(value, type, result);
+    }
+  });
+  return result;
+}
+
 describe('table filter', () => {
   test('exports type pugneum', () => {
     assert.strictEqual(tableFilter.type, 'pugneum');
@@ -284,6 +307,18 @@ describe('box drawing normalization', () => {
     assert.match(result, /th\(scope="col"\) Name/);
     assert.match(result, /td fd/);
   });
+
+  test('╠, ╣, and ╬ preserve double-line colgroup boundaries', () => {
+    var input = '| a | b |\n╠───╬───╣\n| 1 | 2 |';
+    assert.strictEqual(
+      tableFilter.filter(input, {}),
+      'table\n' +
+        '  colgroup\n    col\n' +
+        '  colgroup\n    col\n' +
+        '  thead\n    tr\n      th(scope="col") a\n      th(scope="col") b\n' +
+        '  tbody\n    tr\n      td 1\n      td 2',
+    );
+  });
 });
 
 describe('section markers', () => {
@@ -465,7 +500,32 @@ describe('formatAttrs serialization', () => {
 
   test('a value with backslash-quote re-lexes', () => {
     var attrs = {title: 'a\\"b'};
-    assert.doesNotThrow(() => roundTrip('| a |\n| --- |\n| b |', attrs));
+    var result = renderRoundTrip('| a |\n| --- |\n| b |', attrs);
+    var table = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'table',
+    );
+    assert.strictEqual(
+      result.src.split('\n')[0],
+      String.raw`table(title="a\\\"b")`,
+    );
+    assert.deepStrictEqual(
+      table.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'title', val: attrs.title}],
+    );
+    assert.match(result.html, /^<table title="a\\&quot;b">/);
+  });
+
+  test('a boolean compact option survives source, AST, and HTML', () => {
+    var result = renderRoundTrip('| a |\n| --- |\n| b |', {compact: true});
+    var table = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'table',
+    );
+    assert.strictEqual(result.src.split('\n')[0], 'table(compact)');
+    assert.deepStrictEqual(
+      table.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'compact', val: true}],
+    );
+    assert.match(result.html, /^<table compact>/);
   });
 
   test('a key that is not a lexable attribute name is rejected', () => {
@@ -474,6 +534,37 @@ describe('formatAttrs serialization', () => {
         tableFilter.filter('| a |\n| --- |\n| b |', {'x) tr.injected(': true}),
       /invalid attribute name/i,
     );
+  });
+});
+
+describe('grammar-boundary value preservation', () => {
+  test('an unquoted value with nested parentheses round-trips exactly', () => {
+    var input = '| a |\n| ---(style=width:calc(1px))--- |\n| b |';
+    var result = renderRoundTrip(input);
+    var col = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'col',
+    );
+    assert.match(result.src, /col\(style=width:calc\(1px\)\)/);
+    assert.deepStrictEqual(
+      col.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'style', val: 'width:calc(1px)'}],
+    );
+    assert.match(result.html, /<col style="width:calc\(1px\)">/);
+  });
+
+  test('odd backslash runs keep literal interpolation text', () => {
+    [
+      [1, 'path #{x}'],
+      [3, 'path \\#{x}'],
+    ].forEach(([count, expected]) => {
+      var input = '| --- |\n| path ' + '\\'.repeat(count) + '#{x} |';
+      var result = renderRoundTrip(input);
+      var text = collectNodes(result.ast, 'Text').find((node) =>
+        node.val.startsWith('path'),
+      );
+      assert.strictEqual(text.val, expected);
+      assert.ok(result.html.includes('<td>' + expected + '</td>'));
+    });
   });
 });
 

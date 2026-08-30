@@ -497,6 +497,17 @@ describe('image shorthand', () => {
   });
 });
 
+describe('mixin parameter bindings', () => {
+  it('keeps case-distinct parameter names and positions independent', () => {
+    assert.strictEqual(
+      pg.render(
+        'mixin pair(value Value)\n  p #{value} #{Value}\n+pair(lower upper)',
+      ),
+      '<p>lower upper</p>',
+    );
+  });
+});
+
 describe('variables in attributes', () => {
   it('should resolve #{var} in attribute values', () => {
     assert.strictEqual(

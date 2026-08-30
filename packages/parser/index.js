@@ -903,6 +903,18 @@ class Parser {
     const tok = this.expect('mixin');
     const name = tok.val;
     const args = tok.args;
+    const parameterNames = new Set();
+
+    for (const parameter of args) {
+      if (parameterNames.has(parameter.name)) {
+        this.error(
+          'DUPLICATE_MIXIN_PARAMETER',
+          'Duplicate mixin parameter "' + parameter.name + '" is not allowed.',
+          tok,
+        );
+      }
+      parameterNames.add(parameter.name);
+    }
 
     if ('indent' === this.peek().type) {
       this.inMixin++;

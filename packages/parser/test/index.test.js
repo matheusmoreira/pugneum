@@ -171,6 +171,30 @@ describe('error paths', () => {
     );
   });
 
+  test('DUPLICATE_MIXIN_PARAMETER rejects exact duplicate bindings', () => {
+    [
+      {source: 'mixin m(x x)\n  p #{x}', name: 'x'},
+      {source: 'mixin m(x? x?)\n  p #{x?}', name: 'x?'},
+      {source: 'mixin m(x=one x=two)\n  p #{x}', name: 'x'},
+    ].forEach(({source, name}) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_MIXIN_PARAMETER');
+          assert.strictEqual(
+            err.msg,
+            'Duplicate mixin parameter "' + name + '" is not allowed.',
+          );
+          assert.deepStrictEqual(
+            {line: err.line, column: err.column, filename: err.filename},
+            {line: 1, column: 1, filename: 'test.pg'},
+          );
+          return true;
+        },
+      );
+    });
+  });
+
   test('RAW_INCLUDE_BLOCK for raw include with block content', () => {
     assert.throws(
       () => parseSource('include:verbatim file.txt\n  p not allowed'),

@@ -1,6 +1,6 @@
 {
   "name": "pugneum-loader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Loads the dependencies of pugneum templates",
   "keywords": [
     "pugneum",
@@ -15,8 +15,8 @@
     "pugneum-walker": "^1.0.0"
   },
   "devDependencies": {
-    "pugneum-lexer": "^1.0.0",
-    "pugneum-parser": "^1.0.0"
+    "pugneum-lexer": "^1.2.1",
+    "pugneum-parser": "^1.1.1"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,9 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

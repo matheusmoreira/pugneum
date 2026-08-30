@@ -1,6 +1,6 @@
 {
   "name": "pugneum-mixins",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Reusable mixin library for pugneum templates",
   "keywords": [
     "pugneum",
@@ -17,6 +17,15 @@
     "directory": "packages/mixins"
   },
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
+  "peerDependencies": {
+    "pugneum": "^1.3.0"
+  },
+  "devDependencies": {
+    "pugneum": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

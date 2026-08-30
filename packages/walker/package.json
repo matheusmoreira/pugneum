@@ -1,6 +1,6 @@
 {
   "name": "pugneum-walker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Walk and transform a pugneum abstract syntax tree",
   "keywords": [
     "pugneum",
@@ -12,8 +12,8 @@
     "index.js"
   ],
   "devDependencies": {
-    "pugneum-lexer": "^1.0.0",
-    "pugneum-parser": "^1.0.0"
+    "pugneum-lexer": "^1.2.1",
+    "pugneum-parser": "^1.1.1"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,9 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

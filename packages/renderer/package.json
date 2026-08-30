@@ -1,6 +1,6 @@
 {
   "name": "pugneum-renderer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Renders pugneum abstract syntax trees into HTML",
   "keywords": [
     "pugneum",
@@ -11,7 +11,7 @@
     "index.js"
   ],
   "dependencies": {
-    "pugneum-error": "^1.0.1"
+    "pugneum-error": "^1.1.0"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,9 @@
   "maintainers": [
     "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

@@ -1,6 +1,7 @@
 {
   "name": "pugneum-repository",
   "private": true,
+  "packageManager": "npm@10.9.9",
   "devDependencies": {
     "prettier": "^3.0.2"
   },
@@ -11,8 +12,9 @@
   "scripts": {
     "prettier:check": "prettier --ignore-path .gitignore --list-different \"./**/*.js\"",
     "format": "prettier --ignore-path .gitignore --write \"./**/*.js\"",
-    "test": "node scripts/run-tests.js",
-    "test:update-snapshots": "node --test-update-snapshots scripts/run-tests.js"
+    "release:check": "node scripts/check-release-packages.js",
+    "test": "node --experimental-test-snapshots scripts/run-tests.js",
+    "test:update-snapshots": "node --experimental-test-snapshots --test-update-snapshots scripts/run-tests.js"
   },
   "workspaces": [
     "packages/error",
@@ -34,7 +36,8 @@
     "packages/mixins"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=22.5.0",
+    "npm": "10.9.9"
   },
   "license": "MIT",
   "funding": "https://github.com/sponsors/matheusmoreira"

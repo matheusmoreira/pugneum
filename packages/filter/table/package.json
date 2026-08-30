@@ -1,6 +1,6 @@
 {
   "name": "pugneum-filter-table",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pugneum table filter",
   "keywords": [
     "pugneum",
@@ -23,11 +23,15 @@
     "pugneum-lexer": "^1.2.1"
   },
   "peerDependencies": {
-    "pugneum-filterer": "^1.0.0"
+    "pugneum-filterer": "^1.1.0"
   },
   "devDependencies": {
-    "pugneum-filterer": "^1.0.0",
-    "pugneum-parser": "^1.0.0"
+    "pugneum-filterer": "^1.2.0",
+    "pugneum-parser": "^1.1.1",
+    "pugneum-renderer": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

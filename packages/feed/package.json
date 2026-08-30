@@ -1,6 +1,6 @@
 {
   "name": "pugneum-feed",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Atom and RSS feed generator for Pugneum sites",
   "keywords": [
     "pugneum",
@@ -23,8 +23,11 @@
   },
   "dependencies": {
     "htmlparser2": "^9.0.0",
-    "pugneum-error": "^1.0.0",
+    "pugneum-error": "^1.1.0",
     "pugneum-filesystem": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "funding": "https://github.com/sponsors/matheusmoreira"
 }

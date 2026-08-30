@@ -221,6 +221,11 @@ class Parser {
     return this.node('Text', tok, {val: val !== undefined ? val : tok.val});
   }
 
+  appendText(nodes, tok, val) {
+    const text = val !== undefined ? val : tok.val;
+    if (text !== '') nodes.push(this.textNode(tok, text));
+  }
+
   error(code, message, token) {
     const err = error(code, message, {
       line: token.loc.start.line,
@@ -418,7 +423,7 @@ class Parser {
     loop: while (true) {
       switch (nextTok.type) {
         case 'text':
-          nodes.push(this.textNode(this.advance()));
+          this.appendText(nodes, this.advance());
           break;
         case 'variable':
           nodes.push(this.parseVariable());
@@ -527,9 +532,8 @@ class Parser {
 
     if (this.peek().type === 'text') {
       const textToken = this.advance();
-      block = this.initBlock(textToken.loc.start.line, [
-        this.textNode(textToken),
-      ]);
+      block = this.emptyBlock(textToken.loc.start.line);
+      this.appendText(block.nodes, textToken);
     } else if (this.peek().type === 'filter') {
       block = this.initBlock(tok.loc.start.line, [this.parseExpr()]);
     } else {
@@ -701,7 +705,7 @@ class Parser {
       const next = this.peek();
       switch (next.type) {
         case 'text':
-          block.nodes.push(this.textNode(this.advance()));
+          this.appendText(block.nodes, this.advance());
           break;
         case 'start-interpolation':
           this.advance();
@@ -748,7 +752,7 @@ class Parser {
       const next = this.peek();
       switch (next.type) {
         case 'text':
-          block.nodes.push(this.textNode(this.advance()));
+          this.appendText(block.nodes, this.advance());
           break;
         case 'start-interpolation':
           this.advance();
@@ -824,7 +828,7 @@ class Parser {
         const next = this.peek();
         switch (next.type) {
           case 'text':
-            block.nodes.push(this.textNode(this.advance()));
+            this.appendText(block.nodes, this.advance());
             break;
           case 'newline':
             this.advance();
@@ -1044,7 +1048,7 @@ class Parser {
       const currentTok = this.advance();
       switch (currentTok.type) {
         case 'text':
-          block.nodes.push(this.textNode(currentTok));
+          this.appendText(block.nodes, currentTok);
           break;
         case 'newline':
           block.nodes.push(this.textNode(currentTok, '\n'));

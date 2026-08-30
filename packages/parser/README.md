@@ -140,6 +140,10 @@ row says otherwise. A field is always present unless marked optional.
 | `Toc` | Location fields only. |
 | `Mixin` | Discriminated definition/call fields described below. |
 
+`Text.val` is nonempty in parser output. Zero-length lexer boundary fragments
+are discarded, while explicit structural separators such as preserved text
+block newlines and normalized footnote spaces remain ordinary `Text` nodes.
+
 The parser retains `InterpolatedTag` support for compatible token producers
 that emit a direct `interpolation` token. The current lexer v1 stream lowers
 ordinary inline interpolation through boundary tokens instead.

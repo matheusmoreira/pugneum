@@ -39,6 +39,22 @@ function nestedInlineSource(depth) {
   return 'p ' + '*('.repeat(depth) + 'end' + ')'.repeat(depth);
 }
 
+function typedNodes(root) {
+  const result = [];
+  const pending = [root];
+  while (pending.length > 0) {
+    const value = pending.pop();
+    if (!value || typeof value !== 'object') continue;
+    if (Array.isArray(value)) {
+      for (const element of value) pending.push(element);
+      continue;
+    }
+    if (typeof value.type === 'string') result.push(value);
+    for (const child of Object.values(value)) pending.push(child);
+  }
+  return result;
+}
+
 testCases.forEach(function (filename) {
   test(filename, (t) => {
     let input = read(filename),
@@ -538,6 +554,48 @@ describe('given keyword', () => {
 });
 
 describe('blind sweep fixes', () => {
+  test('zero-length lexer padding is not materialized as Text nodes', () => {
+    for (const filename of testCases) {
+      const source = read(filename);
+      const ast = parse(lex(source, {filename}), {filename, source});
+      const emptyText = typedNodes(ast).filter(
+        (node) => node.type === 'Text' && node.val === '',
+      );
+      assert.strictEqual(
+        emptyText.length,
+        0,
+        filename + ' contains an empty Text node',
+      );
+    }
+  });
+
+  test('adjacent inline shorthands scale to one meaningful child each', () => {
+    const count = 1000;
+    const source = 'p ' + '*(x)'.repeat(count);
+    const ast = parse(lex(source, {filename: 'adjacent.pg'}), {
+      filename: 'adjacent.pg',
+      source,
+    });
+    const paragraph = ast.nodes[0];
+
+    assert.strictEqual(paragraph.block.nodes.length, count);
+    assert.ok(
+      paragraph.block.nodes.every(
+        (node) =>
+          node.type === 'Tag' &&
+          node.name === 'strong' &&
+          node.block.nodes.length === 1 &&
+          node.block.nodes[0].type === 'Text' &&
+          node.block.nodes[0].val === 'x',
+      ),
+    );
+    assert.strictEqual(
+      typedNodes(ast).filter((node) => node.type === 'Text' && node.val === '')
+        .length,
+      0,
+    );
+  });
+
   test('continued text-block line beginning with #{var} keeps the line separator', (t) => {
     // collectInlineContent must emit the joining '\n' whenever more inline
     // content follows, not only when the next token is literal text. Gating on

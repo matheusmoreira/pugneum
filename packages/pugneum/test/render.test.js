@@ -835,6 +835,13 @@ describe('del/ins/sup/kbd/sub shorthands', () => {
     );
   });
 
+  it('should render adjacent shorthands without boundary padding', () => {
+    assert.strictEqual(
+      pg.render('p *(one)*(two)*(three)'),
+      '<p><strong>one</strong><strong>two</strong><strong>three</strong></p>',
+    );
+  });
+
   it('should render escaped \\^[ as literal text', () => {
     assert.strictEqual(
       pg.render('p \\^[not a footnote]'),

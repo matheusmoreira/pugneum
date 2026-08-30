@@ -146,15 +146,25 @@ function formatCodepoint(ch) {
 
 const variableNamePattern = '[-a-zA-Z_?]';
 const variableNameRe = new RegExp(variableNamePattern);
-const variableRe = new RegExp('^#{(' + variableNamePattern + '+)}');
-// Sticky flag so `findEarliestCandidate` can test for a variable anchored at an
-// exact offset (`lastIndex = i`) in O(name) time, without allocating a
-// `value.substring()` copy or scanning the rest of the line. `lastIndex` is set
-// on every use, so the shared module-level regex is safe across lexers.
-const variableScanRe = new RegExp(
-  '(\\\\)?#{(' + variableNamePattern + '+)}',
-  'y',
-);
+const variableNameOnlyRe = new RegExp('^' + variableNamePattern + '+$');
+
+function parseVariableAt(str, start) {
+  if (str[start] !== '#' || str[start + 1] !== '{') return null;
+
+  const bodyStart = start + 2;
+  const newline = str.indexOf('\n', bodyStart);
+  const close = str.indexOf('}', bodyStart);
+  if (close === -1 || (newline !== -1 && newline < close)) {
+    return {error: 'unclosed'};
+  }
+
+  const name = str.substring(bodyStart, close);
+  if (!variableNameOnlyRe.test(name)) {
+    return {error: 'invalid', name};
+  }
+
+  return {length: close - start + 1, name};
+}
 
 /**
  * Advance past one character inside a quote-aware bracket scan.
@@ -1115,7 +1125,6 @@ class Lexer {
           prefix = prefix + value.substring(scanPos, earliest.pos);
           value = value.substring(earliest.pos);
           earliest.pos = 0;
-          if (earliest.match) earliest.match.index = 0;
           break;
         }
 
@@ -1236,13 +1245,12 @@ class Lexer {
         );
 
       case 'variable':
-        return this.handleVariableRef(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.match,
-        );
+        return this.handleVariableRef(type, value, prefix, escaped, earliest);
+
+      case 'invalid-variable':
+        this.incrementColumn(prefix.length + earliest.pos + escaped);
+        this.raiseVariableError(earliest.variable);
+        return;
 
       default:
         // The shorthand tables (parenShorthands/bracketShorthands) and this
@@ -1302,11 +1310,7 @@ class Lexer {
             return {pos: i, kind: 'escaped', literal: next, parenDepth};
           }
           if (next === '#' && after === '{') {
-            variableScanRe.lastIndex = i;
-            const em = variableScanRe.exec(value);
-            if (em && em[1]) {
-              return {pos: i, kind: 'escaped', literal: '#{', parenDepth};
-            }
+            return {pos: i, kind: 'escaped', literal: '#{', parenDepth};
           }
         }
         // Backslash that is not a recognized escape: skip the escaped char so
@@ -1333,11 +1337,13 @@ class Lexer {
           };
         }
         if (ch === '#' && next === '{') {
-          variableScanRe.lastIndex = i;
-          const m = variableScanRe.exec(value);
-          if (m && !m[1]) {
-            return {pos: i, kind: 'variable', match: m, parenDepth};
-          }
+          const variable = parseVariableAt(value, i);
+          return {
+            pos: i,
+            kind: variable.error ? 'invalid-variable' : 'variable',
+            variable,
+            parenDepth,
+          };
         }
       }
 
@@ -1985,9 +1991,9 @@ class Lexer {
     return inner.substring(result.end + 1);
   }
 
-  handleVariableRef(type, value, prefix, escaped, match) {
+  handleVariableRef(type, value, prefix, escaped, candidate) {
     let tok;
-    let before = value.slice(0, match.index);
+    let before = value.slice(0, candidate.pos);
     if (prefix || before) {
       before = prefix + before;
       tok = this.tok(type, before);
@@ -1999,15 +2005,15 @@ class Lexer {
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
 
-    tok = this.tok('variable', match[2]);
-    this.incrementColumn(match[2].length);
+    tok = this.tok('variable', candidate.variable.name);
+    this.incrementColumn(candidate.variable.name.length);
     this.tokens.push(this.tokEnd(tok));
 
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
 
-    return value.slice(match.index + match[0].length);
+    return value.slice(candidate.pos + candidate.variable.length);
   }
 
   text() {
@@ -2151,25 +2157,32 @@ class Lexer {
     }
   }
 
+  raiseVariableError(variable) {
+    if (variable.error === 'unclosed') {
+      this.error(
+        'NO_END_BRACKET',
+        'End of line reached with no closing } for variable interpolation.',
+      );
+    }
+    this.error(
+      'INVALID_VARIABLE_NAME',
+      '"' +
+        variable.name +
+        '" is not a valid variable name.' +
+        ' Variable names may only contain letters, hyphens, underscores and question marks.',
+    );
+  }
+
   variable() {
-    let captures;
-    if ((captures = variableRe.exec(this.input))) {
-      const tok = this.tok('variable', captures[1]);
+    const variable = parseVariableAt(this.input, 0);
+    if (variable) {
+      if (variable.error) this.raiseVariableError(variable);
+      const tok = this.tok('variable', variable.name);
       this.tokens.push(tok);
-      this.incrementColumn(captures[0].length);
-      this.consume(captures[0].length);
+      this.incrementColumn(variable.length);
+      this.consume(variable.length);
       this.tokEnd(tok);
       return true;
-    }
-    const bad = /^#{([^}\n]*)}/.exec(this.input);
-    if (bad) {
-      this.error(
-        'INVALID_VARIABLE_NAME',
-        '"' +
-          bad[1] +
-          '" is not a valid variable name.' +
-          ' Variable names may only contain letters, hyphens, underscores and question marks.',
-      );
     }
   }
 

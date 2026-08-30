@@ -494,9 +494,9 @@ describe('variables in attributes', () => {
     );
   });
 
-  it('should pass through #{...} with non-word chars unchanged', () => {
+  it('should pass through explicitly escaped #{...} with non-name chars', () => {
     assert.strictEqual(
-      pg.render('mixin test(x)\n  div(data-x="#{x}") #{ }\n+test(val)'),
+      pg.render('mixin test(x)\n  div(data-x="#{x}") \\#{ }\n+test(val)'),
       '<div data-x="val">#{ }</div>',
     );
   });

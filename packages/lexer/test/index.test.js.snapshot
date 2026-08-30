@@ -42781,7 +42781,7 @@ exports[`pipeless-tag.pg 1`] = `
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 17
+        "column": 18
       }
     },
     "val": "is #{'going'} "
@@ -42791,12 +42791,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 17
+        "column": 18
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 19
+        "column": 20
       }
     }
   },
@@ -42805,12 +42805,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 21
+        "column": 22
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 28
+        "column": 30
       }
     },
     "val": "#{'on'}"
@@ -42820,12 +42820,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 28
+        "column": 30
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 29
+        "column": 31
       }
     }
   },
@@ -42834,12 +42834,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 29
+        "column": 31
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 29
+        "column": 31
       }
     },
     "val": ""
@@ -42849,12 +42849,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 29
+        "column": 31
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 29
+        "column": 31
       }
     }
   },
@@ -42863,12 +42863,12 @@ exports[`pipeless-tag.pg 1`] = `
     "loc": {
       "start": {
         "line": 3,
-        "column": 29
+        "column": 31
       },
       "filename": "pipeless-tag.pg",
       "end": {
         "line": 3,
-        "column": 29
+        "column": 31
       }
     }
   }

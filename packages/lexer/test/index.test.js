@@ -864,6 +864,98 @@ describe('escaped physical newlines in quoted attributes', () => {
   });
 });
 
+describe('variable interpolation validation', () => {
+  function assertVariableError(source, code, line, column) {
+    assert.throws(
+      () => lex(source, {filename: 'variables.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:' + code);
+        assert.deepStrictEqual(
+          {line: err.line, column: err.column},
+          {line, column},
+        );
+        return true;
+      },
+    );
+  }
+
+  test('valid names remain variables in bare, inline, and pipeless forms', () => {
+    const sources = ['#{name}', 'p x #{name} y', 'p.\n  before #{name} after'];
+
+    sources.forEach((source) => {
+      const tokens = lex(source, {filename: 'variables.pg'});
+      assert.ok(
+        tokens.some((tok) => tok.type === 'variable' && tok.val === 'name'),
+        source,
+      );
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
+  test('invalid names use the boundary error in every text form', () => {
+    const cases = [
+      {source: '#{123}', line: 1, column: 1},
+      {source: 'p x #{123} y', line: 1, column: 5},
+      {source: 'p.\n  before #{bad!} after', line: 2, column: 10},
+    ];
+
+    cases.forEach(({source, line, column}) => {
+      assertVariableError(source, 'INVALID_VARIABLE_NAME', line, column);
+    });
+  });
+
+  test('empty names are rejected inline and in pipeless text', () => {
+    assertVariableError('p x #{} y', 'INVALID_VARIABLE_NAME', 1, 5);
+    assertVariableError(
+      'p.\n  before #{} after',
+      'INVALID_VARIABLE_NAME',
+      2,
+      10,
+    );
+  });
+
+  test('unclosed variables report their opener in every text form', () => {
+    const cases = [
+      {source: '#{open', line: 1, column: 1},
+      {source: 'p x #{open', line: 1, column: 5},
+      {source: 'p.\n  x #{open', line: 2, column: 5},
+    ];
+
+    cases.forEach(({source, line, column}) => {
+      assertVariableError(source, 'NO_END_BRACKET', line, column);
+    });
+  });
+
+  test('one backslash keeps malformed variable syntax literal', () => {
+    const sources = ['p x \\#{123} y', 'p.\n  \\#{open'];
+
+    sources.forEach((source) => {
+      const tokens = lex(source, {filename: 'variables.pg'});
+      const text = tokens
+        .filter((tok) => tok.type === 'text')
+        .map((tok) => tok.val)
+        .join('');
+
+      assert.ok(!text.includes('\\#{'), source);
+      assert.ok(text.includes('#{'), source);
+      assert.ok(!tokens.some((tok) => tok.type === 'variable'), source);
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
+  test('literal filter data does not activate variable validation', () => {
+    const source = ':verbatim\n  #{123}\n  \\#{open';
+    const tokens = lex(source, {filename: 'variables.pg'});
+    const text = tokens
+      .filter((tok) => tok.type === 'text')
+      .map((tok) => tok.val);
+
+    assert.deepStrictEqual(text, ['#{123}', '\\#{open']);
+    assert.ok(!tokens.some((tok) => tok.type === 'variable'));
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

@@ -1,5 +1,8 @@
 const error = require('pugneum-error');
 
+const MAX_TEMPLATE_DEPTH = 256;
+const MAX_INLINE_ELEMENT_DEPTH = MAX_TEMPLATE_DEPTH - 1;
+
 module.exports = lex;
 
 function lex(str, options) {
@@ -1406,10 +1409,10 @@ class Lexer {
 
   createChildLexer(input, locationMap, options) {
     options = options || {};
-    if (options.nested && this.depth >= 256) {
+    if (options.nested && this.depth >= MAX_INLINE_ELEMENT_DEPTH) {
       this.error(
         'NESTING_TOO_DEEP',
-        'Inline element nesting exceeds maximum depth of 256',
+        `Template nesting exceeds maximum depth of ${MAX_TEMPLATE_DEPTH}`,
       );
     }
     const child = new this.constructor(input, {

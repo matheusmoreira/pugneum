@@ -133,8 +133,10 @@ A successful stream has these balance and termination guarantees:
 
 Inline constructs are scanned by nested lexers internally, but their tokens are
 flattened into the one returned array between the applicable boundary tokens;
-no child `eos` token is exposed. Inline nesting deeper than 256 levels throws
-`PUGNEUM:NESTING_TOO_DEEP` instead of returning a partial stream.
+no child `eos` token is exposed. The total template nesting budget is 256. Since
+every inline chain belongs to a containing expression, up to 255 nested inline
+elements are accepted; adding a 256th throws `PUGNEUM:NESTING_TOO_DEEP` instead
+of returning a stream that would exceed the parser's budget.
 
 Inline shorthand is lowered to ordinary tag and attribute tokens. Structure
 that has no literal spelling in the input uses a zero-width location at the

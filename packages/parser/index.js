@@ -328,7 +328,7 @@ class Parser {
           loc: this.peek().loc,
           filename: this.filename,
         });
-        return this.parseExpr();
+        return this.parseTag();
       default:
         this.error(
           'INVALID_TOKEN',

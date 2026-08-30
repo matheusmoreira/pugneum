@@ -198,9 +198,10 @@ Their `code` values and conditions are:
 
 Coded diagnostics use the current token's start location plus
 `options.filename` and `options.source`. The fixed parser nesting limit is 256;
-the lexer has its own independently enforced inline-nesting limit. Invalid API
-argument types and malformed streams are not grammar diagnostics, so callers
-must not rely on them having a `PUGNEUM:*` code.
+the lexer reserves one level for an inline chain's containing expression and
+therefore accepts up to 255 nested inline elements. Invalid API argument types
+and malformed streams are not grammar diagnostics, so callers must not rely on
+them having a `PUGNEUM:*` code.
 
 ## License
 

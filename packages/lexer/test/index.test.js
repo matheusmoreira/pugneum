@@ -20,6 +20,10 @@ function readShared(filename) {
   return fs.readFileSync(path.join(dir, filename), 'utf8');
 }
 
+function nestedInlineSource(depth) {
+  return 'p ' + '*('.repeat(depth) + 'end' + ')'.repeat(depth);
+}
+
 function comparePoints(left, right) {
   return left.line - right.line || left.column - right.column;
 }
@@ -256,6 +260,23 @@ fs.readdirSync(edir).forEach(function (testCase) {
       t.assert.snapshot(actual);
     });
   }
+});
+
+test('inline shorthand reserves one depth level for its container', () => {
+  assert.doesNotThrow(() =>
+    lex(nestedInlineSource(255), {filename: 'depth.pg'}),
+  );
+  assert.throws(
+    () => lex(nestedInlineSource(256), {filename: 'depth.pg'}),
+    (err) => {
+      assert.strictEqual(err.code, 'PUGNEUM:NESTING_TOO_DEEP');
+      assert.strictEqual(
+        err.msg,
+        'Template nesting exceeds maximum depth of 256',
+      );
+      return true;
+    },
+  );
 });
 
 test('many escaped shorthands in single text node', (t) => {

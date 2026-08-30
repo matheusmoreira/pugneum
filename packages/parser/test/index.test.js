@@ -21,6 +21,24 @@ function read(filename) {
   return fs.readFileSync(path.join(testCasesDir, filename), 'utf8');
 }
 
+function nestedIndentedSource(head, depth) {
+  return Array.from(
+    {length: depth},
+    (_, index) => '  '.repeat(index) + head,
+  ).join('\n');
+}
+
+function nestedColonSource(depth) {
+  return Array(depth - 1)
+    .fill('div:')
+    .concat('p end')
+    .join(' ');
+}
+
+function nestedInlineSource(depth) {
+  return 'p ' + '*('.repeat(depth) + 'end' + ')'.repeat(depth);
+}
+
 testCases.forEach(function (filename) {
   test(filename, (t) => {
     let input = read(filename),
@@ -280,11 +298,62 @@ describe('error paths', () => {
     );
   });
 
-  test('NESTING_TOO_DEEP when recursion limit exceeded', () => {
-    var deep = Array(300).fill('div:').join(' ') + ' p end';
+  test('explicit and implicit tags share the exact depth boundary', () => {
+    ['div', '.item', '#item'].forEach((head) => {
+      [255, 256].forEach((depth) => {
+        assert.doesNotThrow(
+          () => parseSource(nestedIndentedSource(head, depth)),
+          head + ' at depth ' + depth,
+        );
+      });
+
+      assert.throws(
+        () => parseSource(nestedIndentedSource(head, 257)),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:NESTING_TOO_DEEP');
+          assert.deepStrictEqual(
+            {line: err.line, column: err.column, filename: err.filename},
+            {line: 257, column: 513, filename: 'test.pg'},
+          );
+          return true;
+        },
+      );
+    });
+  });
+
+  test('colon expansion pins and restores the exact depth boundary', () => {
+    [255, 256].forEach((depth) => {
+      assert.doesNotThrow(() => parseSource(nestedColonSource(depth)));
+    });
     assert.throws(
-      () => parseSource(deep),
+      () => parseSource(nestedColonSource(257)),
       (err) => err.code === 'PUGNEUM:NESTING_TOO_DEEP',
+    );
+
+    const deepestBranch = nestedIndentedSource('div', 256);
+    assert.doesNotThrow(() =>
+      parseSource(deepestBranch + '\n' + deepestBranch),
+    );
+    assert.doesNotThrow(() => parseSource(nestedColonSource(256)));
+  });
+
+  test('lexer and parser share the inline shorthand depth boundary', () => {
+    const deepestAccepted = nestedInlineSource(255);
+    const tokens = lex(deepestAccepted, {filename: 'test.pg'});
+    assert.doesNotThrow(() =>
+      parse(tokens, {filename: 'test.pg', source: deepestAccepted}),
+    );
+
+    assert.throws(
+      () => lex(nestedInlineSource(256), {filename: 'test.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:NESTING_TOO_DEEP');
+        assert.strictEqual(
+          err.msg,
+          'Template nesting exceeds maximum depth of 256',
+        );
+        return true;
+      },
     );
   });
 

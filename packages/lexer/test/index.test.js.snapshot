@@ -42058,10 +42058,10 @@ exports[`namespaces.pg 1`] = `
 
 exports[`nesting-too-deep.pg 1`] = `
 {
-  "msg": "Inline element nesting exceeds maximum depth of 256",
+  "msg": "Template nesting exceeds maximum depth of 256",
   "code": "PUGNEUM:NESTING_TOO_DEEP",
   "line": 1,
-  "column": 1029
+  "column": 1025
 }
 `;
 

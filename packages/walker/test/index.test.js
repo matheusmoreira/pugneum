@@ -178,30 +178,126 @@ describe('replace([])', function () {
   });
 });
 
-test('before returning false skips children and after', function () {
+test('before returning false prunes only that node and suppresses its after', function () {
   var visited = [];
   walk(
-    parse(lex('div\n  p Hello')),
+    parse(lex('div\n  p Hidden\nspan Visible')),
     function before(node) {
-      visited.push('before ' + node.type);
-      if (node.type === 'Tag') {
+      visited.push('before ' + node.type + ':' + (node.name || node.val || ''));
+      if (node.type === 'Tag' && node.name === 'div') {
         return false;
       }
     },
     function after(node) {
-      visited.push('after ' + node.type);
+      visited.push('after ' + node.type + ':' + (node.name || node.val || ''));
     },
   );
-  // Tag's children (Block containing Text) should not be visited
+  assert(!visited.includes('before Text:Hidden'));
+  assert(!visited.includes('after Tag:div'));
   assert(
-    !visited.includes('before Text'),
-    'Text child should not be visited when before returns false for Tag',
+    visited.includes('before Tag:span'),
+    'the sibling must still be walked',
   );
-  // after should not be called for the skipped Tag
-  assert(
-    !visited.includes('after Tag'),
-    'after should not be called when before returns false',
+  assert(visited.includes('before Text:Visible'));
+  assert(visited.includes('after Tag:span'));
+});
+
+test('all non-false before returns and every after return are ignored', function () {
+  [undefined, null, true, 0, '', {}, []].forEach(function (beforeReturn) {
+    var ast = {type: 'Block', nodes: [{type: 'Text', val: 'x'}]};
+    var events = [];
+    var result = walk(
+      ast,
+      function before(node) {
+        events.push('before ' + node.type);
+        return beforeReturn;
+      },
+      function after(node) {
+        events.push('after ' + node.type);
+        return {type: 'Text', val: 'ignored'};
+      },
+    );
+    assert.strictEqual(result, ast);
+    assert.deepStrictEqual(events, [
+      'before Block',
+      'before Text',
+      'after Text',
+      'after Block',
+    ]);
+  });
+});
+
+test('the return value preserves identity unless the root is replaced', function () {
+  var original = {type: 'Text', val: 'original'};
+  assert.strictEqual(walk(original), original);
+
+  var replacement = {type: 'Text', val: 'replacement'};
+  var result = walk(original, function before(node, replace) {
+    if (node === original) {
+      replace(replacement);
+      return false;
+    }
+  });
+  assert.strictEqual(result, replacement);
+  assert.deepStrictEqual(original, {type: 'Text', val: 'original'});
+});
+
+test('parents is nearest-first during hooks and restored afterward', function () {
+  var text = {type: 'Text', val: 'x'};
+  var innerBlock = {type: 'Block', nodes: [text]};
+  var tag = {type: 'Tag', name: 'p', block: innerBlock};
+  var root = {type: 'Block', nodes: [tag]};
+  var seed = {type: 'Comment', val: 'seed', buffer: false};
+  var parents = [seed];
+  var options = {parents: parents};
+
+  walk(
+    root,
+    function before(node) {
+      if (node === text) {
+        assert.deepStrictEqual(options.parents, [innerBlock, tag, root, seed]);
+      }
+    },
+    function after(node) {
+      if (node === text) {
+        assert.deepStrictEqual(options.parents, [innerBlock, tag, root, seed]);
+      }
+      if (node === tag) assert.deepStrictEqual(options.parents, [root, seed]);
+    },
+    options,
   );
+
+  assert.strictEqual(options.parents, parents);
+  assert.deepStrictEqual(parents, [seed]);
+});
+
+test('includeDependencies follows only a preloaded FileReference.ast', function () {
+  var unloaded = {type: 'FileReference', path: 'unloaded.pg'};
+  var dependencyText = {type: 'Text', val: 'dependency'};
+  var dependency = {type: 'Block', nodes: [dependencyText]};
+  var loaded = {type: 'FileReference', path: 'loaded.pg', ast: dependency};
+  var root = {type: 'Block', nodes: [unloaded, loaded]};
+  var sawDependency = false;
+
+  walk(root, function before(node) {
+    if (node === dependencyText) sawDependency = true;
+  });
+  assert.strictEqual(sawDependency, false);
+
+  var options = {includeDependencies: true, parents: []};
+  walk(
+    root,
+    function before(node) {
+      if (node === dependencyText) {
+        sawDependency = true;
+        assert.deepStrictEqual(options.parents, [dependency, loaded, root]);
+      }
+    },
+    options,
+  );
+  assert.strictEqual(sawDependency, true);
+  assert.ok(!Object.hasOwn(unloaded, 'ast'));
+  assert.deepStrictEqual(options.parents, []);
 });
 
 test('parents array is cleaned up when before hook throws', (t) => {

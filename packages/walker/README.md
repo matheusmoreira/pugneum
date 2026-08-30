@@ -24,8 +24,11 @@ const walk = require('pugneum-walker');
 Traverse and optionally transform an abstract syntax tree
 returned by the pugneum parser.
 
-`ast` is not cloned so any changes done to it
-will be done directly on the provided object.
+`ast` is not cloned, so descendant changes are made directly on the provided
+object. Always use the return value (`ast = walk(ast, ...)`), however: replacing
+the root changes the returned root reference and cannot update the caller's
+original variable in place. Without a root replacement, the return value is
+the original `ast` object.
 
 `before` and `after` are functions with the signature `(node, replace)`.
 `before` is called when a node is first seen
@@ -62,6 +65,8 @@ walk's private traversal state.
 If `before` returns `false`, the children of this node
 will not be traversed and will be left unchanged
 unless `replace` has been called.
+The matching `after` hook is also skipped for that node; traversal continues
+normally with its siblings and ancestors.
 Otherwise, the returned value of `before` is ignored.
 The returned value of `after` is always ignored.
 
@@ -85,7 +90,14 @@ There are three distinct cases:
 `options` can contain the following properties:
 
 - `includeDependencies` (boolean): walk the syntax trees of dependencies (includes and extends); default `false`
-- `parents` (array<Node>): nodes that are ancestors to the current `ast`; this option is used mainly internally, and users usually do not have to specify it; defaults to `[]`. Note that `parents` reflects in-AST nesting and is **not** reset when crossing into a dependency's tree under `includeDependencies`, so ancestors from the including file remain visible at the file boundary.
+- `parents` (array<Node>): a caller-owned ancestor stack used mainly
+  internally; defaults to `[]`. During each callback, index `0` is the nearest
+  parent and the current node is not included. The same array is updated in
+  place as traversal descends and ascends, so treat its callback-time contents
+  as read-only. Its initial entries and order are restored before `walk`
+  returns or throws. The stack is **not** reset when crossing into a dependency
+  under `includeDependencies`, so ancestors from the including file remain
+  visible at the file boundary.
 
 ### `walk.validate(ast, options)`
 
@@ -114,6 +126,10 @@ The walker assumes well-formed pugneum parser output:
 
 - `ast` must be a single node, not a bare array.
   A bare array at the root is rejected with an error.
+- `includeDependencies` only follows an already populated `FileReference.ast`.
+  It does not read or parse files; run the loader first (or attach a valid AST
+  explicitly). A file reference without `ast` remains a leaf even when the
+  option is enabled.
 - The traversal is fully recursive with no depth limit.
   The normal pipeline is safe because the parser caps
   nesting at 256 before the AST reaches the walker.

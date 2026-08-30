@@ -27,6 +27,28 @@ test('simple', function () {
   );
 });
 
+test('README strong-to-text example preserves complete parser nodes', function () {
+  var ast = parse(lex('p abc #(strong NO)\nstrong on its own line'));
+
+  ast = walk(ast, function before(node, replace) {
+    if (node.type === 'Tag' && node.name === 'strong') {
+      var children = node.block.nodes;
+      if (children.length === 1 && children[0].type === 'Text') {
+        replace(children[0]);
+      }
+    }
+  });
+
+  var strongTags = 0;
+  var textValues = [];
+  walk(ast, function inspect(node) {
+    if (node.type === 'Tag' && node.name === 'strong') strongTags++;
+    if (node.type === 'Text' && node.val) textValues.push(node.val);
+  });
+  assert.strictEqual(strongTags, 0);
+  assert.deepStrictEqual(textValues, ['abc ', 'NO', 'on its own line']);
+});
+
 describe('replace([])', function () {
   test('block flattening', function () {
     var called = [];

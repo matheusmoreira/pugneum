@@ -145,8 +145,10 @@ located `Malformed <type> node` error rather than a bare
 `TypeError` from a deeper frame.
 
 ```js
+var assert = require('node:assert/strict');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
+var walk = require('pugneum-walker');
 
 // Changing content of all Text nodes
 // ==================================
@@ -163,8 +165,8 @@ ast = walk(
       node.val = 'bar';
 
       // Alternatively, you can replace the entire node
-      // rather than just the text.
-      // replace({ type: 'Text', val: 'bar', line: node.line });
+      // while preserving all parser-owned fields.
+      // replace(Object.assign({}, node, {val: 'bar'}));
     }
   },
   {
@@ -178,7 +180,6 @@ assert.deepEqual(parse(lex(dest)), ast);
 // ============================================
 
 var source = 'p abc #(strong NO)\nstrong on its own line';
-var dest = 'p abc #(| NO)\n| on its own line';
 
 var ast = parse(lex(source));
 
@@ -191,8 +192,8 @@ ast = walk(
 
       // Make sure that the Tag only has one child -- the text
       if (children.length === 1 && children[0].type === 'Text') {
-        // Replace the Tag with the Text
-        replace({type: 'Text', val: children[0].val, line: node.line});
+        // Reuse the complete parser-produced Text node, including location.
+        replace(children[0]);
       }
     }
   },
@@ -201,7 +202,14 @@ ast = walk(
   },
 );
 
-assert.deepEqual(parse(lex(dest)), ast);
+var strongTags = 0;
+var textValues = [];
+walk(ast, function inspect(node) {
+  if (node.type === 'Tag' && node.name === 'strong') strongTags++;
+  if (node.type === 'Text' && node.val) textValues.push(node.val);
+});
+assert.equal(strongTags, 0);
+assert.deepEqual(textValues, ['abc ', 'NO', 'on its own line']);
 
 // Flatten blocks
 // ==============

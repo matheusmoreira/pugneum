@@ -162,6 +162,7 @@ const inlineTags = [
 // must be emitted) or is merely a trailing newline before outdent/eos.
 const inlineStartTokens = new Set([
   'text',
+  'variable',
   'start-interpolation',
   'start-ref-link',
   'start-ref-image',
@@ -356,7 +357,7 @@ class Parser {
       case 'given':
         return this.parseGiven();
       case 'variable':
-        return this.parseVariable();
+        return this.parseText({block: true});
       case 'extends':
         return this.parseExtends();
       case 'include':
@@ -418,6 +419,9 @@ class Parser {
       switch (nextTok.type) {
         case 'text':
           nodes.push(this.textNode(this.advance()));
+          break;
+        case 'variable':
+          nodes.push(this.parseVariable());
           break;
         case 'newline': {
           if (!options || !options.block) break loop;
@@ -1195,6 +1199,7 @@ class Parser {
     // Optional immediate inline content, colon expression, or mixin variable.
     switch (this.peek().type) {
       case 'text':
+      case 'variable':
       case 'start-interpolation':
       case 'start-ref-link':
       case 'start-ref-image':
@@ -1217,10 +1222,6 @@ class Parser {
         const expr = this.parseExpr();
         tag.block =
           expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
-        break;
-      case 'variable':
-        const variable = this.parseVariable();
-        tag.block.nodes.push(variable);
         break;
       case 'newline':
       case 'indent':

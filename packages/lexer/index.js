@@ -2226,6 +2226,18 @@ class Lexer {
       this.incrementColumn(variable.length);
       this.consume(variable.length);
       this.tokEnd(tok);
+
+      // A bare variable can immediately follow a tag or begin a mixin-body
+      // expression. Once it has claimed that line as inline content, scan the
+      // physical suffix in the same text context instead of redispatching an
+      // identifier as a sibling tag or dropping a leading space delimiter.
+      const newline = this.input.indexOf('\n');
+      const continuation =
+        newline === -1 ? this.input : this.input.substring(0, newline);
+      if (continuation) {
+        this.consume(continuation.length);
+        this.addText('text', continuation);
+      }
       return true;
     }
   }

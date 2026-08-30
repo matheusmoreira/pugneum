@@ -1221,6 +1221,48 @@ describe('variable interpolation validation', () => {
     });
   });
 
+  test('a bare variable keeps its same-line suffix in inline text context', () => {
+    [
+      {
+        source: 'p#{x} tail',
+        types: ['tag', 'variable', 'text', 'eos'],
+        text: [' tail'],
+      },
+      {
+        source: 'p#{x}tail',
+        types: ['tag', 'variable', 'text', 'eos'],
+        text: ['tail'],
+      },
+      {
+        source: 'p#{x}#{y}',
+        types: [
+          'tag',
+          'variable',
+          'start-interpolation',
+          'variable',
+          'end-interpolation',
+          'eos',
+        ],
+        text: [],
+      },
+    ].forEach(({source, types, text}) => {
+      const tokens = lex(source, {filename: 'variables.pg'});
+      const meaningful = tokens.filter(
+        (tok) => tok.type !== 'text' || tok.val !== '',
+      );
+
+      assert.deepStrictEqual(
+        meaningful.map((tok) => tok.type),
+        types,
+      );
+      assert.deepStrictEqual(
+        meaningful.filter((tok) => tok.type === 'text').map((tok) => tok.val),
+        text,
+      );
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
   test('invalid names use the boundary error in every text form', () => {
     const cases = [
       {source: '#{123}', line: 1, column: 1},

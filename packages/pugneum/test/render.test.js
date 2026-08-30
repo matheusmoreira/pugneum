@@ -125,6 +125,32 @@ describe('render()', () => {
   it('should render boolean attributes', () => {
     assert.strictEqual(pg.render('input(disabled)'), '<input disabled>');
   });
+
+  it('keeps direct mixin-variable suffixes in their source container', () => {
+    var input = [
+      'mixin show(x)',
+      '  div',
+      '    p#{x} tail',
+      '    p#{x}#{x}',
+      '    p#{x}tail',
+      '    p #{x} tail',
+      '    p#{x}*(bold)',
+      '  #{x}tail',
+      '+show(V)',
+    ].join('\n');
+
+    assert.strictEqual(
+      pg.render(input),
+      '<div>' +
+        '<p>V tail</p>' +
+        '<p>VV</p>' +
+        '<p>Vtail</p>' +
+        '<p>V tail</p>' +
+        '<p>V<strong>bold</strong></p>' +
+        '</div>' +
+        'Vtail',
+    );
+  });
 });
 
 describe('documented escaping', () => {

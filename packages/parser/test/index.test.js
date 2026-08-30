@@ -395,6 +395,78 @@ describe('error paths', () => {
   });
 });
 
+describe('direct variable continuations', () => {
+  function contentSignature(tag) {
+    return tag.block.nodes
+      .filter((node) => node.type !== 'Text' || node.val !== '')
+      .map((node) => {
+        if (node.type === 'Variable') return ['Variable', node.name];
+        if (node.type === 'Text') return ['Text', node.val];
+        if (node.type === 'Tag') return ['Tag', node.name];
+        return [node.type];
+      });
+  }
+
+  test('same-line suffixes stay in their owning tag and nesting scope', () => {
+    const source = [
+      'mixin show(x)',
+      '  div',
+      '    p#{x} tail',
+      '    p#{x}#{x}',
+      '    p#{x}tail',
+      '    p #{x} tail',
+      '    p#{x}*(bold)',
+      '  #{x}tail',
+    ].join('\n');
+    const ast = parse(lex(source, {filename: 'variables.pg'}), {
+      filename: 'variables.pg',
+      source,
+    });
+    const mixin = ast.nodes[0];
+    const container = mixin.block.nodes[0];
+
+    assert.deepStrictEqual(
+      container.block.nodes.map((node) => node.name),
+      ['p', 'p', 'p', 'p', 'p'],
+    );
+    assert.deepStrictEqual(container.block.nodes.map(contentSignature), [
+      [
+        ['Variable', 'x'],
+        ['Text', ' tail'],
+      ],
+      [
+        ['Variable', 'x'],
+        ['Variable', 'x'],
+      ],
+      [
+        ['Variable', 'x'],
+        ['Text', 'tail'],
+      ],
+      [
+        ['Variable', 'x'],
+        ['Text', ' tail'],
+      ],
+      [
+        ['Variable', 'x'],
+        ['Tag', 'strong'],
+      ],
+    ]);
+    assert.deepStrictEqual(
+      mixin.block.nodes
+        .slice(1)
+        .map((node) =>
+          node.type === 'Variable'
+            ? [node.type, node.name]
+            : [node.type, node.val],
+        ),
+      [
+        ['Variable', 'x'],
+        ['Text', 'tail'],
+      ],
+    );
+  });
+});
+
 describe('given keyword', () => {
   test('given produces Given node with name and block', (t) => {
     const source = 'mixin card\n  given header\n    h1 Title';

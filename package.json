@@ -9,10 +9,10 @@
     "url": "git+https://github.com/matheusmoreira/pugneum.git"
   },
   "scripts": {
-    "prettier:check": "prettier --ignore-path .gitignore --list-different './**/*.js'",
-    "format": "prettier --ignore-path .gitignore --write './**/*.js'",
-    "test": "node --test 'packages/**/test/*.test.js'",
-    "test:update-snapshots": "node --test --test-update-snapshots 'packages/**/test/*.test.js'"
+    "prettier:check": "prettier --ignore-path .gitignore --list-different \"./**/*.js\"",
+    "format": "prettier --ignore-path .gitignore --write \"./**/*.js\"",
+    "test": "node scripts/run-tests.js",
+    "test:update-snapshots": "node --test-update-snapshots scripts/run-tests.js"
   },
   "workspaces": [
     "packages/error",

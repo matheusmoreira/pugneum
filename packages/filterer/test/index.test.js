@@ -58,14 +58,13 @@ p
 });
 
 test('__proto__ attribute does not pollute Object.prototype', () => {
+  var calls = 0;
+  var receivedOptions;
   const inspecting = {
     type: 'html',
     filter: function (str, options) {
-      // The __proto__ attr should be a regular property on the null-prototype
-      // attrs object, not trigger prototype pollution
-      assert.strictEqual(options.__proto__, 'malicious');
-      // Object.prototype must remain unpolluted
-      assert.strictEqual({}.malicious, undefined);
+      calls += 1;
+      receivedOptions = options;
       return str;
     },
   };
@@ -78,6 +77,16 @@ p
 
   const ast = parse(lex(source, {filename}), {filename, source});
   filter(ast, {inspecting});
+  assert.strictEqual(calls, 1);
+  assert.strictEqual(Object.getPrototypeOf(receivedOptions), null);
+  assert.deepStrictEqual(Object.keys(receivedOptions), [
+    '__proto__',
+    'filename',
+  ]);
+  assert.ok(Object.hasOwn(receivedOptions, '__proto__'));
+  assert.strictEqual(receivedOptions.__proto__, 'malicious');
+  assert.strictEqual(receivedOptions.filename, filename);
+  assert.strictEqual({}.malicious, undefined);
 });
 
 test('invalid filter name throws INVALID_FILTER_NAME', () => {
@@ -638,13 +647,23 @@ p
   assert.strictEqual(textNode.name, undefined);
 });
 
-test('syntax filter emitting a blockless Filter node does not crash with a raw TypeError', () => {
+test('syntax filter emitting a blockless Filter runs its empty inner body', () => {
+  const calls = {outer: [], inner: []};
   const filters = {
     outer: {
       type: 'syntax',
-      filter: () => [{type: 'Filter', name: 'inner', attrs: []}],
+      filter: (text) => {
+        calls.outer.push(text);
+        return [{type: 'Filter', name: 'inner', attrs: []}];
+      },
     },
-    inner: {type: 'html', filter: () => 'Z'},
+    inner: {
+      type: 'html',
+      filter: (text) => {
+        calls.inner.push(text);
+        return 'Z';
+      },
+    },
   };
   const source = `
 p
@@ -652,18 +671,45 @@ p
     ignored
 `;
   const ast = parse(lex(source, {filename}), {filename, source});
-  // Must surface a coded PUGNEUM error (or succeed), never a bare TypeError
-  // from dereferencing node.block.nodes on a blockless Filter.
-  try {
-    const output = filter(ast, filters);
-    // If it succeeds, the inner filter ran on an empty body.
-    assert.ok(output);
-  } catch (err) {
-    assert.ok(
-      err.code && err.code.startsWith('PUGNEUM:'),
-      'expected a coded PUGNEUM error, got: ' + err,
-    );
-  }
+  const output = filter(ast, filters);
+
+  assert.deepStrictEqual(calls, {outer: ['ignored'], inner: ['']});
+  assert.strictEqual(output.type, 'Block');
+  assert.strictEqual(output.nodes[0].type, 'Tag');
+  assert.strictEqual(output.nodes[0].name, 'p');
+  assert.deepStrictEqual(output.nodes[0].block.nodes, [
+    {
+      type: 'Block',
+      line: 3,
+      column: 3,
+      filename,
+      nodes: [{type: 'Text', val: 'Z'}],
+    },
+  ]);
+});
+
+test('syntax filter emitting an unknown blockless filter fails exactly', () => {
+  const source = `
+p
+  :outer
+    ignored
+`;
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const filters = {
+    outer: {
+      type: 'syntax',
+      filter: () => [{type: 'Filter', name: 'missing', attrs: []}],
+    },
+  };
+
+  assert.throws(
+    () => filter(ast, filters),
+    (err) => {
+      assert.strictEqual(err.code, 'PUGNEUM:UNKNOWN_FILTER');
+      assert.strictEqual(err.msg, "Unknown filter 'missing'");
+      return true;
+    },
+  );
 });
 
 // --- Positive include-filter coverage (the RawInclude chain path) ---

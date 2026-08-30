@@ -14,6 +14,13 @@ exports[`per filter options are applied, even to nested filters 1`] = `
             "column": 3,
             "filename": "per-filter-options-applied-to-nested-filters.test.js",
             "val": "SECOND\\nWill be wrapped in second.\\nEND SECOND"
+          },
+          {
+            "type": "Text",
+            "line": 5,
+            "column": 3,
+            "filename": "per-filter-options-applied-to-nested-filters.test.js",
+            "val": "Neighbor stays unwrapped."
           }
         ],
         "line": 2,

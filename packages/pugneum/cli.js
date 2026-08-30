@@ -256,7 +256,7 @@ try {
   // Surface non-fatal diagnostics collected across the whole build once.
   flushWarnings();
 
-  if (feeds) {
+  if (feeds && feeds.enabled !== false) {
     // pugneum-feed is an optional peer dependency. Detect its absence by
     // resolving the exact specifier in its own try: only a failure to resolve
     // 'pugneum-feed' itself means "not installed". A MODULE_NOT_FOUND raised by

@@ -4,14 +4,36 @@ const {execFileSync, spawnSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const htmlparser2 = require('htmlparser2');
+
+const DomUtils = htmlparser2.DomUtils;
 
 const CLI = path.join(__dirname, '..', 'cli.js');
+const NO_FEEDS = Symbol('no feeds configuration');
+
+function childEnvironment(overrides) {
+  return Object.assign({}, process.env, {HOME: os.tmpdir()}, overrides || {});
+}
 
 function run(args, opts) {
   return execFileSync(process.execPath, [CLI, ...args], {
     encoding: 'utf8',
     cwd: opts && opts.cwd,
-    env: Object.assign({}, process.env, {HOME: os.tmpdir()}),
+    env: childEnvironment(opts && opts.env),
+    timeout: 10000,
+  });
+}
+
+function spawnCli(args, opts) {
+  const nodeArgs = [];
+  if (opts && opts.preload) {
+    nodeArgs.push('--require', opts.preload);
+  }
+  nodeArgs.push(CLI, ...args);
+  return spawnSync(process.execPath, nodeArgs, {
+    encoding: 'utf8',
+    cwd: opts && opts.cwd,
+    env: childEnvironment(opts && opts.env),
     timeout: 10000,
   });
 }
@@ -24,6 +46,107 @@ function runExpectFail(args, opts) {
     if (err.status == null) throw err;
     return {status: err.status, stderr: err.stderr, stdout: err.stdout};
   }
+}
+
+function makeSymlinkOrSkip(t, target, link, type) {
+  try {
+    const platformType =
+      process.platform === 'win32' && type === 'dir' ? 'junction' : type;
+    fs.symlinkSync(target, link, platformType);
+    return true;
+  } catch (error) {
+    if (['EACCES', 'ENOTSUP', 'EPERM'].includes(error.code)) {
+      t.skip(`symlinks are unavailable on this runner (${error.code})`);
+      return false;
+    }
+    throw error;
+  }
+}
+
+function makeFeedProject(feeds = NO_FEEDS, options = {}) {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-feed-'));
+  const sourceDirectory = path.join(tmp, 'src');
+  const outputDirectory = path.join(tmp, 'out');
+  fs.mkdirSync(path.join(sourceDirectory, 'articles'), {recursive: true});
+  fs.mkdirSync(outputDirectory);
+
+  fs.writeFileSync(
+    path.join(sourceDirectory, 'index.pg'),
+    [
+      'doctype html',
+      'html(lang="en")',
+      '  head',
+      '    base(href="https://example.test/")',
+      '    title Example Journal',
+      '    meta(name="description" content="Example description")',
+      '    meta(name="author" content="Example Author")',
+      '  body',
+      '    main',
+      '      article(data-published-at="2026-01-02")',
+      '        a(href="articles/post.html") First Post',
+    ].join('\n'),
+  );
+
+  const article = [
+    'doctype html',
+    'html(lang="en")',
+    '  head',
+    '    title First Post',
+    '    meta(name="description" content="Post summary")',
+    '    meta(name="author" content="Example Author")',
+    '  body',
+    '    article',
+    '      p Feed body',
+  ];
+  if (options.warning) {
+    article.push('      a(href=‘/warning’) warning link');
+  }
+  fs.writeFileSync(
+    path.join(sourceDirectory, 'articles', 'post.pg'),
+    article.join('\n'),
+  );
+
+  const config = {inputDirectory: 'src', outputDirectory: 'out'};
+  if (feeds !== NO_FEEDS) {
+    config.feeds = feeds;
+  }
+  fs.writeFileSync(path.join(tmp, 'pugneum.json'), JSON.stringify(config));
+
+  return {tmp, outputDirectory};
+}
+
+function writeFeedResolutionBlocker(directory) {
+  const preload = path.join(directory, 'block-pugneum-feed.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const Module = require('node:module');",
+      'const originalResolveFilename = Module._resolveFilename;',
+      'Module._resolveFilename = function (request) {',
+      "  if (request === 'pugneum-feed') {",
+      '    const error = new Error("Cannot find module \'pugneum-feed\'");',
+      "    error.code = 'MODULE_NOT_FOUND';",
+      '    throw error;',
+      '  }',
+      '  return Reflect.apply(originalResolveFilename, this, arguments);',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
+function parseXmlFile(filename, expectedRoot) {
+  const source = fs.readFileSync(filename, 'utf8');
+  const document = htmlparser2.parseDocument(source, {xmlMode: true});
+  const roots = document.children.filter((node) => node.type === 'tag');
+  assert.strictEqual(roots.length, 1);
+  assert.strictEqual(roots[0].name, expectedRoot);
+  return {document, source};
+}
+
+function selfLink(document, elementName) {
+  const links = DomUtils.getElementsByTagName(elementName, document);
+  return links.find((element) => element.attribs.rel === 'self');
 }
 
 describe('CLI', () => {
@@ -132,13 +255,22 @@ describe('CLI', () => {
     }
   });
 
-  test('skips symlinks in input directory', () => {
+  test('skips symlinks in input directory', (t) => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
     try {
       fs.mkdirSync(path.join(tmp, 'src'));
       fs.mkdirSync(path.join(tmp, 'out'));
       fs.writeFileSync(path.join(tmp, 'src', 'real.pg'), 'p ok');
-      fs.symlinkSync(path.join(tmp, 'src'), path.join(tmp, 'src', 'loop'));
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          path.join(tmp, 'src'),
+          path.join(tmp, 'src', 'loop'),
+          'dir',
+        )
+      ) {
+        return;
+      }
       fs.writeFileSync(
         path.join(tmp, 'pugneum.json'),
         JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
@@ -152,7 +284,7 @@ describe('CLI', () => {
     }
   });
 
-  test('builds when the input directory itself is a symlink', () => {
+  test('builds when the input directory itself is a symlink', (t) => {
     // Regression: the walk uses realpathSync(inputDirectory) while the per-file
     // relative path must use the same resolved base. Computing it against the
     // raw symlink name yields a ../-laden path that trips the output-escape
@@ -165,7 +297,16 @@ describe('CLI', () => {
       fs.writeFileSync(path.join(tmp, 'realsrc', 'page.pg'), 'p hi');
       fs.writeFileSync(path.join(tmp, 'realsrc', 'sub', 'deep.pg'), 'p deep');
       // inputDirectory "src" is a symlink to the real content directory.
-      fs.symlinkSync(path.join(tmp, 'realsrc'), path.join(tmp, 'src'));
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          path.join(tmp, 'realsrc'),
+          path.join(tmp, 'src'),
+          'dir',
+        )
+      ) {
+        return;
+      }
       fs.writeFileSync(
         path.join(tmp, 'pugneum.json'),
         JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
@@ -220,7 +361,7 @@ describe('CLI', () => {
     }
   });
 
-  test('output-escape guard is not tripped by a normal symlinked input dir', () => {
+  test('output-escape guard is not tripped by a normal symlinked input dir', (t) => {
     // The guard must distinguish a legitimate symlinked input root (builds) from
     // a genuinely escaping output path. This pairs with the symlinked-input
     // build test above: the guard stays silent for valid layouts.
@@ -229,7 +370,16 @@ describe('CLI', () => {
       fs.mkdirSync(path.join(tmp, 'realsrc'));
       fs.mkdirSync(path.join(tmp, 'out'));
       fs.writeFileSync(path.join(tmp, 'realsrc', 'ok.pg'), 'p ok');
-      fs.symlinkSync(path.join(tmp, 'realsrc'), path.join(tmp, 'content'));
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          path.join(tmp, 'realsrc'),
+          path.join(tmp, 'content'),
+          'dir',
+        )
+      ) {
+        return;
+      }
       fs.writeFileSync(
         path.join(tmp, 'pugneum.json'),
         JSON.stringify({inputDirectory: 'content', outputDirectory: 'out'}),
@@ -248,7 +398,7 @@ describe('CLI', () => {
     }
   });
 
-  test('refuses to write through a symlinked output subdirectory', () => {
+  test('refuses to write through a symlinked output subdirectory', (t) => {
     // A pre-existing symlink as an intermediate output component must not let a
     // lexically-valid write land outside the output tree (CWE-59). The realpath
     // re-check on the created parent dir catches it.
@@ -258,7 +408,16 @@ describe('CLI', () => {
       fs.mkdirSync(path.join(tmp, 'out'));
       fs.mkdirSync(path.join(tmp, 'secret'));
       fs.writeFileSync(path.join(tmp, 'src', 'sub', 'evil.pg'), 'p pwned');
-      fs.symlinkSync(path.join(tmp, 'secret'), path.join(tmp, 'out', 'sub'));
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          path.join(tmp, 'secret'),
+          path.join(tmp, 'out', 'sub'),
+          'dir',
+        )
+      ) {
+        return;
+      }
       fs.writeFileSync(
         path.join(tmp, 'pugneum.json'),
         JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
@@ -273,7 +432,7 @@ describe('CLI', () => {
     }
   });
 
-  test('refuses to clobber a file through a symlinked output filename', () => {
+  test('refuses to clobber a file through a symlinked output filename', (t) => {
     // The output filename itself being a symlink would truncate the symlink's
     // target outside the tree; the lstat check on the final component refuses.
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
@@ -282,10 +441,16 @@ describe('CLI', () => {
       fs.mkdirSync(path.join(tmp, 'out'));
       fs.writeFileSync(path.join(tmp, 'src', 'target.pg'), 'p overwrite');
       fs.writeFileSync(path.join(tmp, 'important.conf'), 'ORIGINAL SECRET');
-      fs.symlinkSync(
-        path.join(tmp, 'important.conf'),
-        path.join(tmp, 'out', 'target.html'),
-      );
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          path.join(tmp, 'important.conf'),
+          path.join(tmp, 'out', 'target.html'),
+          'file',
+        )
+      ) {
+        return;
+      }
       fs.writeFileSync(
         path.join(tmp, 'pugneum.json'),
         JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
@@ -330,6 +495,174 @@ describe('CLI', () => {
       assert.doesNotMatch(result.stderr, /\n\s+at /);
     } finally {
       fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('builds HTML without resolving the optional feed package when feeds are absent', () => {
+    const project = makeFeedProject();
+    try {
+      const result = spawnCli([], {cwd: project.tmp});
+      assert.strictEqual(result.status, 0);
+      assert.strictEqual(result.stderr, '');
+      assert.ok(
+        fs.existsSync(path.join(project.outputDirectory, 'index.html')),
+      );
+      assert.ok(
+        fs.existsSync(
+          path.join(project.outputDirectory, 'articles', 'post.html'),
+        ),
+      );
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('feeds.enabled=false short-circuits optional package resolution', () => {
+    const project = makeFeedProject({enabled: false});
+    try {
+      const preload = writeFeedResolutionBlocker(project.tmp);
+      const result = spawnCli([], {cwd: project.tmp, preload});
+      assert.strictEqual(result.status, 0);
+      assert.strictEqual(result.stderr, '');
+      assert.ok(
+        fs.existsSync(path.join(project.outputDirectory, 'index.html')),
+      );
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('warns and preserves HTML when enabled feeds lack the optional package', () => {
+    const project = makeFeedProject({url: 'https://example.test/'});
+    try {
+      const preload = writeFeedResolutionBlocker(project.tmp);
+      const result = spawnCli([], {cwd: project.tmp, preload});
+      assert.strictEqual(result.status, 0);
+      assert.match(result.stderr, /pugneum-feed is not installed/);
+      assert.strictEqual(
+        (result.stderr.match(/pugneum-feed is not installed/g) || []).length,
+        1,
+      );
+      assert.ok(
+        fs.existsSync(path.join(project.outputDirectory, 'index.html')),
+      );
+      assert.ok(
+        fs.existsSync(
+          path.join(project.outputDirectory, 'articles', 'post.html'),
+        ),
+      );
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('generates complete Atom and RSS feeds with default filenames', () => {
+    const project = makeFeedProject({url: 'https://example.test/'});
+    try {
+      const result = spawnCli([], {cwd: project.tmp});
+      assert.strictEqual(result.status, 0);
+      assert.strictEqual(result.stderr, '');
+
+      const atom = parseXmlFile(
+        path.join(project.outputDirectory, 'atom.xml'),
+        'feed',
+      );
+      const rss = parseXmlFile(
+        path.join(project.outputDirectory, 'rss.xml'),
+        'rss',
+      );
+      assert.strictEqual(
+        selfLink(atom.document, 'link').attribs.href,
+        'https://example.test/atom.xml',
+      );
+      assert.strictEqual(
+        selfLink(rss.document, 'atom:link').attribs.href,
+        'https://example.test/rss.xml',
+      );
+      assert.strictEqual(
+        DomUtils.textContent(
+          DomUtils.getElementsByTagName('content', atom.document)[0],
+        ),
+        '<p>Feed body</p>',
+      );
+      assert.strictEqual(
+        DomUtils.textContent(
+          DomUtils.getElementsByTagName('content:encoded', rss.document)[0],
+        ),
+        '<p>Feed body</p>',
+      );
+      assert.match(
+        atom.source,
+        /https:\/\/example\.test\/articles\/post\.html/,
+      );
+      assert.match(rss.source, /https:\/\/example\.test\/articles\/post\.html/);
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('uses custom feed filenames in output paths and self links', () => {
+    const project = makeFeedProject({
+      url: 'https://example.test/',
+      atom: 'news.atom',
+      rss: 'news.rss',
+    });
+    try {
+      const result = spawnCli([], {cwd: project.tmp});
+      assert.strictEqual(result.status, 0);
+      assert.strictEqual(result.stderr, '');
+
+      const atom = parseXmlFile(
+        path.join(project.outputDirectory, 'news.atom'),
+        'feed',
+      );
+      const rss = parseXmlFile(
+        path.join(project.outputDirectory, 'news.rss'),
+        'rss',
+      );
+      assert.strictEqual(
+        selfLink(atom.document, 'link').attribs.href,
+        'https://example.test/news.atom',
+      );
+      assert.strictEqual(
+        selfLink(rss.document, 'atom:link').attribs.href,
+        'https://example.test/news.rss',
+      );
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
+      assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('non-fatal template warnings do not prevent feed generation', () => {
+    const project = makeFeedProject(
+      {url: 'https://example.test/'},
+      {warning: true},
+    );
+    try {
+      const result = spawnCli([], {cwd: project.tmp});
+      assert.strictEqual(result.status, 0);
+      assert.match(result.stderr, /TYPOGRAPHIC_QUOTE_DELIMITER/);
+      assert.strictEqual(
+        (result.stderr.match(/TYPOGRAPHIC_QUOTE_DELIMITER/g) || []).length,
+        1,
+      );
+      parseXmlFile(path.join(project.outputDirectory, 'atom.xml'), 'feed');
+      parseXmlFile(path.join(project.outputDirectory, 'rss.xml'), 'rss');
+      assert.ok(
+        fs.existsSync(
+          path.join(project.outputDirectory, 'articles', 'post.html'),
+        ),
+      );
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
     }
   });
 

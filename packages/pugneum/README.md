@@ -687,6 +687,12 @@ p Click the #(+icon(settings)) button to open preferences.
 p I am #(+b(very)) #(+b(happy)) today.
 ```
 
+Mixin call arguments are separated by ASCII spaces, tabs, or newlines.
+Balanced parentheses can be nested inside an unquoted argument that contains
+no separator whitespace, for example `+transform(calc(1+2))`. Quote an
+argument to preserve whitespace; the outer quotes are removed and a backslash
+escapes the next quoted character, as in `+label('Status (ready)')`.
+
 Mixins can also receive block content from the caller:
 
 ```pugneum

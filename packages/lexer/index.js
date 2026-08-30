@@ -2241,7 +2241,10 @@ class Lexer {
 
       tok.args = [];
       // Check for args (not attributes)
-      // just an ASCII-whitespace-separated list of strings
+      // Arguments are separated by ASCII spaces, tabs, or newlines. Balanced
+      // parentheses remain part of an unquoted argument. A leading quote
+      // groups separator whitespace; outer quotes are stripped and a
+      // backslash escapes the next quoted character.
       const argumentList = /^[ \t]*\(/.exec(this.input);
       if (argumentList) {
         const leading = argumentList[0];

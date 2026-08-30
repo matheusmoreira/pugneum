@@ -321,6 +321,20 @@ describe('mixin call line boundaries', () => {
     assert.strictEqual(later.loc.start.line, 3);
   });
 
+  test('balanced and quoted arguments preserve their documented values', () => {
+    const source =
+      '+apply(outer(inner(value)) \'Status (ready)\' "say \\"hi\\"")';
+    const tokens = lex(source, {filename: 'call.pg'});
+    const call = tokens.find((tok) => tok.type === 'call');
+
+    assert.deepStrictEqual(call.args, [
+      'outer(inner(value))',
+      'Status (ready)',
+      'say "hi"',
+    ]);
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
   test('an unclosed multiline argument list reports the physical EOF', () => {
     assert.throws(
       () => lex('+foo(\n alpha\n beta', {filename: 'call.pg'}),

@@ -398,7 +398,7 @@ describe('rooted atomic publication', () => {
     assert.deepStrictEqual(fs.readdirSync(root), ['atom.xml']);
   });
 
-  test('rejects symlinked leaf and ancestor destinations', (t) => {
+  test('rejects a symlinked leaf destination', (t) => {
     const sandbox = temporaryRoot(t);
     const root = path.join(sandbox, 'root');
     const outside = path.join(sandbox, 'outside');
@@ -416,17 +416,27 @@ describe('rooted atomic publication', () => {
     ) {
       return;
     }
+
+    const files = createRootedFilesystem(root);
+    assertPathEscape(() => files.writeFileAtomic('atom.xml', 'bad'));
+    assert.strictEqual(
+      fs.readFileSync(path.join(outside, 'sentinel'), 'utf8'),
+      'outside sentinel',
+    );
+  });
+
+  test('rejects a symlinked ancestor destination', (t) => {
+    const sandbox = temporaryRoot(t);
+    const root = path.join(sandbox, 'root');
+    const outside = path.join(sandbox, 'outside');
+    fs.mkdirSync(root);
+    fs.mkdirSync(outside);
     if (!makeSymlinkOrSkip(t, outside, path.join(root, 'redirect'), 'dir')) {
       return;
     }
 
     const files = createRootedFilesystem(root);
-    assertPathEscape(() => files.writeFileAtomic('atom.xml', 'bad'));
     assertPathEscape(() => files.writeFileAtomic('redirect/rss.xml', 'bad'));
-    assert.strictEqual(
-      fs.readFileSync(path.join(outside, 'sentinel'), 'utf8'),
-      'outside sentinel',
-    );
     assert.ok(!fs.existsSync(path.join(outside, 'rss.xml')));
   });
 

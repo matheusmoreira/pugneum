@@ -40,6 +40,13 @@ with JSON config serving as override.
 | `atom` | `atom.xml` | Atom output filename |
 | `rss` | `rss.xml` | RSS output filename |
 
+`index`, `atom`, and `rss` are rooted relative names, not operating-system
+paths. `index` is resolved beneath `outputDirectory`; `atom` and `rss` are
+resolved beneath `writeDirectory`. Absolute names, `..` escapes, symlinked
+components, and non-regular files are rejected. Article `href` values have a
+separate URL-to-file mapping; this path rule does not imply that query,
+fragment, or percent-encoded URL forms are filesystem names.
+
 The base `url` must be absolute — it must include a scheme and host
 (`https://example.com/`). A path-only or protocol-relative value such as
 `/blog/` or `//cdn/` would produce feeds whose identifiers and links are not

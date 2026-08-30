@@ -7,32 +7,131 @@ const packagePrefix = 'pugneum-filter-';
 
 const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
 
-// Loader constructs need the LOADER (disk file resolution), which runs BEFORE
-// the filterer — so a pugneum-type filter cannot emit them resolvably: by filter
-// time the target was never read, node.file.ast is unset, and they can never be
-// resolved downstream. parsePugneum rejects them with a clean coded error.
+// These constructs require loading or template assembly, both of which run
+// BEFORE the filterer. Generated output cannot introduce them resolvably at
+// this stage. NamedBlock is handled contextually below because it is too late
+// for a template override but still valid as a renderer-owned mixin slot.
 //
 // Reference/footnote/toc constructs a filter emits need NO special handling
 // here: the document-level resolution pass (pugneum-linker's `resolve`) runs
 // AFTER the filterer over the whole assembled tree (see packages/pugneum), so
 // they resolve there alongside the rest of the document.
-const loaderConstructTypes = new Set([
+const earlierPhaseTypes = new Set([
   'Include',
   'Extends',
   'RawInclude',
   'FileReference',
+  'IncludeFilter',
+  'YieldBlock',
 ]);
 
-// First node in `ast` whose type is in `types`, or null. Stops at the first hit.
-function firstNodeOfType(ast, types) {
+// Return the first generated node that has no owner at the post-assembly filter
+// stage. The walker exposes nearest-parent-first ancestry during `before`, so a
+// NamedBlock remains legal only under a Mixin (definition or call), while
+// Given/MixinBlock/Variable retain the parser's mixin-context restrictions.
+function firstUnsupportedGeneratedNode(ast) {
+  const root = generatedRoot(ast);
+  const parents = [];
   let hit = null;
-  walk(ast, function (node) {
-    if (types.has(node.type)) {
-      hit = node;
-      return false; // first hit is enough; stop descending this branch
+  walk(
+    root,
+    function (node) {
+      if (hit) return false;
+      const mixinAncestors = parents.filter(
+        (parent) => parent.type === 'Mixin',
+      );
+      const insideMixin = mixinAncestors.length > 0;
+      const insideMixinDefinition = mixinAncestors.some(
+        (mixin) => mixin.call === false,
+      );
+      const nearestMixin = mixinAncestors[0];
+
+      if (
+        earlierPhaseTypes.has(node.type) ||
+        (node.type === 'NamedBlock' && !insideMixin) ||
+        (node.type === 'Given' &&
+          (!nearestMixin || nearestMixin.call !== false)) ||
+        ((node.type === 'MixinBlock' || node.type === 'Variable') &&
+          !insideMixinDefinition)
+      ) {
+        hit = node;
+        return false;
+      }
+    },
+    {parents},
+  );
+  return hit;
+}
+
+function generatedRoot(ast) {
+  return Array.isArray(ast) ? {type: 'Block', nodes: ast} : ast;
+}
+
+function validateGeneratedAst(
+  ast,
+  name,
+  type,
+  invocation,
+  options,
+  context,
+  invocationDepth,
+) {
+  const root = generatedRoot(ast);
+  try {
+    const remainingDepth = walk.MAX_AST_DEPTH - invocationDepth;
+    if (remainingDepth < 0) {
+      throw new Error(
+        'structural depth exceeds maximum of ' + walk.MAX_AST_DEPTH,
+      );
+    }
+    walk.validate(root, {
+      allowAliases: false,
+      forbiddenNodes: context.ownedNodes,
+      maxDepth: remainingDepth,
+    });
+  } catch (validationError) {
+    throw error(
+      'INVALID_FILTER_OUTPUT',
+      `Filter '${name}' (type ${type}) returned invalid AST: ${validationError.message}`,
+      nodeLocation(invocation, options),
+    );
+  }
+
+  const unsupported = firstUnsupportedGeneratedNode(root);
+  if (unsupported) {
+    throw error(
+      'UNSUPPORTED_FILTER_CONSTRUCT',
+      `Filter '${name}' (type ${type}) cannot emit ${unsupported.type}: ` +
+        'file loading and template assembly run before filters',
+      nodeLocation(invocation, options),
+    );
+  }
+}
+
+function stampGeneratedProvenance(ast, invocation, ownedNodes) {
+  const root = generatedRoot(ast);
+  walk(root, function (node) {
+    if (node !== root) {
+      stampLocation(node, invocation);
+      ownedNodes.add(node);
+    }
+    for (const attr of node.attrs || []) {
+      stampLocation(attr, invocation);
+      ownedNodes.add(attr);
+    }
+    for (const definition of node.definitions || []) {
+      stampLocation(definition, invocation);
+      ownedNodes.add(definition);
     }
   });
-  return hit;
+}
+
+function stampLocation(record, invocation) {
+  if (record.filename == null || record.filename === '') {
+    record.filename = invocation.filename;
+  }
+  if (record.line == null) record.line = invocation.line;
+  if (record.column == null) record.column = invocation.column;
 }
 
 // Build the location/source context object shared by every error() call in
@@ -112,7 +211,15 @@ function stripFilterFields(node) {
   delete node.name;
 }
 
-function applyFilterResult(node, type, result, name, options) {
+function applyFilterResult(
+  node,
+  type,
+  result,
+  name,
+  options,
+  context,
+  nodeDepth,
+) {
   switch (type) {
     case 'text':
       validateStringOutput(result, name, type, node, options);
@@ -129,6 +236,8 @@ function applyFilterResult(node, type, result, name, options) {
     case 'pugneum': {
       validateStringOutput(result, name, type, node, options);
       const ast = parsePugneum(result, node, options);
+      validateGeneratedAst(ast, name, type, node, options, context, nodeDepth);
+      stampGeneratedProvenance(ast, node, context.ownedNodes);
       node.type = 'Block';
       node.nodes = ast.nodes;
       stripFilterFields(node);
@@ -137,6 +246,16 @@ function applyFilterResult(node, type, result, name, options) {
     }
     case 'syntax': {
       validateArrayOutput(result, name, type, node, options);
+      validateGeneratedAst(
+        result,
+        name,
+        type,
+        node,
+        options,
+        context,
+        nodeDepth,
+      );
+      stampGeneratedProvenance(result, node, context.ownedNodes);
       node.type = 'Block';
       node.nodes = result;
       stripFilterFields(node);
@@ -165,9 +284,8 @@ function applyFilterResult(node, type, result, name, options) {
 // document-level resolution pass runs AFTER the filterer (see packages/pugneum),
 // so they resolve over the whole assembled tree. A loader construct
 // (include/extends/raw-include) CANNOT be resolved downstream — the loader ran
-// before the filterer, so the target was never read — and is rejected up front
-// with a coded error reported against the filter invocation site, rather than
-// reaching the renderer as an unresolved node.
+// before the filterer, so the target was never read. Both this parsed tree and
+// direct syntax output pass through validateGeneratedAst before insertion.
 function parsePugneum(result, node, options) {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
@@ -176,34 +294,107 @@ function parsePugneum(result, node, options) {
     source: result,
   });
   const tokens = lex(result, reopts);
-  const ast = parse(tokens, reopts);
-  const loaderNode = firstNodeOfType(ast, loaderConstructTypes);
-  if (loaderNode) {
-    throw error(
-      'UNSUPPORTED_FILTER_CONSTRUCT',
-      'A pugneum-type filter cannot emit an include/extends directive: file ' +
-        'resolution runs before filters, so the referenced file is never ' +
-        'loaded. Emit the content directly, or use an include:filter.',
-      nodeLocation(node, options),
-    );
-  }
-  return ast;
+  return parse(tokens, reopts);
 }
 
-function applyFilters(ast, filters, options) {
+// Snapshot structural ownership before filters run so a plugin cannot insert
+// an existing surrounding/sibling node or reuse one result object at multiple
+// invocations. This collector is deliberately tolerant rather than a second
+// input validator: direct filterer callers historically pass post-loader
+// RawInclude.file records without a `type`, and the RawInclude handler consumes
+// those records before the walker would descend into them. Generated output is
+// still subjected to the strict shared schema below.
+function collectOwnedNodes(ast, ownedNodes) {
+  const pending = Array.isArray(ast) ? ast.slice() : [ast];
+  while (pending.length > 0) {
+    const node = pending.pop();
+    if (node == null || typeof node !== 'object' || ownedNodes.has(node)) {
+      continue;
+    }
+    ownedNodes.add(node);
+
+    switch (node.type) {
+      case 'Block':
+      case 'NamedBlock':
+        pushAll(node.nodes);
+        break;
+      case 'Filter':
+      case 'Mixin':
+      case 'Tag':
+      case 'InterpolatedTag':
+      case 'BlockComment':
+      case 'ReferenceLink':
+      case 'ReferenceImage':
+      case 'FootnoteRef':
+      case 'Given':
+        push(node.block);
+        break;
+      case 'Include':
+        push(node.block);
+        push(node.file);
+        break;
+      case 'Extends':
+        push(node.file);
+        break;
+      case 'RawInclude':
+        pushAll(node.filters);
+        push(node.file);
+        break;
+      case 'Footnotes':
+        for (const definition of node.definitions || []) {
+          push(definition);
+          push(definition && definition.block);
+        }
+        break;
+      case 'References':
+        pushAll(node.definitions);
+        break;
+      case 'FileReference':
+        push(node.ast);
+        break;
+    }
+    pushAll(node.attrs);
+  }
+
+  function push(value) {
+    if (value != null && typeof value === 'object') pending.push(value);
+  }
+
+  function pushAll(values) {
+    if (!Array.isArray(values)) return;
+    for (const value of values) push(value);
+  }
+}
+
+function applyFilters(ast, filters, options, context) {
   options = options || {};
+  if (!context) {
+    const ownedNodes = new WeakSet();
+    collectOwnedNodes(ast, ownedNodes);
+    context = {baseDepth: 0, ownedNodes};
+  }
+  const parents = [];
   walk(
     ast,
     function (node) {
+      const nodeDepth = context.baseDepth + parents.length;
       if (node.type === 'Filter') {
-        handleNestedFilters(node, filters, options);
+        handleNestedFilters(node, filters, options, context, nodeDepth);
         const text = getBodyAsText(node, options);
         const attrs = getAttributes(node, options);
         attrs.filename = node.filename;
         const resolved = resolveFilter(node.name, filters, node, options);
         validateFilterType(resolved, node.name, node, options);
         const result = runFilter(resolved, node.name, text, attrs, node);
-        applyFilterResult(node, resolved.type, result, node.name, options);
+        applyFilterResult(
+          node,
+          resolved.type,
+          result,
+          node.name,
+          options,
+          context,
+          nodeDepth,
+        );
       } else if (node.type === 'RawInclude' && node.filters.length) {
         // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
         // file content, then b, then a (outermost), matching nested `:` order.
@@ -233,7 +424,7 @@ function applyFilters(ast, filters, options) {
         delete node.file;
       }
     },
-    {includeDependencies: true},
+    {includeDependencies: true, parents},
   );
   return ast;
 }
@@ -245,13 +436,16 @@ function applyFilters(ast, filters, options) {
 // reassignment needed. The block guard mirrors getBodyAsText so a blockless
 // Filter node (only reachable from a syntax filter emitting one) does not crash
 // with a raw TypeError.
-function handleNestedFilters(node, filters, options) {
+function handleNestedFilters(node, filters, options, context, nodeDepth) {
   if (
     node.block &&
     node.block.nodes[0] &&
     node.block.nodes[0].type === 'Filter'
   ) {
-    applyFilters(node.block, filters, options);
+    applyFilters(node.block, filters, options, {
+      baseDepth: nodeDepth + 1,
+      ownedNodes: context.ownedNodes,
+    });
   }
 }
 

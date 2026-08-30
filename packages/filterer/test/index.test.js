@@ -27,6 +27,13 @@ function renderPipeline(source, filters, opts) {
   return render(resolved, options);
 }
 
+function singleFilterAst(name) {
+  const source = ':' + name + '\n  input\n';
+  const options = {filename, source, warnings: []};
+  const ast = parse(lex(source, options), options);
+  return {ast, invocation: ast.nodes[0], options};
+}
+
 var customFilters = {
   custom: {
     type: 'html',
@@ -371,6 +378,195 @@ p
   );
 });
 
+test('syntax output rejects malformed graphs before mutating the invocation', () => {
+  const cases = [
+    ['null member', () => [null]],
+    [
+      'malformed nested member',
+      () => [{type: 'Block', nodes: [{type: 'Block', nodes: [null]}]}],
+    ],
+    ['malformed scalar field', () => [{type: 'Text', val: 42}]],
+    [
+      'malformed required child',
+      () => [{type: 'Tag', name: 'p', attrs: [], block: null}],
+    ],
+    ['unknown node type', () => [{type: 'NotAPugneumNode'}]],
+    [
+      'cyclic graph',
+      () => {
+        const cyclic = {type: 'Block', nodes: []};
+        cyclic.nodes.push(cyclic);
+        return [cyclic];
+      },
+    ],
+    [
+      'shared node alias',
+      () => {
+        const shared = {type: 'Text', val: 'shared'};
+        return [shared, shared];
+      },
+    ],
+    [
+      'shared attribute record',
+      () => {
+        const shared = {name: 'class', val: 'shared'};
+        return [
+          {
+            type: 'Tag',
+            name: 'p',
+            attrs: [shared],
+            block: {type: 'Block', nodes: []},
+          },
+          {
+            type: 'Tag',
+            name: 'p',
+            attrs: [shared],
+            block: {type: 'Block', nodes: []},
+          },
+        ];
+      },
+    ],
+  ];
+
+  for (const [label, makeResult] of cases) {
+    const fixture = singleFilterAst('invalidSyntax');
+    const invalidSyntax = {type: 'syntax', filter: makeResult};
+    assert.throws(
+      () => filter(fixture.ast, {invalidSyntax}, fixture.options),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+        /invalid AST/i.test(err.message),
+      label,
+    );
+    assert.strictEqual(fixture.invocation.type, 'Filter', label);
+    assert.strictEqual(fixture.invocation.name, 'invalidSyntax', label);
+  }
+});
+
+test('syntax output rejects every construct that requires an earlier pipeline phase', () => {
+  const emptyBlock = () => ({type: 'Block', nodes: []});
+  const file = () => ({type: 'FileReference', path: 'late.pg'});
+  const cases = [
+    ['Include', () => ({type: 'Include', block: emptyBlock(), file: file()})],
+    ['Extends', () => ({type: 'Extends', file: file()})],
+    ['RawInclude', () => ({type: 'RawInclude', filters: [], file: file()})],
+    ['FileReference', file],
+    ['IncludeFilter', () => ({type: 'IncludeFilter', name: 'x', attrs: []})],
+    ['YieldBlock', () => ({type: 'YieldBlock'})],
+    [
+      'NamedBlock',
+      () => ({
+        type: 'NamedBlock',
+        name: 'content',
+        mode: 'replace',
+        nodes: [],
+      }),
+    ],
+  ];
+
+  for (const [type, makeNode] of cases) {
+    const fixture = singleFilterAst('lateSyntax');
+    const lateSyntax = {type: 'syntax', filter: () => [makeNode()]};
+    assert.throws(
+      () => filter(fixture.ast, {lateSyntax}, fixture.options),
+      (err) =>
+        err.code === 'PUGNEUM:UNSUPPORTED_FILTER_CONSTRUCT' &&
+        err.message.includes(type),
+      type,
+    );
+    assert.strictEqual(fixture.invocation.type, 'Filter', type);
+  }
+});
+
+test('syntax output depth is bounded from the document root', () => {
+  function nestedBlocks(count) {
+    var generated = {type: 'Text', val: 'end'};
+    for (var i = 0; i < count; i++) {
+      generated = {type: 'Block', nodes: [generated]};
+    }
+    return generated;
+  }
+
+  const atLimit = singleFilterAst('atLimit');
+  const accepted = {
+    type: 'syntax',
+    // Root Block (depth 0), invocation Block (depth 1), then 510 generated
+    // Blocks and the Text leaf put the deepest node at exactly depth 512.
+    filter: () => [nestedBlocks(510)],
+  };
+  assert.strictEqual(
+    filter(atLimit.ast, {atLimit: accepted}, atLimit.options),
+    atLimit.ast,
+  );
+
+  const overLimit = singleFilterAst('overLimit');
+  const rejected = {
+    type: 'syntax',
+    filter: () => [nestedBlocks(511)],
+  };
+  assert.throws(
+    () => filter(overLimit.ast, {overLimit: rejected}, overLimit.options),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /depth|deep/i.test(err.message),
+  );
+  assert.strictEqual(overLimit.invocation.type, 'Filter');
+});
+
+test('syntax output cannot reuse a node already inserted by another invocation', () => {
+  const source = ':shared\n  first\n:shared\n  second\n';
+  const options = {filename, source, warnings: []};
+  const ast = parse(lex(source, options), options);
+  const shared = {type: 'Text', val: 'shared'};
+  const filters = {shared: {type: 'syntax', filter: () => [shared]}};
+
+  assert.throws(
+    () => filter(ast, filters, options),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+      /owned|shared|alias/i.test(err.message),
+  );
+  assert.strictEqual(ast.nodes[0].type, 'Block');
+  assert.strictEqual(ast.nodes[1].type, 'Filter');
+});
+
+test('syntax output receives invocation provenance before later stages', () => {
+  const fixture = singleFilterAst('locatedSyntax');
+  const location = {
+    filename: fixture.invocation.filename,
+    line: fixture.invocation.line,
+    column: fixture.invocation.column,
+  };
+  const locatedSyntax = {
+    type: 'syntax',
+    filter: () => [{type: 'Text', val: 'generated'}],
+  };
+
+  filter(fixture.ast, {locatedSyntax}, fixture.options);
+  const generated = fixture.invocation.nodes[0];
+  assert.deepStrictEqual(
+    {
+      filename: generated.filename,
+      line: generated.line,
+      column: generated.column,
+    },
+    location,
+  );
+});
+
+test('generated mixin slots remain legal because they have renderer ownership', () => {
+  const filters = {
+    generatedMixin: {
+      type: 'pugneum',
+      filter: () =>
+        'mixin panel\n  block body\n    p default\n' +
+        '+panel\n  block body\n    p custom',
+    },
+  };
+  const html = renderPipeline(':generatedMixin\n  ignored', filters);
+  assert.strictEqual(html, '<p>custom</p>');
+});
+
 test('pugneum type filter supports inline shorthands in output', () => {
   const pugneumFilter = {
     type: 'pugneum',
@@ -683,7 +879,15 @@ p
       line: 3,
       column: 3,
       filename,
-      nodes: [{type: 'Text', val: 'Z'}],
+      nodes: [
+        {
+          type: 'Text',
+          val: 'Z',
+          line: 3,
+          column: 3,
+          filename,
+        },
+      ],
     },
   ]);
 });
@@ -932,13 +1136,18 @@ test('a ^[footnote] defined NOWHERE still errors with a coded UNDEFINED_FOOTNOTE
   );
 });
 
-test('include/extends in pugneum filter output is a clean coded error', () => {
+test('pre-link constructs in pugneum filter output are clean coded errors', () => {
   // A loader construct cannot be resolved downstream: file resolution (the
   // loader) runs BEFORE filters, so the include target is never loaded. The
   // filterer rejects it up front with a coded UNSUPPORTED_FILTER_CONSTRUCT
   // pointing at the filter invocation, rather than letting an unresolved node
   // reach the renderer.
-  for (const directive of ['include nope.pg', 'extends layout.pg']) {
+  for (const directive of [
+    'include nope.pg',
+    'extends layout.pg',
+    'yield',
+    'block content\n  p too late',
+  ]) {
     const filters = {bad: {type: 'pugneum', filter: () => directive}};
     assert.throws(
       () => renderPipeline('div\n  :bad\n    ignored', filters),

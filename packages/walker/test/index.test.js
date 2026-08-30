@@ -398,6 +398,129 @@ describe('replace.arrayAllowed truth table', function () {
   });
 });
 
+describe('replacement validation', function () {
+  test('rejects a malformed scalar before a pruned replacement mutates the tree', function () {
+    var original = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [original]};
+
+    assert.throws(function () {
+      walk(ast, function before(node, replace) {
+        if (node === original) {
+          replace({type: 'Block', nodes: [null]});
+          return false;
+        }
+      });
+    }, /invalid AST|expected a node|nodes\[0\]/i);
+    assert.strictEqual(ast.nodes[0], original);
+  });
+
+  test('rejects a mixed array atomically when after replacements are not re-walked', function () {
+    var original = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [original]};
+
+    assert.throws(function () {
+      walk(ast, null, function after(node, replace) {
+        if (node === original) {
+          replace([{type: 'Text', val: 'valid'}, null]);
+        }
+      });
+    }, /invalid AST|expected a node|\[1\]/i);
+    assert.deepStrictEqual(ast.nodes, [original]);
+  });
+
+  test('a caller cannot make a root array replacement legal by rewriting the public flag', function () {
+    var root = {type: 'Text', val: 'x'};
+    var result = walk(root, function before(node, replace) {
+      if (node !== root) return;
+      try {
+        replace.arrayAllowed = true;
+      } catch (_err) {
+        // A read-only property may reject the assignment in strict mode.
+      }
+      assert.throws(
+        () => replace([{type: 'Text', val: 'bypass'}]),
+        /array.*Block|array replacement/i,
+      );
+      return false;
+    });
+    assert.strictEqual(result, root);
+  });
+
+  test('rejects a cyclic replacement before it becomes observable', function () {
+    var original = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [original]};
+    var cyclic = {type: 'Block', nodes: []};
+    cyclic.nodes.push(cyclic);
+
+    assert.throws(function () {
+      walk(ast, function before(node, replace) {
+        if (node === original) {
+          replace(cyclic);
+          return false;
+        }
+      });
+    }, /cycle|cyclic/i);
+    assert.strictEqual(ast.nodes[0], original);
+  });
+
+  test('rejects an ancestor replacement that would create a cycle on insertion', function () {
+    var original = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [original]};
+
+    assert.throws(function () {
+      walk(ast, function before(node, replace) {
+        if (node === original) {
+          replace(ast);
+          return false;
+        }
+      });
+    }, /owned|ancestor|cycle/i);
+    assert.strictEqual(ast.nodes[0], original);
+  });
+
+  test('valid scalar replacement at the root remains supported', function () {
+    var root = {type: 'Text', val: 'x'};
+    var replacement = {type: 'Text', val: 'y'};
+    var result = walk(root, function before(node, replace) {
+      if (node === root) {
+        replace(replacement);
+        return false;
+      }
+    });
+    assert.strictEqual(result, replacement);
+  });
+});
+
+describe('validate()', function () {
+  test('publishes a versioned schema and validates parser output', function () {
+    var ast = parse(lex('p valid'));
+    assert.strictEqual(walk.AST_SCHEMA_VERSION, 1);
+    assert.strictEqual(walk.MAX_AST_DEPTH, 512);
+    assert.strictEqual(walk.validate(ast), ast);
+  });
+
+  test('accepts aliases by default and can enforce single-owner tree data', function () {
+    var shared = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [shared, shared]};
+    assert.strictEqual(walk.validate(ast), ast);
+    assert.throws(
+      () => walk.validate(ast, {allowAliases: false}),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'alias',
+    );
+  });
+
+  test('enforces an explicit structural depth without recursive validation', function () {
+    var ast = {type: 'Text', val: 'end'};
+    for (var i = 0; i < walk.MAX_AST_DEPTH + 1; i++) {
+      ast = {type: 'Block', nodes: [ast]};
+    }
+    assert.throws(
+      () => walk.validate(ast, {maxDepth: walk.MAX_AST_DEPTH}),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'depth',
+    );
+  });
+});
+
 describe('malformed known nodes throw a located error, not a raw TypeError', function () {
   var cases = [
     [{type: 'Block', nodes: null}, /Malformed Block node/],

@@ -432,14 +432,14 @@ function scenarios(tarballs) {
         'pugneum-lexer': '1.2.0',
         'pugneum-parser': '1.1.0',
         'pugneum-renderer': '1.1.0',
-        'pugneum-walker': '1.0.2',
+        'pugneum-walker': localSpec(tarballs, 'pugneum-walker'),
       },
       resolutions: [
         resolution('pugneum-filterer', 'pugneum-error', '1.0.0'),
         resolution('pugneum-filterer', 'pugneum-lexer', '1.2.0'),
         resolution('pugneum-filterer', 'pugneum-parser', '1.1.0'),
         resolution('pugneum-filterer', 'pugneum-renderer', '1.1.0'),
-        resolution('pugneum-filterer', 'pugneum-walker', '1.0.2'),
+        localResolution('pugneum-filterer', 'pugneum-walker'),
       ],
     },
     {

@@ -61,6 +61,18 @@ Every filter must declare a `type` property:
 - `pugneum` — Pugneum source output, re-lexed/re-parsed into AST nodes
 - `syntax` — direct AST node array, inserted into the tree
 
+Both structured forms pass through the versioned `pugneum-walker` AST schema
+before insertion. The graph must be a single-owner, acyclic tree, cannot reuse
+a node already owned by the surrounding document, and cannot make the complete
+document deeper than the parser can produce. A generated node cannot introduce
+`include`, `extends`, raw-include, file-reference, include-filter, or `yield`
+work because loading and template assembly have already run. A `NamedBlock`
+remains valid only when it belongs to a generated mixin definition or call.
+Invalid shape is reported as `INVALID_FILTER_OUTPUT`; a construct owned by an
+earlier phase is reported as `UNSUPPORTED_FILTER_CONSTRUCT`. Missing
+node/attribute/definition locations in `syntax` output inherit the filter
+invocation's filename, line, and column.
+
 ```
 {
   custom: {

@@ -39,9 +39,18 @@ allows such an operation, the node is replaced by all of the
 nodes in the specified array. This way, you can remove and add
 new nodes adjacent to the current node.
 Whether the parent node allows array operation is indicated
-by the property `replace.arrayAllowed`, which is set to true
-when the parent is a Block and when the parent is a RawInclude
+by the read-only property `replace.arrayAllowed`, which is set to true
+when the parent is a Block or NamedBlock and when the parent is a RawInclude
 and the node is an IncludeFilter.
+
+Every scalar replacement and every member of an array replacement is
+recursively validated before the current tree is changed. Unknown or malformed
+nodes, structural cycles, and invalid collection members throw an
+`ASTValidationError`; a rejected replacement leaves the original position
+unchanged. A replacement also cannot insert one of the current node's ancestors
+and thereby create a cycle at attachment time. Changing `replace.arrayAllowed`
+cannot grant array-replacement permission because permission is held in the
+walk's private traversal state.
 
 If `before` returns `false`, the children of this node
 will not be traversed and will be left unchanged
@@ -70,6 +79,27 @@ There are three distinct cases:
 
 - `includeDependencies` (boolean): walk the syntax trees of dependencies (includes and extends); default `false`
 - `parents` (array<Node>): nodes that are ancestors to the current `ast`; this option is used mainly internally, and users usually do not have to specify it; defaults to `[]`. Note that `parents` reflects in-AST nesting and is **not** reset when crossing into a dependency's tree under `includeDependencies`, so ancestors from the including file remain visible at the file boundary.
+
+### `walk.validate(ast, options)`
+
+Validate a complete AST graph without mutating it or recursively consuming the
+JavaScript call stack. The return value is the original `ast` on success. On
+failure it throws an `ASTValidationError` with `code === 'INVALID_AST'` plus
+`kind` and `path` fields identifying the violated contract.
+
+The validator recognizes schema version `walk.AST_SCHEMA_VERSION` (currently
+`1`). `walk.MAX_AST_DEPTH` is `512`, the maximum structural depth reachable
+from the parser's 256-expression limit; callers decide whether to apply it.
+Validator options are:
+
+- `allowRootArray`: accept an array of nodes at the root; default `false`.
+- `allowAliases`: permit the same node object at multiple structural positions;
+  default `true`. Cycles are always rejected.
+- `maxDepth`: maximum structural edge depth; default unbounded.
+- `allowedTypes`: a set-like object whose `has(type)` selects node types legal
+  at a caller-defined pipeline stage.
+- `forbiddenNodes`: a set-like object identifying nodes already owned by a
+  surrounding tree and therefore invalid at this ingress.
 
 ### Input contract
 

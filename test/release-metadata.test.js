@@ -83,7 +83,7 @@ const expectedReleaseManifests = Object.freeze({
       'pugneum-lexer': '^1.2.0',
       'pugneum-parser': '^1.1.0',
       'pugneum-renderer': '^1.1.0',
-      'pugneum-walker': '^1.0.2',
+      'pugneum-walker': '^1.0.3',
     },
     devDependencies: {
       'pugneum-filter-highlight.js': '^1.1.1',

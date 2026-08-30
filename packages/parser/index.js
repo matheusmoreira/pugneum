@@ -215,8 +215,9 @@ class Parser {
   }
 
   initBlock(line, nodes) {
-    /* istanbul ignore if */
-    if ((line | 0) !== line) throw new Error('`line` is not an integer');
+    if (!Number.isSafeInteger(line) || line < 0) {
+      throw new TypeError('`line` must be a non-negative safe integer');
+    }
     /* istanbul ignore if */
     if (!Array.isArray(nodes)) throw new Error('`nodes` is not an array');
     return {

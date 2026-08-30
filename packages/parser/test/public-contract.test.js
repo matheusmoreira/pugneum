@@ -207,6 +207,66 @@ test('parse accepts only nullish or non-array object options', () => {
   });
 });
 
+function tagTokensAt(line, middle) {
+  var loc = {
+    start: {line, column: 7},
+    end: {line, column: 7},
+  };
+  return [{type: 'tag', val: 'p', loc}, ...(middle || []), {type: 'eos', loc}];
+}
+
+test('Block lines accept the complete non-negative safe-integer range', () => {
+  [1, 2147483647, 2147483648, Number.MAX_SAFE_INTEGER].forEach((line) => {
+    var ast = parse(tagTokensAt(line));
+    assert.strictEqual(ast.nodes[0].line, line);
+    assert.strictEqual(ast.nodes[0].block.line, line);
+  });
+});
+
+test('Block lines reject values outside the non-negative safe-integer range', () => {
+  [
+    -1,
+    Number.MIN_SAFE_INTEGER,
+    0.5,
+    NaN,
+    Infinity,
+    -Infinity,
+    Number.MAX_SAFE_INTEGER + 1,
+    '1',
+    1n,
+    null,
+    undefined,
+    Symbol('line'),
+  ].forEach((line) => {
+    assert.throws(
+      () => parse(tagTokensAt(line)),
+      (err) =>
+        err instanceof TypeError &&
+        err.message === '`line` must be a non-negative safe integer',
+    );
+  });
+});
+
+test('parser diagnostics preserve safe integer lines above signed 32-bit', () => {
+  var line = 2147483648;
+  var loc = {
+    start: {line, column: 7},
+    end: {line, column: 7},
+  };
+
+  assert.throws(
+    () =>
+      parse(tagTokensAt(line, [{type: 'bogus', loc}]), {
+        filename: 'high-line.pg',
+      }),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_TOKEN' &&
+      err.line === line &&
+      err.column === 7 &&
+      err.filename === 'high-line.pg',
+  );
+});
+
 test('parse reads accessor-backed options without modifying them', () => {
   var reads = [];
   var options = Object.freeze(

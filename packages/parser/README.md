@@ -77,10 +77,10 @@ console.log(JSON.stringify(ast, null, '  '))
 
 `tokens` must be the flat array produced by a successful `pugneum-lexer`
 tokenization under its Token stream contract (v1). In particular, each token
-must have a string `type` and a `loc.start` with one-based `line` and `column`
-numbers; structural boundary tokens must balance; and one `eos` token must end
-the array. `options` may be omitted, set to `null`, or supplied as a non-array
-object. Other values throw a `TypeError`.
+must have a string `type` and a `loc.start` with one-based safe-integer `line`
+and `column` numbers; structural boundary tokens must balance; and one `eos`
+token must end the array. `options` may be omitted, set to `null`, or supplied
+as a non-array object. Other values throw a `TypeError`.
 
 The parser validates that `tokens` is an array, but it does not revalidate the
 complete token envelope, locations, structural balance, or `eos` termination.

@@ -4,7 +4,14 @@ Walk and transform a pugneum abstract syntax tree
 
 ## Installation
 
+Install only the walker when your application already supplies an AST:
+
     npm install pugneum-walker
+
+To run the parser-integration examples below, install their lexer and parser
+too:
+
+    npm install pugneum-walker pugneum-parser pugneum-lexer
 
 ## Usage
 

@@ -4,7 +4,14 @@ Renders pugneum abstract syntax trees into HTML.
 
 ## Installation
 
+Install only the renderer when your application already supplies a
+renderer-ready AST:
+
     npm install pugneum-renderer
+
+To run the source-to-AST example below, install its lexer and parser too:
+
+    npm install pugneum-renderer pugneum-parser pugneum-lexer
 
 ## Usage
 

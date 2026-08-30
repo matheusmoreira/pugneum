@@ -168,6 +168,78 @@ describe('given keyword', () => {
   });
 });
 
+describe('mixin call line boundaries', () => {
+  test('the call head accepts horizontal whitespace only', () => {
+    const tokens = lex('+\tfoo\t(alpha\tbeta)', {filename: 'call.pg'});
+    const call = tokens.find((tok) => tok.type === 'call');
+
+    assert.ok(call);
+    assert.strictEqual(call.val, 'foo');
+    assert.deepStrictEqual(call.args, ['alpha', 'beta']);
+  });
+
+  test('a call head cannot cross a physical line', () => {
+    [
+      '+\nfoo',
+      '+\rfoo',
+      '+\r\nfoo',
+      '+\vfoo',
+      '+\ffoo',
+      '+\u2028foo',
+      '+\u2029foo',
+      '+\u00a0foo',
+    ].forEach((source) => {
+      assert.throws(
+        () => lex(source, {filename: 'call.pg'}),
+        (err) =>
+          err.code === 'PUGNEUM:UNEXPECTED_TEXT' &&
+          err.line === 1 &&
+          err.column === 1,
+      );
+    });
+  });
+
+  test('multiline arguments use whitespace separators and physical locations', () => {
+    const tokens = lex('+foo(\n  alpha\n  beta\n)\np later', {
+      filename: 'call.pg',
+    });
+    const call = tokens.find((tok) => tok.type === 'call');
+    const later = tokens.find((tok) => tok.type === 'tag' && tok.val === 'p');
+
+    assert.deepStrictEqual(call.args, ['alpha', 'beta']);
+    assert.deepStrictEqual(call.loc, {
+      start: {line: 1, column: 1},
+      filename: 'call.pg',
+      end: {line: 4, column: 2},
+    });
+    assert.strictEqual(later.loc.start.line, 5);
+    assert.strictEqual(later.loc.start.column, 1);
+  });
+
+  test('newlines inside quoted arguments still advance physical locations', () => {
+    const tokens = lex('+foo("alpha\nbeta" gamma)\np later', {
+      filename: 'call.pg',
+    });
+    const call = tokens.find((tok) => tok.type === 'call');
+    const later = tokens.find((tok) => tok.type === 'tag' && tok.val === 'p');
+
+    assert.deepStrictEqual(call.args, ['alpha\nbeta', 'gamma']);
+    assert.strictEqual(call.loc.end.line, 2);
+    assert.strictEqual(call.loc.end.column, 13);
+    assert.strictEqual(later.loc.start.line, 3);
+  });
+
+  test('an unclosed multiline argument list reports the physical EOF', () => {
+    assert.throws(
+      () => lex('+foo(\n alpha\n beta', {filename: 'call.pg'}),
+      (err) =>
+        err.code === 'PUGNEUM:NO_END_BRACKET' &&
+        err.line === 3 &&
+        err.column === 6,
+    );
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

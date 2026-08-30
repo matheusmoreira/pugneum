@@ -636,6 +636,26 @@ class Lexer {
     this.colno += increment;
   }
 
+  advanceLocation(source) {
+    let newlineCount = 0;
+    let lastNewline = -1;
+
+    for (let i = 0; i < source.length; i++) {
+      if (source[i] === '\n') {
+        newlineCount++;
+        lastNewline = i;
+      }
+    }
+
+    if (!newlineCount) {
+      this.incrementColumn(source.length);
+      return;
+    }
+
+    this.incrementLine(newlineCount);
+    this.incrementColumn(source.length - lastNewline - 1);
+  }
+
   consume(len) {
     this.input = this.input.slice(len);
   }
@@ -1808,7 +1828,7 @@ class Lexer {
 
   call() {
     let tok, captures, increment;
-    if ((captures = /^\+\s*([a-zA-Z][-\w]*)/.exec(this.input))) {
+    if ((captures = /^\+[ \t]*([a-zA-Z][-\w]*)/.exec(this.input))) {
       increment = captures[0].length;
       tok = this.tok('call', captures[1]);
       this.consume(increment);
@@ -1816,31 +1836,33 @@ class Lexer {
 
       tok.args = [];
       // Check for args (not attributes)
-      // just a space separated list of strings
-      // no nested parentheses allowed
-      if (this.input[0] === '(' || /^ *\(/.test(this.input)) {
-        const leading = /^ *\(/.exec(this.input)[0];
+      // just an ASCII-whitespace-separated list of strings
+      const argumentList = /^[ \t]*\(/.exec(this.input);
+      if (argumentList) {
+        const leading = argumentList[0];
         let range;
         try {
           range = parseExpressionUntil(this.input, ')', leading.length);
         } catch (ex) {
           if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+            this.advanceLocation(this.input.slice(0, ex.index));
             this.error(
               'NO_END_BRACKET',
-              'End of line reached with no closing ) for mixin call arguments.',
+              'End of source reached with no closing ) for mixin call arguments.',
             );
           }
           throw ex;
         }
         const argsStr = range.src;
         const increment = range.end + 1;
+        const consumed = this.input.slice(0, increment);
         this.consume(increment);
-        this.incrementColumn(increment);
+        this.advanceLocation(consumed);
 
         // Parse arguments respecting quoted strings and escape sequences
         let j = 0;
         while (j < argsStr.length) {
-          while (j < argsStr.length && argsStr[j] === ' ') j++;
+          while (j < argsStr.length && whitespaceRe.test(argsStr[j])) j++;
           if (j >= argsStr.length) break;
           if (argsStr[j] === "'" || argsStr[j] === '"') {
             const quote = argsStr[j++];
@@ -1855,7 +1877,7 @@ class Lexer {
             tok.args.push(arg);
           } else {
             let arg = '';
-            while (j < argsStr.length && argsStr[j] !== ' ') {
+            while (j < argsStr.length && !whitespaceRe.test(argsStr[j])) {
               arg += argsStr[j++];
             }
             tok.args.push(arg);

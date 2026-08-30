@@ -4,7 +4,13 @@ The pugneum parser transforms an array of tokens into an abstract syntax tree.
 
 ## Installation
 
-    npm install pugneum-parser
+Install the parser and the lexer used by the source-to-AST example below:
+
+    npm install pugneum-parser pugneum-lexer
+
+The parser itself accepts a token array and has no runtime dependency on the
+lexer. If your application already supplies a compatible token stream,
+installing `pugneum-parser` alone is sufficient.
 
 ## Usage
 

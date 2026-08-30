@@ -167,6 +167,75 @@ function assertMixinArguments(node) {
   }
 }
 
+test('parse accepts only nullish or non-array object options', () => {
+  var tokens = Object.freeze(lex(''));
+  var emptyAst = {
+    type: 'Block',
+    nodes: [],
+    line: 0,
+    filename: undefined,
+  };
+
+  assert.deepStrictEqual(parse(tokens), emptyAst);
+  assert.deepStrictEqual(parse(tokens, undefined), emptyAst);
+  assert.deepStrictEqual(parse(tokens, null), emptyAst);
+  assert.deepStrictEqual(parse(tokens, {}), emptyAst);
+  assert.deepStrictEqual(parse(tokens, Object.create(null)), emptyAst);
+
+  [
+    false,
+    true,
+    0,
+    1,
+    NaN,
+    0n,
+    1n,
+    '',
+    'options',
+    Symbol('options'),
+    function options() {},
+    [],
+  ].forEach((options) => {
+    var type = Array.isArray(options) ? 'array' : typeof options;
+    assert.throws(
+      () => parse(tokens, options),
+      (err) =>
+        err instanceof TypeError &&
+        err.message ===
+          'Expected "options" to be an object but got "' + type + '"',
+    );
+  });
+});
+
+test('parse reads accessor-backed options without modifying them', () => {
+  var reads = [];
+  var options = Object.freeze(
+    Object.defineProperties(
+      {},
+      {
+        filename: {
+          get() {
+            reads.push('filename');
+            return 'accessor.pg';
+          },
+        },
+        source: {
+          get() {
+            reads.push('source');
+            return 'p text';
+          },
+        },
+      },
+    ),
+  );
+
+  var ast = parse(lex('p text', {filename: 'token.pg'}), options);
+
+  assert.strictEqual(ast.filename, 'accessor.pg');
+  assert.strictEqual(ast.nodes[0].filename, 'accessor.pg');
+  assert.deepStrictEqual(reads, ['filename', 'source']);
+});
+
 function inspect(value, filename, seen) {
   if (Array.isArray(value)) {
     value.forEach((item) => inspect(item, filename, seen));

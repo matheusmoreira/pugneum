@@ -111,15 +111,19 @@ const inlineStartTokens = new Set([
 
 class Parser {
   constructor(tokens, options) {
-    options = options || {};
+    if (options === undefined || options === null) {
+      options = {};
+    }
     if (!Array.isArray(tokens)) {
       throw new Error(
         'Expected tokens to be an Array but got "' + typeof tokens + '"',
       );
     }
-    if (typeof options !== 'object') {
-      throw new Error(
-        'Expected "options" to be an object but got "' + typeof options + '"',
+    if (typeof options !== 'object' || Array.isArray(options)) {
+      throw new TypeError(
+        'Expected "options" to be an object but got "' +
+          (Array.isArray(options) ? 'array' : typeof options) +
+          '"',
       );
     }
     this.tokens = new TokenStream(tokens);

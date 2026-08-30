@@ -93,6 +93,62 @@ test('shared nested doctype keeps its canonical text and physical span', () => {
   });
 });
 
+describe('doctype end-of-line padding', () => {
+  function assertCanonicalDoctype(source) {
+    const tokens = lex(source, {filename: 'doctype-padding.pg'});
+    assert.deepStrictEqual(tokens[0], {
+      type: 'text',
+      loc: {
+        start: {line: 1, column: 1},
+        filename: 'doctype-padding.pg',
+        end: {line: 1, column: 13},
+      },
+      val: '<!DOCTYPE html>',
+    });
+    assertPhysicalTokenLocations(source, tokens, source);
+    return tokens;
+  }
+
+  test('newline padding cannot become document text', () => {
+    [
+      'doctype html\np x',
+      'doctype html \np x',
+      'doctype html   \np x',
+      'doctype html\t \np x',
+    ].forEach((source) => {
+      const tokens = assertCanonicalDoctype(source);
+      const text = tokens.filter((tok) => tok.type === 'text');
+
+      assert.deepStrictEqual(
+        text.map((tok) => tok.val),
+        ['<!DOCTYPE html>', 'x'],
+      );
+      assert.deepStrictEqual(text[1].loc.start, {line: 2, column: 3});
+    });
+  });
+
+  test('EOF padding advances EOS without widening the doctype token', () => {
+    [
+      'doctype html',
+      'doctype html ',
+      'doctype html   ',
+      'doctype html\t ',
+    ].forEach((source) => {
+      const tokens = assertCanonicalDoctype(source);
+      const eos = tokens.at(-1);
+
+      assert.deepStrictEqual(
+        tokens.map((tok) => tok.type),
+        ['text', 'eos'],
+      );
+      assert.deepStrictEqual(eos.loc.start, {
+        line: 1,
+        column: source.length + 1,
+      });
+    });
+  });
+});
+
 test('exported attribute-name validation matches lexer boundaries', () => {
   assert.strictEqual(lex.isValidAttributeName('data-value'), true);
   ['x/y', 'x>y', 'x\0y', '', 'two words'].forEach((name) => {

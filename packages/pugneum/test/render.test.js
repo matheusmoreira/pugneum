@@ -127,6 +127,23 @@ describe('render()', () => {
   });
 });
 
+describe('doctype end-of-line padding', () => {
+  it('does not render spaces or tabs accepted before newline or EOF', () => {
+    const cases = [
+      ['doctype html', '<!DOCTYPE html>'],
+      ['doctype html   ', '<!DOCTYPE html>'],
+      ['doctype html\t ', '<!DOCTYPE html>'],
+      ['doctype html\np x', '<!DOCTYPE html><p>x</p>'],
+      ['doctype html   \np x', '<!DOCTYPE html><p>x</p>'],
+      ['doctype html\t \np x', '<!DOCTYPE html><p>x</p>'],
+    ];
+
+    cases.forEach(([source, expected]) => {
+      assert.strictEqual(pg.render(source), expected, source);
+    });
+  });
+});
+
 describe('reference links', () => {
   it('should resolve @[name] to <a> with identifier as text', () => {
     var input = 'references\n  example https://example.com\n\np @[example]';

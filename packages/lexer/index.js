@@ -2503,10 +2503,11 @@ class Lexer {
    */
 
   doctype() {
-    const tok = this.scan(/^doctype html(?= *$| *\n)/, 'text');
+    const tok = this.scan(/^doctype html(?=[ \t]*(?:\n|$))/, 'text');
     if (tok) {
       tok.val = '<!DOCTYPE html>';
       this.tokens.push(this.tokEnd(tok));
+      this.consumeEndOfLinePadding();
       return true;
     }
   }

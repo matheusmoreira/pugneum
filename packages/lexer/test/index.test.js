@@ -1165,6 +1165,16 @@ describe('typographic quote warnings in attributes', () => {
   const RSQUO = '’';
   const LDQUO = '“';
   const RDQUO = '”';
+  const VALUE_WARNING =
+    'Unicode typographic quote ‘ (U+2018) is not an attribute value delimiter; ' +
+    'the value is used literally, which usually produces broken output. Use a ' +
+    'straight quote (\' or ") or remove the quotes — your editor may have ' +
+    'auto-replaced them.';
+  const NAME_WARNING =
+    'Unicode typographic quote ‘ (U+2018) is not an attribute name delimiter; ' +
+    'the name is used literally, which usually produces broken output. Use a ' +
+    'straight quote (\' or ") or remove the quotes — your editor may have ' +
+    'auto-replaced them.';
 
   function attr(tokens, name) {
     return tokens.find((tok) => tok.type === 'attribute' && tok.name === name);
@@ -1179,6 +1189,7 @@ describe('typographic quote warnings in attributes', () => {
     assert.strictEqual(attr(tokens, 'href').val, LSQUO + '/x' + RSQUO);
     assert.strictEqual(warnings.length, 1);
     assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+    assert.strictEqual(warnings[0].msg, VALUE_WARNING);
     assert.strictEqual(warnings[0].line, 1);
     assert.strictEqual(warnings[0].filename, 'smart.pg');
   });
@@ -1246,6 +1257,7 @@ describe('typographic quote warnings in attributes', () => {
     assert.ok(attr(tokens, LSQUO + 'data-x' + RSQUO));
     assert.strictEqual(warnings.length, 1);
     assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+    assert.strictEqual(warnings[0].msg, NAME_WARNING);
   });
 });
 

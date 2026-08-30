@@ -733,7 +733,7 @@ class Lexer {
     );
   }
 
-  warnTypographicQuote(char) {
+  warnTypographicQuote(char, field) {
     const codepoint = formatCodepoint(char);
     this.warn(
       'TYPOGRAPHIC_QUOTE_DELIMITER',
@@ -741,7 +741,11 @@ class Lexer {
         char +
         ' (' +
         codepoint +
-        ') is not an attribute delimiter; the value is used literally, which ' +
+        ') is not an attribute ' +
+        field +
+        ' delimiter; the ' +
+        field +
+        ' is used literally, which ' +
         'usually produces broken output. Use a straight quote (\' or ") or ' +
         'remove the quotes — your editor may have auto-replaced them.',
     );
@@ -2693,7 +2697,7 @@ class Lexer {
       this.incrementColumn(1);
       i++;
     } else if (typographicQuoteRe.test(str[i])) {
-      this.warnTypographicQuote(str[i]);
+      this.warnTypographicQuote(str[i], 'name');
     }
 
     // start looping through the key
@@ -2750,7 +2754,7 @@ class Lexer {
         i++;
       } else {
         if (typographicQuoteRe.test(str[i])) {
-          this.warnTypographicQuote(str[i]);
+          this.warnTypographicQuote(str[i], 'value');
         }
         quote = null;
       }

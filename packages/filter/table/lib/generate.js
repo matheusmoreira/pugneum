@@ -23,6 +23,7 @@
 
 const classifyCell = require('./parse').classifyCell;
 const error = require('pugneum-error');
+const lex = require('pugneum-lexer');
 
 // A live (unescaped) `#{` opening a variable interpolation. Inside a verbatim
 // attribute group the lexer's quoted-string layer consumes one backslash before
@@ -62,10 +63,96 @@ function escapeAttrValue(val) {
   return String(val).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
-// A Pugneum attribute name the lexer will accept as a single token: it cannot
-// contain whitespace, parens, quotes, `=`, or `,`, which would terminate the
-// name and corrupt the surrounding attribute group.
-const VALID_ATTR_KEY = /^[^\s(),="']+$/;
+// Parentheses and commas have structural meaning in the generated Pugneum
+// group even though HTML itself permits them in an attribute name. All other
+// validity comes from the lexer's exported canonical HTML-name predicate.
+function isValidGeneratedAttributeName(name) {
+  return lex.isValidAttributeName(name) && !/[(),]/.test(name);
+}
+
+// Scan the raw contents of one Pugneum (...) attribute group. Attribute values
+// are opaque across quotes, escapes, and balanced parentheses, so text such as
+// `title="mentions scope=x"` cannot masquerade as another attribute. Offsets
+// point into the original source, allowing style merging without reserializing
+// unrelated author bytes.
+function scanRawAttributes(source) {
+  const attributes = [];
+  let i = 0;
+
+  while (i < source.length) {
+    while (/\s/.test(source[i])) i++;
+    if (i >= source.length) break;
+
+    const start = i;
+    let name;
+    if (source[i] === '"' || source[i] === "'") {
+      const quote = source[i++];
+      const nameStart = i;
+      while (i < source.length && source[i] !== quote) {
+        if (source[i] === '\\' && i + 1 < source.length) i += 2;
+        else i++;
+      }
+      name = source.slice(nameStart, i);
+      if (source[i] === quote) i++;
+    } else {
+      const nameStart = i;
+      while (i < source.length && !/\s|=/.test(source[i])) i++;
+      name = source.slice(nameStart, i);
+    }
+
+    while (/\s/.test(source[i])) i++;
+    let hasValue = false;
+    let valueStart = i;
+    let valueEnd = i;
+    if (source[i] === '=') {
+      hasValue = true;
+      i++;
+      while (/\s/.test(source[i])) i++;
+
+      if (source[i] === '"' || source[i] === "'") {
+        const quote = source[i++];
+        valueStart = i;
+        while (i < source.length && source[i] !== quote) {
+          if (source[i] === '\\' && i + 1 < source.length) i += 2;
+          else i++;
+        }
+        valueEnd = i;
+        if (source[i] === quote) i++;
+      } else {
+        valueStart = i;
+        let depth = 0;
+        let quote = null;
+        while (i < source.length) {
+          const char = source[i];
+          if (char === '\\' && i + 1 < source.length) {
+            i += 2;
+            continue;
+          }
+          if (quote) {
+            if (char === quote) quote = null;
+            i++;
+            continue;
+          }
+          if (char === '"' || char === "'") {
+            quote = char;
+          } else if (char === '(') {
+            depth++;
+          } else if (char === ')' && depth > 0) {
+            depth--;
+          } else if (/\s/.test(char) && depth === 0) {
+            break;
+          }
+          i++;
+        }
+        valueEnd = i;
+      }
+    }
+
+    attributes.push({name, start, end: i, hasValue, valueStart, valueEnd});
+  }
+
+  return attributes;
+}
 
 // Render a col element line given {align, attrs} and an indent string.
 function renderCol(seg, indent) {
@@ -98,32 +185,46 @@ function renderCol(seg, indent) {
   return indent + 'col(' + parts.join(' ') + ')';
 }
 
-// If `attrs` (the raw text inside a separator's (...) group) contains a
-// `style="..."` attribute, prepend `alignStyle;` to its value and return the
-// updated attrs string. Returns null when there is no style attribute to merge
-// into (the caller then emits a separate style="..." token).
+// If `attrs` contains a semantic style attribute in any supported spelling,
+// prepend `alignStyle;` to its value while preserving all unrelated raw bytes.
+// Returns null when there is no style attribute (the caller emits a separate
+// style token). A boolean style is replaced by the alignment declaration rather
+// than duplicated; duplicate style attributes remain an explicit error.
 function mergeAlignmentIntoStyle(attrs, alignStyle) {
-  // Match style="..." with a quote-respecting value. Anchored on a word
-  // boundary so attributes like `data-style` are not mistaken for `style`.
-  const m = attrs.match(/(^|\s)style="((?:[^"\\]|\\.)*)"/);
-  if (!m) return null;
-  const existing = m[2];
-  const combined = alignStyle + (existing ? ';' + existing : '');
+  const styles = scanRawAttributes(attrs).filter(
+    (attr) => attr.name.toLowerCase() === 'style',
+  );
+  if (styles.length === 0) return null;
+  if (styles.length > 1) {
+    throw new Error('duplicate style attribute in table separator');
+  }
+
+  const style = styles[0];
+  if (!style.hasValue) {
+    return (
+      attrs.slice(0, style.start) +
+      'style="' +
+      alignStyle +
+      '"' +
+      attrs.slice(style.end)
+    );
+  }
+
+  const separator = style.valueStart === style.valueEnd ? '' : ';';
   return (
-    attrs.slice(0, m.index) +
-    m[1] +
-    'style="' +
-    combined +
-    '"' +
-    attrs.slice(m.index + m[0].length)
+    attrs.slice(0, style.valueStart) +
+    alignStyle +
+    separator +
+    attrs.slice(style.valueStart)
   );
 }
 
-// A `scope` attribute already present in a verbatim attribute group. Boundary
-// anchored (start-of-group or whitespace) so `data-scope` / `rowscope` do not
-// count as a `scope` attribute, and only matched up to its `=` so the value is
-// irrelevant.
-const HAS_SCOPE_ATTR = /(^|\s)scope=/;
+function hasRawAttribute(attrs, name) {
+  const expected = name.toLowerCase();
+  return scanRawAttributes(attrs).some(
+    (attr) => attr.name.toLowerCase() === expected,
+  );
+}
 
 // Add scope="col" to a verbatim `th` head for a thead cell, honoring the
 // documented contract that header cells in a thead are scoped automatically.
@@ -140,7 +241,7 @@ function addScopeColToThHead(head) {
   if (head.length === 2) return 'th(scope="col")';
   if (head[2] !== '(') return head;
   const inner = head.slice(3, -1); // contents between the outer parens
-  if (HAS_SCOPE_ATTR.test(inner)) return head;
+  if (hasRawAttribute(inner, 'scope')) return head;
   return 'th(scope="col"' + (inner ? ' ' + inner : '') + ')';
 }
 
@@ -154,8 +255,10 @@ function formatAttrs(attrs) {
     // containing `)` or whitespace, reachable via programmatic filterOptions)
     // would break out of the attribute group and inject Pugneum. Reject it
     // rather than emit un-lexable source.
-    if (!VALID_ATTR_KEY.test(key)) {
-      throw new Error('invalid attribute name: ' + JSON.stringify(key));
+    if (!isValidGeneratedAttributeName(key)) {
+      throw new Error(
+        'invalid table filter attribute name: ' + JSON.stringify(key),
+      );
     }
     const val = attrs[key];
     if (val === true) {

@@ -57,6 +57,13 @@ test('shared nested doctype keeps its canonical text and physical span', () => {
   });
 });
 
+test('exported attribute-name validation matches lexer boundaries', () => {
+  assert.strictEqual(lex.isValidAttributeName('data-value'), true);
+  ['x/y', 'x>y', 'x\0y', '', 'two words'].forEach((name) => {
+    assert.strictEqual(lex.isValidAttributeName(name), false, name);
+  });
+});
+
 var lexerDir = __dirname + '/cases/';
 fs.readdirSync(lexerDir).forEach(function (testCase) {
   if (/\.pg$/.test(testCase)) {

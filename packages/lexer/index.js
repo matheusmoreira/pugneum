@@ -44,6 +44,23 @@ const attributeName = new RegExp(
   'gu',
 );
 
+function invalidAttributeNameCharacters(name) {
+  return String(name).replaceAll(attributeName, '');
+}
+
+function isValidAttributeName(name) {
+  return (
+    typeof name === 'string' &&
+    name.length > 0 &&
+    invalidAttributeNameCharacters(name).length === 0
+  );
+}
+
+// Generated-source producers must apply the same HTML-name boundary as the
+// lexer before emitting an attribute token. Keep this predicate on the public
+// lexer function so packages do not maintain subtly different deny lists.
+lex.isValidAttributeName = isValidAttributeName;
+
 const whitespaceRe = /[ \n\t]/;
 
 // Curly "smart" quotes that editors and AI tools auto-substitute for straight
@@ -2237,7 +2254,7 @@ class Lexer {
       }
     }
 
-    const invalid = key.replaceAll(attributeName, '');
+    const invalid = invalidAttributeNameCharacters(key);
     if (invalid.length !== 0) {
       this.error(
         'INVALID_ATTRIBUTE_NAME',

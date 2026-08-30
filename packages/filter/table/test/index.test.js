@@ -4,6 +4,7 @@ var assert = require('node:assert/strict');
 var {test, describe} = require('node:test');
 
 var tableFilter = require('../');
+var applyFilters = require('pugneum-filterer');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var render = require('pugneum-renderer');
@@ -39,6 +40,17 @@ function collectNodes(root, type, result) {
     }
   });
   return result;
+}
+
+function applyTableThroughFilterer(attrs) {
+  var source = ':table\n  | a |\n  | --- |\n  | b |';
+  var options = {
+    filename: 'table-option.pg',
+    source,
+    filterOptions: {table: attrs},
+  };
+  var ast = parse(lex(source, options), options);
+  return applyFilters(ast, {table: tableFilter}, options);
 }
 
 describe('table filter', () => {
@@ -532,8 +544,28 @@ describe('formatAttrs serialization', () => {
     assert.throws(
       () =>
         tableFilter.filter('| a |\n| --- |\n| b |', {'x) tr.injected(': true}),
-      /invalid attribute name/i,
+      /invalid table filter attribute name/i,
     );
+  });
+
+  test('lexer-forbidden programmatic keys fail at the table boundary', () => {
+    ['x/y', 'x>y', 'x\0y'].forEach((key) => {
+      assert.throws(
+        () => applyTableThroughFilterer({[key]: 'value'}),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:FILTER_ERROR');
+          assert.strictEqual(
+            err.msg,
+            "Filter 'table' failed: invalid table filter attribute name: " +
+              JSON.stringify(key),
+          );
+          assert.strictEqual(err.filename, 'table-option.pg');
+          assert.strictEqual(err.line, 1);
+          assert.strictEqual(err.column, 1);
+          return true;
+        },
+      );
+    });
   });
 });
 
@@ -585,6 +617,52 @@ describe('alignment + explicit style attr', () => {
     var input = '| a |\n| :---(class="x")---: |\n| b |';
     var result = tableFilter.filter(input, {});
     assert.match(result, /col\(style="text-align:center" class="x"\)/);
+  });
+
+  test('single-quoted, spaced style merges as one semantic attribute', () => {
+    var input = "| a |\n| :---(style = 'color:red')---: |\n| b |";
+    var result = renderRoundTrip(input);
+    var col = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'col',
+    );
+    assert.match(result.src, /col\(style = 'text-align:center;color:red'\)/);
+    assert.deepStrictEqual(
+      col.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'style', val: 'text-align:center;color:red'}],
+    );
+    assert.match(result.html, /<col style="text-align:center;color:red">/);
+  });
+
+  test('style-like text inside another value is not rewritten', () => {
+    var input = '| a |\n| :---(title=\'mentions style="x"\')---: |\n| b |';
+    var result = renderRoundTrip(input);
+    var col = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'col',
+    );
+    assert.match(
+      result.src,
+      /col\(style="text-align:center" title='mentions style="x"'\)/,
+    );
+    assert.deepStrictEqual(
+      col.attrs.map(({name, val}) => ({name, val})),
+      [
+        {name: 'style', val: 'text-align:center'},
+        {name: 'title', val: 'mentions style="x"'},
+      ],
+    );
+  });
+
+  test('boolean style is replaced rather than duplicated', () => {
+    var input = '| a |\n| :---(style)---: |\n| b |';
+    var result = renderRoundTrip(input);
+    var col = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'col',
+    );
+    assert.match(result.src, /col\(style="text-align:center"\)/);
+    assert.deepStrictEqual(
+      col.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'style', val: 'text-align:center'}],
+    );
   });
 });
 
@@ -719,6 +797,34 @@ describe('section uniqueness', () => {
     assert.throws(
       () => tableFilter.filter('tfoot\n| 1 |\ntbody\n| 2 |', {}),
       /tbody cannot appear after a tfoot/i,
+    );
+  });
+
+  test('a thead marker cannot regress from a populated tfoot', () => {
+    assert.throws(
+      () => tableFilter.filter('tfoot\n| 1 |\nthead\n| 2 |', {}),
+      /thead cannot appear after a tfoot/i,
+    );
+  });
+
+  test('a thead marker cannot regress from a populated tbody', () => {
+    assert.throws(
+      () => tableFilter.filter('tbody\n| 1 |\nthead\n| 2 |', {}),
+      /thead cannot appear after a tbody/i,
+    );
+  });
+
+  test('a marker cannot overwrite a pending separator-created footer', () => {
+    assert.throws(
+      () => tableFilter.filter('| 1 |\n| === |\nthead\n| 2 |', {}),
+      /thead marker cannot replace an empty pending tfoot/i,
+    );
+  });
+
+  test('an end-of-input footer boundary cannot remain pending', () => {
+    assert.throws(
+      () => tableFilter.filter('| 1 |\n| === |', {}),
+      /pending tfoot has no rows/i,
     );
   });
 });
@@ -866,6 +972,49 @@ describe('explicit th cells in thead get scope="col"', () => {
     assert.match(result, /th\(scope="row"\) Name/);
     assert.doesNotMatch(result, /scope="col"/);
     assert.doesNotThrow(() => roundTrip(input));
+  });
+
+  test('a spaced scope assignment is detected and preserves its value', () => {
+    var input = '| th(scope = "row") Name |\n| --- |\n| a |';
+    var result = renderRoundTrip(input);
+    var header = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'th',
+    );
+    assert.match(result.src, /th\(scope = "row"\) Name/);
+    assert.deepStrictEqual(
+      header.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'scope', val: 'row'}],
+    );
+    assert.doesNotMatch(result.src, /scope="col"/);
+  });
+
+  test('a boolean scope is detected and not duplicated', () => {
+    var input = '| th(scope) Name |\n| --- |\n| a |';
+    var result = renderRoundTrip(input);
+    var header = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'th',
+    );
+    assert.match(result.src, /th\(scope\) Name/);
+    assert.deepStrictEqual(
+      header.attrs.map(({name, val}) => ({name, val})),
+      [{name: 'scope', val: true}],
+    );
+  });
+
+  test('scope-like text inside another value still gets scope="col"', () => {
+    var input = '| th(title="mentions scope=x") Name |\n| --- |\n| a |';
+    var result = renderRoundTrip(input);
+    var header = collectNodes(result.ast, 'Tag').find(
+      (node) => node.name === 'th',
+    );
+    assert.match(result.src, /th\(scope="col" title="mentions scope=x"\) Name/);
+    assert.deepStrictEqual(
+      header.attrs.map(({name, val}) => ({name, val})),
+      [
+        {name: 'scope', val: 'col'},
+        {name: 'title', val: 'mentions scope=x'},
+      ],
+    );
   });
 
   test('data-scope is not mistaken for scope (scope="col" still added)', () => {

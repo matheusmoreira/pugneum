@@ -351,9 +351,21 @@ function parse(lines) {
   // syntax silently produced two <thead>/<tfoot> or a tfoot-before-tbody).
   let seenThead = false;
   let seenTfoot = false;
+  let lastSectionRank = -1;
+  let lastSectionTag = null;
   let hasSeparatorOrMarker = false;
 
+  const sectionRank = {thead: 0, tbody: 1, tfoot: 2};
+
+  function assertSectionCanFollow(tag) {
+    const rank = sectionRank[tag];
+    if (rank < lastSectionRank) {
+      throw new Error(tag + ' cannot appear after a ' + lastSectionTag);
+    }
+  }
+
   function pushSection(tag, attrStr, rows) {
+    assertSectionCanFollow(tag);
     if (tag === 'thead') {
       if (seenThead) {
         throw new Error('a table may have only one thead');
@@ -364,11 +376,18 @@ function parse(lines) {
         throw new Error('a table may have only one tfoot');
       }
       seenTfoot = true;
-    } else if (seenTfoot) {
-      // tbody after the foot would render <tfoot> before <tbody>.
-      throw new Error('a tbody cannot appear after a tfoot');
     }
     sections.push({tag: tag, attrStr: attrStr, rows: rows.slice()});
+    lastSectionRank = sectionRank[tag];
+    lastSectionTag = tag;
+  }
+
+  function assertNoPendingEmptySection(boundary) {
+    if (currentTag !== null && currentRows.length === 0) {
+      throw new Error(
+        boundary + ' cannot replace an empty pending ' + currentTag,
+      );
+    }
   }
 
   // Flush the accumulated rows as a section. An explicit marker tag
@@ -390,13 +409,16 @@ function parse(lines) {
 
     if (ev.type === 'marker') {
       hasSeparatorOrMarker = true;
+      assertNoPendingEmptySection(ev.tag + ' marker');
       // Flush accumulated rows with the implicit tbody tag, then adopt the
       // marker's tag for the rows that follow.
       flushCurrentRows('tbody');
+      assertSectionCanFollow(ev.tag);
       currentTag = ev.tag;
       currentAttrs = ev.attrStr;
     } else if (ev.type === 'dash-sep') {
       hasSeparatorOrMarker = true;
+      assertNoPendingEmptySection('--- separator');
       if (seenEqualsSep) {
         throw new Error('--- separator cannot appear after ===');
       }
@@ -417,6 +439,7 @@ function parse(lines) {
       }
     } else if (ev.type === 'equals-sep') {
       hasSeparatorOrMarker = true;
+      assertNoPendingEmptySection('=== separator');
       if (seenEqualsSep) {
         throw new Error('=== separator can only appear once in a table');
       }
@@ -441,6 +464,8 @@ function parse(lines) {
     const finalTag =
       currentTag !== null ? currentTag : seenEqualsSep ? 'tfoot' : 'tbody';
     pushSection(finalTag, currentAttrs, currentRows);
+  } else if (currentTag !== null) {
+    throw new Error('pending ' + currentTag + ' has no rows');
   }
 
   return {

@@ -97,8 +97,7 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                             }
                           ],
                           "line": 0,
-                          "filename": "include-from-root.pg",
-                          "declaredBlocks": {}
+                          "filename": "include-from-root.pg"
                         }
                       ],
                       "line": 6,
@@ -130,113 +129,11 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
       ],
       "line": 0,
       "filename": "layout.pg",
-      "declaredBlocks": {
-        "head": [
-          {
-            "type": "NamedBlock",
-            "nodes": [],
-            "line": 4,
-            "filename": "layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 5
-          }
-        ],
-        "content": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Block",
-                "nodes": [
-                  {
-                    "type": "Tag",
-                    "name": "h1",
-                    "block": {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Text",
-                          "line": 1,
-                          "column": 4,
-                          "filename": "include-from-root.pg",
-                          "val": "hello"
-                        }
-                      ],
-                      "line": 1,
-                      "filename": "include-from-root.pg"
-                    },
-                    "attrs": [],
-                    "attributeBlocks": [],
-                    "isInline": false,
-                    "line": 1,
-                    "column": 1,
-                    "filename": "include-from-root.pg"
-                  }
-                ],
-                "line": 0,
-                "filename": "include-from-root.pg",
-                "declaredBlocks": {}
-              }
-            ],
-            "line": 3,
-            "filename": "extends-from-root.pg",
-            "name": "content",
-            "mode": "replace",
-            "column": 1,
-            "parents": [
-              {
-                "type": "NamedBlock",
-                "nodes": [
-                  {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "Tag",
-                        "name": "h1",
-                        "block": {
-                          "type": "Block",
-                          "nodes": [
-                            {
-                              "type": "Text",
-                              "line": 1,
-                              "column": 4,
-                              "filename": "include-from-root.pg",
-                              "val": "hello"
-                            }
-                          ],
-                          "line": 1,
-                          "filename": "include-from-root.pg"
-                        },
-                        "attrs": [],
-                        "attributeBlocks": [],
-                        "isInline": false,
-                        "line": 1,
-                        "column": 1,
-                        "filename": "include-from-root.pg"
-                      }
-                    ],
-                    "line": 0,
-                    "filename": "include-from-root.pg",
-                    "declaredBlocks": {}
-                  }
-                ],
-                "line": 6,
-                "filename": "layout.pg",
-                "name": "content",
-                "mode": "replace",
-                "column": 5
-              }
-            ]
-          }
-        ]
-      },
       "hasExtends": true
     }
   ],
   "line": 0,
-  "filename": "include-extends-from-root.pg",
-  "declaredBlocks": {}
+  "filename": "include-extends-from-root.pg"
 }
 `;
 
@@ -282,80 +179,6 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
       ],
       "line": 0,
       "filename": "empty-block.pg",
-      "declaredBlocks": {
-        "test": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "div",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 4,
-                      "column": 9,
-                      "filename": "extends-empty-block-1.pg",
-                      "val": "test1"
-                    }
-                  ],
-                  "line": 4,
-                  "filename": "extends-empty-block-1.pg"
-                },
-                "attrs": [],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "extends-empty-block-1.pg"
-              }
-            ],
-            "line": 3,
-            "filename": "extends-empty-block-1.pg",
-            "name": "test",
-            "mode": "replace",
-            "column": 1,
-            "parents": [
-              {
-                "type": "NamedBlock",
-                "nodes": [
-                  {
-                    "type": "Tag",
-                    "name": "div",
-                    "block": {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Text",
-                          "line": 4,
-                          "column": 9,
-                          "filename": "extends-empty-block-1.pg",
-                          "val": "test1"
-                        }
-                      ],
-                      "line": 4,
-                      "filename": "extends-empty-block-1.pg"
-                    },
-                    "attrs": [],
-                    "attributeBlocks": [],
-                    "isInline": false,
-                    "line": 4,
-                    "column": 5,
-                    "filename": "extends-empty-block-1.pg"
-                  }
-                ],
-                "line": 1,
-                "filename": "empty-block.pg",
-                "name": "test",
-                "mode": "replace",
-                "column": 1
-              }
-            ]
-          }
-        ]
-      },
       "hasExtends": true
     },
     {
@@ -396,86 +219,11 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
       ],
       "line": 0,
       "filename": "empty-block.pg",
-      "declaredBlocks": {
-        "test": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "div",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 4,
-                      "column": 9,
-                      "filename": "extends-empty-block-2.pg",
-                      "val": "test2"
-                    }
-                  ],
-                  "line": 4,
-                  "filename": "extends-empty-block-2.pg"
-                },
-                "attrs": [],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "extends-empty-block-2.pg"
-              }
-            ],
-            "line": 3,
-            "filename": "extends-empty-block-2.pg",
-            "name": "test",
-            "mode": "replace",
-            "column": 1,
-            "parents": [
-              {
-                "type": "NamedBlock",
-                "nodes": [
-                  {
-                    "type": "Tag",
-                    "name": "div",
-                    "block": {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Text",
-                          "line": 4,
-                          "column": 9,
-                          "filename": "extends-empty-block-2.pg",
-                          "val": "test2"
-                        }
-                      ],
-                      "line": 4,
-                      "filename": "extends-empty-block-2.pg"
-                    },
-                    "attrs": [],
-                    "attributeBlocks": [],
-                    "isInline": false,
-                    "line": 4,
-                    "column": 5,
-                    "filename": "extends-empty-block-2.pg"
-                  }
-                ],
-                "line": 1,
-                "filename": "empty-block.pg",
-                "name": "test",
-                "mode": "replace",
-                "column": 1
-              }
-            ]
-          }
-        ]
-      },
       "hasExtends": true
     }
   ],
   "line": 0,
-  "filename": "include-extends-of-common-template.pg",
-  "declaredBlocks": {}
+  "filename": "include-extends-of-common-template.pg"
 }
 `;
 
@@ -578,8 +326,7 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                             }
                           ],
                           "line": 0,
-                          "filename": "include-from-root.pg",
-                          "declaredBlocks": {}
+                          "filename": "include-from-root.pg"
                         }
                       ],
                       "line": 6,
@@ -611,113 +358,11 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
       ],
       "line": 0,
       "filename": "layout.pg",
-      "declaredBlocks": {
-        "head": [
-          {
-            "type": "NamedBlock",
-            "nodes": [],
-            "line": 4,
-            "filename": "layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 5
-          }
-        ],
-        "content": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Block",
-                "nodes": [
-                  {
-                    "type": "Tag",
-                    "name": "h1",
-                    "block": {
-                      "type": "Block",
-                      "nodes": [
-                        {
-                          "type": "Text",
-                          "line": 1,
-                          "column": 4,
-                          "filename": "include-from-root.pg",
-                          "val": "hello"
-                        }
-                      ],
-                      "line": 1,
-                      "filename": "include-from-root.pg"
-                    },
-                    "attrs": [],
-                    "attributeBlocks": [],
-                    "isInline": false,
-                    "line": 1,
-                    "column": 1,
-                    "filename": "include-from-root.pg"
-                  }
-                ],
-                "line": 0,
-                "filename": "include-from-root.pg",
-                "declaredBlocks": {}
-              }
-            ],
-            "line": 3,
-            "filename": "extends-relative.pg",
-            "name": "content",
-            "mode": "replace",
-            "column": 1,
-            "parents": [
-              {
-                "type": "NamedBlock",
-                "nodes": [
-                  {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "Tag",
-                        "name": "h1",
-                        "block": {
-                          "type": "Block",
-                          "nodes": [
-                            {
-                              "type": "Text",
-                              "line": 1,
-                              "column": 4,
-                              "filename": "include-from-root.pg",
-                              "val": "hello"
-                            }
-                          ],
-                          "line": 1,
-                          "filename": "include-from-root.pg"
-                        },
-                        "attrs": [],
-                        "attributeBlocks": [],
-                        "isInline": false,
-                        "line": 1,
-                        "column": 1,
-                        "filename": "include-from-root.pg"
-                      }
-                    ],
-                    "line": 0,
-                    "filename": "include-from-root.pg",
-                    "declaredBlocks": {}
-                  }
-                ],
-                "line": 6,
-                "filename": "layout.pg",
-                "name": "content",
-                "mode": "replace",
-                "column": 5
-              }
-            ]
-          }
-        ]
-      },
       "hasExtends": true
     }
   ],
   "line": 0,
-  "filename": "include-extends-relative.pg",
-  "declaredBlocks": {}
+  "filename": "include-extends-relative.pg"
 }
 `;
 
@@ -806,8 +451,7 @@ exports[`cases from pugneum sources > include-filter-stylus.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-filter-stylus.pg",
-  "declaredBlocks": {}
+  "filename": "include-filter-stylus.pg"
 }
 `;
 
@@ -1123,8 +767,7 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-filter.pg",
-  "declaredBlocks": {}
+  "filename": "include-filter.pg"
 }
 `;
 
@@ -1154,8 +797,7 @@ exports[`cases from pugneum sources > include-only-text-body.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-only-text-body.pg",
-  "declaredBlocks": {}
+  "filename": "include-only-text-body.pg"
 }
 `;
 
@@ -1239,8 +881,7 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                           }
                         ],
                         "line": 0,
-                        "filename": "include-only-text-body.pg",
-                        "declaredBlocks": {}
+                        "filename": "include-only-text-body.pg"
                       }
                     ],
                     "line": 3,
@@ -1277,8 +918,7 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-only-text.pg",
-  "declaredBlocks": {}
+  "filename": "include-only-text.pg"
 }
 `;
 
@@ -1344,8 +984,7 @@ exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-with-text-head.pg",
-  "declaredBlocks": {}
+  "filename": "include-with-text-head.pg"
 }
 `;
 
@@ -1477,8 +1116,7 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
               }
             ],
             "line": 0,
-            "filename": "include-with-text-head.pg",
-            "declaredBlocks": {}
+            "filename": "include-with-text-head.pg"
           }
         ],
         "line": 1,
@@ -1493,8 +1131,7 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include-with-text.pg",
-  "declaredBlocks": {}
+  "filename": "include-with-text.pg"
 }
 `;
 
@@ -1586,8 +1223,7 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
               }
             ],
             "line": 0,
-            "filename": "pet.pg",
-            "declaredBlocks": {}
+            "filename": "pet.pg"
           }
         ],
         "line": 1,
@@ -1617,8 +1253,7 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "include.script.pg",
-  "declaredBlocks": {}
+  "filename": "include.script.pg"
 }
 `;
 
@@ -1876,13 +1511,11 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
         }
       ],
       "line": 0,
-      "filename": "yield-nested.pg",
-      "declaredBlocks": {}
+      "filename": "yield-nested.pg"
     }
   ],
   "line": 0,
-  "filename": "include.yield.nested.pg",
-  "declaredBlocks": {}
+  "filename": "include.yield.nested.pg"
 }
 `;
 
@@ -1933,8 +1566,7 @@ exports[`cases from pugneum sources > includes-with-ext-js.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "includes-with-ext-js.pg",
-  "declaredBlocks": {}
+  "filename": "includes-with-ext-js.pg"
 }
 `;
 
@@ -1989,8 +1621,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
         }
       ],
       "line": 0,
-      "filename": "mixins.pg",
-      "declaredBlocks": {}
+      "filename": "mixins.pg"
     },
     {
       "type": "Mixin",
@@ -2237,8 +1868,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
     }
   ],
   "line": 0,
-  "filename": "includes.pg",
-  "declaredBlocks": {}
+  "filename": "includes.pg"
 }
 `;
 
@@ -2422,151 +2052,6 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
   ],
   "line": 0,
   "filename": "layout.pg",
-  "declaredBlocks": {
-    "head": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 4,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/jquery.js",
-                "line": 4,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/caustic.js",
-                "line": 5,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "app-layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "app.js",
-                "line": 5,
-                "column": 10,
-                "filename": "app-layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "app-layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.append.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "foo.js",
-                "line": 5,
-                "column": 10,
-                "filename": "layout.append.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "layout.append.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 6,
-              "filename": "layout.append.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "bar.js",
-                "line": 6,
-                "column": 10,
-                "filename": "layout.append.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.append.pg"
-          }
-        ],
-        "line": 3,
-        "filename": "layout.pg",
-        "name": "head",
-        "mode": "replace",
-        "column": 3
-      }
-    ],
-    "body": [
-      {
-        "type": "NamedBlock",
-        "nodes": [],
-        "line": 7,
-        "filename": "layout.pg",
-        "name": "body",
-        "mode": "replace",
-        "column": 5
-      }
-    ]
-  },
   "hasExtends": true
 }
 `;
@@ -2751,151 +2236,6 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
   ],
   "line": 0,
   "filename": "layout.pg",
-  "declaredBlocks": {
-    "head": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 4,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/jquery.js",
-                "line": 4,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/caustic.js",
-                "line": 5,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "app-layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "app.js",
-                "line": 5,
-                "column": 10,
-                "filename": "app-layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "app-layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.append.without-block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "foo.js",
-                "line": 5,
-                "column": 10,
-                "filename": "layout.append.without-block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "layout.append.without-block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 6,
-              "filename": "layout.append.without-block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "bar.js",
-                "line": 6,
-                "column": 10,
-                "filename": "layout.append.without-block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.append.without-block.pg"
-          }
-        ],
-        "line": 3,
-        "filename": "layout.pg",
-        "name": "head",
-        "mode": "replace",
-        "column": 3
-      }
-    ],
-    "body": [
-      {
-        "type": "NamedBlock",
-        "nodes": [],
-        "line": 7,
-        "filename": "layout.pg",
-        "name": "body",
-        "mode": "replace",
-        "column": 5
-      }
-    ]
-  },
   "hasExtends": true
 }
 `;
@@ -3187,492 +2527,6 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
   ],
   "line": 0,
   "filename": "root.pg",
-  "declaredBlocks": {
-    "content": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "p",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 13,
-                  "column": 17,
-                  "filename": "layout.multi.append.prepend.block.pg",
-                  "val": "Last prepend must appear at top"
-                }
-              ],
-              "line": 13,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "class",
-                "val": "last",
-                "line": 13,
-                "column": 3,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "name": "class",
-                "val": "prepend",
-                "line": 13,
-                "column": 8,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 13,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "p",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 7,
-                  "column": 18,
-                  "filename": "layout.multi.append.prepend.block.pg",
-                  "val": "Something prepended to content"
-                }
-              ],
-              "line": 7,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "class",
-                "val": "first",
-                "line": 7,
-                "column": 3,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "name": "class",
-                "val": "prepend",
-                "line": 7,
-                "column": 9,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 7,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "div",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 5,
-                  "column": 5,
-                  "filename": "redefine.pg",
-                  "val": "Defined content"
-                }
-              ],
-              "line": 4,
-              "filename": "redefine.pg"
-            },
-            "attrs": [
-              {
-                "name": "class",
-                "val": "content",
-                "line": 4,
-                "column": 2,
-                "filename": "redefine.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 2,
-            "filename": "redefine.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "p",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 4,
-                  "column": 17,
-                  "filename": "layout.multi.append.prepend.block.pg",
-                  "val": "Something appended to content"
-                }
-              ],
-              "line": 4,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "class",
-                "val": "first",
-                "line": 4,
-                "column": 3,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "name": "class",
-                "val": "append",
-                "line": 4,
-                "column": 9,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "p",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 10,
-                  "column": 16,
-                  "filename": "layout.multi.append.prepend.block.pg",
-                  "val": "Last append must be most last"
-                }
-              ],
-              "line": 10,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "class",
-                "val": "last",
-                "line": 10,
-                "column": 3,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "name": "class",
-                "val": "append",
-                "line": 10,
-                "column": 8,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 10,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          }
-        ],
-        "line": 3,
-        "filename": "redefine.pg",
-        "name": "content",
-        "mode": "replace",
-        "column": 1,
-        "parents": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "p",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 13,
-                      "column": 17,
-                      "filename": "layout.multi.append.prepend.block.pg",
-                      "val": "Last prepend must appear at top"
-                    }
-                  ],
-                  "line": 13,
-                  "filename": "layout.multi.append.prepend.block.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "class",
-                    "val": "last",
-                    "line": 13,
-                    "column": 3,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  },
-                  {
-                    "name": "class",
-                    "val": "prepend",
-                    "line": 13,
-                    "column": 8,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 13,
-                "column": 2,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "p",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 7,
-                      "column": 18,
-                      "filename": "layout.multi.append.prepend.block.pg",
-                      "val": "Something prepended to content"
-                    }
-                  ],
-                  "line": 7,
-                  "filename": "layout.multi.append.prepend.block.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "class",
-                    "val": "first",
-                    "line": 7,
-                    "column": 3,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  },
-                  {
-                    "name": "class",
-                    "val": "prepend",
-                    "line": 7,
-                    "column": 9,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 7,
-                "column": 2,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "div",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 5,
-                      "column": 5,
-                      "filename": "redefine.pg",
-                      "val": "Defined content"
-                    }
-                  ],
-                  "line": 4,
-                  "filename": "redefine.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "class",
-                    "val": "content",
-                    "line": 4,
-                    "column": 2,
-                    "filename": "redefine.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 2,
-                "filename": "redefine.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "p",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 4,
-                      "column": 17,
-                      "filename": "layout.multi.append.prepend.block.pg",
-                      "val": "Something appended to content"
-                    }
-                  ],
-                  "line": 4,
-                  "filename": "layout.multi.append.prepend.block.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "class",
-                    "val": "first",
-                    "line": 4,
-                    "column": 3,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  },
-                  {
-                    "name": "class",
-                    "val": "append",
-                    "line": 4,
-                    "column": 9,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 2,
-                "filename": "layout.multi.append.prepend.block.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "p",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "line": 10,
-                      "column": 16,
-                      "filename": "layout.multi.append.prepend.block.pg",
-                      "val": "Last append must be most last"
-                    }
-                  ],
-                  "line": 10,
-                  "filename": "layout.multi.append.prepend.block.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "class",
-                    "val": "last",
-                    "line": 10,
-                    "column": 3,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  },
-                  {
-                    "name": "class",
-                    "val": "append",
-                    "line": 10,
-                    "column": 8,
-                    "filename": "layout.multi.append.prepend.block.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 10,
-                "column": 2,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "line": 1,
-            "filename": "root.pg",
-            "name": "content",
-            "mode": "replace",
-            "column": 1
-          }
-        ]
-      }
-    ],
-    "head": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 19,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "foo.js",
-                "line": 19,
-                "column": 9,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 19,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "root.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "/app.js",
-                "line": 5,
-                "column": 9,
-                "filename": "root.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 2,
-            "filename": "root.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 16,
-              "filename": "layout.multi.append.prepend.block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "jquery.js",
-                "line": 16,
-                "column": 9,
-                "filename": "layout.multi.append.prepend.block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 16,
-            "column": 2,
-            "filename": "layout.multi.append.prepend.block.pg"
-          }
-        ],
-        "line": 4,
-        "filename": "root.pg",
-        "name": "head",
-        "mode": "replace",
-        "column": 1
-      }
-    ]
-  },
   "hasExtends": true
 }
 `;
@@ -3857,151 +2711,6 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
   ],
   "line": 0,
   "filename": "layout.pg",
-  "declaredBlocks": {
-    "head": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.prepend.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "foo.js",
-                "line": 5,
-                "column": 10,
-                "filename": "layout.prepend.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "layout.prepend.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 6,
-              "filename": "layout.prepend.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "bar.js",
-                "line": 6,
-                "column": 10,
-                "filename": "layout.prepend.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.prepend.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "app-layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "app.js",
-                "line": 5,
-                "column": 10,
-                "filename": "app-layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "app-layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 4,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/jquery.js",
-                "line": 4,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/caustic.js",
-                "line": 5,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 5,
-            "filename": "layout.pg"
-          }
-        ],
-        "line": 3,
-        "filename": "layout.pg",
-        "name": "head",
-        "mode": "replace",
-        "column": 3
-      }
-    ],
-    "body": [
-      {
-        "type": "NamedBlock",
-        "nodes": [],
-        "line": 7,
-        "filename": "layout.pg",
-        "name": "body",
-        "mode": "replace",
-        "column": 5
-      }
-    ]
-  },
   "hasExtends": true
 }
 `;
@@ -4186,151 +2895,6 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
   ],
   "line": 0,
   "filename": "layout.pg",
-  "declaredBlocks": {
-    "head": [
-      {
-        "type": "NamedBlock",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.prepend.without-block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "foo.js",
-                "line": 5,
-                "column": 10,
-                "filename": "layout.prepend.without-block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "layout.prepend.without-block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 6,
-              "filename": "layout.prepend.without-block.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "bar.js",
-                "line": 6,
-                "column": 10,
-                "filename": "layout.prepend.without-block.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.prepend.without-block.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "app-layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "app.js",
-                "line": 5,
-                "column": 10,
-                "filename": "app-layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "app-layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 4,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/jquery.js",
-                "line": 4,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 4,
-            "column": 5,
-            "filename": "layout.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "script",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "layout.pg"
-            },
-            "attrs": [
-              {
-                "name": "src",
-                "val": "vendor/caustic.js",
-                "line": 5,
-                "column": 12,
-                "filename": "layout.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 5,
-            "filename": "layout.pg"
-          }
-        ],
-        "line": 3,
-        "filename": "layout.pg",
-        "name": "head",
-        "mode": "replace",
-        "column": 3
-      }
-    ],
-    "body": [
-      {
-        "type": "NamedBlock",
-        "nodes": [],
-        "line": 7,
-        "filename": "layout.pg",
-        "name": "body",
-        "mode": "replace",
-        "column": 5
-      }
-    ]
-  },
   "hasExtends": true
 }
 `;

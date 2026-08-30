@@ -70,7 +70,7 @@ module.exports = link;
 // rather than per-include-level, so references/footnotes/toc cross include/extends.
 function link(ast, options) {
   options = establishWarnings(options);
-  return resolveDocument(linkInner(ast, options), options);
+  return resolveDocument(linkInner(ast, options, createLinkState()), options);
 }
 
 // Assembly only: template inheritance (extends/blocks) + includes. No reference/
@@ -78,7 +78,7 @@ function link(ast, options) {
 // resolve(), over the fully assembled + filtered tree.
 link.assemble = function (ast, options) {
   options = establishWarnings(options);
-  return linkInner(ast, options);
+  return linkInner(ast, options, createLinkState());
 };
 
 // Document-level resolution over the final assembled + filtered tree: references,
@@ -109,7 +109,17 @@ function establishWarnings(options) {
   return options;
 }
 
-function linkInner(ast, options) {
+// Inheritance bookkeeping is needed only while one tree is being assembled.
+// Keep it off public AST nodes so the linked result remains a serializable tree
+// instead of exposing a repeated ancestry graph through enumerable metadata.
+function createLinkState() {
+  return {
+    declaredBlocks: new WeakMap(),
+    parentBlocks: new WeakMap(),
+  };
+}
+
+function linkInner(ast, options, state) {
   options = options || {};
   const sources = options.sources;
   const maxDepth =
@@ -151,8 +161,9 @@ function linkInner(ast, options) {
       extendsNode = ast.nodes.shift();
     }
   }
-  ast = applyIncludes(ast, options);
-  ast.declaredBlocks = findDeclaredBlocks(ast);
+  ast = applyIncludes(ast, options, state);
+  const declaredBlocks = findDeclaredBlocks(ast);
+  state.declaredBlocks.set(ast, declaredBlocks);
   if (extendsNode) {
     const mixins = [];
     const expectedBlocks = [];
@@ -177,6 +188,7 @@ function linkInner(ast, options) {
     const parent = linkInner(
       extendsNode.file.ast,
       Object.assign({}, options, {_linkDepth: depth + 1}),
+      state,
     );
     const parentBlockNames = [];
     walk(parent, function (node) {
@@ -195,9 +207,10 @@ function linkInner(ast, options) {
       }
     }
 
-    extend(parent.declaredBlocks, ast, sources);
-    Object.keys(ast.declaredBlocks).forEach(function (name) {
-      parent.declaredBlocks[name] = ast.declaredBlocks[name];
+    const parentDeclaredBlocks = state.declaredBlocks.get(parent);
+    extend(parentDeclaredBlocks, ast, sources, state.parentBlocks);
+    Object.keys(declaredBlocks).forEach(function (name) {
+      parentDeclaredBlocks[name] = declaredBlocks[name];
     });
     parent.nodes = mixins.concat(parent.nodes);
     parent.hasExtends = true;
@@ -217,21 +230,27 @@ function findDeclaredBlocks(ast) {
   return definitions;
 }
 
-// Flatten a NamedBlock's ancestor chain (grandparent -> parent -> ...) into a
-// single list. Template inheritance forms a DAG: the same block object is
-// reachable along multiple `.parents` paths, so without memoization the
-// recursion re-expands shared ancestors an exponentially growing number of
-// times (a chain of N `replace`-mode overrides crashes with RangeError once the
-// accumulator exceeds 2^32-1). `seen` dedupes visited blocks: a parent block
-// appears at most once in the flattened list, which is also the correct result.
-function flattenParentBlocks(parentBlocks, accumulator, seen) {
+// Flatten a NamedBlock's private ancestor chain (grandparent -> parent -> ...)
+// into a single list. Template inheritance forms a DAG: the same block object
+// is reachable along multiple paths, so without memoization the recursion
+// re-expands shared ancestors an exponentially growing number of times (a chain
+// of N `replace`-mode overrides crashes with RangeError once the accumulator
+// exceeds 2^32-1). `seen` dedupes visited blocks: a parent block appears at most
+// once in the flattened list, which is also the correct result.
+function flattenParentBlocks(
+  parentBlocks,
+  parentBlocksByOverride,
+  accumulator,
+  seen,
+) {
   accumulator = accumulator || [];
   seen = seen || new Set();
   parentBlocks.forEach(function (parentBlock) {
     if (seen.has(parentBlock)) return;
     seen.add(parentBlock);
-    if (parentBlock.parents) {
-      flattenParentBlocks(parentBlock.parents, accumulator, seen);
+    const ancestors = parentBlocksByOverride.get(parentBlock);
+    if (ancestors) {
+      flattenParentBlocks(ancestors, parentBlocksByOverride, accumulator, seen);
     }
     accumulator.push(parentBlock);
   });
@@ -246,7 +265,7 @@ function flattenParentBlocks(parentBlocks, accumulator, seen) {
 // `ignore` and its subtree is pruned (return false) so it is neither merged a
 // second time nor descended into, which would otherwise re-merge the same
 // content and corrupt the ancestor chain.
-function extend(parentBlocks, ast, sources) {
+function extend(parentBlocks, ast, sources, parentBlocksByOverride) {
   const stack = new Set();
   walk(
     ast,
@@ -258,10 +277,10 @@ function extend(parentBlocks, ast, sources) {
         }
         stack.add(node.name);
         const parentBlockList = parentBlocks[node.name]
-          ? flattenParentBlocks(parentBlocks[node.name])
+          ? flattenParentBlocks(parentBlocks[node.name], parentBlocksByOverride)
           : [];
         if (parentBlockList.length) {
-          node.parents = parentBlockList;
+          parentBlocksByOverride.set(node, parentBlockList);
           parentBlockList.forEach(function (parentBlock) {
             switch (node.mode) {
               case 'append':
@@ -293,7 +312,7 @@ function extend(parentBlocks, ast, sources) {
   );
 }
 
-function applyIncludes(ast, options) {
+function applyIncludes(ast, options, state) {
   // RawInclude is handled in `before` (its content is a leaf string, nothing
   // below it to descend into). Include is handled in `after` so the includer's
   // passed-in `node.block` is fully walked before being yielded into the linked
@@ -320,6 +339,7 @@ function applyIncludes(ast, options) {
         let childAST = linkInner(
           node.file.ast,
           Object.assign({}, options, {_linkDepth: depth + 1}),
+          state,
         );
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);

@@ -435,23 +435,24 @@ function collectNamedBlocks(ast) {
   return blocks;
 }
 
+function inheritanceProject(depth) {
+  var files = {};
+  files['level0.pg'] = 'html\n  body\n    block content\n      p default\n';
+  for (var i = 1; i <= depth; i++) {
+    files['level' + i + '.pg'] =
+      'extends level' + (i - 1) + '.pg\nblock content\n  p override' + i + '\n';
+  }
+  return {files: files, entry: 'level' + depth + '.pg'};
+}
+
 describe('flattenParentBlocks deduplication (exponential blowup guard)', () => {
   test('a deep extends chain overriding a shared replace-mode block links in linear time', () => {
     // Without deduping visited blocks in flattenParentBlocks this fan-out DAG
     // pushes shared block objects exponentially and crashes with
     // "RangeError: Invalid array length" around depth ~18.
     var depth = 60;
-    var files = {};
-    files['level0.pg'] = 'html\n  body\n    block content\n      p default\n';
-    for (var i = 1; i <= depth; i++) {
-      files['level' + i + '.pg'] =
-        'extends level' +
-        (i - 1) +
-        '.pg\nblock content\n  p override' +
-        i +
-        '\n';
-    }
-    var result = linkProject(files, 'level' + depth + '.pg');
+    var project = inheritanceProject(depth);
+    var result = linkProject(project.files, project.entry);
     // The last override wins (replace mode) and exactly one content block remains.
     var contentText = [];
     walk(result.linked, function (node) {
@@ -461,6 +462,27 @@ describe('flattenParentBlocks deduplication (exponential blowup guard)', () => {
       contentText.includes('override' + depth),
       'final override should win, got: ' + JSON.stringify(contentText),
     );
+  });
+
+  test('the public linked tree serializes without inheritance ancestry growth', () => {
+    var shallowProject = inheritanceProject(5);
+    var deepProject = inheritanceProject(9);
+    var shallow = linkProject(
+      shallowProject.files,
+      shallowProject.entry,
+    ).linked;
+    var deep = linkProject(deepProject.files, deepProject.entry).linked;
+    var shallowJson = JSON.stringify(shallow);
+    var deepJson = JSON.stringify(deep);
+
+    assert.ok(
+      deepJson.length < shallowJson.length * 3,
+      'serialization must stay linear: ' +
+        shallowJson.length +
+        ' bytes grew to ' +
+        deepJson.length,
+    );
+    assert.doesNotMatch(deepJson, /"(?:declaredBlocks|parents)"/);
   });
 });
 

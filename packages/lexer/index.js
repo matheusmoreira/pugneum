@@ -72,7 +72,7 @@ const typographicQuoteRe = /[‘’“”]/;
 // zero-width space, etc.) that editors and copy-paste introduce. Structural
 // whitespace must be plain spaces or tabs, so these are never valid here.
 const nonAsciiWhitespaceRe =
-  /[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000\uFEFF]/;
+  /[\u0085\u00A0\u1680\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/;
 
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};

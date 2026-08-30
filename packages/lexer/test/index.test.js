@@ -1408,6 +1408,24 @@ describe('typographic quote warnings in attributes', () => {
 describe('non-ASCII whitespace in indentation', () => {
   const NBSP = ' ';
 
+  [
+    ['NEXT LINE', '\u0085', 'U+0085'],
+    ['LINE SEPARATOR', '\u2028', 'U+2028'],
+    ['PARAGRAPH SEPARATOR', '\u2029', 'U+2029'],
+  ].forEach(([name, separator, codepoint]) => {
+    test(name + ' in indentation names its codepoint', () => {
+      assert.throws(
+        () => lex('ul\n' + separator + 'li x', {filename: 't.pg'}),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:NON_ASCII_WHITESPACE');
+          assert.match(err.msg, /Unexpected non-ASCII whitespace/);
+          assert.ok(err.msg.includes(codepoint));
+          return true;
+        },
+      );
+    });
+  });
+
   test('NBSP used as indentation throws a clear NON_ASCII_WHITESPACE error', () => {
     assert.throws(
       () => lex('ul\n' + NBSP + NBSP + 'li x', {filename: 't.pg'}),

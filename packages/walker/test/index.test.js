@@ -371,23 +371,65 @@ test('unknown node type throws', function () {
 });
 
 describe('argument overload detection', function () {
-  test('an array passed where after is expected is rejected, not swallowed as options', function () {
-    // Before the fix, the array (typeof 'object') was silently taken as
-    // `options`, so the after hook never ran and no error was raised.
-    var afterRan = false;
-    assert.throws(function () {
-      walk(
-        {type: 'Block', nodes: [{type: 'Text', val: 'x'}]},
-        function before() {},
-        // intended as `after` but mistyped as an array
-        [
-          function after() {
-            afterRan = true;
+  test('an array in the three-argument after slot is rejected before pruning', function () {
+    var beforeRan = false;
+    assert.throws(
+      function () {
+        walk(
+          {type: 'Text', val: 'x'},
+          function before() {
+            beforeRan = true;
+            return false;
           },
-        ],
-      );
+          [function after() {}],
+        );
+      },
+      {
+        name: 'TypeError',
+        message: 'after must be a function, null, or undefined',
+      },
+    );
+    assert.strictEqual(beforeRan, false);
+  });
+
+  test('invalid hooks fail before traversal or options mutation', function () {
+    var invalidHooks = [false, 0, '', {}, []];
+
+    invalidHooks.forEach(function (invalidBefore) {
+      var ast = {type: 'Text', val: 'original'};
+      var options = {};
+      assert.throws(() => walk(ast, invalidBefore, options), {
+        name: 'TypeError',
+        message: 'before must be a function, null, or undefined',
+      });
+      assert.deepStrictEqual(ast, {type: 'Text', val: 'original'});
+      assert.deepStrictEqual(options, {});
     });
-    assert(!afterRan, 'after hook should not have run');
+
+    invalidHooks.forEach(function (invalidAfter) {
+      var ast = {type: 'Text', val: 'original'};
+      var options = {};
+      var beforeRan = false;
+      assert.throws(
+        () =>
+          walk(
+            ast,
+            function before(node) {
+              beforeRan = true;
+              node.val = 'mutated';
+            },
+            invalidAfter,
+            options,
+          ),
+        {
+          name: 'TypeError',
+          message: 'after must be a function, null, or undefined',
+        },
+      );
+      assert.strictEqual(beforeRan, false);
+      assert.deepStrictEqual(ast, {type: 'Text', val: 'original'});
+      assert.deepStrictEqual(options, {});
+    });
   });
 
   test('3-arg form (ast, before, options) still seeds parents from options', function () {

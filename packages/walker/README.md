@@ -30,15 +30,21 @@ the root changes the returned root reference and cannot update the caller's
 original variable in place. Without a root replacement, the return value is
 the original `ast` object.
 
-`before` and `after` are functions with the signature `(node, replace)`.
+The supported call forms are:
+
+- `walk(ast, before, after, options)`
+- `walk(ast, before, options)` (the three-argument options overload)
+
+`before` and `after` must each be a function with the signature
+`(node, replace)`, or exactly `null`/`undefined` when omitted.
 `before` is called when a node is first seen
 while `after` is called after the children of the node
 have already been traversed, if any.
-Either hook may be omitted by passing `null` or `undefined`.
-The `after` argument may also be omitted entirely,
-in which case `options` takes its place: `walk(ast, before, options)`.
-An array passed where `after` is expected is rejected
-(it is not silently treated as `options`).
+With exactly three arguments, a non-array object in the third position is the
+options object; a function or nullish value in that position is `after`. Use
+the four-argument form to supply both `after` and `options`. An array or any
+other non-nullish, non-function hook value is rejected with a `TypeError`
+before a callback runs, the AST changes, or the options object is touched.
 
 The `replace` parameter is a function that can be used
 to replace the node in the AST. It takes either an object

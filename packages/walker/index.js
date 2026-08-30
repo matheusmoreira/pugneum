@@ -52,6 +52,7 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  *   Either hook may be omitted (pass null/undefined). The return value of
  *   `after` is always ignored; `before` returning exactly `false` skips the
  *   node's children (and the `after` call) for that node.
+ *   Invalid hook values are rejected before traversal or options mutation.
  *
  * The `replace` callback substitutes the current node. Passing a single node
  * replaces it; passing an array splices those nodes into the parent's node list
@@ -90,6 +91,8 @@ function walkAST(ast, before, after, options) {
     options = after;
     after = null;
   }
+  assertHook('before', before);
+  assertHook('after', after);
   options = options || {includeDependencies: false};
   const parents = (options.parents = options.parents || []);
 
@@ -242,6 +245,12 @@ function walkAST(ast, before, after, options) {
       }
     }
     return merged;
+  }
+}
+
+function assertHook(name, hook) {
+  if (hook != null && typeof hook !== 'function') {
+    throw new TypeError(name + ' must be a function, null, or undefined');
   }
 }
 

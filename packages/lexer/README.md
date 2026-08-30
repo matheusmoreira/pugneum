@@ -113,6 +113,18 @@ console.log(JSON.stringify(lex('div(data-foo="bar")\n  p Hello', {filename: 'my-
 ]
 ```
 
+Every token has a `type` and a `loc`; token-specific fields such as `val`,
+`name`, or `args` are added where applicable. Lines and columns are one-based,
+and `loc.end` is end-exclusive. Locations always refer to the normalized
+physical input, remain in source order, and stay within physical source bounds.
+
+Inline shorthand is lowered to ordinary tag and attribute tokens. Structure
+that has no literal spelling in the input uses a zero-width location at the
+corresponding shorthand payload boundary, while authored payload text keeps its
+physical span across escapes and multiline folding. Consumers must therefore
+use `loc`, rather than the length of a transformed token value, for source
+mapping. The final `eos` token is also zero-width.
+
 ## License
 
   MIT

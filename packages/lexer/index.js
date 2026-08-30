@@ -484,13 +484,16 @@ function resetInterpolationState(state) {
  * Merge consecutive lines that have unclosed inline shorthand constructs
  * into single entries so multi-line inline elements are handled as one unit.
  *
- * Returns an array of {text, indented, lines} objects.
+ * Returns groups with both normalized text and the original line segments.
+ * The segments let the lexer map each normalized boundary back to its physical
+ * line and column instead of assigning a whole folded construct to line one.
  */
 function mergeMultiLineInterpolations(tokens, token_indent) {
   const result = [];
   let pendingText = null;
   let pendingLines = 0;
   let pendingIndentIdx = 0;
+  let pendingSegments = [];
   const state = resetInterpolationState({});
 
   for (let j = 0; j < tokens.length; j++) {
@@ -500,6 +503,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       pendingText = tokens[j];
       pendingIndentIdx = j;
     }
+    pendingSegments.push({text: tokens[j], indented: token_indent[j]});
     pendingLines++;
 
     if (interpolationsAreClosed(tokens[j], state)) {
@@ -507,9 +511,11 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
         text: pendingText,
         indented: token_indent[pendingIndentIdx],
         lines: pendingLines,
+        segments: pendingSegments,
       });
       pendingText = null;
       pendingLines = 0;
+      pendingSegments = [];
       resetInterpolationState(state);
     }
   }
@@ -518,6 +524,7 @@ function mergeMultiLineInterpolations(tokens, token_indent) {
       text: pendingText,
       indented: token_indent[pendingIndentIdx],
       lines: pendingLines,
+      segments: pendingSegments,
     });
   }
   return result;
@@ -539,7 +546,22 @@ class Lexer {
     //Strip any UTF-8 BOM off of the start of `str`, if it exists.
     str = str.replace(/^\uFEFF/, '');
     this.input = str.replace(/\r\n|\r/g, '\n');
-    this.originalInput = this.input;
+    this.generatedInput = this.input;
+    this.originalInput =
+      options.originalInput === undefined
+        ? this.input
+        : options.originalInput.replace(/\r\n|\r/g, '\n');
+    // Mapped child lexers scan normalized or generated input while publishing
+    // locations and diagnostics in the root source coordinate space. Each
+    // entry maps one generated string boundary, including the final boundary.
+    this.locationMap = options.locationMap || null;
+    this.generatedLineStarts = [0];
+    if (this.locationMap) {
+      for (let i = 0; i < this.generatedInput.length; i++) {
+        if (this.generatedInput[i] === '\n')
+          this.generatedLineStarts.push(i + 1);
+      }
+    }
     this.filename = options.filename;
     // Shared sink for non-fatal diagnostics. The same array is threaded
     // through the loader and child lexers so warnings from included files
@@ -552,16 +574,20 @@ class Lexer {
     this.indentStack = [0];
     this.indentRe = null;
     // If #{} or inline shorthand syntax is allowed when adding text
-    this.interpolationAllowed = true;
+    this.interpolationAllowed =
+      options.interpolationAllowed === undefined
+        ? true
+        : options.interpolationAllowed;
 
     this.tokens = [];
     this.ended = false;
   }
 
   error(code, message) {
+    const location = this.sourceLocation(this.lineno, this.colno);
     const err = error(code, message, {
-      line: this.lineno,
-      column: this.colno,
+      line: location.line,
+      column: location.column,
       filename: this.filename,
       source: this.originalInput,
     });
@@ -569,10 +595,11 @@ class Lexer {
   }
 
   warn(code, message) {
+    const location = this.sourceLocation(this.lineno, this.colno);
     this.warnings.push(
       error.warning(code, message, {
-        line: this.lineno,
-        column: this.colno,
+        line: location.line,
+        column: location.column,
         filename: this.filename,
         source: this.originalInput,
       }),
@@ -603,13 +630,11 @@ class Lexer {
   }
 
   tok(type, val) {
+    const start = this.sourceLocation(this.lineno, this.colno);
     const res = {
       type: type,
       loc: {
-        start: {
-          line: this.lineno,
-          column: this.colno,
-        },
+        start,
         filename: this.filename,
       },
     };
@@ -620,11 +645,42 @@ class Lexer {
   }
 
   tokEnd(tok) {
-    tok.loc.end = {
-      line: this.lineno,
-      column: this.colno,
-    };
+    tok.loc.end = this.sourceLocation(this.lineno, this.colno);
     return tok;
+  }
+
+  sourceLocation(line, column) {
+    if (!this.locationMap) return {line, column};
+
+    const lineStart = this.generatedLineStarts[line - 1];
+    const offset =
+      lineStart === undefined
+        ? this.locationMap.length - 1
+        : lineStart + column - 1;
+    const boundedOffset = Math.max(
+      0,
+      Math.min(offset, this.locationMap.length - 1),
+    );
+    const mapped = this.locationMap[boundedOffset];
+    return {line: mapped.line, column: mapped.column};
+  }
+
+  sourceLocationMap(source) {
+    let line = this.lineno;
+    let column = this.colno;
+    const locations = [this.sourceLocation(line, column)];
+
+    for (let i = 0; i < source.length; i++) {
+      if (source[i] === '\n') {
+        line++;
+        column = 1;
+      } else {
+        column++;
+      }
+      locations.push(this.sourceLocation(line, column));
+    }
+
+    return locations;
   }
 
   incrementLine(increment) {
@@ -1192,8 +1248,9 @@ class Lexer {
     return null;
   }
 
-  spawnChildLexer(input) {
-    if (this.depth >= 256) {
+  createChildLexer(input, locationMap, options) {
+    options = options || {};
+    if (options.nested && this.depth >= 256) {
       this.error(
         'NESTING_TOO_DEEP',
         'Inline element nesting exceeds maximum depth of 256',
@@ -1201,22 +1258,152 @@ class Lexer {
     }
     const child = new this.constructor(input, {
       filename: this.filename,
-      interpolated: true,
-      depth: this.depth + 1,
-      startingLine: this.lineno,
-      startingColumn: this.colno,
+      interpolated: options.interpolated,
+      interpolationAllowed: this.interpolationAllowed,
+      depth: this.depth + (options.nested ? 1 : 0),
+      originalInput: this.originalInput,
+      locationMap,
       warnings: this.warnings,
     });
-    try {
-      child.getTokens();
-    } catch (ex) {
-      if (ex.code && /^PUGNEUM:/.test(ex.code)) {
-        this.colno = ex.column;
-        this.error(ex.code.slice(8), ex.msg);
-      }
-      throw ex;
-    }
     return child;
+  }
+
+  spawnChildLexer(input, locationMap) {
+    const child = this.createChildLexer(input, locationMap, {
+      interpolated: true,
+      nested: true,
+    });
+    child.getTokens();
+    return child;
+  }
+
+  addMappedText(value, locationMap, options) {
+    options = options || {};
+    // Invoke the inline scanner directly: running the normal dispatch loop
+    // would reinterpret an authored leading word as a tag. The child retains
+    // the original nesting/escaping behavior but exposes only mapped tokens.
+    const child = this.createChildLexer(value, locationMap, options);
+    child.input = '';
+    child.addText('text', value);
+    const trailing = child.tokens[child.tokens.length - 1];
+    // Synthetic shorthand children used to stop at an invented closing `)`
+    // before addText could emit its final empty text token. Preserve that token
+    // only for direct pipeless/reference text, where it was already observable.
+    if (
+      options.trimTrailingEmpty &&
+      value &&
+      trailing &&
+      trailing.type === 'text' &&
+      trailing.val === ''
+    ) {
+      child.tokens.pop();
+    }
+    for (let ti = 0; ti < child.tokens.length; ti++) {
+      this.tokens.push(child.tokens[ti]);
+    }
+  }
+
+  mapPipelessText(segments, startLine, indents) {
+    let value = '';
+    let locations = null;
+    let endLine = startLine;
+    let endColumn = 1;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const line = startLine + i;
+      const trimmed = i === 0 ? segment.text : segment.text.trimStart();
+      const trimmedColumns = segment.text.length - trimmed.length;
+      const column = (segment.indented ? indents : 0) + trimmedColumns + 1;
+
+      if (i === 0) {
+        locations = [this.sourceLocation(line, column)];
+      } else {
+        value += ' ';
+        locations.push(this.sourceLocation(line, column));
+      }
+
+      value += trimmed;
+      for (let j = 1; j <= trimmed.length; j++) {
+        locations.push(this.sourceLocation(line, column + j));
+      }
+
+      endLine = line;
+      endColumn = (segment.indented ? indents : 0) + segment.text.length + 1;
+    }
+
+    return {value, locations, endLine, endColumn};
+  }
+
+  addSourceText(value) {
+    if (value) {
+      this.addMappedText(value, this.sourceLocationMap(value), {
+        interpolated: true,
+        nested: true,
+        trimTrailingEmpty: true,
+      });
+    }
+    this.advanceLocation(value);
+  }
+
+  addReferenceText(value) {
+    const sourceMap = this.sourceLocationMap(value);
+    const preparedMap = [sourceMap[0]];
+    let prepared = '';
+
+    for (let i = 0; i < value.length; ) {
+      if (
+        value[i] === '\\' &&
+        i + 1 < value.length &&
+        (value[i + 1] === '[' || value[i + 1] === ']' || value[i + 1] === '\\')
+      ) {
+        prepared += value[i + 1];
+        preparedMap.push(sourceMap[i + 2]);
+        i += 2;
+        continue;
+      }
+
+      if (
+        (value[i] === '@' || value[i] === '!' || value[i] === '^') &&
+        value[i + 1] === '['
+      ) {
+        prepared += '\\';
+        preparedMap.push(sourceMap[i]);
+        prepared += value[i];
+        preparedMap.push(sourceMap[i + 1]);
+        prepared += '[';
+        preparedMap.push(sourceMap[i + 2]);
+        i += 2;
+        continue;
+      }
+
+      prepared += value[i];
+      preparedMap.push(sourceMap[i + 1]);
+      i++;
+    }
+
+    this.addMappedText(prepared, preparedMap);
+    this.advanceLocation(value);
+  }
+
+  startDesugaredElement(tag) {
+    let tok = this.tok('start-interpolation');
+    this.incrementColumn(2);
+    this.tokens.push(this.tokEnd(tok));
+
+    // The tag spelling is generated, so it is zero-width at the first authored
+    // payload boundary. User-authored child text receives its own mapped span.
+    tok = this.tok('tag', tag);
+    this.tokens.push(this.tokEnd(tok));
+  }
+
+  generatedAttribute(name, value) {
+    // Generated attributes share the same zero-width origin policy as their
+    // generated tag. Appended source attributes are parsed at physical spans.
+    const tok = this.tok('attribute');
+    tok.name = name;
+    tok.val = value;
+    this.tokens.push(this.tokEnd(tok));
   }
 
   handleInterpolation(type, value, prefix, escaped, pos) {
@@ -1226,8 +1413,13 @@ class Lexer {
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
-    const child = this.spawnChildLexer(value.slice(pos + 2));
-    this.colno = child.colno;
+    const childInput = value.slice(pos + 2);
+    const child = this.spawnChildLexer(
+      childInput,
+      this.sourceLocationMap(childInput),
+    );
+    const consumed = childInput.length - child.input.length - 1;
+    this.advanceLocation(childInput.slice(0, consumed));
     for (let ti = 0; ti < child.tokens.length; ti++) {
       this.tokens.push(child.tokens[ti]);
     }
@@ -1250,55 +1442,44 @@ class Lexer {
     const content = range.src;
     const after = rest.substring(range.end + 1);
 
-    let url, text;
+    let url, text, urlStart, urlEnd, textStart;
     if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
       const quote = content[0];
       const endQuote = findClosingQuote(content, quote, 1);
       if (endQuote === -1) {
         this.error(errorCode, `Unclosed quote in ${label} URL.`);
       }
+      urlStart = 1;
+      urlEnd = endQuote;
       url = content.substring(1, endQuote);
-      text = content.substring(endQuote + 1).trimStart() || null;
+      const afterUrl = content.substring(endQuote + 1);
+      const trimmed = afterUrl.trimStart();
+      text = trimmed || null;
+      textStart = text === null ? null : content.length - trimmed.length;
     } else {
       const spaceIdx = content.indexOf(' ');
+      urlStart = 0;
+      urlEnd = spaceIdx === -1 ? content.length : spaceIdx;
       if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
         url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
         text = null;
+        textStart = null;
       } else {
         url = content.substring(0, spaceIdx);
         text = content.substring(spaceIdx + 1);
+        textStart = spaceIdx + 1;
       }
     }
     return {
       url: unescapeShorthand(url),
       rawUrl: url,
       text,
+      urlStart,
+      urlEnd,
+      textStart,
       content,
       after,
     };
-  }
-
-  escapeForAttr(value) {
-    const quote = value.includes("'") ? '"' : "'";
-    const escaped = value
-      .replaceAll('\\', '\\\\')
-      .replaceAll(quote, '\\' + quote);
-    return {quote, escaped};
-  }
-
-  desugarAsInterpolation(childInput, contentLen) {
-    let tok = this.tok('start-interpolation');
-    this.incrementColumn(2);
-    this.tokens.push(this.tokEnd(tok));
-    const child = this.spawnChildLexer(childInput);
-    this.incrementColumn(contentLen);
-    for (let ti = 0; ti < child.tokens.length; ti++) {
-      this.tokens.push(child.tokens[ti]);
-    }
-    tok = this.tok('end-interpolation');
-    this.incrementColumn(1);
-    this.tokens.push(this.tokEnd(tok));
-    return child.input;
   }
 
   handleLinkShorthand(type, value, prefix, escaped, pos) {
@@ -1313,10 +1494,24 @@ class Lexer {
       'INVALID_LINK',
       '@() link',
     );
-    const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
+    this.startDesugaredElement('a');
+
+    tok = this.tok('start-attributes');
+    this.tokens.push(this.tokEnd(tok));
+    this.generatedAttribute('href', parsed.url);
+    tok = this.tok('end-attributes');
+    this.tokens.push(this.tokEnd(tok));
+
     const linkText = parsed.text !== null ? parsed.text : parsed.rawUrl;
-    const childInput = `a(href=${quote}${escapedUrl}${quote}) ${linkText})${parsed.after}`;
-    return this.desugarAsInterpolation(childInput, parsed.content.length);
+    const textStart = parsed.text !== null ? parsed.textStart : parsed.urlStart;
+    this.advanceLocation(parsed.content.slice(0, textStart));
+    this.addSourceText(linkText);
+    this.advanceLocation(parsed.content.slice(textStart + linkText.length));
+
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+    return parsed.after;
   }
 
   handleImageShorthand(type, value, prefix, escaped, pos) {
@@ -1331,14 +1526,10 @@ class Lexer {
       'INVALID_IMAGE',
       '!() image',
     );
-    let afterImage = parsed.after;
     const altText = parsed.text !== null ? unescapeShorthand(parsed.text) : '';
-    const {quote, escaped: escapedUrl} = this.escapeForAttr(parsed.url);
-    const {quote: altQuote, escaped: escapedAlt} = this.escapeForAttr(altText);
-
-    let extraAttrs = '';
+    let afterImage = parsed.after;
+    let attrRange = null;
     if (afterImage.startsWith('(')) {
-      let attrRange;
       try {
         attrRange = parseExpressionUntil(afterImage, ')', 1);
       } catch (ex) {
@@ -1350,12 +1541,35 @@ class Lexer {
         }
         throw ex;
       }
-      extraAttrs = ' ' + attrRange.src;
-      afterImage = afterImage.substring(attrRange.end + 1);
     }
 
-    const childInput = `img(src=${quote}${escapedUrl}${quote} alt=${altQuote}${escapedAlt}${altQuote}${extraAttrs}))${afterImage}`;
-    return this.desugarAsInterpolation(childInput, parsed.content.length);
+    this.startDesugaredElement('img');
+    tok = this.tok('start-attributes');
+    this.tokens.push(this.tokEnd(tok));
+    this.generatedAttribute('src', parsed.url);
+    this.generatedAttribute('alt', altText);
+
+    this.advanceLocation(parsed.content);
+    if (attrRange) {
+      this.incrementColumn(1); // primary shorthand close
+      this.incrementColumn(1); // appended attribute block open
+      let attrs = attrRange.src;
+      while (attrs) attrs = this.attribute(attrs);
+      this.incrementColumn(1); // appended attribute block close
+      afterImage = afterImage.substring(attrRange.end + 1);
+
+      tok = this.tok('end-attributes');
+      this.tokens.push(this.tokEnd(tok));
+      tok = this.tok('end-interpolation');
+      this.tokens.push(this.tokEnd(tok));
+    } else {
+      tok = this.tok('end-attributes');
+      this.tokens.push(this.tokEnd(tok));
+      tok = this.tok('end-interpolation');
+      this.incrementColumn(1);
+      this.tokens.push(this.tokEnd(tok));
+    }
+    return afterImage;
   }
 
   handleAbbrShorthand(type, value, prefix, escaped, pos) {
@@ -1370,22 +1584,29 @@ class Lexer {
       'INVALID_ABBR',
       '?() abbr',
     );
-    const afterAbbr = parsed.after;
-
     // parsed.url = first word (the abbreviation), unescaped for attributes
-    // parsed.rawUrl = raw abbreviation, for child input
+    // parsed.rawUrl = raw abbreviation, for visible text
     // parsed.text = rest (the expansion), or null if no space
     const expansion =
       parsed.text !== null ? unescapeShorthand(parsed.text) : '';
 
-    let childInput;
+    this.startDesugaredElement('abbr');
     if (expansion) {
-      const {quote, escaped: escapedExpansion} = this.escapeForAttr(expansion);
-      childInput = `abbr(title=${quote}${escapedExpansion}${quote}) ${parsed.rawUrl})${afterAbbr}`;
-    } else {
-      childInput = `abbr ${parsed.rawUrl})${afterAbbr}`;
+      tok = this.tok('start-attributes');
+      this.tokens.push(this.tokEnd(tok));
+      this.generatedAttribute('title', expansion);
+      tok = this.tok('end-attributes');
+      this.tokens.push(this.tokEnd(tok));
     }
-    return this.desugarAsInterpolation(childInput, parsed.content.length);
+
+    this.advanceLocation(parsed.content.slice(0, parsed.urlStart));
+    this.addSourceText(parsed.rawUrl);
+    this.advanceLocation(parsed.content.slice(parsed.urlEnd));
+
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+    return parsed.after;
   }
 
   handleInlineShorthand(type, value, prefix, escaped, pos, tag, sigil, name) {
@@ -1407,8 +1628,13 @@ class Lexer {
       throw ex;
     }
     const afterShorthand = rest.substring(range.end + 1);
-    const childInput = `${tag} ${range.src})${afterShorthand}`;
-    return this.desugarAsInterpolation(childInput, range.src.length);
+    this.startDesugaredElement(tag);
+    this.addSourceText(range.src);
+
+    tok = this.tok('end-interpolation');
+    this.incrementColumn(1);
+    this.tokens.push(this.tokEnd(tok));
+    return afterShorthand;
   }
 
   handleCodeShorthand(type, value, prefix, escaped, pos) {
@@ -1492,11 +1718,6 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
 
     if (linkText) {
-      // Unescape bracket-specific escapes (\[ \] \\), then escape nested
-      // bracket shorthands (@[ ![ ^[) so addText treats them as literal text
-      const prepared = linkText
-        .replace(/\\([\[\]\\])/g, '$1')
-        .replace(/([@!^])\[/g, '\\$1[');
       this.incrementColumn(name.length + 1);
       const savedInterpolated = this.interpolated;
       this.interpolated = false;
@@ -1504,7 +1725,7 @@ class Lexer {
         // addText can throw (e.g. unclosed inline shorthand in the link text);
         // restore in finally so the flag does not leak, mirroring the
         // try/finally-guarded this.input swap for trailing attrs below.
-        this.addText('text', prepared, '', 0);
+        this.addReferenceText(linkText);
       } finally {
         this.interpolated = savedInterpolated;
       }
@@ -1574,8 +1795,9 @@ class Lexer {
       // because the linker extracts alt text by filtering for Text nodes only.
       // Expanding shorthands here would create Tag nodes the linker silently drops.
       const unescaped = altText.replace(/\\([\[\]\\])/g, '$1');
+      this.incrementColumn(name.length + 1);
       const textTok = this.tok('text', unescaped);
-      this.incrementColumn(name.length + 1 + altText.length);
+      this.incrementColumn(altText.length);
       this.tokens.push(this.tokEnd(textTok));
     } else {
       this.incrementColumn(name.length);
@@ -1613,7 +1835,8 @@ class Lexer {
         'End of line reached with no closing ] for ^[] footnote reference.',
       );
     }
-    const name = inner.substring(0, result.end).trim();
+    const rawName = inner.substring(0, result.end);
+    const name = rawName.trim();
     if (!name) {
       this.error(
         'INVALID_FOOTNOTE_REF',
@@ -1625,7 +1848,7 @@ class Lexer {
     tok.val = name;
     this.incrementColumn(2); // ^[
     this.tokens.push(this.tokEnd(tok));
-    this.incrementColumn(name.length);
+    this.incrementColumn(rawName.length);
 
     tok = this.tok('end-footnote-ref');
     this.incrementColumn(1); // ]
@@ -2461,11 +2684,9 @@ class Lexer {
           outdent_count++;
           this.indentStack.shift();
         }
+        this.colno = indents + 1;
         while (outdent_count--) {
-          this.colno = 1;
-          tok = this.tok('outdent');
-          this.colno = this.indentStack[0] + 1;
-          this.tokens.push(this.tokEnd(tok));
+          this.tokens.push(this.tokEnd(this.tok('outdent')));
         }
         // indent
       } else if (indents && indents !== this.indentStack[0]) {
@@ -2536,14 +2757,18 @@ class Lexer {
 
       for (let mi = 0; mi < merged.length; mi++) {
         let tok;
+        const mapped = this.mapPipelessText(
+          merged[mi].segments,
+          this.lineno + 1,
+          indents,
+        );
         this.incrementLine(1);
         if (mi !== 0) tok = this.tok('newline');
         if (merged[mi].indented) this.incrementColumn(indents);
         if (tok) this.tokens.push(this.tokEnd(tok));
-        this.addText('text', merged[mi].text);
-        if (merged[mi].lines > 1) {
-          this.incrementLine(merged[mi].lines - 1);
-        }
+        this.addMappedText(mapped.value, mapped.locations);
+        this.lineno = mapped.endLine;
+        this.colno = mapped.endColumn;
       }
       this.tokens.push(this.tokEnd(this.tok('end-pipeless-text')));
       return true;

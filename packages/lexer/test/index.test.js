@@ -20,6 +20,42 @@ function readShared(filename) {
   return fs.readFileSync(path.join(dir, filename), 'utf8');
 }
 
+function comparePoints(left, right) {
+  return left.line - right.line || left.column - right.column;
+}
+
+function assertPhysicalTokenLocations(source, tokens, label) {
+  const normalized = source.replace(/^\uFEFF/, '').replace(/\r\n|\r/g, '\n');
+  const lines = normalized.split('\n');
+  let previousEnd = {line: 1, column: 1};
+
+  tokens.forEach((tok, index) => {
+    const start = tok.loc.start;
+    const end = tok.loc.end;
+    const context = label + ' token ' + index + ' (' + tok.type + ')';
+
+    assert.ok(
+      start.line >= 1 && start.line <= lines.length,
+      context + ' start line',
+    );
+    assert.ok(end.line >= 1 && end.line <= lines.length, context + ' end line');
+    assert.ok(
+      start.column >= 1 && start.column <= lines[start.line - 1].length + 1,
+      context + ' start column',
+    );
+    assert.ok(
+      end.column >= 1 && end.column <= lines[end.line - 1].length + 1,
+      context + ' end column',
+    );
+    assert.ok(comparePoints(start, end) <= 0, context + ' has a reversed span');
+    assert.ok(
+      comparePoints(previousEnd, start) <= 0,
+      context + ' moves backward in the token stream',
+    );
+    previousEnd = end;
+  });
+}
+
 sharedCases.forEach(function (testCase) {
   test(testCase, (t) => {
     var result = lex(readShared(testCase), {
@@ -237,6 +273,87 @@ describe('mixin call line boundaries', () => {
         err.line === 3 &&
         err.column === 6,
     );
+  });
+});
+
+describe('physical shorthand source locations', () => {
+  test('all shared token streams are monotonic and within physical source bounds', () => {
+    sharedCases.forEach((filename) => {
+      const source = readShared(filename);
+      const tokens = lex(source, {filename});
+      assertPhysicalTokenLocations(source, tokens, filename);
+    });
+  });
+
+  test('generated shorthand structure does not displace authored text', () => {
+    const source = 'p before *(x) after';
+    const tokens = lex(source, {filename: 'locations.pg'});
+    const generatedTag = tokens.find(
+      (tok) => tok.type === 'tag' && tok.val === 'strong',
+    );
+    const inner = tokens.find((tok) => tok.type === 'text' && tok.val === 'x');
+
+    assert.deepStrictEqual(generatedTag.loc.start, {line: 1, column: 12});
+    assert.deepStrictEqual(generatedTag.loc.end, generatedTag.loc.start);
+    assert.deepStrictEqual(inner.loc.start, {line: 1, column: 12});
+    assert.deepStrictEqual(inner.loc.end, {line: 1, column: 13});
+  });
+
+  test('image attributes advance the parent cursor through the authored block', () => {
+    const source = 'p !(/x alt)(class=y) tail';
+    const tokens = lex(source, {filename: 'locations.pg'});
+    const tail = tokens.find(
+      (tok) => tok.type === 'text' && tok.val === ' tail',
+    );
+    const eos = tokens.at(-1);
+
+    assert.strictEqual(tail.loc.start.column, source.indexOf(' tail') + 1);
+    assert.strictEqual(eos.loc.end.column, source.length + 1);
+  });
+
+  test('reference payload normalization does not change source widths', () => {
+    const imageSource = 'p ![img alt]';
+    const imageTokens = lex(imageSource, {filename: 'locations.pg'});
+    const alt = imageTokens.find(
+      (tok) => tok.type === 'text' && tok.val === 'alt',
+    );
+    assert.deepStrictEqual(alt.loc.start, {line: 1, column: 9});
+    assert.deepStrictEqual(alt.loc.end, {line: 1, column: 12});
+
+    ['p @[ref label\\]] tail', 'p @[ref @[inner]] tail'].forEach((source) => {
+      const eos = lex(source, {filename: 'locations.pg'}).at(-1);
+      assert.strictEqual(eos.loc.end.column, source.length + 1, source);
+    });
+
+    const footnoteSource = 'p ^[ note ] tail';
+    const footnoteEos = lex(footnoteSource, {filename: 'locations.pg'}).at(-1);
+    assert.strictEqual(footnoteEos.loc.end.column, footnoteSource.length + 1);
+  });
+
+  test('multiline shorthand payloads retain their physical line and column', () => {
+    const source = 'div.\n  alpha *(strong\n    _(em)) omega';
+    const tokens = lex(source, {filename: 'locations.pg'});
+    const generatedTag = tokens.find(
+      (tok) => tok.type === 'tag' && tok.val === 'em',
+    );
+    const inner = tokens.find((tok) => tok.type === 'text' && tok.val === 'em');
+
+    assert.deepStrictEqual(generatedTag.loc.start, {line: 3, column: 7});
+    assert.deepStrictEqual(generatedTag.loc.end, generatedTag.loc.start);
+    assert.deepStrictEqual(inner.loc.start, {line: 3, column: 7});
+    assert.deepStrictEqual(inner.loc.end, {line: 3, column: 9});
+  });
+
+  test('warnings from appended image attributes retain root source provenance', () => {
+    const source = 'p before !(/img alt)(title=‘x’) after';
+    const warnings = [];
+
+    lex(source, {filename: 'locations.pg', warnings});
+
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].line, 1);
+    assert.strictEqual(warnings[0].column, source.indexOf('‘') + 1);
+    assert.strictEqual(warnings[0].source, source);
   });
 });
 

@@ -694,6 +694,83 @@ describe('quoted reference-definition URLs', () => {
   });
 });
 
+describe('mixin definition parameter boundaries', () => {
+  const quoteCases = ["'", '"'];
+
+  function mixinToken(source) {
+    const tokens = lex(source, {filename: 'mixin.pg'});
+    assertPhysicalTokenLocations(source, tokens, source);
+    return tokens.find((tok) => tok.type === 'mixin');
+  }
+
+  function assertParameterError(source, code, column) {
+    assert.throws(
+      () => lex(source, {filename: 'mixin.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:' + code);
+        assert.deepStrictEqual(
+          {line: err.line, column: err.column},
+          {line: 1, column},
+        );
+        return true;
+      },
+    );
+  }
+
+  test('escaped matching quotes decode in defaults before later parameters', () => {
+    quoteCases.forEach((quote) => {
+      const escaped = 'a' + '\\' + quote + 'b';
+      const source =
+        'mixin sample(first=' + quote + escaped + quote + ' second=tail)';
+
+      assert.deepStrictEqual(mixinToken(source).args, [
+        {name: 'first', default: 'a' + quote + 'b'},
+        {name: 'second', default: 'tail'},
+      ]);
+    });
+  });
+
+  test('parentheses inside quoted defaults do not close the parameter list', () => {
+    quoteCases.forEach((quote) => {
+      const source =
+        'mixin sample(first=' + quote + 'a)b(c' + quote + ' second=tail)';
+
+      assert.deepStrictEqual(mixinToken(source).args, [
+        {name: 'first', default: 'a)b(c'},
+        {name: 'second', default: 'tail'},
+      ]);
+    });
+  });
+
+  test('unclosed quoted defaults fail at their opening delimiter', () => {
+    quoteCases.forEach((quote) => {
+      const source = 'mixin sample(first=' + quote + 'unterminated)';
+      assertParameterError(
+        source,
+        'INVALID_MIXIN_PARAM',
+        source.indexOf(quote) + 1,
+      );
+    });
+  });
+
+  test('an unclosed later default with a trailing escape fails locally', () => {
+    quoteCases.forEach((quote) => {
+      const source =
+        'mixin sample(first=ok second=' + quote + 'unterminated' + '\\' + ')';
+      assertParameterError(
+        source,
+        'INVALID_MIXIN_PARAM',
+        source.indexOf(quote) + 1,
+      );
+    });
+  });
+
+  test('a balanced default still requires the parameter-list close', () => {
+    const source = "mixin sample(first='ok' second=tail";
+    assertParameterError(source, 'NO_END_BRACKET', source.length + 1);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

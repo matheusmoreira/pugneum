@@ -183,12 +183,13 @@ function scanChar(str, i, quote) {
   return {i: i + 1, quote: null};
 }
 
-function throwUnclosed(end, i) {
+function throwUnclosed(end, i, quoteStart) {
   const err = new Error(
     'The end of the string reached with no closing bracket ' + end + ' found.',
   );
   err.code = 'CHARACTER_PARSER:END_OF_STRING_REACHED';
   err.index = i;
+  if (quoteStart >= 0) err.quoteStart = quoteStart;
   throw err;
 }
 
@@ -200,13 +201,17 @@ function parseExpressionUntil(str, end, start) {
   let depth = 1;
   let i = start;
   let quote = null;
+  let quoteStart = -1;
   const open = closingBrackets[end];
 
   while (i < str.length) {
     const c = str[i];
 
     if (quote || c === "'" || c === '"') {
+      const wasQuoted = quote !== null;
+      if (!wasQuoted) quoteStart = i;
       ({i, quote} = scanChar(str, i, quote));
+      if (wasQuoted && quote === null) quoteStart = -1;
       continue;
     }
 
@@ -221,7 +226,7 @@ function parseExpressionUntil(str, end, start) {
     i++;
   }
 
-  throwUnclosed(end, i);
+  throwUnclosed(end, i, quoteStart);
 }
 
 /**
@@ -2252,17 +2257,50 @@ class Lexer {
    */
 
   mixin() {
-    let captures;
-    if (
-      (captures = /^mixin +([a-zA-Z][-\w]*)(?: *\((.*)\))? */.exec(this.input))
-    ) {
-      this.consume(captures[0].length);
-      const tok = this.tok('mixin', captures[1]);
-      tok.args = this.parseMixinParams(captures[2] || '');
-      this.incrementColumn(captures[0].length);
-      this.tokens.push(this.tokEnd(tok));
-      return true;
+    const captures = /^mixin +([a-zA-Z][-\w]*)/.exec(this.input);
+    if (!captures) return;
+
+    let end = captures[0].length;
+    while (this.input[end] === ' ') end++;
+
+    let params = '';
+    let paramsStart = end;
+    if (this.input[end] === '(') {
+      const lineEnd = this.input.indexOf('\n');
+      const line =
+        lineEnd === -1 ? this.input : this.input.substring(0, lineEnd);
+      let range;
+      try {
+        range = parseExpressionUntil(line, ')', end + 1);
+      } catch (ex) {
+        if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
+          if (Number.isInteger(ex.quoteStart)) {
+            this.incrementColumn(ex.quoteStart);
+            this.error(
+              'INVALID_MIXIN_PARAM',
+              'Unclosed quote in mixin parameter list.',
+            );
+          }
+          this.advanceLocation(line.slice(0, ex.index));
+          this.error(
+            'NO_END_BRACKET',
+            'End of line reached with no closing ) for mixin parameters.',
+          );
+        }
+        throw ex;
+      }
+      params = range.src;
+      paramsStart = end + 1;
+      end = range.end + 1;
+      while (this.input[end] === ' ') end++;
     }
+
+    const tok = this.tok('mixin', captures[1]);
+    tok.args = this.parseMixinParams(params, paramsStart);
+    this.consume(end);
+    this.incrementColumn(end);
+    this.tokens.push(this.tokEnd(tok));
+    return true;
   }
 
   /**
@@ -2277,7 +2315,7 @@ class Lexer {
    *   name='val ue'     → { name: 'name', default: 'val ue' }
    *   name="val ue"     → { name: 'name', default: 'val ue' }
    */
-  parseMixinParams(str) {
+  parseMixinParams(str, paramsStart) {
     const params = [];
     let i = 0;
 
@@ -2306,6 +2344,7 @@ class Lexer {
         let dflt = '';
         if (i < str.length && (str[i] === "'" || str[i] === '"')) {
           // quoted default value with escape sequence support
+          const quoteStart = i;
           const quote = str[i++];
           while (i < str.length && str[i] !== quote) {
             if (str[i] === '\\' && i + 1 < str.length) {
@@ -2313,7 +2352,14 @@ class Lexer {
             }
             dflt += str[i++];
           }
-          if (i < str.length) i++; // skip closing quote
+          if (i >= str.length) {
+            this.incrementColumn(paramsStart + quoteStart);
+            this.error(
+              'INVALID_MIXIN_PARAM',
+              'Unclosed quote in mixin parameter list.',
+            );
+          }
+          i++; // skip closing quote
         } else {
           // unquoted default value
           while (i < str.length && str[i] !== ' ') {

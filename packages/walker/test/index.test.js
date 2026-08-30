@@ -267,7 +267,7 @@ test('the return value preserves identity unless the root is replaced', function
 test('parents is nearest-first during hooks and restored afterward', function () {
   var text = {type: 'Text', val: 'x'};
   var innerBlock = {type: 'Block', nodes: [text]};
-  var tag = {type: 'Tag', name: 'p', block: innerBlock};
+  var tag = {type: 'Tag', name: 'p', attrs: [], block: innerBlock};
   var root = {type: 'Block', nodes: [tag]};
   var seed = {type: 'Comment', val: 'seed', buffer: false};
   var parents = [seed];
@@ -442,14 +442,25 @@ test('parents array is cleaned up when before hook throws', (t) => {
 });
 
 test('unknown node type throws', function () {
+  var beforeRan = false;
   assert.throws(
     function () {
-      walk({type: 'UnknownNodeType', line: 1});
+      walk({type: 'UnknownNodeType', line: 1}, function before() {
+        beforeRan = true;
+      });
     },
     function (err) {
-      return err.message === 'Unexpected node type UnknownNodeType';
+      return (
+        err.name === 'ASTValidationError' &&
+        err.code === 'INVALID_AST' &&
+        err.kind === 'unknown-type' &&
+        err.path === '$' &&
+        err.line === 1 &&
+        err.message.includes("unknown node type 'UnknownNodeType'")
+      );
     },
   );
+  assert.strictEqual(beforeRan, false);
 });
 
 describe('argument overload detection', function () {
@@ -653,7 +664,10 @@ describe('replace.arrayAllowed truth table', function () {
   test('child of a NamedBlock', function () {
     var child = {type: 'Text', val: 'x'};
     assert.strictEqual(
-      arrayAllowedFor({type: 'NamedBlock', name: 'n', nodes: [child]}, child),
+      arrayAllowedFor(
+        {type: 'NamedBlock', name: 'n', mode: 'replace', nodes: [child]},
+        child,
+      ),
       true,
     );
   });
@@ -665,7 +679,7 @@ describe('replace.arrayAllowed truth table', function () {
         {
           type: 'RawInclude',
           filters: [child],
-          file: {type: 'FileReference'},
+          file: {type: 'FileReference', path: 'file.pg'},
         },
         child,
       ),
@@ -675,7 +689,7 @@ describe('replace.arrayAllowed truth table', function () {
 
   test('non-IncludeFilter child of a RawInclude is not array-allowed', function () {
     // RawInclude.file is a FileReference, which is not an IncludeFilter.
-    var file = {type: 'FileReference'};
+    var file = {type: 'FileReference', path: 'file.pg'};
     assert.strictEqual(
       arrayAllowedFor({type: 'RawInclude', filters: [], file: file}, file),
       false,
@@ -839,47 +853,149 @@ describe('validate()', function () {
   });
 });
 
-describe('malformed known nodes throw a located error, not a raw TypeError', function () {
+describe('malformed known nodes fail before hooks with exact location', function () {
+  function block() {
+    return {type: 'Block', nodes: []};
+  }
+
+  function file() {
+    return {type: 'FileReference', path: 'file.pg'};
+  }
+
   var cases = [
-    [{type: 'Block', nodes: null}, /Malformed Block node/],
-    [{type: 'NamedBlock', name: 'x', nodes: null}, /Malformed NamedBlock node/],
+    ['Block.nodes', {type: 'Block', nodes: null}, '$.nodes'],
     [
-      {type: 'Include', block: null, file: {type: 'FileReference'}},
-      /Malformed Include node/,
+      'BlockComment.block',
+      {type: 'BlockComment', val: '', buffer: false, block: null},
+      '$.block',
+    ],
+    ['Comment.buffer', {type: 'Comment', val: '', buffer: 'yes'}, '$.buffer'],
+    ['Extends.file', {type: 'Extends', file: null}, '$.file'],
+    ['FileReference.path', {type: 'FileReference', path: null}, '$.path'],
+    [
+      'Filter.block',
+      {type: 'Filter', name: 'x', attrs: [], block: 1},
+      '$.block',
+    ],
+    ['FootnoteRef.name', {type: 'FootnoteRef', name: null}, '$.name'],
+    [
+      'Footnotes.definitions member',
+      {type: 'Footnotes', definitions: [null]},
+      '$.definitions[0]',
+    ],
+    ['Given.block', {type: 'Given', name: 'x', block: null}, '$.block'],
+    [
+      'Include.block type',
+      {type: 'Include', block: {type: 'Text', val: ''}, file: file()},
+      '$.block',
     ],
     [
-      {type: 'Include', block: {type: 'Block', nodes: []}, file: null},
-      /Malformed Include node/,
+      'IncludeFilter.attrs',
+      {type: 'IncludeFilter', name: 'x', attrs: null},
+      '$.attrs',
     ],
-    [{type: 'Extends', file: null}, /Malformed Extends node/],
     [
-      {type: 'RawInclude', filters: null, file: {type: 'FileReference'}},
-      /Malformed RawInclude node/,
+      'InterpolatedTag.expr',
+      {type: 'InterpolatedTag', expr: null, attrs: [], block: block()},
+      '$.expr',
     ],
-    [{type: 'Footnotes', definitions: null}, /Malformed Footnotes node/],
+    [
+      'Mixin definition block',
+      {type: 'Mixin', name: 'x', call: false, args: [], block: null},
+      '$.block',
+    ],
+    [
+      'NamedBlock.mode',
+      {type: 'NamedBlock', name: 'x', mode: 'bad', nodes: []},
+      '$.mode',
+    ],
+    [
+      'RawInclude.filters member',
+      {type: 'RawInclude', filters: [null], file: file()},
+      '$.filters[0]',
+    ],
+    [
+      'ReferenceImage.block',
+      {type: 'ReferenceImage', name: 'x', attrs: [], block: null},
+      '$.block',
+    ],
+    [
+      'ReferenceLink.attrs',
+      {type: 'ReferenceLink', name: 'x', attrs: null, block: block()},
+      '$.attrs',
+    ],
+    [
+      'References.definitions member',
+      {type: 'References', definitions: [null]},
+      '$.definitions[0]',
+    ],
+    ['Tag.block', {type: 'Tag', name: 'p', attrs: [], block: null}, '$.block'],
+    ['Text.val', {type: 'Text', val: null}, '$.val'],
+    ['Variable.name', {type: 'Variable', name: null}, '$.name'],
   ];
   cases.forEach(function (entry) {
-    var node = entry[0];
-    var pattern = entry[1];
-    test(node.type + ' with a malformed field', function () {
-      var err;
-      try {
-        walk(node, function before() {});
-      } catch (e) {
-        err = e;
-      }
-      assert(err, 'expected an error to be thrown');
-      assert(
-        pattern.test(err.message),
-        'expected ' + pattern + ' but got: ' + err.message,
+    test(entry[0], function () {
+      var node = Object.assign(entry[1], {
+        filename: 'bad.pg',
+        line: 12,
+        column: 7,
+      });
+      var beforeRan = false;
+      var options = {};
+      assert.throws(
+        () =>
+          walk(
+            node,
+            function before() {
+              beforeRan = true;
+              return false;
+            },
+            null,
+            options,
+          ),
+        function (err) {
+          assert.strictEqual(err.name, 'ASTValidationError');
+          assert.strictEqual(err.code, 'INVALID_AST');
+          assert.strictEqual(err.kind, 'shape');
+          assert.strictEqual(err.path, entry[2]);
+          assert.strictEqual(err.filename, 'bad.pg');
+          assert.strictEqual(err.line, 12);
+          assert.strictEqual(err.column, 7);
+          assert.ok(err.message.includes('bad.pg:12:7'));
+          assert.ok(err.message.includes(entry[2]));
+          return true;
+        },
       );
-      // It must be the friendly located error, never a bare TypeError.
-      assert(
-        !(err instanceof TypeError),
-        'should not surface a raw TypeError, got: ' + err.message,
-      );
+      assert.strictEqual(beforeRan, false);
+      assert.deepStrictEqual(options, {});
     });
   });
+
+  test('marker-only node types remain valid', function () {
+    ['MixinBlock', 'Toc', 'YieldBlock'].forEach(function (type) {
+      var ast = {type};
+      assert.strictEqual(walk(ast), ast);
+    });
+  });
+});
+
+test('preflight follows only dependency ASTs selected for traversal', function () {
+  var invalidDependency = {type: 'Block', nodes: [null]};
+  var root = {
+    type: 'Block',
+    nodes: [
+      {type: 'FileReference', path: 'dependency.pg', ast: invalidDependency},
+    ],
+  };
+
+  assert.strictEqual(walk(root), root);
+  assert.throws(
+    () => walk(root, null, {includeDependencies: true}),
+    (err) =>
+      err.code === 'INVALID_AST' &&
+      err.kind === 'shape' &&
+      err.path === '$.nodes[0].ast.nodes[0]',
+  );
 });
 
 describe('array replacement re-walk fates (documented contract)', function () {

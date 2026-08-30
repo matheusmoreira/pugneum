@@ -1,5 +1,6 @@
 const AST_SCHEMA_VERSION = 1;
 const activeParentSeeds = new WeakMap();
+const validateDependencyASTs = Symbol('validateDependencyASTs');
 // The parser permits 256 nested expressions. Each nested element contributes
 // a semantic node plus its Block container, so its deepest valid tree has 512
 // structural edges. Generated-source boundaries use the same ceiling.
@@ -73,11 +74,10 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  *     would risk non-termination).
  *
  * Input contract: `ast` must be well-formed parser output (a single node, not a
- * bare array). Recursion is unbounded; the normal pipeline is safe because the
- * parser caps nesting at MAX_PARSE_DEPTH (256) before the AST reaches the walker
- * and the loader rejects cyclic dependency graphs (CIRCULAR_DEPENDENCY). A
- * hand-built AST that is deeper than the native stack, or a cyclic
- * FileReference.ast under `includeDependencies`, will throw a raw RangeError.
+ * bare array). Reachable structure and cycles are validated before hooks run.
+ * Traversal recursion itself is unbounded, so a sufficiently deep finite AST
+ * (including syntax depth composed with dependency depth) can still throw a
+ * raw RangeError.
  */
 function walkAST(ast, before, after, options) {
   // 3-arg overload: walkAST(ast, before, options). Reject arrays explicitly so
@@ -97,6 +97,7 @@ function walkAST(ast, before, after, options) {
   options = normalizeOptions(options);
   assertRootNode(ast);
   const context = createWalkContext(options);
+  validateAST(ast, {[validateDependencyASTs]: context.includeDependencies});
   if (!context.callerParents) return walkNode(ast, before, after, context);
 
   activeParentSeeds.set(context.callerParents, context.parentSeed);
@@ -168,7 +169,7 @@ function walkNode(ast, before, after, context) {
     switch (ast.type) {
       case 'NamedBlock':
       case 'Block':
-        assertField(ast, 'nodes', Array.isArray(ast.nodes));
+        assertField(ast, 'nodes', Array.isArray(ast.nodes), 'an array');
         ast.nodes = walkAndMergeNodes(ast.nodes);
         break;
       case 'Filter':
@@ -181,18 +182,18 @@ function walkNode(ast, before, after, context) {
         }
         break;
       case 'Include':
-        assertField(ast, 'block', isNode(ast.block));
-        assertField(ast, 'file', isNode(ast.file));
+        assertField(ast, 'block', isNode(ast.block), 'a node object');
+        assertField(ast, 'file', isNode(ast.file), 'a node object');
         ast.block = walkNode(ast.block, before, after, context);
         ast.file = walkNode(ast.file, before, after, context);
         break;
       case 'Extends':
-        assertField(ast, 'file', isNode(ast.file));
+        assertField(ast, 'file', isNode(ast.file), 'a node object');
         ast.file = walkNode(ast.file, before, after, context);
         break;
       case 'RawInclude':
-        assertField(ast, 'filters', Array.isArray(ast.filters));
-        assertField(ast, 'file', isNode(ast.file));
+        assertField(ast, 'filters', Array.isArray(ast.filters), 'an array');
+        assertField(ast, 'file', isNode(ast.file), 'a node object');
         ast.filters = walkAndMergeNodes(ast.filters);
         ast.file = walkNode(ast.file, before, after, context);
         break;
@@ -204,7 +205,12 @@ function walkNode(ast, before, after, context) {
         }
         break;
       case 'Footnotes':
-        assertField(ast, 'definitions', Array.isArray(ast.definitions));
+        assertField(
+          ast,
+          'definitions',
+          Array.isArray(ast.definitions),
+          'an array',
+        );
         for (const def of ast.definitions) {
           if (def.block) {
             def.block = walkNode(def.block, before, after, context);
@@ -231,7 +237,12 @@ function walkNode(ast, before, after, context) {
         }
         break;
       default:
-        throw new Error('Unexpected node type ' + ast.type);
+        throw invalidAST(
+          'unknown-type',
+          '$',
+          "unknown node type '" + String(ast.type) + "'",
+          ast,
+        );
     }
   } finally {
     parents.shift();
@@ -322,14 +333,11 @@ function isNode(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
 }
 
-// Turn a malformed known node into the same friendly, located error style as
-// the `Unexpected node type` default branch, rather than a cryptic TypeError
-// raised several frames deeper when a missing field is dereferenced.
-function assertField(node, field, ok) {
+// Hooks can mutate nodes directly after the initial graph preflight. Keep the
+// remaining dispatch guards on the same stable, located schema-error path.
+function assertField(node, field, ok, expected) {
   if (!ok) {
-    throw new Error(
-      'Malformed ' + node.type + ' node: invalid or missing ' + field,
-    );
+    throw invalidField(node, field, '$', expected);
   }
 }
 
@@ -380,6 +388,7 @@ function validateAST(ast, options) {
     allowAliases,
     completed,
     forbiddenNodes,
+    validateDependencyASTs: options[validateDependencyASTs] !== false,
     recordObjects,
   };
   const stack = [];
@@ -587,7 +596,12 @@ function validateNodeShape(node, path, state) {
     case 'FileReference':
       expectString(node, 'path', path);
       if (node.ast != null) {
-        addTypedNode(node, 'ast', 'Block', path, children);
+        if (!isNode(node.ast) || node.ast.type !== 'Block') {
+          throw invalidField(node, 'ast', path, 'a Block node');
+        }
+        if (state.validateDependencyASTs) {
+          children.push({node: node.ast, path: path + '.ast'});
+        }
       }
       break;
     case 'MixinBlock':
@@ -619,6 +633,15 @@ function addOptionalNode(node, field, path, children) {
 function addNodeArray(node, field, path, children) {
   const values = expectArray(node, field, path);
   for (let index = 0; index < values.length; index++) {
+    if (!isNode(values[index])) {
+      throw invalidAST(
+        'shape',
+        path + '.' + field + '[' + index + ']',
+        'expected a node object',
+        values[index],
+        node,
+      );
+    }
     children.push({
       node: values[index],
       path: path + '.' + field + '[' + index + ']',
@@ -635,6 +658,7 @@ function addTypedNodeArray(node, field, type, path, children) {
         path + '.' + field + '[' + index + ']',
         'expected a ' + type + ' node',
         values[index],
+        node,
       );
     }
     children.push({
@@ -649,7 +673,7 @@ function validateAttributes(node, field, path, state) {
   for (let index = 0; index < attrs.length; index++) {
     const attr = attrs[index];
     const attrPath = path + '.' + field + '[' + index + ']';
-    validateRecord(attr, attrPath, 'an attribute object', state);
+    validateRecord(attr, attrPath, 'an attribute object', state, node);
     validateLocation(attr, attrPath);
     if (typeof attr.name !== 'string') {
       throw invalidAST('shape', attrPath + '.name', 'expected a string', attr);
@@ -686,7 +710,13 @@ function validateMixinArguments(node, path, state) {
       continue;
     }
 
-    validateRecord(argument, argumentPath, 'a mixin parameter object', state);
+    validateRecord(
+      argument,
+      argumentPath,
+      'a mixin parameter object',
+      state,
+      node,
+    );
     if (typeof argument.name !== 'string') {
       throw invalidAST(
         'shape',
@@ -719,6 +749,7 @@ function validateFootnoteDefinitions(node, path, children, state) {
       definitionPath,
       'a footnote definition object',
       state,
+      node,
     );
     validateLocation(definition, definitionPath);
     if (typeof definition.name !== 'string') {
@@ -735,6 +766,7 @@ function validateFootnoteDefinitions(node, path, children, state) {
         definitionPath + '.block',
         'expected a Block node',
         definition.block,
+        definition,
       );
     }
     children.push({
@@ -754,6 +786,7 @@ function validateReferenceDefinitions(node, path, state) {
       definitionPath,
       'a reference definition object',
       state,
+      node,
     );
     validateLocation(definition, definitionPath);
     if (typeof definition.name !== 'string') {
@@ -787,9 +820,15 @@ function validateReferenceDefinitions(node, path, state) {
   }
 }
 
-function validateRecord(record, path, expected, state) {
+function validateRecord(record, path, expected, state, locationNode) {
   if (!isNode(record)) {
-    throw invalidAST('shape', path, 'expected ' + expected, record);
+    throw invalidAST(
+      'shape',
+      path,
+      'expected ' + expected,
+      record,
+      locationNode,
+    );
   }
   if (state.forbiddenNodes && state.forbiddenNodes.has(record)) {
     throw invalidAST(
@@ -876,12 +915,46 @@ function invalidField(node, field, path, expected) {
   );
 }
 
-function invalidAST(kind, path, message, node) {
-  const err = new Error('Invalid AST at ' + path + ': ' + message);
+function invalidAST(kind, path, message, node, locationNode) {
+  const location = isNode(locationNode) ? locationNode : node;
+  const sourceLocation = formatSourceLocation(location);
+  const where = sourceLocation ? sourceLocation + ' (' + path + ')' : path;
+  const err = new Error('Invalid AST at ' + where + ': ' + message);
   err.name = 'ASTValidationError';
   err.code = 'INVALID_AST';
   err.kind = kind;
   err.path = path;
   err.node = node;
+  if (isNode(location)) {
+    if (typeof location.filename === 'string') {
+      err.filename = location.filename;
+    }
+    if (Number.isSafeInteger(location.line) && location.line >= 0) {
+      err.line = location.line;
+    }
+    if (Number.isSafeInteger(location.column) && location.column >= 0) {
+      err.column = location.column;
+    }
+  }
   return err;
+}
+
+function formatSourceLocation(node) {
+  if (!isNode(node)) return '';
+  const filename = typeof node.filename === 'string' ? node.filename : '';
+  const line =
+    Number.isSafeInteger(node.line) && node.line >= 0 ? node.line : '';
+  const column =
+    Number.isSafeInteger(node.column) && node.column >= 0 ? node.column : '';
+  if (!filename && line === '' && column === '') return '';
+  if (filename) {
+    return (
+      filename +
+      (line === '' ? '' : ':' + line + (column === '' ? '' : ':' + column))
+    );
+  }
+  if (line !== '') {
+    return 'line ' + line + (column === '' ? '' : ', column ' + column);
+  }
+  return 'column ' + column;
 }

@@ -604,8 +604,13 @@ test('INVALID_FILTER_TYPE when include uses pugneum type filter', () => {
     nodes: [
       {
         type: 'RawInclude',
-        filters: [{name: 'pugneumInclude', attrs: []}],
-        file: {fullPath: 'test.txt', str: 'test content'},
+        filters: [{type: 'IncludeFilter', name: 'pugneumInclude', attrs: []}],
+        file: {
+          type: 'FileReference',
+          path: 'test.txt',
+          fullPath: 'test.txt',
+          str: 'test content',
+        },
         line: 1,
         column: 1,
         filename: filename,
@@ -924,8 +929,15 @@ function rawIncludeAst(filters, str) {
     nodes: [
       {
         type: 'RawInclude',
-        filters: filters,
-        file: {fullPath: 'data.txt', str: str},
+        filters: filters.map((item) =>
+          Object.assign({type: 'IncludeFilter'}, item),
+        ),
+        file: {
+          type: 'FileReference',
+          path: 'data.txt',
+          fullPath: 'data.txt',
+          str: str,
+        },
         line: 1,
         column: 1,
         filename,

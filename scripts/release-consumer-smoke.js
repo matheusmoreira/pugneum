@@ -185,13 +185,22 @@ function smokeLeaves() {
   const walk = require('pugneum-walker');
   const ast = block([
     text('replace-me'),
-    {type: 'ReferenceImage', block: block([text('image')])},
-    {type: 'FootnoteRef', block: block([text('reference')])},
+    {
+      type: 'ReferenceImage',
+      name: 'image',
+      attrs: [],
+      block: block([text('image')]),
+    },
+    {
+      type: 'FootnoteRef',
+      name: 'reference',
+      block: block([text('reference')]),
+    },
     {
       type: 'Footnotes',
-      definitions: [{block: block([text('definition')])}],
+      definitions: [{name: 'reference', block: block([text('definition')])}],
     },
-    {type: 'Given', block: block([text('given')])},
+    {type: 'Given', name: 'given', block: block([text('given')])},
     {type: 'Toc'},
   ]);
   const visited = [];
@@ -479,6 +488,7 @@ function smokeFilterer() {
       ],
       file: {
         type: 'FileReference',
+        path: 'raw.txt',
         fullPath: 'raw.txt',
         raw: Buffer.from('raw'),
         str: 'raw',

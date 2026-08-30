@@ -140,7 +140,8 @@ Validator options are:
 
 ### Input contract
 
-The walker assumes well-formed pugneum parser output:
+The walker requires well-formed pugneum parser output and checks the complete
+reachable AST graph before the first hook runs:
 
 - `ast` must be a non-null, non-array node object whose `type` is a string.
   Invalid root shapes are rejected with a `TypeError` before hooks or options
@@ -148,20 +149,24 @@ The walker assumes well-formed pugneum parser output:
 - `includeDependencies` only follows an already populated `FileReference.ast`.
   It does not read or parse files; run the loader first (or attach a valid AST
   explicitly). A file reference without `ast` remains a leaf even when the
-  option is enabled.
+  option is enabled. When the option is `false`, a populated dependency root
+  must still be a `Block`, but its descendants are neither traversed nor
+  recursively preflighted.
 - The traversal is fully recursive with no depth limit.
-  The normal pipeline is safe because the parser caps
-  nesting at 256 before the AST reaches the walker.
-  A hand-built AST deeper than the native call stack
-  throws a `RangeError`.
+  The parser's 256-expression limit does not by itself bound a walk that
+  composes syntax nesting with dependency nesting. A sufficiently deep finite
+  graph can still exceed the native call stack and throw a `RangeError`.
 - Under `includeDependencies`, the dependency graph must be
-  acyclic. The loader enforces this in the pipeline; a cyclic
-  `FileReference.ast` walked directly throws a `RangeError`.
+  acyclic. The loader enforces this in the pipeline, and walker preflight
+  rejects a direct cycle before hooks run with `kind === 'cycle'`.
 
-Known node types whose required fields are missing or of the
-wrong shape (for example an `Include` with no `block`) throw a
-located `Malformed <type> node` error rather than a bare
-`TypeError` from a deeper frame.
+Unknown node types and known nodes whose fields or collection members have the
+wrong shape throw an `ASTValidationError` before hooks can prune or mutate the
+tree. The error has `code === 'INVALID_AST'`, a stable `kind` and structural
+`path`, the offending `node`, and any valid `filename`, `line`, and `column`
+available from that node or its containing record. Its message includes both
+the source location and structural path. A rejected input leaves the AST and
+options untouched.
 
 ```js
 var assert = require('node:assert/strict');

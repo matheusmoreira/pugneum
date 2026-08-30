@@ -79,10 +79,18 @@ function compileToHTML(ast, options) {
 class Compiler {
   constructor(node, options) {
     this.options = options = options || {};
+    if (
+      options.warnings !== undefined &&
+      (!Array.isArray(options.warnings) ||
+        !Object.isExtensible(options.warnings) ||
+        !Object.getOwnPropertyDescriptor(options.warnings, 'length').writable)
+    ) {
+      throw new Error('Expected "options.warnings" to be a mutable array');
+    }
     this.node = node;
     this.mixins = Object.create(null);
     this.usedMixins = new Set();
-    this.warnings = options.warnings || [];
+    this.warnings = options.warnings === undefined ? [] : options.warnings;
     this.callStack = [];
   }
 

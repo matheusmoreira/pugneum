@@ -1120,6 +1120,46 @@ describe('variable interpolation validation', () => {
   });
 });
 
+describe('warnings option validation', () => {
+  const warningSource = 'a(href=‘/x’)';
+
+  function invalidCollectors() {
+    const fixedLength = [];
+    Object.defineProperty(fixedLength, 'length', {writable: false});
+    return [{}, {push() {}}, new Set(), Object.freeze([]), fixedLength];
+  }
+
+  function assertInvalidCollector(source, warnings) {
+    assert.throws(
+      () => lex(source, {filename: 'warnings.pg', warnings}),
+      (err) =>
+        err.code === undefined &&
+        err.message === 'Expected "options.warnings" to be a mutable array',
+    );
+  }
+
+  test('invalid collectors fail before warning-free source is lexed', () => {
+    invalidCollectors().forEach((warnings) => {
+      assertInvalidCollector('p clean', warnings);
+    });
+  });
+
+  test('warning-producing source gets the same construction error', () => {
+    invalidCollectors().forEach((warnings) => {
+      assertInvalidCollector(warningSource, warnings);
+    });
+  });
+
+  test('an extensible array remains the caller-owned collector', () => {
+    const warnings = [];
+
+    lex(warningSource, {filename: 'warnings.pg', warnings});
+
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

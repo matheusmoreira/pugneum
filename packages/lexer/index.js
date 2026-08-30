@@ -662,6 +662,14 @@ class Lexer {
         'Expected "options" to be an object but got "' + typeof options + '"',
       );
     }
+    if (
+      options.warnings !== undefined &&
+      (!Array.isArray(options.warnings) ||
+        !Object.isExtensible(options.warnings) ||
+        !Object.getOwnPropertyDescriptor(options.warnings, 'length').writable)
+    ) {
+      throw new Error('Expected "options.warnings" to be a mutable array');
+    }
     //Strip any UTF-8 BOM off of the start of `str`, if it exists.
     str = str.replace(/^\uFEFF/, '');
     this.input = str.replace(/\r\n|\r/g, '\n');
@@ -685,7 +693,7 @@ class Lexer {
     // Shared sink for non-fatal diagnostics. The same array is threaded
     // through the loader and child lexers so warnings from included files
     // and nested inline content are collected in one place.
-    this.warnings = options.warnings || [];
+    this.warnings = options.warnings === undefined ? [] : options.warnings;
     this.interpolated = options.interpolated || false;
     this.depth = options.depth || 0;
     this.lineno = options.startingLine || 1;

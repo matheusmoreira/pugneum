@@ -774,9 +774,11 @@ describe('warnings option robustness', () => {
       lex,
       parse,
       basedir,
-      warnings: 'oops',
     };
     var loaded = load(parse(lex(source, options), options), options);
+    // Set the malformed value only at the linker boundary under test. The
+    // lexer deliberately rejects a non-array collector at its own boundary.
+    options.warnings = 'oops';
     assert.doesNotThrow(() => link(loaded, options));
   });
 

@@ -83,6 +83,47 @@ function mixinCallOpts(name, args, children, opts) {
   );
 }
 
+describe('warnings option validation', () => {
+  function invalidCollectors() {
+    const fixedLength = [];
+    Object.defineProperty(fixedLength, 'length', {writable: false});
+    return [{}, {push() {}}, new Set(), Object.freeze([]), fixedLength];
+  }
+
+  function assertInvalidCollector(node, warnings) {
+    assert.throws(
+      () => render(node, {filename: 'test', warnings}),
+      (err) =>
+        err.code === undefined &&
+        err.message === 'Expected "options.warnings" to be a mutable array',
+    );
+  }
+
+  test('invalid collectors fail before warning-free nodes are rendered', () => {
+    invalidCollectors().forEach((warnings) => {
+      assertInvalidCollector(block([text('clean')]), warnings);
+    });
+  });
+
+  test('warning-producing nodes get the same construction error', () => {
+    invalidCollectors().forEach((warnings) => {
+      assertInvalidCollector(mixinDef('unused', [], [text('body')]), warnings);
+    });
+  });
+
+  test('an extensible array remains the caller-owned collector', () => {
+    const warnings = [];
+
+    render(mixinDef('unused', [], [text('body')]), {
+      filename: 'test',
+      warnings,
+    });
+
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:UNUSED_MIXIN');
+  });
+});
+
 describe('basic rendering', () => {
   test('empty block', () => {
     assert.strictEqual(render(block([])), '');

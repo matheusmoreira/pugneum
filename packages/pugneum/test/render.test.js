@@ -127,6 +127,50 @@ describe('render()', () => {
   });
 });
 
+describe('documented escaping', () => {
+  it('matches every escape-table row in ordinary text', () => {
+    var escapeCases = [
+      ['\\@(value)', '@(value)'],
+      ['\\!(value)', '!(value)'],
+      ['\\*(value)', '*(value)'],
+      ['\\_(value)', '_(value)'],
+      ['\\`(value)', '`(value)'],
+      ['\\~(value)', '~(value)'],
+      ['\\&(value)', '&(value)'],
+      ['\\^(value)', '^(value)'],
+      ['\\%(value)', '%(value)'],
+      ['\\,(value)', ',(value)'],
+      ['\\?(value)', '?(value)'],
+      ['\\@[value]', '@[value]'],
+      ['\\![value]', '![value]'],
+      ['\\^[value]', '^[value]'],
+      ['\\#{value}', '#{value}'],
+      ['\\#(value)', '#(value)'],
+    ];
+
+    escapeCases.forEach(function (escapeCase) {
+      assert.strictEqual(
+        pg.render('p ' + escapeCase[0]),
+        '<p>' + escapeCase[1] + '</p>',
+        escapeCase[0],
+      );
+    });
+  });
+
+  it('defines the context boundary for the interpolation escape', () => {
+    assert.strictEqual(pg.render('p.\n  \\#{name}'), '<p>#{name}</p>');
+    assert.strictEqual(
+      pg.render('p(data-template="\\#{name}") value'),
+      '<p data-template="#{name}">value</p>',
+    );
+    assert.strictEqual(
+      pg.render('p `(\\#{name})'),
+      '<p><code>#{name}</code></p>',
+    );
+    assert.strictEqual(pg.render(':verbatim\n  \\#{name}'), '\\#{name}');
+  });
+});
+
 describe('doctype end-of-line padding', () => {
   it('does not render spaces or tabs accepted before newline or EOF', () => {
     const cases = [

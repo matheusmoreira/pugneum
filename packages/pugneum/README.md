@@ -840,7 +840,8 @@ See the `pugneum-feed` package for full configuration.
 
 ## Escaping
 
-Prefix any shorthand sigil with `\` to output it literally:
+In ordinary or pipeless Pugneum text, prefix a shorthand sigil with `\` to
+output it literally:
 
 | Escape | Output |
 |---|---|
@@ -860,6 +861,14 @@ Prefix any shorthand sigil with `\` to output it literally:
 | `\^[` | `^[` |
 | `\#{` | `#{` |
 | `\#(` | `#(` |
+
+The `\#{` escape is also recognized in attribute values and literal code
+shorthand. In those contexts it suppresses variable interpolation and outputs
+`#{` without the backslash.
+
+Filter bodies are literal input to the selected filter, rather than Pugneum
+text. The lexer passes `\#{` through unchanged there; any further handling is
+defined by that filter.
 
 Tag names that collide with keywords can be escaped:
 `\extends` produces a literal `<extends>` tag.

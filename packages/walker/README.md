@@ -98,17 +98,24 @@ There are three distinct cases:
 - `includeDependencies` (boolean): walk the syntax trees of dependencies (includes and extends); default `false`
 - `parents` (array<Node>): a caller-owned ancestor stack used mainly
   internally; defaults to `[]`. During each callback, index `0` is the nearest
-  parent and the current node is not included. The same array is updated in
-  place as traversal descends and ascends, so treat its callback-time contents
-  as read-only. Its initial entries and order are restored before `walk`
-  returns or throws. The stack is **not** reset when crossing into a dependency
-  under `includeDependencies`, so ancestors from the including file remain
-  visible at the file boundary.
+  parent and the current node is not included. A mutable supplied array is
+  updated in place as traversal descends and ascends, so treat its callback-time
+  contents as read-only; its initial entries and order are restored before
+  `walk` returns or throws. A frozen, sealed, or otherwise non-extensible array
+  is instead treated as an immutable ancestry seed and remains unchanged while
+  a private copy drives traversal. A reentrant `walk` using the same mutable
+  array likewise starts from that array's outer entry-time seed, so the inner
+  traversal cannot corrupt or inherit the outer traversal's live frames. The
+  stack is **not** reset when crossing into a dependency under
+  `includeDependencies`, so ancestors from the including file remain visible
+  at the file boundary.
 
 When supplied, `options` must be a non-null, non-array object.
 `includeDependencies` must be a boolean or `undefined`, and `parents` must be
 an array or `undefined`. Invalid option shapes throw a `TypeError` before any
-hook runs or caller-owned state changes.
+hook runs or caller-owned state changes. The walker never adds properties to or
+otherwise writes the options object itself, so frozen and sealed options are
+supported.
 
 ### `walk.validate(ast, options)`
 

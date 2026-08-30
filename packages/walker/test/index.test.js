@@ -293,6 +293,88 @@ test('parents is nearest-first during hooks and restored afterward', function ()
   assert.deepStrictEqual(parents, [seed]);
 });
 
+test('frozen and non-extensible options preserve parent-sensitive replacement', function () {
+  var optionFactories = [Object.freeze, Object.seal, Object.preventExtensions];
+
+  optionFactories.forEach(function (makeImmutable) {
+    var options = makeImmutable({});
+    var text = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [text]};
+
+    walk(
+      ast,
+      function before(node, replace) {
+        if (node === text) {
+          assert.strictEqual(replace.arrayAllowed, true);
+          replace([]);
+          return false;
+        }
+      },
+      options,
+    );
+
+    assert.deepStrictEqual(ast.nodes, []);
+    assert.strictEqual(Object.hasOwn(options, 'parents'), false);
+  });
+});
+
+test('immutable parent arrays are read-only ancestry seeds', function () {
+  var arrayFactories = [Object.freeze, Object.seal, Object.preventExtensions];
+
+  arrayFactories.forEach(function (makeImmutable) {
+    var seed = {type: 'Comment', val: 'seed', buffer: false};
+    var parents = makeImmutable([seed]);
+    var options = Object.freeze({parents});
+    var text = {type: 'Text', val: 'x'};
+    var ast = {type: 'Block', nodes: [text]};
+
+    walk(
+      ast,
+      function before(node, replace) {
+        if (node === text) {
+          assert.strictEqual(replace.arrayAllowed, true);
+          replace([]);
+          return false;
+        }
+      },
+      options,
+    );
+
+    assert.deepStrictEqual(ast.nodes, []);
+    assert.deepStrictEqual(parents, [seed]);
+  });
+});
+
+test('reentrant walks sharing options keep their parent stacks isolated', function () {
+  var seed = {type: 'Comment', val: 'seed', buffer: false};
+  var parents = [seed];
+  var options = {parents};
+  var outerText = {type: 'Text', val: 'outer'};
+  var outer = {type: 'Block', nodes: [outerText]};
+  var inner = {type: 'Text', val: 'inner'};
+
+  walk(
+    outer,
+    function outerBefore(node) {
+      if (node !== outerText) return;
+      assert.deepStrictEqual(parents, [outer, seed]);
+      walk(
+        inner,
+        function innerBefore(innerNode, replace) {
+          if (innerNode === inner) {
+            assert.strictEqual(replace.arrayAllowed, false);
+          }
+        },
+        options,
+      );
+      assert.deepStrictEqual(parents, [outer, seed]);
+    },
+    options,
+  );
+
+  assert.deepStrictEqual(parents, [seed]);
+});
+
 test('includeDependencies follows only a preloaded FileReference.ast', function () {
   var unloaded = {type: 'FileReference', path: 'unloaded.pg'};
   var dependencyText = {type: 'Text', val: 'dependency'};

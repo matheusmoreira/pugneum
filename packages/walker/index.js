@@ -1,4 +1,5 @@
 const AST_SCHEMA_VERSION = 1;
+const activeParentSeeds = new WeakMap();
 // The parser permits 256 nested expressions. Each nested element contributes
 // a semantic node plus its Block container, so its deepest valid tree has 512
 // structural edges. Generated-source boundaries use the same ceiling.
@@ -95,7 +96,19 @@ function walkAST(ast, before, after, options) {
   assertHook('after', after);
   options = normalizeOptions(options);
   assertRootNode(ast);
-  const parents = (options.parents = options.parents || []);
+  const context = createWalkContext(options);
+  if (!context.callerParents) return walkNode(ast, before, after, context);
+
+  activeParentSeeds.set(context.callerParents, context.parentSeed);
+  try {
+    return walkNode(ast, before, after, context);
+  } finally {
+    activeParentSeeds.delete(context.callerParents);
+  }
+}
+
+function walkNode(ast, before, after, context) {
+  const parents = context.parents;
 
   // String compares rather than a per-call RegExp: arrayAllowed is recomputed
   // on every node and the walker is the linker's hottest inner loop. Equivalent
@@ -164,43 +177,43 @@ function walkAST(ast, before, after, options) {
       case 'InterpolatedTag':
       case 'BlockComment':
         if (ast.block) {
-          ast.block = walkAST(ast.block, before, after, options);
+          ast.block = walkNode(ast.block, before, after, context);
         }
         break;
       case 'Include':
         assertField(ast, 'block', isNode(ast.block));
         assertField(ast, 'file', isNode(ast.file));
-        ast.block = walkAST(ast.block, before, after, options);
-        ast.file = walkAST(ast.file, before, after, options);
+        ast.block = walkNode(ast.block, before, after, context);
+        ast.file = walkNode(ast.file, before, after, context);
         break;
       case 'Extends':
         assertField(ast, 'file', isNode(ast.file));
-        ast.file = walkAST(ast.file, before, after, options);
+        ast.file = walkNode(ast.file, before, after, context);
         break;
       case 'RawInclude':
         assertField(ast, 'filters', Array.isArray(ast.filters));
         assertField(ast, 'file', isNode(ast.file));
         ast.filters = walkAndMergeNodes(ast.filters);
-        ast.file = walkAST(ast.file, before, after, options);
+        ast.file = walkNode(ast.file, before, after, context);
         break;
       case 'ReferenceLink':
       case 'ReferenceImage':
       case 'FootnoteRef':
         if (ast.block) {
-          ast.block = walkAST(ast.block, before, after, options);
+          ast.block = walkNode(ast.block, before, after, context);
         }
         break;
       case 'Footnotes':
         assertField(ast, 'definitions', Array.isArray(ast.definitions));
         for (const def of ast.definitions) {
           if (def.block) {
-            def.block = walkAST(def.block, before, after, options);
+            def.block = walkNode(def.block, before, after, context);
           }
         }
         break;
       case 'Given':
         if (ast.block) {
-          ast.block = walkAST(ast.block, before, after, options);
+          ast.block = walkNode(ast.block, before, after, context);
         }
         break;
       case 'Toc':
@@ -213,8 +226,8 @@ function walkAST(ast, before, after, options) {
       case 'Variable':
         break;
       case 'FileReference':
-        if (options.includeDependencies && ast.ast) {
-          ast.ast = walkAST(ast.ast, before, after, options);
+        if (context.includeDependencies && ast.ast) {
+          ast.ast = walkNode(ast.ast, before, after, context);
         }
         break;
       default:
@@ -230,7 +243,7 @@ function walkAST(ast, before, after, options) {
   function walkAndMergeNodes(nodes) {
     const merged = [];
     for (const node of nodes) {
-      const result = walkAST(node, before, after, options);
+      const result = walkNode(node, before, after, context);
       if (Array.isArray(result)) {
         for (const replacement of result) {
           merged.push(replacement);
@@ -272,6 +285,31 @@ function normalizeOptions(options) {
     throw new TypeError('options.parents must be an array or undefined');
   }
   return options;
+}
+
+function createWalkContext(options) {
+  const includeDependencies = options.includeDependencies === true;
+  const callerParents = options.parents;
+  if (callerParents === undefined) {
+    return {includeDependencies, parents: []};
+  }
+
+  // Immutable arrays are read-only seeds. Reentrant walks sharing a mutable
+  // array also get a private copy of its entry-time seed, not the outer walk's
+  // live frames. A first, mutable use remains the callback-time ancestry view.
+  if (!Object.isExtensible(callerParents)) {
+    return {includeDependencies, parents: callerParents.slice()};
+  }
+  const activeSeed = activeParentSeeds.get(callerParents);
+  if (activeSeed) {
+    return {includeDependencies, parents: activeSeed.slice()};
+  }
+  return {
+    callerParents,
+    includeDependencies,
+    parents: callerParents,
+    parentSeed: callerParents.slice(),
+  };
 }
 
 function assertRootNode(ast) {

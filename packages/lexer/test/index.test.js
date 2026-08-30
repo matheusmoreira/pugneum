@@ -357,6 +357,144 @@ describe('physical shorthand source locations', () => {
   });
 });
 
+describe('context-aware multiline pipeless text', () => {
+  function contentLines(tokens) {
+    return tokens
+      .filter((tok) => tok.type === 'text' && tok.val)
+      .map((tok) => ({val: tok.val, loc: tok.loc}));
+  }
+
+  test('raw filter bodies preserve shorthand-looking lines through EOF', () => {
+    const source = ':verbatim\n  first *(\n  second line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+
+    assert.deepStrictEqual(contentLines(tokens), [
+      {
+        val: 'first *(',
+        loc: {
+          start: {line: 2, column: 3},
+          filename: 'literal.pg',
+          end: {line: 2, column: 11},
+        },
+      },
+      {
+        val: 'second line',
+        loc: {
+          start: {line: 3, column: 3},
+          filename: 'literal.pg',
+          end: {line: 3, column: 14},
+        },
+      },
+    ]);
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+
+  test('unbuffered comments preserve shorthand-looking lines through EOF', () => {
+    const source = '//-\n  first @[\n  second line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+
+    assert.deepStrictEqual(
+      contentLines(tokens).map((tok) => tok.val),
+      ['first @[', 'second line'],
+    );
+    const newline = tokens.find((tok) => tok.type === 'newline');
+    assert.deepStrictEqual(newline.loc, {
+      start: {line: 3, column: 1},
+      filename: 'literal.pg',
+      end: {line: 3, column: 3},
+    });
+  });
+
+  test('code-span delimiters remain literal to the continuation scanner', () => {
+    const source = 'p.\n  `(literal @[text)\n  next line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+    const lines = contentLines(tokens);
+
+    assert.deepStrictEqual(
+      lines.map((tok) => tok.val),
+      ['literal @[text', 'next line'],
+    );
+    assert.deepStrictEqual(lines[1].loc.start, {line: 3, column: 3});
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+
+  test('shorthand-looking image URLs do not consume the following line', () => {
+    const source = 'p.\n  !(@[)\n  next line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+    const src = tokens.find(
+      (tok) => tok.type === 'attribute' && tok.name === 'src',
+    );
+    const lines = contentLines(tokens);
+
+    assert.strictEqual(src.val, '@[');
+    assert.deepStrictEqual(
+      lines.map((tok) => tok.val),
+      ['next line'],
+    );
+    assert.deepStrictEqual(lines[0].loc.start, {line: 3, column: 3});
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+
+  test('multiline image attributes are grouped with their shorthand', () => {
+    const source = 'p.\n  !(x alt)(\n    class=y)\n  next line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+    const classAttr = tokens.find(
+      (tok) => tok.type === 'attribute' && tok.name === 'class',
+    );
+    const next = contentLines(tokens).find((tok) => tok.val === 'next line');
+
+    assert.ok(classAttr);
+    assert.strictEqual(classAttr.val, 'y');
+    assert.deepStrictEqual(classAttr.loc.start, {line: 3, column: 5});
+    assert.deepStrictEqual(next.loc.start, {line: 4, column: 3});
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+
+  test('quoted attribute delimiters do not join the following line', () => {
+    const source = 'p.\n  #(span(title="(") text) tail\n  next line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+    const lines = contentLines(tokens);
+
+    assert.deepStrictEqual(
+      lines.map((tok) => tok.val),
+      ['text', ' tail', 'next line'],
+    );
+    assert.deepStrictEqual(lines[2].loc.start, {line: 3, column: 3});
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+
+  test('quotes in ordinary interpolation text remain literal delimiters', () => {
+    const source = 'p.\n  #(span text (quoted "x)\n  y") tail\n  next line';
+    const tokens = lex(source, {filename: 'literal.pg'});
+    const lines = contentLines(tokens);
+
+    assert.deepStrictEqual(
+      lines.map((tok) => tok.val),
+      ['text (quoted "x) y"', ' tail', 'next line'],
+    );
+    assert.deepStrictEqual(lines[2].loc.start, {line: 4, column: 3});
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'newline').length,
+      1,
+    );
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

@@ -406,11 +406,102 @@ function interpolationsAreClosed(str, state) {
 
     const next = str[i + 1];
 
+    // Immediate images alone permit a second parenthesized attribute block.
+    // That block uses the quote-aware expression grammar and may itself span
+    // physical lines.
+    if (state.imageAttributesMayFollow) {
+      state.imageAttributesMayFollow = false;
+      if (ch === '(') {
+        state.imageAttributeDepth = 1;
+        continue;
+      }
+    }
+
+    if (state.imageAttributeDepth > 0) {
+      if (state.imageAttributeQuote !== null) {
+        if (ch === state.imageAttributeQuote) state.imageAttributeQuote = null;
+        continue;
+      }
+      if (ch === "'" || ch === '"') {
+        state.imageAttributeQuote = ch;
+      } else if (ch === '(') {
+        state.imageAttributeDepth++;
+      } else if (ch === ')') {
+        state.imageAttributeDepth--;
+      }
+      continue;
+    }
+
+    // A non-interpolation parenthesized shorthand owns everything up to its
+    // closing delimiter. Its real boundary parser counts nested parentheses
+    // but does not interpret shorthand-looking bracket sigils inside URLs,
+    // code spans, or other text. Process that context before looking for
+    // another opener so this continuation scan makes the same decision.
+    for (const t of parenShorthands) {
+      if (state[t.key] > 0) {
+        if (t.key === 'interp') {
+          // `#()` delegates to a child lexer. Before the first horizontal
+          // separator, parentheses belong to the tag's quote-aware attribute
+          // grammar; later parentheses and quotes are ordinary text syntax.
+          if (state.interpAttributeQuote !== null) {
+            if (ch === state.interpAttributeQuote) {
+              state.interpAttributeQuote = null;
+            }
+            continue outer;
+          }
+          if (state.interpAttributeDepth > 0) {
+            if (ch === "'" || ch === '"') {
+              state.interpAttributeQuote = ch;
+            } else if (ch === '(') {
+              state.interpAttributeDepth++;
+              state.interpParen++;
+            } else if (ch === ')') {
+              state.interpAttributeDepth--;
+              state.interpParen--;
+            }
+            continue outer;
+          }
+          if (state.interpParen === 0 && (ch === ' ' || ch === '\t')) {
+            state.interpHead = false;
+          }
+          if (ch === '(') {
+            state.interpParen++;
+            if (state.interpHead) state.interpAttributeDepth = 1;
+            continue outer;
+          }
+          if (ch === ')') {
+            if (state.interpParen > 0) state.interpParen--;
+            else state.interp--;
+            continue outer;
+          }
+          continue outer;
+        }
+        if (ch === '(') {
+          state[t.key + 'Paren']++;
+          continue outer;
+        }
+        if (ch === ')') {
+          if (state[t.key + 'Paren'] > 0) state[t.key + 'Paren']--;
+          else {
+            state[t.key]--;
+            if (t.key === 'image') state.imageAttributesMayFollow = true;
+          }
+          continue outer;
+        }
+        continue outer;
+      }
+    }
+
     // Paren-delimited openers: sigil(
     if (next === '(') {
       for (const t of parenShorthands) {
         if (ch === t.sigil) {
           state[t.key]++;
+          if (t.key === 'interp') {
+            state.interpHead = true;
+            state.interpAttributeDepth = 0;
+            state.interpAttributeQuote = null;
+          }
           i++;
           continue outer;
         }
@@ -442,22 +533,6 @@ function interpolationsAreClosed(str, state) {
         }
       }
     }
-
-    // Paren depth tracking: first active paren type handles ( and )
-    for (const t of parenShorthands) {
-      if (state[t.key] > 0) {
-        if (ch === '(') {
-          state[t.key + 'Paren']++;
-          continue outer;
-        }
-        if (ch === ')') {
-          if (state[t.key + 'Paren'] > 0) state[t.key + 'Paren']--;
-          else state[t.key]--;
-          continue outer;
-        }
-        break;
-      }
-    }
   }
 
   for (const t of parenShorthands) {
@@ -466,6 +541,8 @@ function interpolationsAreClosed(str, state) {
   for (const t of bracketShorthands) {
     if (state[t.key] > 0) return false;
   }
+  state.imageAttributesMayFollow = false;
+  if (state.imageAttributeDepth > 0) return false;
   return true;
 }
 
@@ -474,6 +551,12 @@ function resetInterpolationState(state) {
     state[t.key] = 0;
     state[t.key + 'Paren'] = 0;
   }
+  state.interpHead = false;
+  state.interpAttributeDepth = 0;
+  state.interpAttributeQuote = null;
+  state.imageAttributesMayFollow = false;
+  state.imageAttributeDepth = 0;
+  state.imageAttributeQuote = null;
   for (const t of bracketShorthands) {
     state[t.key] = 0;
   }
@@ -488,7 +571,22 @@ function resetInterpolationState(state) {
  * The segments let the lexer map each normalized boundary back to its physical
  * line and column instead of assigning a whole folded construct to line one.
  */
-function mergeMultiLineInterpolations(tokens, token_indent) {
+function mergeMultiLineInterpolations(
+  tokens,
+  token_indent,
+  interpolationAllowed,
+) {
+  if (!interpolationAllowed) {
+    // Filters and unbuffered comments have already declared their bodies
+    // literal, so every physical line is a complete group.
+    return tokens.map((text, index) => ({
+      text,
+      indented: token_indent[index],
+      lines: 1,
+      segments: [{text, indented: token_indent[index]}],
+    }));
+  }
+
   const result = [];
   let pendingText = null;
   let pendingLines = 0;
@@ -2753,7 +2851,11 @@ class Lexer {
 
       // Merge lines with unclosed inline shorthand constructs so that
       // inline elements can span multiple lines in text blocks.
-      const merged = mergeMultiLineInterpolations(tokens, token_indent);
+      const merged = mergeMultiLineInterpolations(
+        tokens,
+        token_indent,
+        this.interpolationAllowed,
+      );
 
       for (let mi = 0; mi < merged.length; mi++) {
         let tok;

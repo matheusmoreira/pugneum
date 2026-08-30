@@ -357,6 +357,75 @@ describe('physical shorthand source locations', () => {
   });
 });
 
+describe('filter end-of-line padding', () => {
+  test('plain filters ignore spaces before a pipeless body', () => {
+    const source = ':verbatim   \n  hello';
+    const tokens = lex(source, {filename: 'filter-padding.pg'});
+
+    assert.deepStrictEqual(
+      tokens.map((tok) => tok.type),
+      ['filter', 'start-pipeless-text', 'text', 'end-pipeless-text', 'eos'],
+    );
+    assert.strictEqual(tokens[2].val, 'hello');
+    assert.deepStrictEqual(tokens[2].loc.start, {line: 2, column: 3});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('attributed filters ignore mixed horizontal padding', () => {
+    const source = ':verbatim(option="x")\t \n\tbody';
+    const tokens = lex(source, {filename: 'filter-padding.pg'});
+
+    assert.deepStrictEqual(
+      tokens.map((tok) => tok.type),
+      [
+        'filter',
+        'start-attributes',
+        'attribute',
+        'end-attributes',
+        'start-pipeless-text',
+        'text',
+        'end-pipeless-text',
+        'eos',
+      ],
+    );
+    assert.strictEqual(tokens[5].val, 'body');
+    assert.deepStrictEqual(tokens[5].loc.start, {line: 2, column: 2});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('horizontal padding at EOF does not become filter text', () => {
+    const sources = [':verbatim   ', ':verbatim(option="x")\t '];
+
+    sources.forEach((source) => {
+      const tokens = lex(source, {filename: 'filter-padding.pg'});
+      const eos = tokens.at(-1);
+
+      assert.ok(!tokens.some((tok) => tok.type === 'text'), source);
+      assert.strictEqual(eos.type, 'eos');
+      assert.deepStrictEqual(eos.loc.start, {
+        line: 1,
+        column: source.length + 1,
+      });
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
+  test('genuine same-line filter content remains text', () => {
+    const sources = [
+      ':verbatim inline text',
+      ':verbatim(option="x") inline text',
+    ];
+
+    sources.forEach((source) => {
+      const tokens = lex(source, {filename: 'filter-padding.pg'});
+      const text = tokens.find((tok) => tok.type === 'text');
+
+      assert.strictEqual(text.val, 'inline text');
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+});
+
 describe('context-aware multiline pipeless text', () => {
   function contentLines(tokens) {
     return tokens

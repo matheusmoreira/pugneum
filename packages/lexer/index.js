@@ -873,6 +873,14 @@ class Lexer {
     return tok;
   }
 
+  consumeEndOfLinePadding() {
+    const padding = /^[ \t]+(?=\n|$)/.exec(this.input);
+    if (!padding) return;
+
+    this.consume(padding[0].length);
+    this.incrementColumn(padding[0].length);
+  }
+
   bracketExpression(skip) {
     skip = skip || 0;
     const start = this.input[skip];
@@ -1030,6 +1038,7 @@ class Lexer {
       this.tokEnd(tok);
       this.attrs();
       if (!inInclude) {
+        this.consumeEndOfLinePadding();
         this.interpolationAllowed = false;
         this.pipelessText();
       }

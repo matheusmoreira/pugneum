@@ -771,6 +771,38 @@ describe('mixin definition parameter boundaries', () => {
   });
 });
 
+describe('multiline attribute error locations', () => {
+  function assertEofLocation(source, line, column) {
+    assert.throws(
+      () => lex(source, {filename: 'attributes.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:NO_END_BRACKET');
+        assert.deepStrictEqual(
+          {line: err.line, column: err.column},
+          {line, column},
+        );
+        return true;
+      },
+    );
+  }
+
+  test('one continuation line reports its physical EOF', () => {
+    assertEofLocation('div(a=1\n b=2', 2, 5);
+  });
+
+  test('two continuation lines report the last line and column', () => {
+    assertEofLocation('div(\n  a0=x\n  a1=x', 3, 7);
+  });
+
+  test('three continuation lines do not produce an impossible position', () => {
+    assertEofLocation('div(\n  a0=x\n  a1=x\n  a2=x', 4, 7);
+  });
+
+  test('CRLF input uses the same normalized physical EOF', () => {
+    assertEofLocation('div(\r\n  a0=x\r\n  a1=x', 3, 7);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

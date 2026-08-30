@@ -875,19 +875,7 @@ class Lexer {
       range = parseExpressionUntil(this.input, end, skip + 1);
     } catch (ex) {
       if (ex.index !== undefined) {
-        let idx = ex.index;
-        let tmp = this.input.slice(skip).indexOf('\n');
-        let nextNewline = tmp + skip;
-        let ptr = 0;
-        while (idx > nextNewline && tmp !== -1) {
-          this.incrementLine(1);
-          idx -= nextNewline + 1;
-          ptr += nextNewline + 1;
-          tmp = this.input.slice(ptr).indexOf('\n');
-          nextNewline = tmp === -1 ? -1 : tmp + ptr;
-        }
-
-        this.incrementColumn(idx);
+        this.advanceLocation(this.input.slice(0, ex.index));
       }
       if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') {
         this.error(

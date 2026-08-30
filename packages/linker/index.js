@@ -344,6 +344,35 @@ function removeBlocks(ast) {
   });
 }
 
+// ASTs are arrays/plain records plus Buffer payloads attached to RawInclude
+// nodes. structuredClone preserves the graph, but converts those Buffers to
+// Uint8Arrays. Clone the AST graph explicitly so binary filters keep receiving
+// the loader's Buffer contract while aliases within one copy stay aliases.
+function cloneAst(value, copies) {
+  if (value === null || typeof value !== 'object') return value;
+  copies = copies || new Map();
+  if (copies.has(value)) return copies.get(value);
+
+  if (Buffer.isBuffer(value)) {
+    const copy = Buffer.from(value);
+    copies.set(value, copy);
+    return copy;
+  }
+
+  const copy = Array.isArray(value)
+    ? []
+    : Object.create(Object.getPrototypeOf(value));
+  copies.set(value, copy);
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
+      descriptor.value = cloneAst(descriptor.value, copies);
+    }
+    Object.defineProperty(copy, key, descriptor);
+  }
+  return copy;
+}
+
 function applyYield(ast, block, includeNode, options) {
   if (!block || !block.nodes.length) return ast;
   let replaced = false;
@@ -356,7 +385,7 @@ function applyYield(ast, block, includeNode, options) {
       // single backlink). Each yield position gets an independent copy.
       replaced = true;
       node.type = 'Block';
-      node.nodes = [structuredClone(block)];
+      node.nodes = [cloneAst(block)];
     }
   });
   if (!replaced) {

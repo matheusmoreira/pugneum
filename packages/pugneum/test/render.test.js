@@ -4,6 +4,7 @@ var assert = require('node:assert/strict');
 var crypto = require('node:crypto');
 var {describe, it} = require('node:test');
 var fs = require('fs');
+var os = require('os');
 var path = require('path');
 var pg = require('../');
 
@@ -1013,6 +1014,38 @@ describe('renderFile()', () => {
     var result = pg.renderFile(filePath);
     assert.strictEqual(typeof result, 'string');
     assert.match(result, /^<html>/);
+  });
+
+  it('passes yielded raw-include bytes to a binary filter as a Buffer', (t) => {
+    var root = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-binary-yield-'));
+    t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+    var entry = path.join(root, 'entry.pg');
+    var payload = Buffer.from([0x00, 0x26, 0x3c, 0xff]);
+    fs.writeFileSync(path.join(root, 'wrapper.pg'), 'yield\n');
+    fs.writeFileSync(
+      entry,
+      'include wrapper.pg\n  include:binary payload.bin\n',
+    );
+    fs.writeFileSync(path.join(root, 'payload.bin'), payload);
+    var received;
+
+    var html = pg.renderFile(entry, {
+      basedir: root,
+      warnings: [],
+      filters: {
+        binary: {
+          binary: true,
+          type: 'text',
+          filter(value) {
+            received = value;
+            return Buffer.from(value).toString('hex');
+          },
+        },
+      },
+    });
+
+    assert.ok(Buffer.isBuffer(received));
+    assert.strictEqual(html, '00263cff');
   });
 });
 

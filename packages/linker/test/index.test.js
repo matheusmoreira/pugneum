@@ -409,18 +409,22 @@ describe('warnings', () => {
 // it). Returns the linked AST; the caller passes the entry filename.
 function linkProject(files, entry) {
   var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-linker-'));
-  Object.keys(files).forEach(function (name) {
-    var full = path.join(dir, name);
-    fs.mkdirSync(path.dirname(full), {recursive: true});
-    fs.writeFileSync(full, files[name]);
-  });
-  var filename = path.join(dir, entry);
-  var source = fs.readFileSync(filename, 'utf8');
-  var warnings = [];
-  var options = {filename, source, lex, parse, basedir: dir, warnings};
-  var loaded = load(parse(lex(source, options), options), options);
-  var linked = link(loaded, options);
-  return {linked: linked, warnings: warnings};
+  try {
+    Object.keys(files).forEach(function (name) {
+      var full = path.join(dir, name);
+      fs.mkdirSync(path.dirname(full), {recursive: true});
+      fs.writeFileSync(full, files[name]);
+    });
+    var filename = path.join(dir, entry);
+    var source = fs.readFileSync(filename, 'utf8');
+    var warnings = [];
+    var options = {filename, source, lex, parse, basedir: dir, warnings};
+    var loaded = load(parse(lex(source, options), options), options);
+    var linked = link(loaded, options);
+    return {linked: linked, warnings: warnings};
+  } finally {
+    fs.rmSync(dir, {recursive: true, force: true});
+  }
 }
 
 function collectNamedBlocks(ast) {
@@ -559,6 +563,29 @@ describe('applyYield clones the passed block per yield site', () => {
       return w.code === 'PUGNEUM:DUPLICATE_ID';
     });
     assert.strictEqual(dup.length, 0);
+  });
+
+  test('raw include bytes remain independent Buffers at every yield site', () => {
+    var payload = Buffer.from([0x00, 0x26, 0x3c, 0xff]);
+    var files = {
+      'twoyield.pg': 'div.a\n  yield\ndiv.b\n  yield\n',
+      'main.pg': 'include twoyield.pg\n  include:binary payload.bin\n',
+      'payload.bin': payload,
+    };
+    var result = linkProject(files, 'main.pg');
+    var rawCopies = [];
+    walk(result.linked, function (node) {
+      if (node.type === 'RawInclude') rawCopies.push(node.file.raw);
+    });
+
+    assert.strictEqual(rawCopies.length, 2);
+    for (const raw of rawCopies) {
+      assert.ok(Buffer.isBuffer(raw), 'yield clone preserves Buffer bytes');
+      assert.deepStrictEqual(raw, payload);
+    }
+    assert.notStrictEqual(rawCopies[0], rawCopies[1]);
+    rawCopies[0][0] = 0xaa;
+    assert.strictEqual(rawCopies[1][0], payload[0]);
   });
 });
 

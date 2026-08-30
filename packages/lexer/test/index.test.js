@@ -543,6 +543,84 @@ describe('nested inline parenthesis depth', () => {
   });
 });
 
+describe('context-aware reference shorthand boundaries', () => {
+  const families = [
+    {open: '@[', start: 'start-ref-link'},
+    {open: '![', start: 'start-ref-image'},
+    {open: '^[', start: 'start-footnote-ref'},
+  ];
+
+  function assertBoundedPayload(payload) {
+    families.forEach(({open, start}) => {
+      const source = 'p ' + open + 'ref ' + payload + '] tail';
+      const tokens = lex(source, {filename: 'boundary.pg'});
+
+      assert.ok(
+        tokens.some((tok) => tok.type === start),
+        source,
+      );
+      assert.ok(
+        tokens.some((tok) => tok.type === 'text' && tok.val === ' tail'),
+        source,
+      );
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  }
+
+  test('quoted interpolation attributes protect literal parentheses', () => {
+    assertBoundedPayload('#(span(title="(") ok)');
+  });
+
+  test('code spans protect shorthand-looking brackets', () => {
+    assertBoundedPayload('`(literal @[x)');
+  });
+
+  test('escaped bracket openers retain their matching literal close', () => {
+    assertBoundedPayload('\\@[literal] end');
+
+    const tokens = lex('p @[ref \\@[literal] end] tail', {
+      filename: 'boundary.pg',
+    });
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'start-ref-link').length,
+      1,
+    );
+    assert.ok(
+      tokens.some((tok) => tok.type === 'text' && tok.val === '@[literal] end'),
+    );
+  });
+
+  test('parenthesized shorthands protect literal closing brackets', () => {
+    assertBoundedPayload('*(literal ] text) end');
+  });
+
+  test('multiline escaped brackets do not end the outer shorthand early', () => {
+    const source = 'p.\n  @[ref \\@[literal\n  ] end\n  ]\n  next line';
+    const tokens = lex(source, {filename: 'boundary.pg'});
+    const next = tokens.find(
+      (tok) => tok.type === 'text' && tok.val === 'next line',
+    );
+
+    assert.ok(tokens.some((tok) => tok.type === 'start-ref-link'));
+    assert.deepStrictEqual(next.loc.start, {line: 5, column: 3});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('deep nested bracket boundaries use an explicit stack', () => {
+    const depth = 5000;
+    const source =
+      'p @[ref ' + '@['.repeat(depth) + 'x' + ']'.repeat(depth) + ']';
+    const tokens = lex(source, {filename: 'boundary.pg'});
+
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'start-ref-link').length,
+      1,
+    );
+    assert.strictEqual(tokens.at(-1).type, 'eos');
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

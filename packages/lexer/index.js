@@ -258,54 +258,219 @@ function parseTextUntil(str, end, start) {
   throwUnclosed(end, i);
 }
 
+function textParenFrame(sigil, escaped) {
+  return {
+    kind: 'text-paren',
+    depth: 1,
+    trailingAttributes: !escaped && sigil === '!',
+    stop: false,
+  };
+}
+
+function interpolationFrame() {
+  return {kind: 'interpolation', depth: 0, head: true, stop: false};
+}
+
+function bracketFrame(sigil, escaped, stop) {
+  return {
+    kind: 'bracket',
+    trailingAttributes: !escaped && !stop && (sigil === '@' || sigil === '!'),
+    stop,
+  };
+}
+
+function expressionFrame() {
+  return {kind: 'expression', depth: 1, quote: null, stop: false};
+}
+
+function finishInlineFrame(str, state, frame, index) {
+  state.stack.pop();
+  if (frame.stop) return {end: index};
+  if (frame.trailingAttributes && str[index + 1] === '(') {
+    state.stack.push(expressionFrame());
+    return {next: index + 2};
+  }
+  return {next: index + 1};
+}
+
+function scanInlineContexts(str, state, start) {
+  let i = start;
+
+  while (i < str.length) {
+    const ch = str[i];
+    const next = str[i + 1];
+    const delimiter = str[i + 2];
+    const frame = state.stack[state.stack.length - 1];
+
+    if (!frame) {
+      if (ch === '\\') {
+        i += next === undefined ? 1 : 2;
+      } else if (next === '(' && parenShorthandBySigil[ch] !== undefined) {
+        state.stack.push(
+          ch === '#' ? interpolationFrame() : textParenFrame(ch, false),
+        );
+        i += 2;
+      } else if (next === '[' && bracketShorthandBySigil[ch] !== undefined) {
+        state.stack.push(bracketFrame(ch, false, false));
+        i += 2;
+      } else {
+        i++;
+      }
+      continue;
+    }
+
+    if (frame.kind === 'text-paren') {
+      if (ch === '\\' && (next === '\\' || next === '(' || next === ')')) {
+        i += 2;
+      } else if (ch === '(') {
+        frame.depth++;
+        i++;
+      } else if (ch === ')') {
+        frame.depth--;
+        if (frame.depth === 0) {
+          const finished = finishInlineFrame(str, state, frame, i);
+          if (finished.end !== undefined) return finished.end;
+          i = finished.next;
+        } else {
+          i++;
+        }
+      } else {
+        i++;
+      }
+      continue;
+    }
+
+    if (frame.kind === 'expression') {
+      if (frame.quote !== null) {
+        if (ch === '\\' && next !== undefined) {
+          i += 2;
+        } else {
+          if (ch === frame.quote) frame.quote = null;
+          i++;
+        }
+      } else if (ch === "'" || ch === '"') {
+        frame.quote = ch;
+        i++;
+      } else if (ch === '(') {
+        frame.depth++;
+        i++;
+      } else if (ch === ')') {
+        frame.depth--;
+        if (frame.depth === 0) state.stack.pop();
+        i++;
+      } else {
+        i++;
+      }
+      continue;
+    }
+
+    if (frame.kind === 'interpolation') {
+      if (ch === '\\') {
+        i += next === undefined ? 1 : 2;
+        continue;
+      }
+
+      if (frame.depth === 0 && frame.head && ch === '(') {
+        state.stack.push(expressionFrame());
+        i++;
+        continue;
+      }
+
+      if (frame.depth === 0 && (ch === ' ' || ch === '\t' || ch === '\n')) {
+        frame.head = false;
+        i++;
+        continue;
+      }
+
+      if (!frame.head) {
+        if (next === '(' && parenShorthandBySigil[ch] !== undefined) {
+          state.stack.push(
+            ch === '#' ? interpolationFrame() : textParenFrame(ch, false),
+          );
+          i += 2;
+          continue;
+        }
+        if (next === '[' && bracketShorthandBySigil[ch] !== undefined) {
+          state.stack.push(bracketFrame(ch, false, false));
+          i += 2;
+          continue;
+        }
+      }
+
+      if (ch === '(') {
+        frame.depth++;
+        i++;
+      } else if (ch === ')') {
+        if (frame.depth > 0) {
+          frame.depth--;
+          i++;
+        } else {
+          const finished = finishInlineFrame(str, state, frame, i);
+          if (finished.end !== undefined) return finished.end;
+          i = finished.next;
+        }
+      } else {
+        i++;
+      }
+      continue;
+    }
+
+    if (ch === '\\') {
+      if (delimiter === '(' && parenShorthandBySigil[next] !== undefined) {
+        state.stack.push(textParenFrame(next, true));
+        i += 3;
+      } else if (
+        delimiter === '[' &&
+        bracketShorthandBySigil[next] !== undefined
+      ) {
+        state.stack.push(bracketFrame(next, true, false));
+        i += 3;
+      } else {
+        i += next === undefined ? 1 : 2;
+      }
+      continue;
+    }
+
+    if (next === '(' && parenShorthandBySigil[ch] !== undefined) {
+      state.stack.push(
+        ch === '#' ? interpolationFrame() : textParenFrame(ch, false),
+      );
+      i += 2;
+      continue;
+    }
+
+    if (next === '[' && bracketShorthandBySigil[ch] !== undefined) {
+      state.stack.push(bracketFrame(ch, false, false));
+      i += 2;
+      continue;
+    }
+
+    if (ch === ']') {
+      const finished = finishInlineFrame(str, state, frame, i);
+      if (finished.end !== undefined) return finished.end;
+      i = finished.next;
+    } else {
+      i++;
+    }
+  }
+
+  return -1;
+}
+
 /**
  * Scan bracket content for `@[...]`, `![...]`, and `^[...]` shorthands.
- * Tracks `#()` interpolation depth, nested `@[`/`![`/`^[` brackets, and `\]` escapes.
- * Returns `{end, src}` with the index of the closing `]` and the content,
- * or `null` if no matching `]` is found.
+ * Nested inline constructs delegate to their own text/expression boundary
+ * grammar, so literal `]` characters inside them cannot close this bracket.
+ * Escaped shorthand openers likewise retain a paired literal closer.
  *
  * @param {string} str - The string to scan
  * @param {number} start - The index to start scanning from
  * @returns {{end: number, src: string} | null}
  */
 function parseBracketContent(str, start) {
-  let interpDepth = 0;
-  let bracketDepth = 0;
-  for (let i = start; i < str.length; i++) {
-    const ch = str[i];
-    if (ch === '\\') {
-      i++;
-      continue;
-    }
-    if (ch === '#' && str[i + 1] === '(') {
-      interpDepth++;
-      i++;
-      continue;
-    }
-    if (ch === '(' && interpDepth > 0) {
-      interpDepth++;
-      continue;
-    }
-    if (ch === ')' && interpDepth > 0) {
-      interpDepth--;
-      continue;
-    }
-    if (bracketShorthands.some((t) => ch === t.sigil) && str[i + 1] === '[') {
-      bracketDepth++;
-      i++;
-      continue;
-    }
-    if (ch === ']') {
-      if (bracketDepth > 0) {
-        bracketDepth--;
-        continue;
-      }
-      if (interpDepth === 0) {
-        return {end: i, src: str.substring(start, i)};
-      }
-    }
-  }
-  return null;
+  const state = {stack: [bracketFrame(null, false, true)]};
+  const end = scanInlineContexts(str, state, start);
+  return end === -1 ? null : {end, src: str.substring(start, end)};
 }
 
 /**
@@ -397,170 +562,8 @@ function unescapeCodeSpan(str) {
  * Returns true if all constructs are closed (line is complete).
  */
 function interpolationsAreClosed(str, state) {
-  outer: for (let i = 0; i < str.length; i++) {
-    const ch = str[i];
-    if (ch === '\\') {
-      i++;
-      continue;
-    }
-
-    const next = str[i + 1];
-
-    // Immediate images alone permit a second parenthesized attribute block.
-    // That block uses the quote-aware expression grammar and may itself span
-    // physical lines.
-    if (state.imageAttributesMayFollow) {
-      state.imageAttributesMayFollow = false;
-      if (ch === '(') {
-        state.imageAttributeDepth = 1;
-        continue;
-      }
-    }
-
-    if (state.imageAttributeDepth > 0) {
-      if (state.imageAttributeQuote !== null) {
-        if (ch === state.imageAttributeQuote) state.imageAttributeQuote = null;
-        continue;
-      }
-      if (ch === "'" || ch === '"') {
-        state.imageAttributeQuote = ch;
-      } else if (ch === '(') {
-        state.imageAttributeDepth++;
-      } else if (ch === ')') {
-        state.imageAttributeDepth--;
-      }
-      continue;
-    }
-
-    // A non-interpolation parenthesized shorthand owns everything up to its
-    // closing delimiter. Its real boundary parser counts nested parentheses
-    // but does not interpret shorthand-looking bracket sigils inside URLs,
-    // code spans, or other text. Process that context before looking for
-    // another opener so this continuation scan makes the same decision.
-    for (const t of parenShorthands) {
-      if (state[t.key] > 0) {
-        if (t.key === 'interp') {
-          // `#()` delegates to a child lexer. Before the first horizontal
-          // separator, parentheses belong to the tag's quote-aware attribute
-          // grammar; later parentheses and quotes are ordinary text syntax.
-          if (state.interpAttributeQuote !== null) {
-            if (ch === state.interpAttributeQuote) {
-              state.interpAttributeQuote = null;
-            }
-            continue outer;
-          }
-          if (state.interpAttributeDepth > 0) {
-            if (ch === "'" || ch === '"') {
-              state.interpAttributeQuote = ch;
-            } else if (ch === '(') {
-              state.interpAttributeDepth++;
-              state.interpParen++;
-            } else if (ch === ')') {
-              state.interpAttributeDepth--;
-              state.interpParen--;
-            }
-            continue outer;
-          }
-          if (state.interpParen === 0 && (ch === ' ' || ch === '\t')) {
-            state.interpHead = false;
-          }
-          if (ch === '(') {
-            state.interpParen++;
-            if (state.interpHead) state.interpAttributeDepth = 1;
-            continue outer;
-          }
-          if (ch === ')') {
-            if (state.interpParen > 0) state.interpParen--;
-            else state.interp--;
-            continue outer;
-          }
-          continue outer;
-        }
-        if (ch === '(') {
-          state[t.key + 'Paren']++;
-          continue outer;
-        }
-        if (ch === ')') {
-          if (state[t.key + 'Paren'] > 0) state[t.key + 'Paren']--;
-          else {
-            state[t.key]--;
-            if (t.key === 'image') state.imageAttributesMayFollow = true;
-          }
-          continue outer;
-        }
-        continue outer;
-      }
-    }
-
-    // Paren-delimited openers: sigil(
-    if (next === '(') {
-      for (const t of parenShorthands) {
-        if (ch === t.sigil) {
-          state[t.key]++;
-          if (t.key === 'interp') {
-            state.interpHead = true;
-            state.interpAttributeDepth = 0;
-            state.interpAttributeQuote = null;
-          }
-          i++;
-          continue outer;
-        }
-      }
-    }
-
-    // Bracket-delimited openers
-    if (next === '[') {
-      for (const t of bracketShorthands) {
-        if (ch === t.sigil) {
-          state[t.key]++;
-          i++;
-          continue outer;
-        }
-      }
-    }
-
-    // Bracket close. Only sigil-led openers (`@[`/`![`/`^[`) bump the depth
-    // counter above, so a bare `]` closes the innermost open bracket shorthand.
-    // This mirrors parseBracketContent, which treats bare `[`/`]` as literal
-    // characters (not nesting). Keeping the two scanners in agreement prevents
-    // `^[note [x]` from being merged differently inline vs. across pipeless
-    // lines.
-    if (ch === ']') {
-      for (const t of bracketShorthands) {
-        if (state[t.key] > 0) {
-          state[t.key]--;
-          continue outer;
-        }
-      }
-    }
-  }
-
-  for (const t of parenShorthands) {
-    if (state[t.key] > 0) return false;
-  }
-  for (const t of bracketShorthands) {
-    if (state[t.key] > 0) return false;
-  }
-  state.imageAttributesMayFollow = false;
-  if (state.imageAttributeDepth > 0) return false;
-  return true;
-}
-
-function resetInterpolationState(state) {
-  for (const t of parenShorthands) {
-    state[t.key] = 0;
-    state[t.key + 'Paren'] = 0;
-  }
-  state.interpHead = false;
-  state.interpAttributeDepth = 0;
-  state.interpAttributeQuote = null;
-  state.imageAttributesMayFollow = false;
-  state.imageAttributeDepth = 0;
-  state.imageAttributeQuote = null;
-  for (const t of bracketShorthands) {
-    state[t.key] = 0;
-  }
-  return state;
+  scanInlineContexts(str, state, 0);
+  return state.stack.length === 0;
 }
 
 /**
@@ -592,11 +595,14 @@ function mergeMultiLineInterpolations(
   let pendingLines = 0;
   let pendingIndentIdx = 0;
   let pendingSegments = [];
-  const state = resetInterpolationState({});
+  const state = {stack: []};
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
       pendingText += ' ' + tokens[j].trimStart();
+      // The normalized representation inserts one separator between physical
+      // lines; feed it through the same context scanner as the visible bytes.
+      scanInlineContexts(' ', state, 0);
     } else {
       pendingText = tokens[j];
       pendingIndentIdx = j;
@@ -614,7 +620,7 @@ function mergeMultiLineInterpolations(
       pendingText = null;
       pendingLines = 0;
       pendingSegments = [];
-      resetInterpolationState(state);
+      state.stack.length = 0;
     }
   }
   if (pendingText !== null) {
@@ -1462,6 +1468,26 @@ class Lexer {
     let prepared = '';
 
     for (let i = 0; i < value.length; ) {
+      if (
+        value[i] === '\\' &&
+        (value[i + 1] === '@' ||
+          value[i + 1] === '!' ||
+          value[i + 1] === '^') &&
+        value[i + 2] === '['
+      ) {
+        // Preserve one escape for the child scanner. Treating the authored
+        // backslash separately and then escaping every live-looking opener
+        // would produce two backslashes and reactivate the nested shorthand.
+        prepared += '\\';
+        preparedMap.push(sourceMap[i + 1]);
+        prepared += value[i + 1];
+        preparedMap.push(sourceMap[i + 2]);
+        prepared += '[';
+        preparedMap.push(sourceMap[i + 3]);
+        i += 3;
+        continue;
+      }
+
       if (
         value[i] === '\\' &&
         i + 1 < value.length &&

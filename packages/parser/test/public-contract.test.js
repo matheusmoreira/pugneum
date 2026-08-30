@@ -207,6 +207,104 @@ test('parse accepts only nullish or non-array object options', () => {
   });
 });
 
+test('parse rejects non-array token containers at the public boundary', () => {
+  [
+    undefined,
+    null,
+    false,
+    0,
+    '',
+    'tokens',
+    Symbol('tokens'),
+    {},
+    function tokens() {},
+  ].forEach((tokens) => {
+    assert.throws(
+      () => parse(tokens),
+      (err) =>
+        err.constructor === Error &&
+        err.message ===
+          'Expected tokens to be an Array but got "' + typeof tokens + '"',
+    );
+  });
+});
+
+test('parse validates the complete token and location envelope up front', () => {
+  var loc = {start: {line: 1, column: 1}};
+  var eos = {type: 'eos', loc};
+  var cases = [
+    {tokens: [], message: 'expected at least one terminal "eos" token'},
+    {tokens: [null], message: 'token at index 0 must be an object'},
+    {tokens: [[]], message: 'token at index 0 must be an object'},
+    {tokens: [{}], message: 'token at index 0 must have a string "type"'},
+    {
+      tokens: [{type: 1, loc}],
+      message: 'token at index 0 must have a string "type"',
+    },
+    {
+      tokens: [{type: 'eos'}],
+      message: 'token at index 0 must have an object "loc"',
+    },
+    {
+      tokens: [{type: 'eos', loc: []}],
+      message: 'token at index 0 must have an object "loc"',
+    },
+    {
+      tokens: [{type: 'eos', loc: {}}],
+      message: 'token at index 0 must have an object "loc.start"',
+    },
+    {
+      tokens: [{type: 'eos', loc: {start: null}}],
+      message: 'token at index 0 must have an object "loc.start"',
+    },
+    {
+      tokens: [{type: 'eos', loc: {start: {line: 0, column: 1}}}],
+      message:
+        'token at index 0 must have a one-based safe-integer "loc.start.line"',
+    },
+    {
+      tokens: [{type: 'eos', loc: {start: {line: 1, column: 0}}}],
+      message:
+        'token at index 0 must have a one-based safe-integer "loc.start.column"',
+    },
+    {
+      tokens: [{type: 'tag', val: 'p', loc}],
+      message: 'the final token must have type "eos"',
+    },
+    {
+      tokens: [eos, {type: 'tag', val: 'p', loc}, eos],
+      message: '"eos" token at index 0 must be the final token',
+    },
+    {
+      tokens: [eos, eos],
+      message: '"eos" token at index 0 must be the final token',
+    },
+  ];
+
+  cases.forEach(({tokens, message}) => {
+    assert.throws(
+      () => parse(tokens),
+      (err) =>
+        err instanceof TypeError &&
+        err.message === 'Invalid token stream: ' + message,
+    );
+  });
+});
+
+test('parse accepts and does not mutate a frozen complete token stream', () => {
+  var loc = Object.freeze({
+    start: Object.freeze({line: 1, column: 1}),
+  });
+  var tokens = Object.freeze([Object.freeze({type: 'eos', loc})]);
+
+  assert.deepStrictEqual(parse(tokens), {
+    type: 'Block',
+    nodes: [],
+    line: 0,
+    filename: undefined,
+  });
+});
+
 function tagTokensAt(line, middle) {
   var loc = {
     start: {line, column: 7},
@@ -223,27 +321,36 @@ test('Block lines accept the complete non-negative safe-integer range', () => {
   });
 });
 
-test('Block lines reject values outside the non-negative safe-integer range', () => {
-  [
-    -1,
-    Number.MIN_SAFE_INTEGER,
-    0.5,
-    NaN,
-    Infinity,
-    -Infinity,
-    Number.MAX_SAFE_INTEGER + 1,
-    '1',
-    1n,
-    null,
-    undefined,
-    Symbol('line'),
-  ].forEach((line) => {
-    assert.throws(
-      () => parse(tagTokensAt(line)),
-      (err) =>
-        err instanceof TypeError &&
-        err.message === '`line` must be a non-negative safe integer',
-    );
+test('token locations reject values outside the one-based safe-integer range', () => {
+  ['line', 'column'].forEach((field) => {
+    [
+      -1,
+      0,
+      Number.MIN_SAFE_INTEGER,
+      0.5,
+      NaN,
+      Infinity,
+      -Infinity,
+      Number.MAX_SAFE_INTEGER + 1,
+      '1',
+      1n,
+      null,
+      undefined,
+      Symbol(field),
+    ].forEach((value) => {
+      var start = {line: 1, column: 1};
+      start[field] = value;
+      assert.throws(
+        () => parse([{type: 'eos', loc: {start}}]),
+        (err) =>
+          err instanceof TypeError &&
+          err.message ===
+            'Invalid token stream: token at index 0 must have a ' +
+              'one-based safe-integer "loc.start.' +
+              field +
+              '"',
+      );
+    });
   });
 });
 

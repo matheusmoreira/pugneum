@@ -83,11 +83,12 @@ token must end the array. `options` may be omitted, set to `null`, or supplied
 as a non-array object. Other values throw a `TypeError`.
 
 The parser validates that `tokens` is an array, but it does not revalidate the
-complete token envelope, locations, structural balance, or `eos` termination.
-Hand-built, truncated, or otherwise malformed streams are outside this
-contract and may throw an ordinary JavaScript error rather than a coded
-Pugneum diagnostic. Use the lexer contract when another producer needs to
-construct compatible tokens.
+lexer's complete structural balance. It does validate every token's object
+shape, string `type`, and one-based safe-integer `loc.start`, and requires
+exactly one `eos` as the final token. A malformed hand-built stream throws a
+stable, indexed `TypeError` before parsing; a complete stream that violates the
+parser grammar throws the coded diagnostic documented below. Use the lexer
+contract when another producer needs to construct compatible tokens.
 
 ### AST contract (v1)
 

@@ -37,6 +37,65 @@ function parse(tokens, options) {
   return parser.parse();
 }
 
+function invalidTokenStream(message) {
+  throw new TypeError('Invalid token stream: ' + message);
+}
+
+function validateTokenStream(tokens) {
+  if (tokens.length === 0) {
+    invalidTokenStream('expected at least one terminal "eos" token');
+  }
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    if (!token || typeof token !== 'object' || Array.isArray(token)) {
+      invalidTokenStream('token at index ' + i + ' must be an object');
+    }
+    if (typeof token.type !== 'string') {
+      invalidTokenStream('token at index ' + i + ' must have a string "type"');
+    }
+    if (
+      !token.loc ||
+      typeof token.loc !== 'object' ||
+      Array.isArray(token.loc)
+    ) {
+      invalidTokenStream('token at index ' + i + ' must have an object "loc"');
+    }
+    if (
+      !token.loc.start ||
+      typeof token.loc.start !== 'object' ||
+      Array.isArray(token.loc.start)
+    ) {
+      invalidTokenStream(
+        'token at index ' + i + ' must have an object "loc.start"',
+      );
+    }
+    for (const field of ['line', 'column']) {
+      if (
+        !Number.isSafeInteger(token.loc.start[field]) ||
+        token.loc.start[field] < 1
+      ) {
+        invalidTokenStream(
+          'token at index ' +
+            i +
+            ' must have a one-based safe-integer "loc.start.' +
+            field +
+            '"',
+        );
+      }
+    }
+    if (token.type === 'eos' && i !== tokens.length - 1) {
+      invalidTokenStream(
+        '"eos" token at index ' + i + ' must be the final token',
+      );
+    }
+  }
+
+  if (tokens[tokens.length - 1].type !== 'eos') {
+    invalidTokenStream('the final token must have type "eos"');
+  }
+}
+
 // Used to compute a mixin's usesNamedBlocks / usesUnnamedBlock flags by
 // searching its body for NamedBlock / MixinBlock / Given nodes. The stop at
 // nested Mixin nodes is load-bearing: a mixin's block flags must reflect only
@@ -131,6 +190,7 @@ class Parser {
           '"',
       );
     }
+    validateTokenStream(tokens);
     this.tokens = new TokenStream(tokens);
     this.filename = options.filename;
     this.source = options.source;
@@ -196,6 +256,11 @@ class Parser {
           }
         }
       }
+    }
+
+    this.expect('eos');
+    if (this.peek() !== undefined) {
+      invalidTokenStream('parser left unread tokens after the terminal "eos"');
     }
 
     return block;

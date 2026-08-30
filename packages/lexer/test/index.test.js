@@ -452,6 +452,34 @@ describe('quoted filter name boundaries', () => {
   });
 });
 
+describe('bare dotted filter names', () => {
+  test('a block filter keeps every dotted segment in one token', () => {
+    const source = ':highlight.js(language=javascript)\n  body';
+    const tokens = lex(source, {filename: 'dotted-filter.pg'});
+
+    assert.strictEqual(tokens[0].type, 'filter');
+    assert.strictEqual(tokens[0].val, 'highlight.js');
+    assert.ok(!tokens.some((tok) => tok.type === 'class'));
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('an include filter accepts dotted segments before its path', () => {
+    const source = 'include:asset.minifier source.txt';
+    const tokens = lex(source, {filename: 'dotted-include.pg'});
+
+    assert.deepStrictEqual(
+      tokens.map((tok) => [tok.type, tok.val]),
+      [
+        ['include', undefined],
+        ['filter', 'asset.minifier'],
+        ['path', 'source.txt'],
+        ['eos', undefined],
+      ],
+    );
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+});
+
 describe('filter end-of-line padding', () => {
   test('plain filters ignore spaces before a pipeless body', () => {
     const source = ':verbatim   \n  hello';

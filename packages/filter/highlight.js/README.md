@@ -8,15 +8,14 @@ Syntax highlighting in pugneum templates with highlight.js.
 
 ## Usage
 
-Pugneum filters are applied with a **leading** colon (`:filtername`). Because the
+Pugneum filters are applied with a **leading** colon (`:filtername`). The
 auto-resolved name for this package is `highlight.js` (the filterer requires
-`pugneum-filter-<name>`), and the unquoted filter-name syntax cannot contain a
-dot, invoke it with the **quoted** form `:'highlight.js'`:
+`pugneum-filter-<name>`), so invoke it as `:highlight.js`:
 
 ```
 pre
   code
-    :'highlight.js'(language=scheme)
+    :highlight.js(language=scheme)
       (define (square x) (* x x))
 ```
 

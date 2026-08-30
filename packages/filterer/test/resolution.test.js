@@ -10,7 +10,7 @@ test('installed filter packages can be used implicitly', (t) => {
   const source = `
 pre
   code
-    :'highlight.js'(language=ruby)
+    :highlight.js(language=ruby)
       puts 'This should be', :syntax_highlighted
 `;
 

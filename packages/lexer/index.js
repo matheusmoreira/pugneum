@@ -1046,7 +1046,7 @@ class Lexer {
 
   filter(opts) {
     const tok =
-      this.scan(/^:([\w\-]+)/, 'filter') ||
+      this.scan(/^:([\w-]+(?:\.[\w-]+)*)/, 'filter') ||
       this.scan(/^:'([^'\r\n]+)'/, 'filter') ||
       this.scan(/^:"([^"\r\n]+)"/, 'filter');
 

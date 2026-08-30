@@ -96,6 +96,9 @@ There are three distinct cases:
 `options` can contain the following properties:
 
 - `includeDependencies` (boolean): walk the syntax trees of dependencies (includes and extends); default `false`
+- `maxDepth` (integer): maximum total structural edge depth across syntax and
+  traversed dependencies; defaults to `walk.MAX_AST_DEPTH` (`512`) and may be
+  lowered but not raised.
 - `parents` (array<Node>): a caller-owned ancestor stack used mainly
   internally; defaults to `[]`. During each callback, index `0` is the nearest
   parent and the current node is not included. A mutable supplied array is
@@ -112,10 +115,10 @@ There are three distinct cases:
 
 When supplied, `options` must be a non-null, non-array object.
 `includeDependencies` must be a boolean or `undefined`, and `parents` must be
-an array or `undefined`. Invalid option shapes throw a `TypeError` before any
-hook runs or caller-owned state changes. The walker never adds properties to or
-otherwise writes the options object itself, so frozen and sealed options are
-supported.
+an array or `undefined`. `maxDepth` must be an integer from `0` through `512`.
+Invalid option shapes throw a `TypeError` before any hook runs or caller-owned
+state changes. The walker never adds properties to or otherwise writes the
+options object itself, so frozen and sealed options are supported.
 
 ### `walk.validate(ast, options)`
 
@@ -152,10 +155,10 @@ reachable AST graph before the first hook runs:
   option is enabled. When the option is `false`, a populated dependency root
   must still be a `Block`, but its descendants are neither traversed nor
   recursively preflighted.
-- The traversal is fully recursive with no depth limit.
-  The parser's 256-expression limit does not by itself bound a walk that
-  composes syntax nesting with dependency nesting. A sufficiently deep finite
-  graph can still exceed the native call stack and throw a `RangeError`.
+- Traversal has one total structural-depth budget, defaulting to 512 edges.
+  Syntax and followed dependency edges consume the same budget, so their
+  composition cannot bypass it. An over-budget graph or replacement throws an
+  `ASTValidationError` with `kind === 'depth'` before recursive traversal.
 - Under `includeDependencies`, the dependency graph must be
   acyclic. The loader enforces this in the pipeline, and walker preflight
   rejects a direct cycle before hooks run with `kind === 'cycle'`.

@@ -630,6 +630,17 @@ describe('input contract', function () {
         message: 'options.parents must be an array or undefined',
       });
     });
+
+    [-1, 1.5, Infinity, '2', walk.MAX_AST_DEPTH + 1].forEach(
+      function (maxDepth) {
+        assert.throws(() => walk({type: 'Text', val: 'x'}, null, {maxDepth}), {
+          name: 'TypeError',
+          message:
+            'options.maxDepth must be an integer from 0 through ' +
+            walk.MAX_AST_DEPTH,
+        });
+      },
+    );
   });
 
   test('replace.arrayAllowed is a strict boolean at the root', function () {
@@ -996,6 +1007,149 @@ test('preflight follows only dependency ASTs selected for traversal', function (
       err.kind === 'shape' &&
       err.path === '$.nodes[0].ast.nodes[0]',
   );
+});
+
+describe('traversal depth and cycles', function () {
+  function nestedBlocks(depth) {
+    var ast = {type: 'Text', val: 'end'};
+    while (depth-- > 0) ast = {type: 'Block', nodes: [ast]};
+    return ast;
+  }
+
+  test('a configurable total edge boundary passes at the limit and fails one deeper', function () {
+    assert.strictEqual(
+      walk(nestedBlocks(2), null, {maxDepth: 2}).type,
+      'Block',
+    );
+
+    var parents = [{type: 'Comment', val: 'seed', buffer: false}];
+    var options = {maxDepth: 2, parents};
+    var beforeRan = false;
+    var tooDeep = nestedBlocks(3);
+    Object.assign(tooDeep.nodes[0].nodes[0].nodes[0], {
+      filename: 'deep.pg',
+      line: 9,
+      column: 4,
+    });
+    assert.throws(
+      () =>
+        walk(
+          tooDeep,
+          function before() {
+            beforeRan = true;
+          },
+          options,
+        ),
+      function (err) {
+        assert.strictEqual(err.code, 'INVALID_AST');
+        assert.strictEqual(err.kind, 'depth');
+        assert.strictEqual(err.path, '$.nodes[0].nodes[0].nodes[0]');
+        assert.strictEqual(err.filename, 'deep.pg');
+        assert.strictEqual(err.line, 9);
+        assert.strictEqual(err.column, 4);
+        assert.ok(err.message.includes('deep.pg:9:4'));
+        return true;
+      },
+    );
+    assert.strictEqual(beforeRan, false);
+    assert.deepStrictEqual(parents, [
+      {type: 'Comment', val: 'seed', buffer: false},
+    ]);
+  });
+
+  test('syntax and dependency edges share one depth budget', function () {
+    var dependency = nestedBlocks(1);
+    var root = {
+      type: 'Block',
+      nodes: [
+        {
+          type: 'Tag',
+          name: 'p',
+          attrs: [],
+          block: {
+            type: 'Block',
+            nodes: [
+              {
+                type: 'FileReference',
+                path: 'dependency.pg',
+                ast: dependency,
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    assert.throws(
+      () =>
+        walk(root, null, {
+          includeDependencies: true,
+          maxDepth: 4,
+        }),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'depth',
+    );
+  });
+
+  test('a two-root dependency cycle is rejected before hooks', function () {
+    var a = {
+      type: 'Block',
+      nodes: [],
+      filename: 'a.pg',
+      line: 1,
+      column: 1,
+    };
+    var b = {type: 'Block', nodes: []};
+    a.nodes.push({type: 'FileReference', path: 'b.pg', ast: b});
+    b.nodes.push({type: 'FileReference', path: 'a.pg', ast: a});
+    var beforeRan = false;
+
+    assert.strictEqual(walk(a), a);
+    assert.throws(
+      () =>
+        walk(
+          a,
+          function before() {
+            beforeRan = true;
+          },
+          {includeDependencies: true},
+        ),
+      function (err) {
+        assert.strictEqual(err.code, 'INVALID_AST');
+        assert.strictEqual(err.kind, 'cycle');
+        assert.strictEqual(err.path, '$.nodes[0].ast.nodes[0].ast');
+        assert.strictEqual(err.filename, 'a.pg');
+        assert.strictEqual(err.line, 1);
+        assert.strictEqual(err.column, 1);
+        assert.ok(err.message.includes('a.pg:1:1'));
+        return true;
+      },
+    );
+    assert.strictEqual(beforeRan, false);
+  });
+
+  test('replacement depth is charged from its current attachment point', function () {
+    var original = {type: 'Text', val: 'original'};
+    var ast = {type: 'Block', nodes: [original]};
+    var replacement = {
+      type: 'Tag',
+      name: 'p',
+      attrs: [],
+      block: nestedBlocks(1),
+    };
+
+    assert.throws(
+      () =>
+        walk(
+          ast,
+          function before(node, replace) {
+            if (node === original) replace(replacement);
+          },
+          {maxDepth: 2},
+        ),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'depth',
+    );
+    assert.strictEqual(ast.nodes[0], original);
+  });
 });
 
 describe('array replacement re-walk fates (documented contract)', function () {

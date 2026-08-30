@@ -75,9 +75,9 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  *
  * Input contract: `ast` must be well-formed parser output (a single node, not a
  * bare array). Reachable structure and cycles are validated before hooks run.
- * Traversal recursion itself is unbounded, so a sufficiently deep finite AST
- * (including syntax depth composed with dependency depth) can still throw a
- * raw RangeError.
+ * The default total structural-depth budget is MAX_AST_DEPTH (512), including
+ * syntax and dependency edges. Callers may select a smaller `options.maxDepth`;
+ * cycles and over-budget graphs fail schema preflight before recursive walking.
  */
 function walkAST(ast, before, after, options) {
   // 3-arg overload: walkAST(ast, before, options). Reject arrays explicitly so
@@ -97,7 +97,10 @@ function walkAST(ast, before, after, options) {
   options = normalizeOptions(options);
   assertRootNode(ast);
   const context = createWalkContext(options);
-  validateAST(ast, {[validateDependencyASTs]: context.includeDependencies});
+  validateAST(ast, {
+    maxDepth: context.maxDepth,
+    [validateDependencyASTs]: context.includeDependencies,
+  });
   if (!context.callerParents) return walkNode(ast, before, after, context);
 
   activeParentSeeds.set(context.callerParents, context.parentSeed);
@@ -110,6 +113,7 @@ function walkAST(ast, before, after, options) {
 
 function walkNode(ast, before, after, context) {
   const parents = context.parents;
+  const currentDepth = Math.max(0, parents.length - context.parentSeedLength);
 
   // String compares rather than a per-call RegExp: arrayAllowed is recomputed
   // on every node and the walker is the linker's hottest inner loop. Equivalent
@@ -139,6 +143,7 @@ function walkNode(ast, before, after, context) {
     validateAST(replacement, {
       allowRootArray: Array.isArray(replacement),
       forbiddenNodes: forbiddenReplacementNodes,
+      maxDepth: context.maxDepth - currentDepth,
     });
     ast = replacement;
   };
@@ -295,31 +300,55 @@ function normalizeOptions(options) {
   if (options.parents !== undefined && !Array.isArray(options.parents)) {
     throw new TypeError('options.parents must be an array or undefined');
   }
+  if (
+    options.maxDepth !== undefined &&
+    (!Number.isSafeInteger(options.maxDepth) ||
+      options.maxDepth < 0 ||
+      options.maxDepth > MAX_AST_DEPTH)
+  ) {
+    throw new TypeError(
+      'options.maxDepth must be an integer from 0 through ' + MAX_AST_DEPTH,
+    );
+  }
   return options;
 }
 
 function createWalkContext(options) {
   const includeDependencies = options.includeDependencies === true;
+  const maxDepth =
+    options.maxDepth === undefined ? MAX_AST_DEPTH : options.maxDepth;
   const callerParents = options.parents;
   if (callerParents === undefined) {
-    return {includeDependencies, parents: []};
+    return {includeDependencies, maxDepth, parentSeedLength: 0, parents: []};
   }
 
   // Immutable arrays are read-only seeds. Reentrant walks sharing a mutable
   // array also get a private copy of its entry-time seed, not the outer walk's
   // live frames. A first, mutable use remains the callback-time ancestry view.
   if (!Object.isExtensible(callerParents)) {
-    return {includeDependencies, parents: callerParents.slice()};
+    return {
+      includeDependencies,
+      maxDepth,
+      parentSeedLength: callerParents.length,
+      parents: callerParents.slice(),
+    };
   }
   const activeSeed = activeParentSeeds.get(callerParents);
   if (activeSeed) {
-    return {includeDependencies, parents: activeSeed.slice()};
+    return {
+      includeDependencies,
+      maxDepth,
+      parentSeedLength: activeSeed.length,
+      parents: activeSeed.slice(),
+    };
   }
   return {
     callerParents,
     includeDependencies,
+    maxDepth,
     parents: callerParents,
     parentSeed: callerParents.slice(),
+    parentSeedLength: callerParents.length,
   };
 }
 

@@ -1092,18 +1092,16 @@ class Lexer {
     let tok;
     prefix = prefix || '';
     escaped = escaped || 0;
+    // Candidate handlers consume their own syntax, but the surrounding text's
+    // ordinary parenthesis depth must survive each dispatch.
+    let parenDepth = 0;
 
     while (true) {
       let earliest;
-      let escapedParenDepth = 0;
       let scanPos = 0;
 
       for (;;) {
-        earliest = this.findEarliestCandidate(
-          value,
-          scanPos,
-          escapedParenDepth,
-        );
+        earliest = this.findEarliestCandidate(value, scanPos, parenDepth);
 
         if (!earliest) {
           value = prefix + value.substring(scanPos);
@@ -1113,6 +1111,7 @@ class Lexer {
           return;
         }
 
+        parenDepth = earliest.parenDepth;
         if (earliest.kind !== 'escaped') {
           prefix = prefix + value.substring(scanPos, earliest.pos);
           value = value.substring(earliest.pos);
@@ -1122,20 +1121,15 @@ class Lexer {
         }
 
         const segment = value.substring(scanPos, earliest.pos);
-        for (let ci = 0; ci < segment.length; ci++) {
-          if (segment[ci] === '(') escapedParenDepth++;
-          else if (segment[ci] === ')' && escapedParenDepth > 0)
-            escapedParenDepth--;
-        }
         // Sigil-specific escapes like \*( produce literals containing brackets
         // that the end-of-interpolation scanner would count for depth. Track them.
         // Standalone delimiter escapes (\(, \), \\, \', \") produce single-char
         // literals that are text content, not bracket structure.
         if (earliest.literal.length > 1) {
           for (let ci = 0; ci < earliest.literal.length; ci++) {
-            if (earliest.literal[ci] === '(') escapedParenDepth++;
-            else if (earliest.literal[ci] === ')' && escapedParenDepth > 0)
-              escapedParenDepth--;
+            if (earliest.literal[ci] === '(') parenDepth++;
+            else if (earliest.literal[ci] === ')' && parenDepth > 0)
+              parenDepth--;
           }
         }
 
@@ -1283,26 +1277,36 @@ class Lexer {
         if (interpolationAllowed) {
           const next = value[i + 1];
           if (next === '\\') {
-            return {pos: i, kind: 'escaped', literal: '\\'};
+            return {pos: i, kind: 'escaped', literal: '\\', parenDepth};
           }
           const after = value[i + 2];
           if (after === '(' && parenShorthandBySigil[next] !== undefined) {
-            return {pos: i, kind: 'escaped', literal: next + '('};
+            return {
+              pos: i,
+              kind: 'escaped',
+              literal: next + '(',
+              parenDepth,
+            };
           }
           if (after === '[' && bracketShorthandBySigil[next] !== undefined) {
-            return {pos: i, kind: 'escaped', literal: next + '['};
+            return {
+              pos: i,
+              kind: 'escaped',
+              literal: next + '[',
+              parenDepth,
+            };
           }
           if (
             interpolated &&
             (next === '(' || next === ')' || next === "'" || next === '"')
           ) {
-            return {pos: i, kind: 'escaped', literal: next};
+            return {pos: i, kind: 'escaped', literal: next, parenDepth};
           }
           if (next === '#' && after === '{') {
             variableScanRe.lastIndex = i;
             const em = variableScanRe.exec(value);
             if (em && em[1]) {
-              return {pos: i, kind: 'escaped', literal: '#{'};
+              return {pos: i, kind: 'escaped', literal: '#{', parenDepth};
             }
           }
         }
@@ -1316,16 +1320,24 @@ class Lexer {
       if (interpolationAllowed) {
         const next = value[i + 1];
         if (next === '(' && parenShorthandBySigil[ch] !== undefined) {
-          return {pos: i, kind: parenShorthandBySigil[ch]};
+          return {
+            pos: i,
+            kind: parenShorthandBySigil[ch],
+            parenDepth,
+          };
         }
         if (next === '[' && bracketShorthandBySigil[ch] !== undefined) {
-          return {pos: i, kind: bracketShorthandBySigil[ch]};
+          return {
+            pos: i,
+            kind: bracketShorthandBySigil[ch],
+            parenDepth,
+          };
         }
         if (ch === '#' && next === '{') {
           variableScanRe.lastIndex = i;
           const m = variableScanRe.exec(value);
           if (m && !m[1]) {
-            return {pos: i, kind: 'variable', match: m};
+            return {pos: i, kind: 'variable', match: m, parenDepth};
           }
         }
       }
@@ -1337,7 +1349,7 @@ class Lexer {
           if (parenDepth > 0) {
             parenDepth--;
           } else {
-            return {pos: i, kind: 'end'};
+            return {pos: i, kind: 'end', parenDepth};
           }
         }
       }

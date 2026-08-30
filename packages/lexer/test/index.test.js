@@ -495,6 +495,54 @@ describe('context-aware multiline pipeless text', () => {
   });
 });
 
+describe('nested inline parenthesis depth', () => {
+  function nonEmptyText(tokens) {
+    return tokens
+      .filter((tok) => tok.type === 'text' && tok.val)
+      .map((tok) => tok.val);
+  }
+
+  test('a nested shorthand cannot close its enclosing literal group', () => {
+    const tokens = lex('p *(outer (prefix _(inner) suffix) tail)', {
+      filename: 'depth.pg',
+    });
+
+    assert.deepStrictEqual(nonEmptyText(tokens), [
+      'outer (prefix ',
+      'inner',
+      ' suffix) tail',
+    ]);
+  });
+
+  test('a variable candidate preserves the enclosing literal group', () => {
+    const tokens = lex('p *(outer (prefix #{name} suffix) tail)', {
+      filename: 'depth.pg',
+    });
+
+    assert.deepStrictEqual(nonEmptyText(tokens), [
+      'outer (prefix ',
+      ' suffix) tail',
+    ]);
+    assert.strictEqual(
+      tokens.filter((tok) => tok.type === 'variable').at(0).val,
+      'name',
+    );
+  });
+
+  test('an escaped opener and a live shorthand retain both depths', () => {
+    const tokens = lex(
+      'p *(outer (prefix \\_(literal) and _(inner) suffix) tail)',
+      {filename: 'depth.pg'},
+    );
+
+    assert.deepStrictEqual(nonEmptyText(tokens), [
+      'outer (prefix _(literal) and ',
+      'inner',
+      ' suffix) tail',
+    ]);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

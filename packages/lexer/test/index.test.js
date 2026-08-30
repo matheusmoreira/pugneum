@@ -621,6 +621,79 @@ describe('context-aware reference shorthand boundaries', () => {
   });
 });
 
+describe('quoted reference-definition URLs', () => {
+  const quoteCases = [
+    {name: 'single', quote: "'"},
+    {name: 'double', quote: '"'},
+  ];
+
+  function definition(source) {
+    const tokens = lex(source, {filename: 'references.pg'});
+    assertPhysicalTokenLocations(source, tokens, source);
+    return tokens.find((tok) => tok.type === 'ref-def');
+  }
+
+  function assertUnclosedAt(source, column) {
+    assert.throws(
+      () => lex(source, {filename: 'references.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:INVALID_REF_DEF');
+        assert.match(err.msg, /Unclosed quote/);
+        assert.deepStrictEqual(
+          {line: err.line, column: err.column},
+          {line: 2, column},
+        );
+        return true;
+      },
+    );
+  }
+
+  test('escaped matching quotes stay in the URL', () => {
+    quoteCases.forEach(({name, quote}) => {
+      const url = 'https://example.test/a' + '\\' + quote + 'b';
+      const source =
+        'references\n  ' + name + ' ' + quote + url + quote + ' fallback';
+      const tok = definition(source);
+
+      assert.strictEqual(tok.url, 'https://example.test/a' + quote + 'b');
+      assert.strictEqual(tok.defaultText, 'fallback');
+    });
+  });
+
+  test('a doubled trailing backslash decodes before the closing quote', () => {
+    quoteCases.forEach(({name, quote}) => {
+      const url = 'https://example.test/tail' + '\\\\';
+      const source =
+        'references\n  ' + name + ' ' + quote + url + quote + ' fallback';
+      const tok = definition(source);
+
+      assert.strictEqual(tok.url, 'https://example.test/tail' + '\\');
+      assert.strictEqual(tok.defaultText, 'fallback');
+    });
+  });
+
+  test('an unclosed quote at EOF fails at its opening delimiter', () => {
+    quoteCases.forEach(({name, quote}) => {
+      const source =
+        'references\n  ' + name + '   ' + quote + 'https://example.test/eof';
+      assertUnclosedAt(source, 12);
+    });
+  });
+
+  test('an unclosed quote with a trailing backslash fails locally', () => {
+    quoteCases.forEach(({name, quote}) => {
+      const source =
+        'references\n  ' +
+        name +
+        ' ' +
+        quote +
+        'https://example.test/tail' +
+        '\\';
+      assertUnclosedAt(source, 10);
+    });
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

@@ -529,13 +529,13 @@ function findClosingQuote(str, quote, start) {
 }
 
 /**
- * Unescape backslash sequences in URL or text extracted from shorthand syntax.
+ * Unescape backslash sequences in a URL or label extracted from resource syntax.
  * Handles \( \) \\ \' \" escapes.
  *
  * @param {string} str - The string to unescape
  * @returns {string}
  */
-function unescapeShorthand(str) {
+function unescapeResource(str) {
   // Strip the backslash from an escaped shorthand delimiter so the literal
   // survives: \( \) \\ \' \". NOTE: \# is deliberately NOT stripped here — the
   // link/image/abbr shorthands route their content into a child ATTRIBUTE that
@@ -547,7 +547,7 @@ function unescapeShorthand(str) {
 
 // Code-span content is literal text and is NOT re-interpolated downstream, so an
 // escaped \#{ must become the literal #{ right here — this is how a table cell's
-// neutralized `#{` renders correctly inside `(...). Same as unescapeShorthand
+// neutralized `#{` renders correctly inside `(...). Same as unescapeResource
 // plus \#{ -> #{. The \# strip is scoped to a following `{` on purpose: `#` is
 // only special as the head of an interpolation, so a bare \# elsewhere in a code
 // span (e.g. `\#general`) keeps its backslash, exactly as base and every other
@@ -1607,7 +1607,7 @@ class Lexer {
       }
     }
     return {
-      url: unescapeShorthand(url),
+      url: unescapeResource(url),
       rawUrl: url,
       text,
       urlStart,
@@ -1662,7 +1662,7 @@ class Lexer {
       'INVALID_IMAGE',
       '!() image',
     );
-    const altText = parsed.text !== null ? unescapeShorthand(parsed.text) : '';
+    const altText = parsed.text !== null ? unescapeResource(parsed.text) : '';
     let afterImage = parsed.after;
     let attrRange = null;
     if (afterImage.startsWith('(')) {
@@ -1723,8 +1723,7 @@ class Lexer {
     // parsed.url = first word (the abbreviation), unescaped for attributes
     // parsed.rawUrl = raw abbreviation, for visible text
     // parsed.text = rest (the expansion), or null if no space
-    const expansion =
-      parsed.text !== null ? unescapeShorthand(parsed.text) : '';
+    const expansion = parsed.text !== null ? unescapeResource(parsed.text) : '';
 
     this.startDesugaredElement('abbr');
     if (expansion) {
@@ -2375,21 +2374,28 @@ class Lexer {
             );
           }
           const name = content.substring(0, spaceIdx);
-          let rest = content.substring(spaceIdx + 1).trim();
+          const rawRest = content.substring(spaceIdx + 1);
+          const leadingRestWhitespace =
+            rawRest.length - rawRest.trimStart().length;
+          const restStart = spaceIdx + 1 + leadingRestWhitespace;
+          const rest = rawRest.trim();
           let url;
           let defaultText = null;
 
           // Handle quoted URLs (may be followed by default text)
           if (rest[0] === "'" || rest[0] === '"') {
             const quote = rest[0];
-            const closeIdx = rest.indexOf(quote, 1);
-            if (closeIdx !== -1) {
-              url = rest.substring(1, closeIdx);
-              const afterUrl = rest.substring(closeIdx + 1).trim();
-              if (afterUrl) defaultText = afterUrl;
-            } else {
-              url = rest;
+            const closeIdx = findClosingQuote(rest, quote, 1);
+            if (closeIdx === -1) {
+              this.incrementColumn(restStart);
+              this.error(
+                'INVALID_REF_DEF',
+                'Unclosed quote in reference definition URL: ' + content,
+              );
             }
+            url = unescapeResource(rest.substring(1, closeIdx));
+            const afterUrl = rest.substring(closeIdx + 1).trim();
+            if (afterUrl) defaultText = afterUrl;
           } else {
             // Unquoted URL: first word is URL, rest is default text
             const urlEnd = rest.indexOf(' ');

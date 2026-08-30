@@ -92,12 +92,14 @@ describe('error paths', () => {
     );
   });
 
-  test('INVALID_TOKEN for unexpected token in expression position', () => {
+  test('INVALID_TOKEN for unexpected token in tag-content position', () => {
     var tokens = lex('div', {filename: 'test.pg'});
     tokens.splice(1, 0, {type: 'bogus', loc: {start: {line: 1, column: 4}}});
     assert.throws(
       () => parse(tokens, {filename: 'test.pg'}),
-      (err) => err.code === 'PUGNEUM:INVALID_TOKEN',
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_TOKEN' &&
+        err.msg === 'Unexpected token `bogus` while parsing tag content',
     );
   });
 

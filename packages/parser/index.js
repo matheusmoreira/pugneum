@@ -810,7 +810,10 @@ class Parser {
   }
 
   /**
-   * include block?
+   * include filter* path
+   *
+   * An unfiltered `.pg` path may consume an `indent`/`outdent` block. Every
+   * other path becomes a RawInclude and rejects a following `indent`.
    */
 
   parseInclude() {
@@ -933,7 +936,13 @@ class Parser {
   }
 
   /**
-   * indent (text | newline | interpolation | ref-link | ref-image | footnote-ref)* outdent
+   * start-pipeless-text
+   *   (text | newline
+   *     | start-interpolation expr end-interpolation
+   *     | start-ref-link ... end-ref-link
+   *     | start-ref-image ... end-ref-image
+   *     | start-footnote-ref ... end-footnote-ref)*
+   * end-pipeless-text
    */
 
   parseTextBlock() {
@@ -1000,7 +1009,8 @@ class Parser {
   }
 
   /**
-   * interpolation (attrs | class | id)* (text | ':')? newline* block?
+   * Create an InterpolatedTag from a direct compatibility token, then consume
+   * its shared suffix in tag().
    */
 
   parseInterpolation() {
@@ -1021,7 +1031,7 @@ class Parser {
   }
 
   /**
-   * tag (attrs | class | id)* (text | ':')? newline* block?
+   * Create a Tag from its head token, then consume its shared suffix in tag().
    */
 
   parseTag() {
@@ -1042,13 +1052,14 @@ class Parser {
   }
 
   /**
-   * Parse tag.
+   * Consume the suffix shared by Tag, InterpolatedTag, and Mixin-call nodes.
+   * The switches below are the authoritative accepted-token lists.
    */
 
   tag(tag) {
     let seenAttrs = false;
     const attributeNames = new Set();
-    // (attrs | class | id)*
+    // Attribute and shorthand prefix.
     out: while (true) {
       switch (this.peek().type) {
         case 'id':
@@ -1088,13 +1099,13 @@ class Parser {
       }
     }
 
-    // check immediate '.'
+    // An immediate dot selects pipeless-text body handling.
     if ('dot' === this.peek().type) {
       tag.textOnly = true;
       this.advance();
     }
 
-    // (text | ':')?
+    // Optional immediate inline content, colon expression, or mixin variable.
     switch (this.peek().type) {
       case 'text':
       case 'start-interpolation':
@@ -1136,15 +1147,15 @@ class Parser {
           'INVALID_TOKEN',
           'Unexpected token `' +
             this.peek().type +
-            '` expected `text`, `:`, `newline` or `eos`',
+            '` while parsing tag content',
           this.peek(),
         );
     }
 
-    // newline*
+    // Line separators before an optional body.
     while ('newline' === this.peek().type) this.advance();
 
-    // block?
+    // Dot syntax owns a pipeless body; otherwise accept an ordinary block.
     if (tag.textOnly) {
       tag.block = this.parseTextBlock() || this.emptyBlock(tag.line);
     } else if ('indent' === this.peek().type) {

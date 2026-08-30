@@ -10698,13 +10698,13 @@ exports[`comments.source.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 5
+        "line": 10,
+        "column": 1
       },
       "filename": "comments.source.pg",
       "end": {
-        "line": 9,
-        "column": 5
+        "line": 10,
+        "column": 1
       }
     }
   },
@@ -10712,13 +10712,13 @@ exports[`comments.source.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 5
+        "line": 10,
+        "column": 1
       },
       "filename": "comments.source.pg",
       "end": {
-        "line": 9,
-        "column": 5
+        "line": 10,
+        "column": 1
       }
     }
   }
@@ -13231,13 +13231,13 @@ exports[`filters.coffeescript.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       },
       "filename": "filters.coffeescript.pg",
       "end": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       }
     }
   },
@@ -13245,13 +13245,13 @@ exports[`filters.coffeescript.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       },
       "filename": "filters.coffeescript.pg",
       "end": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       }
     }
   },
@@ -13259,13 +13259,13 @@ exports[`filters.coffeescript.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       },
       "filename": "filters.coffeescript.pg",
       "end": {
-        "line": 6,
-        "column": 39
+        "line": 7,
+        "column": 1
       }
     }
   }
@@ -13529,13 +13529,13 @@ exports[`filters.custom.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       },
       "filename": "filters.custom.pg",
       "end": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       }
     }
   },
@@ -13543,13 +13543,13 @@ exports[`filters.custom.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       },
       "filename": "filters.custom.pg",
       "end": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       }
     }
   },
@@ -13557,13 +13557,13 @@ exports[`filters.custom.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       },
       "filename": "filters.custom.pg",
       "end": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       }
     }
   },
@@ -13571,13 +13571,13 @@ exports[`filters.custom.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       },
       "filename": "filters.custom.pg",
       "end": {
-        "line": 7,
-        "column": 13
+        "line": 8,
+        "column": 1
       }
     }
   }
@@ -14421,13 +14421,13 @@ exports[`filters.less.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       },
       "filename": "filters.less.pg",
       "end": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -14435,13 +14435,13 @@ exports[`filters.less.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       },
       "filename": "filters.less.pg",
       "end": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -14449,13 +14449,13 @@ exports[`filters.less.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       },
       "filename": "filters.less.pg",
       "end": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -14463,13 +14463,13 @@ exports[`filters.less.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       },
       "filename": "filters.less.pg",
       "end": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -14477,13 +14477,13 @@ exports[`filters.less.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       },
       "filename": "filters.less.pg",
       "end": {
-        "line": 8,
-        "column": 10
+        "line": 9,
+        "column": 1
       }
     }
   }
@@ -14629,13 +14629,13 @@ exports[`filters.markdown.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.markdown.pg",
       "end": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -14643,13 +14643,13 @@ exports[`filters.markdown.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.markdown.pg",
       "end": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -14657,13 +14657,13 @@ exports[`filters.markdown.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.markdown.pg",
       "end": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -14671,13 +14671,13 @@ exports[`filters.markdown.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.markdown.pg",
       "end": {
-        "line": 5,
-        "column": 13
+        "line": 6,
+        "column": 1
       }
     }
   }
@@ -15027,13 +15027,13 @@ exports[`filters.nested.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       },
       "filename": "filters.nested.pg",
       "end": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       }
     }
   },
@@ -15041,13 +15041,13 @@ exports[`filters.nested.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       },
       "filename": "filters.nested.pg",
       "end": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       }
     }
   },
@@ -15055,13 +15055,13 @@ exports[`filters.nested.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       },
       "filename": "filters.nested.pg",
       "end": {
-        "line": 10,
-        "column": 8
+        "line": 11,
+        "column": 1
       }
     }
   }
@@ -15504,13 +15504,13 @@ exports[`filters.verbatim.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.verbatim.pg",
       "end": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -15518,13 +15518,13 @@ exports[`filters.verbatim.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.verbatim.pg",
       "end": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -15532,13 +15532,13 @@ exports[`filters.verbatim.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.verbatim.pg",
       "end": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -15546,13 +15546,13 @@ exports[`filters.verbatim.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       },
       "filename": "filters.verbatim.pg",
       "end": {
-        "line": 5,
-        "column": 41
+        "line": 6,
+        "column": 1
       }
     }
   }
@@ -19924,13 +19924,13 @@ exports[`image-shorthand-multiline.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 24
+        "line": 8,
+        "column": 1
       },
       "filename": "image-shorthand-multiline.pg",
       "end": {
-        "line": 7,
-        "column": 24
+        "line": 8,
+        "column": 1
       }
     }
   },
@@ -19938,13 +19938,13 @@ exports[`image-shorthand-multiline.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 7,
-        "column": 24
+        "line": 8,
+        "column": 1
       },
       "filename": "image-shorthand-multiline.pg",
       "end": {
-        "line": 7,
-        "column": 24
+        "line": 8,
+        "column": 1
       }
     }
   }
@@ -28388,13 +28388,13 @@ exports[`inline-tag.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 15,
-        "column": 23
+        "line": 16,
+        "column": 1
       },
       "filename": "inline-tag.pg",
       "end": {
-        "line": 15,
-        "column": 23
+        "line": 16,
+        "column": 1
       }
     }
   },
@@ -28402,13 +28402,13 @@ exports[`inline-tag.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 15,
-        "column": 23
+        "line": 16,
+        "column": 1
       },
       "filename": "inline-tag.pg",
       "end": {
-        "line": 15,
-        "column": 23
+        "line": 16,
+        "column": 1
       }
     }
   }
@@ -37849,13 +37849,13 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       }
     }
   },
@@ -37863,13 +37863,13 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       }
     }
   },
@@ -37877,13 +37877,13 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       }
     }
   },
@@ -37891,13 +37891,13 @@ exports[`mixin.block-tag-behaviour.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       },
       "filename": "mixin.block-tag-behaviour.pg",
       "end": {
-        "line": 22,
-        "column": 25
+        "line": 23,
+        "column": 1
       }
     }
   }
@@ -38486,13 +38486,13 @@ exports[`mixin.blocks.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 21,
-        "column": 8
+        "line": 22,
+        "column": 1
       },
       "filename": "mixin.blocks.pg",
       "end": {
-        "line": 21,
-        "column": 8
+        "line": 22,
+        "column": 1
       }
     }
   },
@@ -38500,13 +38500,13 @@ exports[`mixin.blocks.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 21,
-        "column": 8
+        "line": 22,
+        "column": 1
       },
       "filename": "mixin.blocks.pg",
       "end": {
-        "line": 21,
-        "column": 8
+        "line": 22,
+        "column": 1
       }
     }
   }
@@ -39727,13 +39727,13 @@ exports[`multi-line-interpolation.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 16,
-        "column": 22
+        "line": 17,
+        "column": 1
       },
       "filename": "multi-line-interpolation.pg",
       "end": {
-        "line": 16,
-        "column": 22
+        "line": 17,
+        "column": 1
       }
     }
   },
@@ -39741,13 +39741,13 @@ exports[`multi-line-interpolation.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 16,
-        "column": 22
+        "line": 17,
+        "column": 1
       },
       "filename": "multi-line-interpolation.pg",
       "end": {
-        "line": 16,
-        "column": 22
+        "line": 17,
+        "column": 1
       }
     }
   }
@@ -42535,13 +42535,13 @@ exports[`pipeless-comments.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 4,
-        "column": 7
+        "line": 5,
+        "column": 1
       },
       "filename": "pipeless-comments.pg",
       "end": {
-        "line": 4,
-        "column": 7
+        "line": 5,
+        "column": 1
       }
     }
   },
@@ -42549,13 +42549,13 @@ exports[`pipeless-comments.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 4,
-        "column": 7
+        "line": 5,
+        "column": 1
       },
       "filename": "pipeless-comments.pg",
       "end": {
-        "line": 4,
-        "column": 7
+        "line": 5,
+        "column": 1
       }
     }
   }
@@ -42670,13 +42670,13 @@ exports[`pipeless-filters.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 4,
-        "column": 12
+        "line": 5,
+        "column": 1
       },
       "filename": "pipeless-filters.pg",
       "end": {
-        "line": 4,
-        "column": 12
+        "line": 5,
+        "column": 1
       }
     }
   },
@@ -42684,13 +42684,13 @@ exports[`pipeless-filters.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 4,
-        "column": 12
+        "line": 5,
+        "column": 1
       },
       "filename": "pipeless-filters.pg",
       "end": {
-        "line": 4,
-        "column": 12
+        "line": 5,
+        "column": 1
       }
     }
   }
@@ -42848,13 +42848,13 @@ exports[`pipeless-tag.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 3,
-        "column": 31
+        "line": 4,
+        "column": 1
       },
       "filename": "pipeless-tag.pg",
       "end": {
-        "line": 3,
-        "column": 31
+        "line": 4,
+        "column": 1
       }
     }
   },
@@ -42862,13 +42862,13 @@ exports[`pipeless-tag.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 3,
-        "column": 31
+        "line": 4,
+        "column": 1
       },
       "filename": "pipeless-tag.pg",
       "end": {
-        "line": 3,
-        "column": 31
+        "line": 4,
+        "column": 1
       }
     }
   }
@@ -43495,13 +43495,13 @@ exports[`quoted-filters.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       },
       "filename": "quoted-filters.pg",
       "end": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -43509,13 +43509,13 @@ exports[`quoted-filters.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       },
       "filename": "quoted-filters.pg",
       "end": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -43523,13 +43523,13 @@ exports[`quoted-filters.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       },
       "filename": "quoted-filters.pg",
       "end": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       }
     }
   },
@@ -43537,13 +43537,13 @@ exports[`quoted-filters.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       },
       "filename": "quoted-filters.pg",
       "end": {
-        "line": 8,
-        "column": 50
+        "line": 9,
+        "column": 1
       }
     }
   }
@@ -46213,13 +46213,13 @@ exports[`reference-links-text-block.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 11,
-        "column": 51
+        "line": 12,
+        "column": 1
       },
       "filename": "reference-links-text-block.pg",
       "end": {
-        "line": 11,
-        "column": 51
+        "line": 12,
+        "column": 1
       }
     }
   },
@@ -46227,13 +46227,13 @@ exports[`reference-links-text-block.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 11,
-        "column": 51
+        "line": 12,
+        "column": 1
       },
       "filename": "reference-links-text-block.pg",
       "end": {
-        "line": 11,
-        "column": 51
+        "line": 12,
+        "column": 1
       }
     }
   }
@@ -47356,13 +47356,13 @@ exports[`scripts.non-js.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 4
+        "line": 10,
+        "column": 1
       },
       "filename": "scripts.non-js.pg",
       "end": {
-        "line": 9,
-        "column": 4
+        "line": 10,
+        "column": 1
       }
     }
   },
@@ -47370,13 +47370,13 @@ exports[`scripts.non-js.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 4
+        "line": 10,
+        "column": 1
       },
       "filename": "scripts.non-js.pg",
       "end": {
-        "line": 9,
-        "column": 4
+        "line": 10,
+        "column": 1
       }
     }
   }
@@ -49972,13 +49972,13 @@ exports[`shorthand-multiline-quotes.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 11,
-        "column": 29
+        "line": 12,
+        "column": 1
       },
       "filename": "shorthand-multiline-quotes.pg",
       "end": {
-        "line": 11,
-        "column": 29
+        "line": 12,
+        "column": 1
       }
     }
   },
@@ -49986,13 +49986,13 @@ exports[`shorthand-multiline-quotes.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 11,
-        "column": 29
+        "line": 12,
+        "column": 1
       },
       "filename": "shorthand-multiline-quotes.pg",
       "end": {
-        "line": 11,
-        "column": 29
+        "line": 12,
+        "column": 1
       }
     }
   }
@@ -53175,13 +53175,13 @@ exports[`table-alignment.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 29
+        "line": 6,
+        "column": 1
       },
       "filename": "table-alignment.pg",
       "end": {
-        "line": 5,
-        "column": 29
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -53189,13 +53189,13 @@ exports[`table-alignment.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 29
+        "line": 6,
+        "column": 1
       },
       "filename": "table-alignment.pg",
       "end": {
-        "line": 5,
-        "column": 29
+        "line": 6,
+        "column": 1
       }
     }
   }
@@ -53412,13 +53412,13 @@ exports[`table-attrs.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 17
+        "line": 7,
+        "column": 1
       },
       "filename": "table-attrs.pg",
       "end": {
-        "line": 6,
-        "column": 17
+        "line": 7,
+        "column": 1
       }
     }
   },
@@ -53426,13 +53426,13 @@ exports[`table-attrs.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 6,
-        "column": 17
+        "line": 7,
+        "column": 1
       },
       "filename": "table-attrs.pg",
       "end": {
-        "line": 6,
-        "column": 17
+        "line": 7,
+        "column": 1
       }
     }
   }
@@ -53842,13 +53842,13 @@ exports[`table-shorthands.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 27
+        "line": 6,
+        "column": 1
       },
       "filename": "table-shorthands.pg",
       "end": {
-        "line": 5,
-        "column": 27
+        "line": 6,
+        "column": 1
       }
     }
   },
@@ -53856,13 +53856,13 @@ exports[`table-shorthands.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 5,
-        "column": 27
+        "line": 6,
+        "column": 1
       },
       "filename": "table-shorthands.pg",
       "end": {
-        "line": 5,
-        "column": 27
+        "line": 6,
+        "column": 1
       }
     }
   }
@@ -54122,13 +54122,13 @@ exports[`table-structure.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 39
+        "line": 10,
+        "column": 1
       },
       "filename": "table-structure.pg",
       "end": {
-        "line": 9,
-        "column": 39
+        "line": 10,
+        "column": 1
       }
     }
   },
@@ -54136,13 +54136,13 @@ exports[`table-structure.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 39
+        "line": 10,
+        "column": 1
       },
       "filename": "table-structure.pg",
       "end": {
-        "line": 9,
-        "column": 39
+        "line": 10,
+        "column": 1
       }
     }
   }
@@ -55126,13 +55126,13 @@ exports[`template.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 22
+        "line": 10,
+        "column": 1
       },
       "filename": "template.pg",
       "end": {
-        "line": 9,
-        "column": 22
+        "line": 10,
+        "column": 1
       }
     }
   },
@@ -55140,13 +55140,13 @@ exports[`template.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 9,
-        "column": 22
+        "line": 10,
+        "column": 1
       },
       "filename": "template.pg",
       "end": {
-        "line": 9,
-        "column": 22
+        "line": 10,
+        "column": 1
       }
     }
   }
@@ -56748,13 +56748,13 @@ exports[`text.pg 1`] = `
     "type": "end-pipeless-text",
     "loc": {
       "start": {
-        "line": 46,
-        "column": 4
+        "line": 47,
+        "column": 1
       },
       "filename": "text.pg",
       "end": {
-        "line": 46,
-        "column": 4
+        "line": 47,
+        "column": 1
       }
     }
   },
@@ -56762,13 +56762,13 @@ exports[`text.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 46,
-        "column": 4
+        "line": 47,
+        "column": 1
       },
       "filename": "text.pg",
       "end": {
-        "line": 46,
-        "column": 4
+        "line": 47,
+        "column": 1
       }
     }
   }

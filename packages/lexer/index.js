@@ -823,7 +823,7 @@ class Lexer {
     this.colno += increment;
   }
 
-  advanceLocation(source) {
+  locationAfter(source) {
     let newlineCount = 0;
     let lastNewline = -1;
 
@@ -835,12 +835,19 @@ class Lexer {
     }
 
     if (!newlineCount) {
-      this.incrementColumn(source.length);
-      return;
+      return {line: this.lineno, column: this.colno + source.length};
     }
 
-    this.incrementLine(newlineCount);
-    this.incrementColumn(source.length - lastNewline - 1);
+    return {
+      line: this.lineno + newlineCount,
+      column: source.length - lastNewline,
+    };
+  }
+
+  advanceLocation(source) {
+    const location = this.locationAfter(source);
+    this.lineno = location.line;
+    this.colno = location.column;
   }
 
   consume(len) {
@@ -2972,6 +2979,7 @@ class Lexer {
           tokens.push(str.slice(indents));
         }
       } while (this.input.length - stringPtr && isMatch);
+      const consumedEnd = this.locationAfter(this.input.slice(0, stringPtr));
       this.consume(stringPtr);
       while (this.input.length === 0 && tokens[tokens.length - 1] === '')
         tokens.pop();
@@ -2999,6 +3007,8 @@ class Lexer {
         this.lineno = mapped.endLine;
         this.colno = mapped.endColumn;
       }
+      this.lineno = consumedEnd.line;
+      this.colno = consumedEnd.column;
       this.tokens.push(this.tokEnd(this.tok('end-pipeless-text')));
       return true;
     }

@@ -521,6 +521,42 @@ describe('filter end-of-line padding', () => {
   });
 });
 
+describe('pipeless text terminal locations', () => {
+  function assertTerminalLocation(source, expected) {
+    const tokens = lex(source, {filename: 'pipeless-eof.pg'});
+    const end = tokens.find((tok) => tok.type === 'end-pipeless-text');
+    const eos = tokens.at(-1);
+
+    assert.deepStrictEqual(end.loc.start, expected, source);
+    assert.deepStrictEqual(end.loc.end, expected, source);
+    assert.strictEqual(eos.type, 'eos');
+    assert.deepStrictEqual(eos.loc.start, expected, source);
+    assert.deepStrictEqual(eos.loc.end, expected, source);
+    assertPhysicalTokenLocations(source, tokens, source);
+  }
+
+  test('every pipeless caller counts a consumed newline at EOF', () => {
+    ['p.\n  x\n', ':verbatim\n  x\n', '//-\n  x\n'].forEach((source) => {
+      assertTerminalLocation(source, {line: 3, column: 1});
+    });
+  });
+
+  test('each consumed terminal blank line advances the EOF location', () => {
+    assertTerminalLocation('p.\n  x\n\n', {line: 4, column: 1});
+  });
+
+  test('a non-EOF delimiter remains for the ordinary newline scanner', () => {
+    const source = 'p.\n  x\np y';
+    const tokens = lex(source, {filename: 'pipeless-followed.pg'});
+    const end = tokens.find((tok) => tok.type === 'end-pipeless-text');
+    const tags = tokens.filter((tok) => tok.type === 'tag');
+
+    assert.deepStrictEqual(end.loc.end, {line: 2, column: 4});
+    assert.deepStrictEqual(tags[1].loc.start, {line: 3, column: 1});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+});
+
 describe('context-aware multiline pipeless text', () => {
   function contentLines(tokens) {
     return tokens

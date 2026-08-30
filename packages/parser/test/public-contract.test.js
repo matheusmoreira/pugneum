@@ -1,0 +1,310 @@
+'use strict';
+
+var assert = require('node:assert/strict');
+var fs = require('node:fs');
+var path = require('node:path');
+var {test} = require('node:test');
+var lex = require('pugneum-lexer');
+var parse = require('../');
+
+var packageRoot = path.resolve(__dirname, '..');
+var repositoryRoot = path.resolve(packageRoot, '../..');
+var testCasesRoot = path.join(repositoryRoot, 'test-cases');
+var manifest = require('../../../test-cases/manifest.json');
+var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
+
+var nodeShapes = {
+  Block: ['filename,line,nodes,type'],
+  BlockComment: ['block,buffer,column,filename,line,type,val'],
+  Comment: ['buffer,column,filename,line,type,val'],
+  Extends: ['column,file,filename,line,type'],
+  FileReference: ['column,filename,line,path,type'],
+  Filter: ['attrs,block,column,filename,line,name,type'],
+  FootnoteRef: ['column,filename,line,name,type'],
+  Footnotes: ['column,definitions,filename,line,type'],
+  Given: ['block,column,filename,line,name,type'],
+  Include: ['block,column,file,filename,line,type'],
+  IncludeFilter: ['attrs,column,filename,line,name,type'],
+  InterpolatedTag: [
+    'attributeBlocks,attrs,block,column,expr,filename,isInline,line,type',
+    'attributeBlocks,attrs,block,column,expr,filename,isInline,line,textOnly,type',
+  ],
+  Mixin: [
+    'args,attributeBlocks,attrs,block,call,column,filename,line,name,type',
+    'args,attributeBlocks,attrs,block,call,column,filename,line,name,textOnly,type',
+    'args,block,call,column,filename,line,name,type,usesNamedBlocks,usesUnnamedBlock',
+  ],
+  MixinBlock: ['column,filename,line,type'],
+  NamedBlock: ['column,filename,line,mode,name,nodes,type'],
+  RawInclude: ['column,file,filename,filters,line,type'],
+  ReferenceImage: ['attrs,block,column,filename,line,name,type'],
+  ReferenceLink: ['attrs,block,column,filename,line,name,type'],
+  References: ['column,definitions,filename,line,type'],
+  Tag: [
+    'attributeBlocks,attrs,block,column,filename,isInline,line,name,type',
+    'attributeBlocks,attrs,block,column,filename,isInline,line,name,textOnly,type',
+  ],
+  Text: ['column,filename,line,type,val'],
+  Toc: ['column,filename,line,type'],
+  Variable: ['column,filename,line,name,type'],
+  YieldBlock: ['column,filename,line,type'],
+};
+
+var recordNames = [
+  'Attribute',
+  'FootnoteDefinition',
+  'MixinParameter',
+  'ReferenceDefinition',
+];
+
+function markdownSection(startHeading, endHeading) {
+  var start = readme.indexOf(startHeading);
+  assert.notStrictEqual(start, -1, 'missing README heading ' + startHeading);
+  var end = readme.indexOf(endHeading, start + startHeading.length);
+  assert.notStrictEqual(end, -1, 'missing README heading ' + endHeading);
+  return readme.slice(start, end);
+}
+
+function firstColumnNames(section) {
+  return Array.from(
+    section.matchAll(/^\| `([A-Za-z]+)` \|/gm),
+    (match) => match[1],
+  ).sort();
+}
+
+function assertLocation(value, filename, hasColumn) {
+  assert.ok(
+    Number.isInteger(value.line),
+    value.type + '.line must be an integer',
+  );
+  assert.strictEqual(value.filename, filename);
+  if (hasColumn) {
+    assert.ok(
+      Number.isInteger(value.column),
+      value.type + '.column must be an integer',
+    );
+  } else {
+    assert.ok(!Object.hasOwn(value, 'column'));
+  }
+}
+
+function assertRecordLocation(value, filename) {
+  assert.ok(Number.isInteger(value.line));
+  assert.ok(Number.isInteger(value.column));
+  assert.strictEqual(value.filename, filename);
+}
+
+function assertAttributes(attrs, filename) {
+  assert.ok(Array.isArray(attrs));
+  attrs.forEach((attr) => {
+    assert.deepStrictEqual(Object.keys(attr).sort(), [
+      'column',
+      'filename',
+      'line',
+      'name',
+      'val',
+    ]);
+    assert.strictEqual(typeof attr.name, 'string');
+    assert.ok(typeof attr.val === 'string' || attr.val === true);
+    assertRecordLocation(attr, filename);
+  });
+}
+
+function assertDefinitions(node, filename) {
+  assert.ok(Array.isArray(node.definitions));
+  if (node.type === 'References') {
+    node.definitions.forEach((definition) => {
+      assert.deepStrictEqual(Object.keys(definition).sort(), [
+        'column',
+        'defaultText',
+        'filename',
+        'line',
+        'name',
+        'url',
+      ]);
+      assert.strictEqual(typeof definition.name, 'string');
+      assert.strictEqual(typeof definition.url, 'string');
+      assert.ok(
+        typeof definition.defaultText === 'string' ||
+          definition.defaultText === null,
+      );
+      assertRecordLocation(definition, filename);
+    });
+  } else {
+    node.definitions.forEach((definition) => {
+      assert.deepStrictEqual(Object.keys(definition).sort(), [
+        'block',
+        'column',
+        'filename',
+        'line',
+        'name',
+      ]);
+      assert.strictEqual(typeof definition.name, 'string');
+      assert.strictEqual(definition.block.type, 'Block');
+      assertRecordLocation(definition, filename);
+    });
+  }
+}
+
+function assertMixinArguments(node) {
+  assert.ok(Array.isArray(node.args));
+  if (node.call) {
+    node.args.forEach((argument) =>
+      assert.strictEqual(typeof argument, 'string'),
+    );
+  } else {
+    node.args.forEach((parameter) => {
+      var keys = Object.keys(parameter).sort();
+      assert.ok(
+        ['name', 'default,name'].includes(keys.join(',')),
+        'unexpected mixin parameter fields: ' + keys.join(', '),
+      );
+      assert.strictEqual(typeof parameter.name, 'string');
+      if (Object.hasOwn(parameter, 'default')) {
+        assert.strictEqual(typeof parameter.default, 'string');
+      }
+    });
+  }
+}
+
+function inspect(value, filename, seen) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => inspect(item, filename, seen));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+
+  if (typeof value.type === 'string') {
+    var shapes = nodeShapes[value.type];
+    assert.ok(shapes, 'undocumented parser node type ' + value.type);
+    var actualShape = Object.keys(value).sort().join(',');
+    assert.ok(
+      shapes.includes(actualShape),
+      value.type + ' has undocumented fields: ' + actualShape,
+    );
+    assertLocation(value, filename, value.type !== 'Block');
+    seen.add(value.type);
+
+    if (Object.hasOwn(value, 'name'))
+      assert.strictEqual(typeof value.name, 'string');
+    if (Object.hasOwn(value, 'expr'))
+      assert.strictEqual(typeof value.expr, 'string');
+    if (Object.hasOwn(value, 'val'))
+      assert.strictEqual(typeof value.val, 'string');
+    if (Object.hasOwn(value, 'nodes')) assert.ok(Array.isArray(value.nodes));
+    if (Object.hasOwn(value, 'attrs')) assertAttributes(value.attrs, filename);
+    if (Object.hasOwn(value, 'attributeBlocks')) {
+      assert.deepStrictEqual(value.attributeBlocks, []);
+    }
+    if (Object.hasOwn(value, 'textOnly'))
+      assert.strictEqual(value.textOnly, true);
+    if (Object.hasOwn(value, 'isInline')) {
+      assert.strictEqual(typeof value.isInline, 'boolean');
+    }
+    if (Object.hasOwn(value, 'buffer')) {
+      assert.strictEqual(typeof value.buffer, 'boolean');
+    }
+    if (Object.hasOwn(value, 'block')) {
+      assert.ok(
+        value.block === null || value.block.type === 'Block',
+        value.type + '.block must be a Block or null',
+      );
+      if (value.block === null) {
+        assert.strictEqual(value.type, 'Mixin');
+        assert.strictEqual(value.call, true);
+      }
+    }
+    if (Object.hasOwn(value, 'file')) {
+      assert.strictEqual(value.file.type, 'FileReference');
+    }
+    if (Object.hasOwn(value, 'definitions')) assertDefinitions(value, filename);
+    if (value.type === 'FileReference')
+      assert.strictEqual(typeof value.path, 'string');
+    if (value.type === 'NamedBlock') {
+      assert.ok(['replace', 'append', 'prepend'].includes(value.mode));
+    }
+    if (value.type === 'Mixin') {
+      assert.strictEqual(typeof value.call, 'boolean');
+      assertMixinArguments(value);
+      if (!value.call) {
+        assert.strictEqual(typeof value.usesNamedBlocks, 'boolean');
+        assert.strictEqual(typeof value.usesUnnamedBlock, 'boolean');
+      }
+    }
+    if (value.type === 'RawInclude') {
+      assert.ok(Array.isArray(value.filters));
+      value.filters.forEach((filter) =>
+        assert.strictEqual(filter.type, 'IncludeFilter'),
+      );
+    }
+  }
+
+  Object.values(value).forEach((child) => inspect(child, filename, seen));
+}
+
+test('README AST contract covers every parser-emitted node and record shape', () => {
+  var nodeSection = markdownSection('#### Nodes', '#### Supporting records');
+  var recordSection = markdownSection(
+    '#### Supporting records',
+    '#### Mixin and control fields',
+  );
+  assert.deepStrictEqual(
+    firstColumnNames(nodeSection),
+    Object.keys(nodeShapes).sort(),
+  );
+  assert.deepStrictEqual(firstColumnNames(recordSection), recordNames);
+
+  var filenames = manifest.render
+    .map((name) => name + '.pg')
+    .concat(
+      manifest.syntax,
+      manifest.dependencies.filter((name) => name.endsWith('.pg')),
+    )
+    .sort();
+  var seen = new Set();
+  filenames.forEach((filename) => {
+    var source = fs.readFileSync(path.join(testCasesRoot, filename), 'utf8');
+    inspect(parse(lex(source, {filename}), {filename}), filename, seen);
+  });
+
+  var loc = {
+    start: {line: 1, column: 1},
+    end: {line: 1, column: 1},
+  };
+  ['plain', 'textOnly'].forEach((variant) => {
+    var filename = 'direct-' + variant + '.pg';
+    var tokens = [{type: 'interpolation', val: 'elementName', loc}];
+    if (variant === 'textOnly') tokens.push({type: 'dot', loc});
+    tokens.push({type: 'eos', loc});
+    inspect(parse(tokens, {filename}), filename, seen);
+  });
+
+  assert.deepStrictEqual(
+    Array.from(seen).sort(),
+    Object.keys(nodeShapes).sort(),
+  );
+});
+
+test('README error table matches parser-coded error sites and names the limit', () => {
+  var implementation = fs.readFileSync(
+    path.join(packageRoot, 'index.js'),
+    'utf8',
+  );
+  var emittedCodes = Array.from(
+    new Set(
+      Array.from(
+        implementation.matchAll(/this\.error\(\s*['"]([A-Z_]+)['"]/g),
+        (match) => match[1],
+      ),
+    ),
+  ).sort();
+  var errorSection = markdownSection('### Errors and limits', '## License');
+  var documentedCodes = Array.from(
+    errorSection.matchAll(/^\| `PUGNEUM:([A-Z_]+)` \|/gm),
+    (match) => match[1],
+  ).sort();
+
+  assert.deepStrictEqual(documentedCodes, emittedCodes);
+  assert.match(errorSection, /fixed parser nesting limit is 256/);
+  assert.match(errorSection, /malformed streams are not grammar diagnostics/);
+});

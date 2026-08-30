@@ -73,6 +73,131 @@ console.log(JSON.stringify(ast, null, '  '))
 }
 ```
 
+### Input contract
+
+`tokens` must be the flat array produced by a successful `pugneum-lexer`
+tokenization under its Token stream contract (v1). In particular, each token
+must have a string `type` and a `loc.start` with one-based `line` and `column`
+numbers; structural boundary tokens must balance; and one `eos` token must end
+the array. `options` may be omitted or supplied as an object.
+
+The parser validates that `tokens` is an array, but it does not revalidate the
+complete token envelope, locations, structural balance, or `eos` termination.
+Hand-built, truncated, or otherwise malformed streams are outside this
+contract and may throw an ordinary JavaScript error rather than a coded
+Pugneum diagnostic. Use the lexer contract when another producer needs to
+construct compatible tokens.
+
+### AST contract (v1)
+
+The parser returns a `Block` root. The tables below describe fields emitted by
+the parser itself; later pipeline stages may deliberately extend these nodes.
+Except for `Block`, every node has these location fields:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `type` | `string` | Node discriminator. |
+| `line` | `number` | One-based start line. |
+| `column` | `number` | One-based start column. |
+| `filename` | `string \| undefined` | Exactly `options.filename`; token filenames are not copied. |
+
+Locations identify starts only. Parser AST nodes have no end location and no
+`loc` wrapper. A `Block` has `line` and `filename` but no `column`; the root
+uses line `0`, while nested blocks use the line of their opening or owning
+construct.
+
+#### Nodes
+
+Fields in this table are in addition to the location fields above unless the
+row says otherwise. A field is always present unless marked optional.
+
+| Node | Parser-owned fields |
+| --- | --- |
+| `Block` | `nodes: Node[]`, `line: number`, `filename: string \| undefined`; no `column` |
+| `Text` | `val: string` |
+| `Tag` | `name: string`, `block: Block`, `attrs: Attribute[]`, `attributeBlocks: []`, `isInline: boolean`, optional `textOnly: true` |
+| `InterpolatedTag` | `expr: string`, `block: Block`, `attrs: Attribute[]`, `attributeBlocks: []`, `isInline: false`, optional `textOnly: true` |
+| `Comment` | `val: string`, `buffer: boolean` |
+| `BlockComment` | `val: string`, `buffer: boolean`, `block: Block` |
+| `Filter` | `name: string`, `attrs: Attribute[]`, `block: Block` |
+| `IncludeFilter` | `name: string`, `attrs: Attribute[]` |
+| `Extends` | `file: FileReference` |
+| `Include` | `file: FileReference`, `block: Block` |
+| `RawInclude` | `file: FileReference`, `filters: IncludeFilter[]` |
+| `FileReference` | `path: string` |
+| `NamedBlock` | `name: string`, `mode: "replace" \| "append" \| "prepend"`, `nodes: Node[]` |
+| `MixinBlock` | Location fields only. |
+| `Given` | `name: string`, `block: Block` |
+| `Variable` | `name: string` |
+| `YieldBlock` | Location fields only. |
+| `References` | `definitions: ReferenceDefinition[]` |
+| `ReferenceLink` | `name: string`, `block: Block`, `attrs: Attribute[]` |
+| `ReferenceImage` | `name: string`, `block: Block`, `attrs: Attribute[]` |
+| `FootnoteRef` | `name: string` |
+| `Footnotes` | `definitions: FootnoteDefinition[]` |
+| `Toc` | Location fields only. |
+| `Mixin` | Discriminated definition/call fields described below. |
+
+The parser retains `InterpolatedTag` support for compatible token producers
+that emit a direct `interpolation` token. The current lexer v1 stream lowers
+ordinary inline interpolation through boundary tokens instead.
+
+#### Supporting records
+
+These records do not have a `type` discriminator:
+
+| Record | Fields |
+| --- | --- |
+| `Attribute` | `name: string`, `val: string \| true`, `line: number`, `column: number`, `filename: string \| undefined` |
+| `MixinParameter` | `name: string`, optional `default: string`; definition parameters only |
+| `ReferenceDefinition` | `name: string`, `url: string`, `defaultText: string \| null`, `line: number`, `column: number`, `filename: string \| undefined` |
+| `FootnoteDefinition` | `name: string`, `block: Block`, `line: number`, `column: number`, `filename: string \| undefined` |
+
+#### Mixin and control fields
+
+A `Mixin` definition has `name: string`, `args: MixinParameter[]`,
+`block: Block`, `call: false`, `usesNamedBlocks: boolean`, and
+`usesUnnamedBlock: boolean`. A `Mixin` call has `name: string`,
+`args: string[]`, `block: Block | null`, `call: true`, `attrs: Attribute[]`,
+`attributeBlocks: []`, and optional `textOnly: true`. The call's `block` is
+`null` when it has no body or inline content.
+
+`attributeBlocks` is a reserved downstream compatibility slot and is always an
+empty array at the parser boundary. `isInline` is the parser's fixed tag-name
+classification. `textOnly` is absent unless immediate dot/pipeless syntax sets
+it to `true`. The two `uses*Block` flags inspect a mixin definition's own body
+and stop at nested mixins. The parser does not emit downstream fields such as
+`selfClosing` or a loaded `FileReference.ast`.
+
+The only parser-emitted `null` values are an empty mixin call's `block` and a
+reference definition without `defaultText`. Optional fields are absent rather
+than set to `undefined`; `filename` is always present, but its value is
+`undefined` when no filename option was supplied.
+
+### Errors and limits
+
+Supported token streams that violate parser grammar throw Pugneum diagnostics.
+Their `code` values and conditions are:
+
+| Code | Condition |
+| --- | --- |
+| `PUGNEUM:BLOCK_OUTSIDE_MIXIN` | An anonymous mixin block appears outside a mixin. |
+| `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class attribute name is repeated. |
+| `PUGNEUM:DUPLICATE_ID` | An `id` shorthand repeats an existing `id`. |
+| `PUGNEUM:GIVEN_OUTSIDE_MIXIN` | `given` is outside a mixin definition or inside a mixin call body. |
+| `PUGNEUM:INVALID_TOKEN` | A well-formed token is not valid in the current grammar position. |
+| `PUGNEUM:MIXIN_WITHOUT_BODY` | A mixin definition has no indented body. |
+| `PUGNEUM:MULTIPLE_ATTRIBUTES` | A tag or mixin call has more than one parenthesized attribute block. |
+| `PUGNEUM:NESTING_TOO_DEEP` | Expression parsing would exceed 256 nested dispatches. |
+| `PUGNEUM:RAW_INCLUDE_BLOCK` | A raw include has an indented block. |
+| `PUGNEUM:VARIABLE_OUTSIDE_MIXIN` | A mixin variable appears outside a mixin definition. |
+
+Coded diagnostics use the current token's start location plus
+`options.filename` and `options.source`. The fixed parser nesting limit is 256;
+the lexer has its own independently enforced inline-nesting limit. Invalid API
+argument types and malformed streams are not grammar diagnostics, so callers
+must not rely on them having a `PUGNEUM:*` code.
+
 ## License
 
   MIT

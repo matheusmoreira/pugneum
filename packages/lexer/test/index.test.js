@@ -803,6 +803,67 @@ describe('multiline attribute error locations', () => {
   });
 });
 
+describe('escaped physical newlines in quoted attributes', () => {
+  const escapedNewline = '\\' + '\n';
+
+  function attribute(tokens, name) {
+    return tokens.find((tok) => tok.type === 'attribute' && tok.name === name);
+  }
+
+  test('the value and following attribute retain physical locations', () => {
+    const source = 'div(title="a' + escapedNewline + 'b" id=x)\np after';
+    const tokens = lex(source, {filename: 'attributes.pg'});
+    const title = attribute(tokens, 'title');
+    const id = attribute(tokens, 'id');
+    const after = tokens.find((tok) => tok.type === 'tag' && tok.val === 'p');
+
+    assert.strictEqual(title.val, 'a' + escapedNewline + 'b');
+    assert.deepStrictEqual(title.loc.end, {line: 2, column: 3});
+    assert.deepStrictEqual(id.loc.start, {line: 2, column: 4});
+    assert.deepStrictEqual(after.loc.start, {line: 3, column: 1});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('multiple escaped physical newlines advance cumulatively', () => {
+    const source =
+      'div(title="a' +
+      escapedNewline +
+      'b' +
+      escapedNewline +
+      'c" id=x)\np after';
+    const tokens = lex(source, {filename: 'attributes.pg'});
+    const id = attribute(tokens, 'id');
+    const after = tokens.find((tok) => tok.type === 'tag' && tok.val === 'p');
+
+    assert.deepStrictEqual(id.loc.start, {line: 3, column: 4});
+    assert.deepStrictEqual(after.loc.start, {line: 4, column: 1});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('a later diagnostic uses its physical line', () => {
+    const source = 'div(title="a' + escapedNewline + 'b")\n#';
+
+    assert.throws(
+      () => lex(source, {filename: 'attributes.pg'}),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_ID' && err.line === 3 && err.column === 1,
+    );
+  });
+
+  test('a textual backslash-n decodes without advancing a source line', () => {
+    const source = 'div(title="a\\nb" id=x)\np after';
+    const tokens = lex(source, {filename: 'attributes.pg'});
+    const title = attribute(tokens, 'title');
+    const id = attribute(tokens, 'id');
+    const after = tokens.find((tok) => tok.type === 'tag' && tok.val === 'p');
+
+    assert.strictEqual(title.val, 'a\nb');
+    assert.strictEqual(id.loc.start.line, 1);
+    assert.deepStrictEqual(after.loc.start, {line: 2, column: 1});
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+});
+
 describe('typographic quote warnings in attributes', () => {
   const LSQUO = '‘';
   const RSQUO = '’';

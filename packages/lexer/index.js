@@ -2720,6 +2720,7 @@ class Lexer {
             break;
           }
           if (str[i] === '\\') {
+            const escapeStart = i;
             ++i;
             switch (str[i]) {
               case "'":
@@ -2741,7 +2742,7 @@ class Lexer {
                 value += '\\' + str[i];
                 break;
             }
-            this.incrementColumn(2);
+            this.advanceLocation(str.slice(escapeStart, i + 1));
             continue;
           }
         } else {

@@ -1,6 +1,0 @@
-
-extends app-layout.pg
-
-block prepend head
-  script(src='foo.js')
-  script(src='bar.js')

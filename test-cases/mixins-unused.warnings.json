@@ -1,0 +1,11 @@
+[
+  {
+    "code": "PUGNEUM:UNUSED_MIXIN",
+    "msg": "Mixin 'never-called' is defined but never called",
+    "line": 1,
+    "column": 1,
+    "filename": "mixins-unused.pg",
+    "source": "mixin never-called\n  .wtf This isn't something we ever want to output\nbody",
+    "message": "mixins-unused.pg:1:1\n  > 1| mixin never-called\n-------^\n    2|   .wtf This isn't something we ever want to output\n    3| body\n\nMixin 'never-called' is defined but never called"
+  }
+]

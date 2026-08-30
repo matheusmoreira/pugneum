@@ -5207,6 +5207,54 @@ exports[`blocks-in-blocks.pg 1`] = `
 ]
 `;
 
+exports[`boundary-whitespace.pg 1`] = `
+[
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 3
+      },
+      "filename": "boundary-whitespace.pg",
+      "end": {
+        "line": 1,
+        "column": 14
+      }
+    },
+    "val": " boundary  "
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "boundary-whitespace.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "boundary-whitespace.pg",
+      "end": {
+        "line": 2,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
 exports[`classes-empty.pg 1`] = `
 [
   {
@@ -9640,10 +9688,10 @@ exports[`filter-in-include.pg 1`] = `
       "filename": "filter-in-include.pg",
       "end": {
         "line": 1,
-        "column": 41
+        "column": 26
       }
     },
-    "val": "./auxiliary/filter-in-include.pg"
+    "val": "./filters.less.pg"
   },
   {
     "type": "newline",
@@ -12267,6 +12315,25 @@ exports[`filters.verbatim.pg 1`] = `
       "end": {
         "line": 5,
         "column": 41
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/empty.pg 1`] = `
+[
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "fixtures/empty.pg",
+      "end": {
+        "line": 1,
+        "column": 1
       }
     }
   }
@@ -28639,16 +28706,32 @@ exports[`mixin-inline-optional-args.pg 1`] = `
     "val": "#{size}"
   },
   {
-    "type": "end-attributes",
+    "type": "attribute",
     "loc": {
       "start": {
         "line": 5,
-        "column": 64
+        "column": 65
       },
       "filename": "mixin-inline-optional-args.pg",
       "end": {
         "line": 5,
-        "column": 65
+        "column": 71
+      }
+    },
+    "name": "alt",
+    "val": ""
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 71
+      },
+      "filename": "mixin-inline-optional-args.pg",
+      "end": {
+        "line": 5,
+        "column": 72
       }
     }
   },
@@ -30107,16 +30190,32 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
     "val": "icon-#{size}"
   },
   {
-    "type": "end-attributes",
+    "type": "attribute",
     "loc": {
       "start": {
         "line": 8,
-        "column": 57
+        "column": 58
       },
       "filename": "mixin-optional-attr-omission.pg",
       "end": {
         "line": 8,
-        "column": 58
+        "column": 64
+      }
+    },
+    "name": "alt",
+    "val": ""
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 8,
+        "column": 64
+      },
+      "filename": "mixin-optional-attr-omission.pg",
+      "end": {
+        "line": 8,
+        "column": 65
       }
     }
   },
@@ -41540,22 +41639,22 @@ exports[`scripts.non-js.pg 1`] = `
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 21
+        "column": 28
       }
     },
-    "val": "user-template"
+    "val": "user-template-script"
   },
   {
     "type": "start-attributes",
     "loc": {
       "start": {
         "line": 6,
-        "column": 21
+        "column": 28
       },
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 22
+        "column": 29
       }
     }
   },
@@ -41564,12 +41663,12 @@ exports[`scripts.non-js.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 22
+        "column": 29
       },
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 42
+        "column": 49
       }
     },
     "name": "type",
@@ -41580,12 +41679,12 @@ exports[`scripts.non-js.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 42
+        "column": 49
       },
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 43
+        "column": 50
       }
     }
   },
@@ -41594,12 +41693,12 @@ exports[`scripts.non-js.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 43
+        "column": 50
       },
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 44
+        "column": 51
       }
     }
   },
@@ -41608,12 +41707,12 @@ exports[`scripts.non-js.pg 1`] = `
     "loc": {
       "start": {
         "line": 6,
-        "column": 44
+        "column": 51
       },
       "filename": "scripts.non-js.pg",
       "end": {
         "line": 6,
-        "column": 44
+        "column": 51
       }
     }
   },
@@ -48885,7 +48984,7 @@ exports[`tags.self-closing.pg 1`] = `
     "val": "img"
   },
   {
-    "type": "text",
+    "type": "start-attributes",
     "loc": {
       "start": {
         "line": 10,
@@ -48895,6 +48994,50 @@ exports[`tags.self-closing.pg 1`] = `
       "end": {
         "line": 10,
         "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 7
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 10,
+        "column": 13
+      }
+    },
+    "name": "alt",
+    "val": ""
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 13
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 10,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 10,
+        "column": 14
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 10,
+        "column": 15
       }
     },
     "val": " "
@@ -48959,7 +49102,21 @@ exports[`tags.self-closing.pg 1`] = `
     "val": "img"
   },
   {
-    "type": "text",
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 6
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 12,
+        "column": 7
+      }
+    }
+  },
+  {
+    "type": "attribute",
     "loc": {
       "start": {
         "line": 12,
@@ -48968,7 +49125,37 @@ exports[`tags.self-closing.pg 1`] = `
       "filename": "tags.self-closing.pg",
       "end": {
         "line": 12,
-        "column": 10
+        "column": 13
+      }
+    },
+    "name": "alt",
+    "val": ""
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 13
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 12,
+        "column": 14
+      }
+    }
+  },
+  {
+    "type": "text",
+    "loc": {
+      "start": {
+        "line": 12,
+        "column": 15
+      },
+      "filename": "tags.self-closing.pg",
+      "end": {
+        "line": 12,
+        "column": 18
       }
     },
     "val": "   "

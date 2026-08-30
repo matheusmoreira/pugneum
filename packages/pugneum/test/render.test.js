@@ -1,20 +1,75 @@
 'use strict';
 
 var assert = require('node:assert/strict');
+var crypto = require('node:crypto');
 var {describe, it} = require('node:test');
 var fs = require('fs');
 var path = require('path');
 var pg = require('../');
 
-// Load test cases from the root test-cases/ directory.
-// Each .pg file has a corresponding .html file with expected output.
 var testCasesDir = path.resolve(__dirname, '../../../test-cases');
+var fixtureManifest = require('../../../test-cases/manifest.json');
+var observedDependencies = new Set();
 
-function getTestCases() {
-  return fs
-    .readdirSync(testCasesDir)
-    .filter((f) => f.endsWith('.pg'))
-    .map((f) => f.replace('.pg', ''));
+function fixturePath(filename) {
+  var absolute = path.resolve(filename);
+  if (!absolute.startsWith(testCasesDir + path.sep)) return null;
+  return path.relative(testCasesDir, absolute).split(path.sep).join('/');
+}
+
+function listFixtureFiles(directory) {
+  var files = [];
+  fs.readdirSync(directory, {withFileTypes: true}).forEach((entry) => {
+    var absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...listFixtureFiles(absolute));
+    else if (entry.isFile()) files.push(fixturePath(absolute));
+  });
+  return files;
+}
+
+function declaredFixtureFiles() {
+  var files = ['manifest.json'];
+  fixtureManifest.render.forEach((name) => {
+    files.push(name + '.pg', name + '.html');
+  });
+  files.push(...fixtureManifest.syntax, ...fixtureManifest.dependencies);
+  files.push(...Object.values(fixtureManifest.warningOracles));
+  return files;
+}
+
+function assertFixtureInventory(actual, declared) {
+  assert.deepStrictEqual(actual.slice().sort(), declared.slice().sort());
+}
+
+function renderAndTraceDependencies(sourcePath, options) {
+  var source = fixturePath(sourcePath);
+  var readFileSync = fs.readFileSync;
+  fs.readFileSync = function (filename) {
+    if (typeof filename === 'string') {
+      var relative = fixturePath(filename);
+      if (relative && relative !== source) observedDependencies.add(relative);
+    }
+    return readFileSync.apply(this, arguments);
+  };
+
+  try {
+    return pg.renderFile(sourcePath, options);
+  } finally {
+    fs.readFileSync = readFileSync;
+  }
+}
+
+function serializeWarning(warning) {
+  var filename = fixturePath(warning.filename);
+  return {
+    code: warning.code,
+    msg: warning.msg,
+    line: warning.line,
+    column: warning.column,
+    filename,
+    source: warning.source,
+    message: warning.message.replace(warning.filename, filename),
+  };
 }
 
 describe('render()', () => {
@@ -961,27 +1016,71 @@ describe('renderFile()', () => {
   });
 });
 
-// Run each .pg test case from test-cases/ that has a matching .html file
+describe('test-case manifest', () => {
+  it('declares every fixture exactly once', () => {
+    var declared = declaredFixtureFiles();
+    assert.strictEqual(
+      new Set(declared).size,
+      declared.length,
+      'fixture roles must not overlap',
+    );
+    assertFixtureInventory(listFixtureFiles(testCasesDir), declared);
+
+    Object.keys(fixtureManifest.warningOracles).forEach((name) => {
+      assert.ok(
+        fixtureManifest.render.includes(name),
+        `${name} has a warning oracle but is not a render case`,
+      );
+    });
+  });
+
+  it('fails closed when a declared oracle disappears', () => {
+    var declared = declaredFixtureFiles();
+    var missingOracle = listFixtureFiles(testCasesDir).filter(
+      (relativePath) => relativePath !== 'basic.html',
+    );
+    assert.throws(() => assertFixtureInventory(missingOracle, declared));
+  });
+
+  it('preserves intentional byte-sensitive fixtures', () => {
+    Object.entries(fixtureManifest.integrity).forEach(
+      ([relativePath, expected]) => {
+        var contents = fs.readFileSync(path.join(testCasesDir, relativePath));
+        var actual = crypto.createHash('sha256').update(contents).digest('hex');
+        assert.strictEqual(actual, expected, relativePath);
+      },
+    );
+  });
+});
+
 describe('test-cases/', () => {
-  var cases = getTestCases();
+  var cases = fixtureManifest.render;
 
   cases.forEach((name) => {
     var htmlPath = path.join(testCasesDir, name + '.html');
 
-    // Only test cases that have an expected .html output file
-    if (!fs.existsSync(htmlPath)) return;
-
     it(name, () => {
       var pgPath = path.join(testCasesDir, name + '.pg');
-      var expected = fs
-        .readFileSync(htmlPath, 'utf8')
-        .trim()
-        .replace(/\r/g, '');
+      var expected = fs.readFileSync(htmlPath, 'utf8');
+      var warningOracle = fixtureManifest.warningOracles[name];
+      var expectedWarnings = warningOracle
+        ? JSON.parse(
+            fs.readFileSync(path.join(testCasesDir, warningOracle), 'utf8'),
+          )
+        : [];
+      var warnings = [];
       // test-cases/ is the build root; layout cases reach their layouts via
       // the in-tree absolute path /fixtures/... Default-deny contains here.
-      var options = {filename: pgPath, basedir: testCasesDir};
-      var actual = pg.renderFile(pgPath, options);
-      assert.strictEqual(actual.trim(), expected);
+      var options = {filename: pgPath, basedir: testCasesDir, warnings};
+      var actual = renderAndTraceDependencies(pgPath, options);
+      assert.strictEqual(actual, expected);
+      assert.deepStrictEqual(warnings.map(serializeWarning), expectedWarnings);
+    });
+  });
+
+  it('opens every declared dependency from a render case', () => {
+    fixtureManifest.dependencies.forEach((relativePath) => {
+      assert.ok(observedDependencies.has(relativePath), relativePath);
     });
   });
 });

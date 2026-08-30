@@ -2,18 +2,19 @@
 
 var assert = require('node:assert/strict');
 var fs = require('fs');
+var path = require('path');
 var {test, describe} = require('node:test');
 var parse = require('../');
 var lex = require('pugneum-lexer');
 
-var testCases = fs
-  .readdirSync(__dirname + '/../../../test-cases/')
-  .filter(function (name) {
-    return /\.pg$/.test(name);
-  });
+var testCasesDir = path.resolve(__dirname, '../../../test-cases');
+var fixtureManifest = require('../../../test-cases/manifest.json');
+var testCases = fixtureManifest.render
+  .map((name) => name + '.pg')
+  .concat(fixtureManifest.syntax);
 
-function read(path) {
-  return fs.readFileSync(__dirname + '/../../../test-cases/' + path, 'utf8');
+function read(filename) {
+  return fs.readFileSync(path.join(testCasesDir, filename), 'utf8');
 }
 
 testCases.forEach(function (filename) {

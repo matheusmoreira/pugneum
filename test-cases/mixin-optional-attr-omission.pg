@@ -5,7 +5,7 @@ mixin link(href text target)
 +link(/away Away _blank)
 
 mixin icon(name size)
-  img.icon(src='/icons/#{name}.svg' class='icon-#{size}')
+  img.icon(src='/icons/#{name}.svg' class='icon-#{size}' alt='')
 
 +icon(arrow)
 +icon(arrow lg)

@@ -2028,6 +2028,23 @@ exports[`blocks-in-blocks.pg 1`] = `
 }
 `;
 
+exports[`boundary-whitespace.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [
+    {
+      "type": "Text",
+      "line": 1,
+      "column": 3,
+      "filename": "boundary-whitespace.pg",
+      "val": " boundary  "
+    }
+  ],
+  "line": 0,
+  "filename": "boundary-whitespace.pg"
+}
+`;
+
 exports[`classes-empty.pg 1`] = `
 {
   "type": "Block",
@@ -3963,7 +3980,7 @@ exports[`filter-in-include.pg 1`] = `
       "file": {
         "type": "FileReference",
         "filename": "filter-in-include.pg",
-        "path": "./auxiliary/filter-in-include.pg",
+        "path": "./filters.less.pg",
         "line": 1,
         "column": 9
       },
@@ -5041,6 +5058,15 @@ exports[`filters.verbatim.pg 1`] = `
   ],
   "line": 0,
   "filename": "filters.verbatim.pg"
+}
+`;
+
+exports[`fixtures/empty.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [],
+  "line": 0,
+  "filename": "fixtures/empty.pg"
 }
 `;
 
@@ -11477,6 +11503,13 @@ exports[`mixin-inline-optional-args.pg 1`] = `
                 "line": 5,
                 "column": 48,
                 "filename": "mixin-inline-optional-args.pg"
+              },
+              {
+                "name": "alt",
+                "val": "",
+                "line": 5,
+                "column": 65,
+                "filename": "mixin-inline-optional-args.pg"
               }
             ],
             "attributeBlocks": [],
@@ -12092,6 +12125,13 @@ exports[`mixin-optional-attr-omission.pg 1`] = `
                 "val": "icon-#{size}",
                 "line": 8,
                 "column": 37,
+                "filename": "mixin-optional-attr-omission.pg"
+              },
+              {
+                "name": "alt",
+                "val": "",
+                "line": 8,
+                "column": 58,
                 "filename": "mixin-optional-attr-omission.pg"
               }
             ],
@@ -17165,7 +17205,7 @@ exports[`scripts.non-js.pg 1`] = `
       "attrs": [
         {
           "name": "id",
-          "val": "user-template",
+          "val": "user-template-script",
           "line": 6,
           "column": 7,
           "filename": "scripts.non-js.pg"
@@ -17174,7 +17214,7 @@ exports[`scripts.non-js.pg 1`] = `
           "name": "type",
           "val": "text/template",
           "line": 6,
-          "column": 22,
+          "column": 29,
           "filename": "scripts.non-js.pg"
         }
       ],
@@ -20297,7 +20337,7 @@ exports[`tags.self-closing.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 10,
-                  "column": 6,
+                  "column": 14,
                   "filename": "tags.self-closing.pg",
                   "val": " "
                 }
@@ -20305,7 +20345,15 @@ exports[`tags.self-closing.pg 1`] = `
               "line": 10,
               "filename": "tags.self-closing.pg"
             },
-            "attrs": [],
+            "attrs": [
+              {
+                "name": "alt",
+                "val": "",
+                "line": 10,
+                "column": 7,
+                "filename": "tags.self-closing.pg"
+              }
+            ],
             "attributeBlocks": [],
             "isInline": true,
             "line": 10,
@@ -20329,7 +20377,7 @@ exports[`tags.self-closing.pg 1`] = `
                 {
                   "type": "Text",
                   "line": 12,
-                  "column": 7,
+                  "column": 15,
                   "filename": "tags.self-closing.pg",
                   "val": "   "
                 }
@@ -20337,7 +20385,15 @@ exports[`tags.self-closing.pg 1`] = `
               "line": 12,
               "filename": "tags.self-closing.pg"
             },
-            "attrs": [],
+            "attrs": [
+              {
+                "name": "alt",
+                "val": "",
+                "line": 12,
+                "column": 7,
+                "filename": "tags.self-closing.pg"
+              }
+            ],
             "attributeBlocks": [],
             "isInline": true,
             "line": 12,

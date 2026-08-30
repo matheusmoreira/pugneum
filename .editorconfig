@@ -8,3 +8,17 @@ tab_width = 2
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+# Shared fixtures and byte-exact oracles intentionally exercise whitespace,
+# indentation, line endings, final-newline handling, and encoding boundaries.
+[test-cases/**]
+charset = unset
+indent_style = unset
+indent_size = unset
+tab_width = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+[test-cases/utf8bom.pg]
+charset = utf-8-bom

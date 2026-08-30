@@ -1,20 +1,24 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 var {test, describe} = require('node:test');
 var assert = require('node:assert/strict');
 var lex = require('../');
 
-var dir = __dirname + '/../../../test-cases/';
-fs.readdirSync(dir).forEach(function (testCase) {
-  if (/\.pg$/.test(testCase)) {
-    test(testCase, (t) => {
-      var result = lex(fs.readFileSync(dir + testCase, 'utf8'), {
-        filename: testCase,
-      });
-      t.assert.snapshot(result);
+var dir = path.resolve(__dirname, '../../../test-cases');
+var fixtureManifest = require('../../../test-cases/manifest.json');
+var sharedCases = fixtureManifest.render
+  .map((name) => name + '.pg')
+  .concat(fixtureManifest.syntax);
+
+sharedCases.forEach(function (testCase) {
+  test(testCase, (t) => {
+    var result = lex(fs.readFileSync(path.join(dir, testCase), 'utf8'), {
+      filename: testCase,
     });
-  }
+    t.assert.snapshot(result);
+  });
 });
 
 var lexerDir = __dirname + '/cases/';

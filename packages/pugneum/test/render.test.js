@@ -508,6 +508,34 @@ describe('mixin parameter bindings', () => {
   });
 });
 
+describe('filter option validation', () => {
+  it('rejects a source filename option before invoking the filter', () => {
+    var calls = 0;
+    assert.throws(
+      () =>
+        pg.render(':probe(filename=claimed.pg)\n  body', {
+          filename: 'main.pg',
+          warnings: [],
+          filters: {
+            probe: {
+              type: 'html',
+              filter() {
+                calls++;
+                return '';
+              },
+            },
+          },
+        }),
+      (err) =>
+        err.code === 'PUGNEUM:RESERVED_FILTER_OPTION' &&
+        err.filename === 'main.pg' &&
+        err.line === 1 &&
+        err.column === 8,
+    );
+    assert.strictEqual(calls, 0);
+  });
+});
+
 describe('variables in attributes', () => {
   it('should resolve #{var} in attribute values', () => {
     assert.strictEqual(

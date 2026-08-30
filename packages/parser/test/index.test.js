@@ -92,6 +92,84 @@ describe('error paths', () => {
     );
   });
 
+  test('DUPLICATE_FILTER_OPTION rejects exact names in both filter forms', () => {
+    [
+      {
+        source: ':probe(option=first option=second)\n  body',
+        duplicate: 'option=second',
+        name: 'option',
+      },
+      {
+        source: ':probe(class=first class=second)\n  body',
+        duplicate: 'class=second',
+        name: 'class',
+      },
+      {
+        source: 'include:probe(option=first option=second) data.txt',
+        duplicate: 'option=second',
+        name: 'option',
+      },
+    ].forEach(({source, duplicate, name}) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_FILTER_OPTION');
+          assert.strictEqual(
+            err.msg,
+            'Duplicate filter option "' + name + '" is not allowed.',
+          );
+          assert.deepStrictEqual(
+            {line: err.line, column: err.column, filename: err.filename},
+            {
+              line: 1,
+              column: source.indexOf(duplicate) + 1,
+              filename: 'test.pg',
+            },
+          );
+          return true;
+        },
+      );
+    });
+  });
+
+  test('RESERVED_FILTER_OPTION rejects filename in both filter forms', () => {
+    [
+      ':probe(filename=claimed.pg)\n  body',
+      'include:probe(filename=claimed.pg) data.txt',
+    ].forEach((source) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:RESERVED_FILTER_OPTION');
+          assert.strictEqual(
+            err.msg,
+            'Filter option "filename" is reserved for the invocation filename.',
+          );
+          assert.deepStrictEqual(
+            {line: err.line, column: err.column, filename: err.filename},
+            {
+              line: 1,
+              column: source.indexOf('filename=') + 1,
+              filename: 'test.pg',
+            },
+          );
+          return true;
+        },
+      );
+    });
+  });
+
+  test('filter option names stay case-sensitive and source-ordered', () => {
+    const ast = parseSource(':probe(option=first Option=second)\n  body');
+    assert.deepStrictEqual(
+      ast.nodes[0].attrs.map(({name, val}) => ({name, val})),
+      [
+        {name: 'option', val: 'first'},
+        {name: 'Option', val: 'second'},
+      ],
+    );
+  });
+
   test('INVALID_TOKEN for unexpected token in tag-content position', () => {
     var tokens = lex('div', {filename: 'test.pg'});
     tokens.splice(1, 0, {type: 'bogus', loc: {start: {line: 1, column: 4}}});

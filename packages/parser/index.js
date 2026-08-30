@@ -109,6 +109,11 @@ const inlineStartTokens = new Set([
   'start-footnote-ref',
 ]);
 
+const filterOptionPolicy = {
+  allowDuplicateClass: false,
+  reservedNames: new Set(['filename']),
+};
+
 class Parser {
   constructor(tokens, options) {
     if (options === undefined || options === null) {
@@ -425,7 +430,7 @@ class Parser {
     let attrs = [];
 
     if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs();
+      attrs = this.attrs(new Set(), filterOptionPolicy);
     }
 
     return {
@@ -448,7 +453,7 @@ class Parser {
       attrs = [];
 
     if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs();
+      attrs = this.attrs(new Set(), filterOptionPolicy);
     }
 
     if (this.peek().type === 'text') {
@@ -1185,19 +1190,40 @@ class Parser {
     return tag;
   }
 
-  attrs(attributeNames) {
+  attrs(attributeNames, policy) {
     this.expect('start-attributes');
 
     const attrs = [];
     let tok = this.advance();
     while (tok.type === 'attribute') {
-      if (tok.name !== 'class' && attributeNames) {
+      if (policy && policy.reservedNames.has(tok.name)) {
+        this.error(
+          'RESERVED_FILTER_OPTION',
+          'Filter option "' +
+            tok.name +
+            '" is reserved for the invocation filename.',
+          tok,
+        );
+      }
+      if (
+        attributeNames &&
+        (tok.name !== 'class' ||
+          (policy && policy.allowDuplicateClass === false))
+      ) {
         if (attributeNames.has(tok.name)) {
-          this.error(
-            'DUPLICATE_ATTRIBUTE',
-            'Duplicate attribute "' + tok.name + '" is not allowed.',
-            tok,
-          );
+          if (policy) {
+            this.error(
+              'DUPLICATE_FILTER_OPTION',
+              'Duplicate filter option "' + tok.name + '" is not allowed.',
+              tok,
+            );
+          } else {
+            this.error(
+              'DUPLICATE_ATTRIBUTE',
+              'Duplicate attribute "' + tok.name + '" is not allowed.',
+              tok,
+            );
+          }
         }
         attributeNames.add(tok.name);
       }

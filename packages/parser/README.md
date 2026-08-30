@@ -184,6 +184,7 @@ Their `code` values and conditions are:
 | --- | --- |
 | `PUGNEUM:BLOCK_OUTSIDE_MIXIN` | An anonymous mixin block appears outside a mixin. |
 | `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class attribute name is repeated. |
+| `PUGNEUM:DUPLICATE_FILTER_OPTION` | A block or include filter repeats an exact option name. |
 | `PUGNEUM:DUPLICATE_ID` | An `id` shorthand repeats an existing `id`. |
 | `PUGNEUM:DUPLICATE_MIXIN_PARAMETER` | A mixin declaration repeats an exact parameter name. |
 | `PUGNEUM:GIVEN_OUTSIDE_MIXIN` | `given` is outside a mixin definition or inside a mixin call body. |
@@ -192,6 +193,7 @@ Their `code` values and conditions are:
 | `PUGNEUM:MULTIPLE_ATTRIBUTES` | A tag or mixin call has more than one parenthesized attribute block. |
 | `PUGNEUM:NESTING_TOO_DEEP` | Expression parsing would exceed 256 nested dispatches. |
 | `PUGNEUM:RAW_INCLUDE_BLOCK` | A raw include has an indented block. |
+| `PUGNEUM:RESERVED_FILTER_OPTION` | A filter uses the infrastructure-owned `filename` option. |
 | `PUGNEUM:VARIABLE_OUTSIDE_MIXIN` | A mixin variable appears outside a mixin definition. |
 
 Coded diagnostics use the current token's start location plus

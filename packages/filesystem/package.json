@@ -1,0 +1,28 @@
+{
+  "name": "pugneum-filesystem",
+  "version": "1.0.0",
+  "description": "Rooted regular-file IO and atomic publication for Pugneum",
+  "keywords": [
+    "pugneum",
+    "filesystem",
+    "security",
+    "atomic"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusmoreira/pugneum.git",
+    "directory": "packages/filesystem"
+  },
+  "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
+  "maintainers": [
+    "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/matheusmoreira"
+}

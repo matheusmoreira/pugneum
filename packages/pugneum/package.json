@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "pugneum-filterer": "^1.0.0",
+    "pugneum-filesystem": "^1.0.0",
     "pugneum-lexer": "^1.0.0",
     "pugneum-linker": "^1.0.0",
     "pugneum-loader": "^1.0.0",

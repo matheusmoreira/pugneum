@@ -111,7 +111,11 @@ function readAndValidateInput(filename) {
 // invocations do not load the full compile pipeline (lexer/parser/loader/
 // linker/filterer/renderer) that requiring 'pugneum' pulls in.
 const pg = require('pugneum');
+const createRootedFilesystem = require('pugneum-filesystem');
+const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const pgExtension = /\.pg$/;
+const CLI_INPUT_ERROR = 'PUGNEUM:CLI_INPUT_ERROR';
+const CLI_OUTPUT_ERROR = 'PUGNEUM:CLI_OUTPUT_ERROR';
 
 function isPugneum(file) {
   return pgExtension.test(file);
@@ -167,6 +171,11 @@ function handleError(error) {
       console.error(`Permission denied: '${error.path}'`);
       process.exit(EXIT_CODES.PERMISSION_DENIED);
       break;
+    case CLI_INPUT_ERROR:
+    case CLI_OUTPUT_ERROR:
+      console.error(error.message);
+      process.exit(EXIT_CODES.INVALID_INPUT);
+      break;
     default:
       if (typeof error.code === 'string' && error.code.startsWith('PUGNEUM:')) {
         console.error(error.message);
@@ -174,6 +183,38 @@ function handleError(error) {
       }
       throw error;
   }
+}
+
+function rethrowOutputBoundary(error, relative) {
+  if (
+    error.code === filesystemErrors.PATH_ESCAPE ||
+    error.code === filesystemErrors.NOT_REGULAR_FILE ||
+    error.code === filesystemErrors.NOT_DIRECTORY
+  ) {
+    const outputError = new Error(
+      `Output path escapes output directory: ${relative}`,
+      {cause: error},
+    );
+    outputError.code = CLI_OUTPUT_ERROR;
+    throw outputError;
+  }
+  throw error;
+}
+
+function rethrowInputBoundary(error, relative) {
+  if (
+    error.code === filesystemErrors.PATH_ESCAPE ||
+    error.code === filesystemErrors.NOT_REGULAR_FILE ||
+    error.code === filesystemErrors.NOT_DIRECTORY
+  ) {
+    const inputError = new Error(
+      `Input path escapes input directory or is not a regular file: ${relative}`,
+      {cause: error},
+    );
+    inputError.code = CLI_INPUT_ERROR;
+    throw inputError;
+  }
+  throw error;
 }
 
 // Declared outside the try so the catch can still surface diagnostics
@@ -195,16 +236,10 @@ try {
   pgOptions.basedir = baseDirectory || inputDirectory;
 
   const resolvedInputDir = fs.realpathSync(inputDirectory);
+  const inputFiles = createRootedFilesystem(resolvedInputDir);
   const resolvedOutputDir = path.resolve(outputDirectory);
-  // Canonicalize the output root the same way the input root is canonicalized.
-  // The lexical startsWith guard below cannot see symlinks, but mkdirSync and
-  // writeFileSync follow them at write time, so we also re-check the realpath of
-  // each created parent dir against this resolved root.
   fs.mkdirSync(resolvedOutputDir, {recursive: true});
-  const realOutputDir = fs.realpathSync(resolvedOutputDir);
-  // The CLI is the sole writer during a build, so remember which output dirs
-  // were created (and verified) and skip the redundant work for sibling pages.
-  const madeDirs = new Set();
+  const outputFiles = createRootedFilesystem(resolvedOutputDir);
   processDirectory(resolvedInputDir, function compilePugneumAndSave(input) {
     // Compute the relative path against the SAME base the walk uses
     // (resolvedInputDir, the realpath). Using the raw inputDirectory here would
@@ -213,44 +248,23 @@ try {
     // walked input is symlink-resolved, yielding a spurious ../-laden path that
     // trips the output-escape guard below and aborts the whole build.
     const relative = path.relative(resolvedInputDir, input);
-    const outputPath = path
-      .join(outputDirectory, relative)
-      .replace(pgExtension, '.html');
-    const resolvedOutput = path.resolve(outputPath);
-    if (!resolvedOutput.startsWith(resolvedOutputDir + path.sep)) {
-      console.error(`Output path escapes output directory: ${relative}`);
-      process.exit(EXIT_CODES.INVALID_INPUT);
-    }
-    const directory = path.dirname(outputPath);
-    const output = pg.renderFile(input, pgOptions);
-    if (!madeDirs.has(directory)) {
-      fs.mkdirSync(directory, {recursive: true});
-      // After creating the parent dir, confirm its realpath is still inside the
-      // output tree: a pre-existing symlinked intermediate component would let
-      // an otherwise-lexically-valid write land outside out/.
-      const realDirectory = fs.realpathSync(directory);
-      if (
-        realDirectory !== realOutputDir &&
-        !realDirectory.startsWith(realOutputDir + path.sep)
-      ) {
-        console.error(`Output path escapes output directory: ${relative}`);
-        process.exit(EXIT_CODES.INVALID_INPUT);
-      }
-      madeDirs.add(directory);
-    }
-    // Refuse to write through a symlinked final component (it would clobber the
-    // symlink's target, outside the tree). lstat does not follow the link.
-    let existing;
+    const outputPath = relative.replace(pgExtension, '.html');
+    let source;
     try {
-      existing = fs.lstatSync(outputPath);
-    } catch (e) {
-      if (e.code !== 'ENOENT') throw e;
+      source = inputFiles.readFile(relative, 'utf8');
+    } catch (error) {
+      rethrowInputBoundary(error, relative);
     }
-    if (existing && existing.isSymbolicLink()) {
-      console.error(`Output path escapes output directory: ${relative}`);
-      process.exit(EXIT_CODES.INVALID_INPUT);
+    const output = pg.render(
+      source,
+      Object.assign({}, pgOptions, {filename: input}),
+    );
+    try {
+      outputFiles.ensureDirectory(path.dirname(outputPath));
+      outputFiles.writeFileAtomic(outputPath, output, {encoding: 'utf8'});
+    } catch (error) {
+      rethrowOutputBoundary(error, relative);
     }
-    fs.writeFileSync(outputPath, output, {encoding: 'utf8'});
   });
 
   // Surface non-fatal diagnostics collected across the whole build once.

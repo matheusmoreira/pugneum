@@ -34,7 +34,7 @@ function spawnCli(args, opts) {
     encoding: 'utf8',
     cwd: opts && opts.cwd,
     env: childEnvironment(opts && opts.env),
-    timeout: 10000,
+    timeout: (opts && opts.timeout) || 10000,
   });
 }
 
@@ -57,6 +57,19 @@ function makeSymlinkOrSkip(t, target, link, type) {
   } catch (error) {
     if (['EACCES', 'ENOTSUP', 'EPERM'].includes(error.code)) {
       t.skip(`symlinks are unavailable on this runner (${error.code})`);
+      return false;
+    }
+    throw error;
+  }
+}
+
+function makeHardLinkOrSkip(t, target, link) {
+  try {
+    fs.linkSync(target, link);
+    return true;
+  } catch (error) {
+    if (['EACCES', 'ENOTSUP', 'EPERM'].includes(error.code)) {
+      t.skip(`hard links are unavailable on this runner (${error.code})`);
       return false;
     }
     throw error;
@@ -284,6 +297,43 @@ describe('CLI', () => {
     }
   });
 
+  test('rejects a FIFO page input without blocking', (t) => {
+    if (process.platform === 'win32') {
+      t.skip('Windows named pipes are not filesystem FIFO entries');
+      return;
+    }
+
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      const fifo = path.join(tmp, 'src', 'special.pg');
+      const mkfifo = spawnSync('mkfifo', [fifo], {encoding: 'utf8'});
+      if (mkfifo.error && mkfifo.error.code === 'ENOENT') {
+        t.skip('mkfifo is unavailable on this runner');
+        return;
+      }
+      assert.ifError(mkfifo.error);
+      assert.strictEqual(mkfifo.status, 0, mkfifo.stderr);
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+
+      const result = spawnCli([], {cwd: tmp, timeout: 2000});
+
+      assert.ifError(result.error);
+      assert.strictEqual(result.status, 1);
+      assert.match(
+        result.stderr,
+        /Input path escapes input directory or is not a regular file/,
+      );
+      assert.ok(!fs.existsSync(path.join(tmp, 'out', 'special.html')));
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
   test('builds when the input directory itself is a symlink', (t) => {
     // Regression: the walk uses realpathSync(inputDirectory) while the per-file
     // relative path must use the same resolved base. Computing it against the
@@ -462,6 +512,46 @@ describe('CLI', () => {
       assert.strictEqual(
         fs.readFileSync(path.join(tmp, 'important.conf'), 'utf8'),
         'ORIGINAL SECRET',
+      );
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('atomically replaces a hard-linked output name without mutating its other name', (t) => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'src', 'target.pg'), 'p replacement');
+      fs.writeFileSync(path.join(tmp, 'important.conf'), 'ORIGINAL SECRET');
+      if (
+        !makeHardLinkOrSkip(
+          t,
+          path.join(tmp, 'important.conf'),
+          path.join(tmp, 'out', 'target.html'),
+        )
+      ) {
+        return;
+      }
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+
+      run([], {cwd: tmp});
+
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'important.conf'), 'utf8'),
+        'ORIGINAL SECRET',
+      );
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'out', 'target.html'), 'utf8'),
+        '<p>replacement</p>',
+      );
+      assert.notStrictEqual(
+        fs.statSync(path.join(tmp, 'important.conf')).ino,
+        fs.statSync(path.join(tmp, 'out', 'target.html')).ino,
       );
     } finally {
       fs.rmSync(tmp, {recursive: true});

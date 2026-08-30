@@ -1,8 +1,9 @@
-const path = require('path');
 const fs = require('fs');
 const htmlparser2 = require('htmlparser2');
 const DomUtils = htmlparser2.DomUtils;
 const makeError = require('pugneum-error');
+const createRootedFilesystem = require('pugneum-filesystem');
+const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const extract = require('./lib/extract');
 const generateAtom = require('./lib/atom');
 const generateRss = require('./lib/rss');
@@ -17,15 +18,38 @@ function feedError(code, message) {
   return makeError(code, message, {});
 }
 
-// Security boundary: a resolved path must stay inside an allowed base directory.
-// Reject classic `..` escapes and the sibling-prefix trap (`/out` vs `/out-evil`)
-// via the trailing path.sep. Stated once and called for each path we touch.
-function assertNoTraversal(baseResolved, candidatePath, message) {
-  const resolved = path.resolve(candidatePath);
-  if (!resolved.startsWith(baseResolved + path.sep)) {
+function rethrowFilesystemBoundary(error, message, includeNonRegular) {
+  if (
+    error.code === filesystemErrors.PATH_ESCAPE ||
+    (includeNonRegular &&
+      (error.code === filesystemErrors.NOT_REGULAR_FILE ||
+        error.code === filesystemErrors.NOT_DIRECTORY))
+  ) {
     throw feedError('FEED_PATH_TRAVERSAL', message);
   }
-  return resolved;
+  throw error;
+}
+
+function articleFilesystemPath(href) {
+  // An href beginning with / is URL-root-relative, not an absolute host
+  // filesystem path. Preserve that historical mapping beneath outputDirectory,
+  // but never reinterpret a protocol-relative URL's authority as a local
+  // directory. Query/fragment/percent-decoding separation belongs to D-02's
+  // wider URL/path identity change.
+  if (/^[/\\]{2}/.test(href)) {
+    throw feedError(
+      'FEED_PATH_TRAVERSAL',
+      'Article href is not a local output path: ' + href,
+    );
+  }
+  const articlePath = href.replace(/^[/\\]/, '');
+  if (articlePath === '') {
+    throw feedError(
+      'FEED_ARTICLE_NOT_FOUND',
+      'Article path is not a file: ' + href,
+    );
+  }
+  return articlePath;
 }
 
 module.exports = function generateFeeds(options) {
@@ -42,8 +66,21 @@ module.exports = function generateFeeds(options) {
   const atomPath = feedsConfig.atom || 'atom.xml';
   const rssPath = feedsConfig.rss || 'rss.xml';
 
-  // Phase 1: Extract feed-level metadata from index page
-  const indexData = extract.indexPage(path.join(outputDir, indexFile));
+  const inputFiles = createRootedFilesystem(outputDir);
+
+  // Phase 1: Extract feed-level metadata from a regular, no-follow index file
+  // rooted beneath outputDirectory.
+  let indexData;
+  try {
+    indexData = extract.indexPage(indexFile, inputFiles.readFile);
+  } catch (error) {
+    rethrowFilesystemBoundary(
+      error,
+      'Index path escapes output directory or is not a regular file: ' +
+        indexFile,
+      true,
+    );
+  }
 
   // Resolve metadata: config overrides HTML
   let url = feedsConfig.url || indexData.url;
@@ -78,42 +115,64 @@ module.exports = function generateFeeds(options) {
   }
 
   // Phase 2: Enrich entries from article pages
-  const resolvedOutputDir = path.resolve(outputDir);
   const entries = [];
   for (let i = 0; i < indexData.entries.length; i++) {
     const entry = indexData.entries[i];
-    let articlePath = path.join(outputDir, entry.href);
-
-    // Prevent path traversal: article path must stay within output directory
-    assertNoTraversal(
-      resolvedOutputDir,
-      articlePath,
-      'Article href escapes output directory: ' + entry.href,
-    );
-
-    if (!fs.existsSync(articlePath) && fs.existsSync(articlePath + '.html')) {
-      articlePath += '.html';
-    }
-
-    if (!fs.existsSync(articlePath)) {
-      throw feedError(
-        'FEED_ARTICLE_NOT_FOUND',
-        'Article not found: ' +
-          entry.href +
-          '\n    resolved to: ' +
-          articlePath,
+    let articlePath = articleFilesystemPath(entry.href);
+    let articleData;
+    try {
+      articleData = extract.articlePage(
+        articlePath,
+        tagName,
+        inputFiles.readFile,
       );
-    }
+    } catch (error) {
+      if (error.code === filesystemErrors.PATH_ESCAPE) {
+        rethrowFilesystemBoundary(
+          error,
+          'Article href escapes output directory: ' + entry.href,
+          false,
+        );
+      }
+      if (error.code === filesystemErrors.NOT_REGULAR_FILE) {
+        throw feedError(
+          'FEED_ARTICLE_NOT_FOUND',
+          'Article path is not a file: ' + entry.href,
+        );
+      }
+      if (error.code !== 'ENOENT') throw error;
 
-    // Guard against directories
-    if (!fs.statSync(articlePath).isFile()) {
-      throw feedError(
-        'FEED_ARTICLE_NOT_FOUND',
-        'Article path is not a file: ' + entry.href,
-      );
+      const fallbackPath = articlePath + '.html';
+      try {
+        articleData = extract.articlePage(
+          fallbackPath,
+          tagName,
+          inputFiles.readFile,
+        );
+        articlePath = fallbackPath;
+      } catch (fallbackError) {
+        if (fallbackError.code === filesystemErrors.PATH_ESCAPE) {
+          rethrowFilesystemBoundary(
+            fallbackError,
+            'Article href escapes output directory: ' + entry.href,
+            false,
+          );
+        }
+        if (
+          fallbackError.code !== 'ENOENT' &&
+          fallbackError.code !== filesystemErrors.NOT_REGULAR_FILE
+        ) {
+          throw fallbackError;
+        }
+        throw feedError(
+          'FEED_ARTICLE_NOT_FOUND',
+          'Article not found: ' +
+            entry.href +
+            '\n    resolved to: ' +
+            articlePath,
+        );
+      }
     }
-
-    const articleData = extract.articlePage(articlePath, tagName);
 
     entries.push({
       url: new URL(entry.href, url).href,
@@ -145,22 +204,21 @@ module.exports = function generateFeeds(options) {
   const rss = generateRss(feed);
 
   fs.mkdirSync(writeDir, {recursive: true});
-
-  // Prevent path traversal: feed output paths must stay within write directory
-  const resolvedWriteDir = path.resolve(writeDir);
-  assertNoTraversal(
-    resolvedWriteDir,
-    path.join(writeDir, atomPath),
-    'Feed output path escapes write directory',
-  );
-  assertNoTraversal(
-    resolvedWriteDir,
-    path.join(writeDir, rssPath),
-    'Feed output path escapes write directory',
-  );
-
-  fs.writeFileSync(path.join(writeDir, atomPath), atom, {encoding: 'utf8'});
-  fs.writeFileSync(path.join(writeDir, rssPath), rss, {encoding: 'utf8'});
+  const outputFiles = createRootedFilesystem(writeDir);
+  try {
+    // Validate both names before publishing either file, then repeat the same
+    // checks inside each atomic write to close static check/use gaps.
+    outputFiles.assertWritableFile(atomPath);
+    outputFiles.assertWritableFile(rssPath);
+    outputFiles.writeFileAtomic(atomPath, atom, {encoding: 'utf8'});
+    outputFiles.writeFileAtomic(rssPath, rss, {encoding: 'utf8'});
+  } catch (error) {
+    rethrowFilesystemBoundary(
+      error,
+      'Feed output path escapes write directory or is not a regular file',
+      true,
+    );
+  }
 };
 
 module.exports.resolveRelativeUrls = resolveRelativeUrls;

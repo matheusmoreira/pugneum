@@ -2,8 +2,8 @@ const fs = require('fs');
 const htmlparser2 = require('htmlparser2');
 const DomUtils = htmlparser2.DomUtils;
 
-exports.indexPage = function indexPage(indexPath) {
-  const html = fs.readFileSync(indexPath, 'utf8');
+exports.indexPage = function indexPage(indexPath, readFile) {
+  const html = (readFile || fs.readFileSync)(indexPath, 'utf8');
   const dom = htmlparser2.parseDocument(html);
   const metaMap = extractMetaMap(dom);
 
@@ -17,8 +17,8 @@ exports.indexPage = function indexPage(indexPath) {
   return {url, title, description, author, language, entries};
 };
 
-exports.articlePage = function articlePage(filePath, tagName) {
-  const html = fs.readFileSync(filePath, 'utf8');
+exports.articlePage = function articlePage(filePath, tagName, readFile) {
+  const html = (readFile || fs.readFileSync)(filePath, 'utf8');
   const dom = htmlparser2.parseDocument(html);
   const metaMap = extractMetaMap(dom);
 

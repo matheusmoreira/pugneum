@@ -10,6 +10,90 @@ var extract = require('../lib/extract');
 var fixturesDir = path.join(__dirname, 'fixtures');
 var outputDir = path.join(__dirname, 'output');
 
+function makeSymlinkOrSkip(t, target, link, type) {
+  try {
+    var platformType =
+      process.platform === 'win32' && type === 'dir' ? 'junction' : type;
+    fs.symlinkSync(target, link, platformType);
+    return true;
+  } catch (error) {
+    if (['EACCES', 'ENOTSUP', 'EPERM'].includes(error.code)) {
+      t.skip('symlinks are unavailable on this runner (' + error.code + ')');
+      return false;
+    }
+    throw error;
+  }
+}
+
+function feedIndex(articleHref) {
+  return (
+    '<!DOCTYPE html><html lang="en"><head>' +
+    '<base href="https://example.com/"><title>Site</title>' +
+    '<meta name="description" content="description">' +
+    '<meta name="author" content="Author"></head><body>' +
+    '<div data-published-at="2026-01-01"><a href="' +
+    articleHref +
+    '">Post</a></div></body></html>'
+  );
+}
+
+function feedArticle(content) {
+  return (
+    '<!DOCTYPE html><html><head><title>Post</title>' +
+    '<meta name="description" content="summary">' +
+    '<meta name="author" content="Author"></head><body>' +
+    '<article><p>' +
+    content +
+    '</p></article></body></html>'
+  );
+}
+
+function boundaryFixture(t) {
+  var sandbox = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'pugneum-feed-boundary-'),
+  );
+  var input = path.join(sandbox, 'input');
+  var output = path.join(sandbox, 'output');
+  var outside = path.join(sandbox, 'outside');
+  fs.mkdirSync(path.join(input, 'articles'), {recursive: true});
+  fs.mkdirSync(output);
+  fs.mkdirSync(outside);
+  fs.writeFileSync(
+    path.join(input, 'index.html'),
+    feedIndex('articles/post.html'),
+  );
+  fs.writeFileSync(
+    path.join(input, 'articles', 'post.html'),
+    feedArticle('inside content'),
+  );
+  t.after(() => fs.rmSync(sandbox, {recursive: true}));
+
+  return {
+    input,
+    output,
+    outside,
+    generate(feeds) {
+      return generateFeeds({
+        outputDirectory: input,
+        writeDirectory: output,
+        feeds: Object.assign({enabled: true}, feeds),
+      });
+    },
+  };
+}
+
+function assertFeedTraversal(fn) {
+  assert.throws(fn, (error) => {
+    assert.strictEqual(error.code, 'PUGNEUM:FEED_PATH_TRAVERSAL');
+    return true;
+  });
+}
+
+function assertNoGeneratedFeeds(fixture) {
+  assert.ok(!fs.existsSync(path.join(fixture.output, 'atom.xml')));
+  assert.ok(!fs.existsSync(path.join(fixture.output, 'rss.xml')));
+}
+
 describe('extract.indexPage robustness', () => {
   function writeTemp(content) {
     var p = path.join(
@@ -548,4 +632,259 @@ describe('error handling', () => {
 
     fs.rmSync(outputDir, {recursive: true});
   });
+});
+
+describe('feed filesystem boundary', () => {
+  test('maps a URL-root-relative article href beneath the input root', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(
+      path.join(fixture.input, 'index.html'),
+      feedIndex('/articles/post.html'),
+    );
+
+    fixture.generate();
+
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    assert.match(atom, /inside content/);
+    assert.match(atom, /https:\/\/example\.com\/articles\/post\.html/);
+  });
+
+  test('reports a root-only article href as a coded missing article', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(path.join(fixture.input, 'index.html'), feedIndex('/'));
+
+    assert.throws(
+      () => fixture.generate(),
+      (error) => {
+        assert.strictEqual(error.code, 'PUGNEUM:FEED_ARTICLE_NOT_FOUND');
+        assert.doesNotMatch(error.stack, /TypeError/);
+        return true;
+      },
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('does not reinterpret a protocol-relative host as a local directory', (t) => {
+    var fixture = boundaryFixture(t);
+    var localAuthority = path.join(fixture.input, 'cdn.example.com');
+    fs.mkdirSync(localAuthority);
+    fs.writeFileSync(
+      path.join(localAuthority, 'post.html'),
+      feedArticle('local authority sentinel'),
+    );
+    fs.writeFileSync(
+      path.join(fixture.input, 'index.html'),
+      feedIndex('//cdn.example.com/post.html'),
+    );
+
+    assertFeedTraversal(() => fixture.generate());
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects a configured index that lexically escapes the input root', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(
+      path.join(fixture.outside, 'external-index.html'),
+      feedIndex('nothing.html'),
+    );
+
+    assertFeedTraversal(() =>
+      fixture.generate({index: '../outside/external-index.html'}),
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects a leaf index symlink', (t) => {
+    var fixture = boundaryFixture(t);
+    var external = path.join(fixture.outside, 'index.html');
+    fs.writeFileSync(external, feedIndex('nothing.html'));
+    fs.unlinkSync(path.join(fixture.input, 'index.html'));
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        external,
+        path.join(fixture.input, 'index.html'),
+        'file',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate());
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects an ancestor index symlink', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(path.join(fixture.outside, 'index.html'), feedIndex('x'));
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        fixture.outside,
+        path.join(fixture.input, 'redirect'),
+        'dir',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate({index: 'redirect/index.html'}));
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects a dangling index symlink', (t) => {
+    var fixture = boundaryFixture(t);
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        path.join(fixture.outside, 'missing-index.html'),
+        path.join(fixture.input, 'dangling-index.html'),
+        'file',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate({index: 'dangling-index.html'}));
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects a leaf article symlink without reading outside content', (t) => {
+    var fixture = boundaryFixture(t);
+    var external = path.join(fixture.outside, 'article.html');
+    fs.writeFileSync(external, feedArticle('outside sentinel'));
+    fs.unlinkSync(path.join(fixture.input, 'articles', 'post.html'));
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        external,
+        path.join(fixture.input, 'articles', 'post.html'),
+        'file',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate());
+    assertNoGeneratedFeeds(fixture);
+    assert.match(fs.readFileSync(external, 'utf8'), /outside sentinel/);
+  });
+
+  test('rejects an ancestor article symlink', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.rmSync(path.join(fixture.input, 'articles'), {recursive: true});
+    fs.mkdirSync(path.join(fixture.outside, 'articles'));
+    fs.writeFileSync(
+      path.join(fixture.outside, 'articles', 'post.html'),
+      feedArticle('outside sentinel'),
+    );
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        path.join(fixture.outside, 'articles'),
+        path.join(fixture.input, 'articles'),
+        'dir',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate());
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects a dangling article symlink', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.unlinkSync(path.join(fixture.input, 'articles', 'post.html'));
+    if (
+      !makeSymlinkOrSkip(
+        t,
+        path.join(fixture.outside, 'missing-article.html'),
+        path.join(fixture.input, 'articles', 'post.html'),
+        'file',
+      )
+    ) {
+      return;
+    }
+
+    assertFeedTraversal(() => fixture.generate());
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  for (const role of ['atom', 'rss']) {
+    test(
+      'rejects a leaf ' + role + ' output symlink without clobbering it',
+      (t) => {
+        var fixture = boundaryFixture(t);
+        var external = path.join(fixture.outside, role + '-sentinel');
+        var outputName = role + '.xml';
+        fs.writeFileSync(external, 'outside sentinel');
+        if (
+          !makeSymlinkOrSkip(
+            t,
+            external,
+            path.join(fixture.output, outputName),
+            'file',
+          )
+        ) {
+          return;
+        }
+
+        assertFeedTraversal(() => fixture.generate());
+        assert.strictEqual(
+          fs.readFileSync(external, 'utf8'),
+          'outside sentinel',
+        );
+        assert.ok(
+          !fs.existsSync(
+            path.join(fixture.output, role === 'atom' ? 'rss.xml' : 'atom.xml'),
+          ),
+        );
+      },
+    );
+
+    test('rejects an ancestor ' + role + ' output symlink', (t) => {
+      var fixture = boundaryFixture(t);
+      var outsideOutput = path.join(fixture.outside, role + '-output');
+      fs.mkdirSync(outsideOutput);
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          outsideOutput,
+          path.join(fixture.output, 'redirect'),
+          'dir',
+        )
+      ) {
+        return;
+      }
+
+      var feeds = {};
+      feeds[role] = 'redirect/' + role + '.xml';
+      assertFeedTraversal(() => fixture.generate(feeds));
+      assertNoGeneratedFeeds(fixture);
+      assert.ok(!fs.existsSync(path.join(outsideOutput, role + '.xml')));
+    });
+
+    test('rejects a dangling ' + role + ' output symlink', (t) => {
+      var fixture = boundaryFixture(t);
+      var outsideTarget = path.join(
+        fixture.outside,
+        'missing-' + role + '.xml',
+      );
+      if (
+        !makeSymlinkOrSkip(
+          t,
+          outsideTarget,
+          path.join(fixture.output, role + '.xml'),
+          'file',
+        )
+      ) {
+        return;
+      }
+
+      assertFeedTraversal(() => fixture.generate());
+      assertNoGeneratedFeeds(fixture);
+      assert.ok(!fs.existsSync(outsideTarget));
+    });
+  }
 });

@@ -25,6 +25,7 @@
     "packages/filterer",
     "packages/renderer",
     "packages/walker",
+    "packages/filesystem",
     "packages/pugneum",
     "packages/filter/highlight.js",
     "packages/filter/prismjs",

@@ -1028,8 +1028,21 @@ class Lexer {
   filter(opts) {
     const tok =
       this.scan(/^:([\w\-]+)/, 'filter') ||
-      this.scan(/^:'([^']+)'/, 'filter') ||
-      this.scan(/^:"([^"]+)"/, 'filter');
+      this.scan(/^:'([^'\r\n]+)'/, 'filter') ||
+      this.scan(/^:"([^"\r\n]+)"/, 'filter');
+
+    const quote = this.input[0] === ':' ? this.input[1] : null;
+    if (!tok && (quote === "'" || quote === '"')) {
+      const close = this.input.indexOf(quote, 2);
+      const newline = this.input.search(/[\r\n]/);
+      if (close === -1 || (newline !== -1 && newline < close)) {
+        this.incrementColumn(1);
+        this.error(
+          'MALFORMED_FILTER',
+          'Quoted filter names must close on the same line.',
+        );
+      }
+    }
 
     const inInclude = opts && opts.inInclude;
     if (tok) {

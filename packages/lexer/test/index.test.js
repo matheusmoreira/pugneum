@@ -357,6 +357,45 @@ describe('physical shorthand source locations', () => {
   });
 });
 
+describe('quoted filter name boundaries', () => {
+  function assertMalformedFilter(source) {
+    assert.throws(
+      () => lex(source, {filename: 'quoted-filter.pg'}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:MALFORMED_FILTER');
+        assert.strictEqual(err.line, 1);
+        assert.strictEqual(err.column, 2);
+        return true;
+      },
+    );
+  }
+
+  test('valid quoted names retain spaces and punctuation', () => {
+    const cases = [
+      [":'name with spaces'\n  body", 'name with spaces'],
+      [':"name.with|punctuation"\n  body', 'name.with|punctuation'],
+    ];
+
+    cases.forEach(([source, name]) => {
+      const tokens = lex(source, {filename: 'quoted-filter.pg'});
+
+      assert.strictEqual(tokens[0].type, 'filter');
+      assert.strictEqual(tokens[0].val, name);
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
+  test('a later-line quote cannot close a filter name', () => {
+    assertMalformedFilter(":'foo\nbar'\n  text");
+    assertMalformedFilter(':"foo\nbar"\n  text');
+  });
+
+  test('an EOF-unclosed quoted name fails at its opening quote', () => {
+    assertMalformedFilter(":'foo");
+    assertMalformedFilter(':"foo');
+  });
+});
+
 describe('filter end-of-line padding', () => {
   test('plain filters ignore spaces before a pipeless body', () => {
     const source = ':verbatim   \n  hello';

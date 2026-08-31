@@ -179,6 +179,12 @@ available from that node or its containing record. Its message includes both
 the source location and structural path. A rejected input leaves the AST and
 options untouched.
 
+In particular, `Tag.name` and `InterpolatedTag.expr` must begin with an ASCII
+letter. Later characters may be ASCII letters, digits, underscores, hyphens,
+or colons, with a hyphen or colon only between word characters. This matches
+the lexer boundary and prevents direct syntax-filter ASTs from bypassing the
+markup-name contract.
+
 ```js
 var assert = require('node:assert/strict');
 var lex = require('pugneum-lexer');

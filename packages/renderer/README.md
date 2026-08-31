@@ -47,6 +47,12 @@ references, footnotes, and TOC nodes also require `link.resolve`. Prefer the
 example below contains only `Block`, `Tag`, and `Text` nodes, so it can be
 rendered directly.
 
+`Tag.name` and `InterpolatedTag.expr` must use the lexer-supported name syntax:
+an ASCII-letter start, followed by ASCII letters, digits, underscores, hyphens,
+or colons, with a hyphen or colon only between word characters. The renderer
+checks this again for direct and generated AST callers and throws a located
+`PUGNEUM:INVALID_TAG_NAME` before writing malformed markup.
+
 ```js
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');

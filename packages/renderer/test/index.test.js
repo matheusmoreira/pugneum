@@ -1306,6 +1306,42 @@ describe('error handling', () => {
     );
   });
 
+  test('direct AST tag names require an ASCII-letter start', () => {
+    var source = 'first\ninvalid tag\nthird';
+    var cases = [
+      tag('1card', [], []),
+      {
+        type: 'InterpolatedTag',
+        expr: '_panel',
+        attrs: [],
+        attributeBlocks: [],
+        block: block([]),
+        selfClosing: false,
+        isInline: false,
+      },
+    ];
+
+    cases.forEach((node) => {
+      Object.assign(node, {
+        line: 2,
+        column: 1,
+        filename: 'invalid.pg',
+      });
+      assert.throws(
+        () =>
+          render(block([node]), {
+            sources: {'invalid.pg': source},
+          }),
+        (err) =>
+          err.code === 'PUGNEUM:INVALID_TAG_NAME' &&
+          err.msg === 'Tag names must start with an ASCII letter' &&
+          err.line === 2 &&
+          err.column === 1 &&
+          err.filename === 'invalid.pg',
+      );
+    });
+  });
+
   test('upstream-only nodes name the required pipeline stage', () => {
     var cases = [
       ['Extends', 'load -> link.assemble'],

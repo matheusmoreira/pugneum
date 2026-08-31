@@ -1238,6 +1238,11 @@ describe('malformed known nodes fail before hooks with exact location', function
       '$.expr',
     ],
     [
+      'InterpolatedTag.expr syntax',
+      {type: 'InterpolatedTag', expr: '_panel', attrs: [], block: block()},
+      '$.expr',
+    ],
+    [
       'Mixin definition block',
       {type: 'Mixin', name: 'x', call: false, args: [], block: null},
       '$.block',
@@ -1268,6 +1273,11 @@ describe('malformed known nodes fail before hooks with exact location', function
       '$.definitions[0]',
     ],
     ['Tag.block', {type: 'Tag', name: 'p', attrs: [], block: null}, '$.block'],
+    [
+      'Tag.name syntax',
+      {type: 'Tag', name: '1card', attrs: [], block: block()},
+      '$.name',
+    ],
     [
       'Block.isFootnoteBody',
       {type: 'Block', nodes: [], isFootnoteBody: 'yes'},

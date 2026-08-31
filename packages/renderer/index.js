@@ -4,6 +4,7 @@ const attributeInterpolationSource = Symbol.for(
   'pugneum.attributeInterpolationSource',
 );
 const attributeVariableNameCharacter = /[-a-zA-Z_?]/;
+const tagNamePattern = /^[A-Za-z](?:[-:A-Za-z0-9_]*[A-Za-z0-9_])?$/;
 
 const MAX_MIXIN_DEPTH = 256;
 
@@ -48,8 +49,8 @@ function requiredStage(node, type) {
 // comments, starting with > or ->, and ending with -. Consecutive
 // hyphens are separated, and leading/trailing padding is applied.
 //
-// Tag and attribute names are validated by the lexer against the HTML
-// spec regex and are safe by construction.
+// Static tag names are validated by the lexer, and direct/generated AST names
+// are revalidated here. Attribute names are validated by the lexer.
 //
 // Void / self-closing elements: the HTML and SVG tables below, together with a
 // node's own selfClosing flag, are the other HTML-correctness mechanism in this
@@ -379,6 +380,13 @@ class Compiler {
 
   visitTag(tag, explicitName) {
     const name = explicitName === undefined ? tag.name : explicitName;
+    if (typeof name !== 'string' || !tagNamePattern.test(name)) {
+      this.error(
+        'INVALID_TAG_NAME',
+        'Tag names must start with an ASCII letter',
+        tag,
+      );
+    }
     const isHtmlVoid = htmlVoid[asciiLowerCase(name)];
     const isSvgSelfClosing = svgSelfClosing[name];
 

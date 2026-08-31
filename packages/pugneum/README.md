@@ -130,6 +130,13 @@ The first word is the tag name and the rest is its content. Attributes are
 supported, as in `#(a(href="/help") click here)`, and a mixin call can be
 inserted with `#(+mixin(args))`. Escape `#(` as `\#(` for literal output.
 
+All block and inline tag names must begin with an ASCII letter. Their remaining
+characters may be ASCII letters, digits, underscores, hyphens, or colons, with
+a hyphen or colon only between word characters. Names such as `x-card` and
+`svg:path` are valid; digit- or underscore-led names fail with
+`PUGNEUM:INVALID_TAG_NAME` instead of producing markup that browsers do not
+parse as the requested element.
+
 ## Comments
 
 Buffered comments appear in the HTML output:

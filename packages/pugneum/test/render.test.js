@@ -122,6 +122,19 @@ describe('render()', () => {
     assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });
 
+  it('rejects invalid tag starts while preserving supported names', () => {
+    for (const source of ['1card Hello', '_panel Hello', 'p #(1shape Hello)']) {
+      assert.throws(
+        () => pg.render(source, {filename: 'invalid-tag.pg'}),
+        (err) => err.code === 'PUGNEUM:INVALID_TAG_NAME',
+      );
+    }
+    assert.strictEqual(
+      pg.render('x-card Hello\nsvg:path Vector'),
+      '<x-card>Hello</x-card><svg:path>Vector</svg:path>',
+    );
+  });
+
   it('keeps combined named-slot fragments in their lexical scopes', () => {
     var source = [
       'mixin inner(label)',

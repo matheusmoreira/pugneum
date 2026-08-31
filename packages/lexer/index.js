@@ -152,12 +152,7 @@ function formatCodepoint(ch) {
 
 function isTagStart(ch) {
   const code = ch.charCodeAt(0);
-  return (
-    (code >= 48 && code <= 57) ||
-    (code >= 65 && code <= 90) ||
-    code === 95 ||
-    (code >= 97 && code <= 122)
-  );
+  return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
 }
 
 const variableNamePattern = '[-a-zA-Z_?]';
@@ -1102,10 +1097,19 @@ class Lexer {
 
   escapedTag() {
     if (this.input[0] !== '\\') return;
-    if (!/^\\(\w(?:[-:\w]*\w)?)/.test(this.input)) return;
+    if (/^\\[0-9_]/.test(this.input)) {
+      this.consume(1);
+      this.incrementColumn(1);
+      return this.invalidTagName();
+    }
+    if (!/^\\([A-Za-z](?:[-:\w]*\w)?)/.test(this.input)) return;
     this.consume(1);
     this.incrementColumn(1);
     return this.tag();
+  }
+
+  invalidTagName() {
+    this.error('INVALID_TAG_NAME', 'Tag names must start with an ASCII letter');
   }
 
   /**
@@ -1115,7 +1119,7 @@ class Lexer {
   tag() {
     let captures;
 
-    if ((captures = /^(\w(?:[-:\w]*\w)?)/.exec(this.input))) {
+    if ((captures = /^([A-Za-z](?:[-:\w]*\w)?)/.exec(this.input))) {
       let tok,
         name = captures[1],
         len = captures[0].length;
@@ -3298,6 +3302,9 @@ class Lexer {
         break;
     }
 
+    if (first === '_' || (first >= '0' && first <= '9')) {
+      return this.invalidTagName();
+    }
     if (isTagStart(first)) return this.tag();
     return this.fail();
   }

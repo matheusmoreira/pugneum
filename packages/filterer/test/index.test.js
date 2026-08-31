@@ -769,6 +769,28 @@ test('syntax output rejects malformed graphs before mutating the invocation', ()
     ],
     ['malformed scalar field', () => [{type: 'Text', val: 42}]],
     [
+      'invalid tag name',
+      () => [
+        {
+          type: 'Tag',
+          name: '1card',
+          attrs: [],
+          block: {type: 'Block', nodes: []},
+        },
+      ],
+    ],
+    [
+      'invalid interpolated tag name',
+      () => [
+        {
+          type: 'InterpolatedTag',
+          expr: '_panel',
+          attrs: [],
+          block: {type: 'Block', nodes: []},
+        },
+      ],
+    ],
+    [
       'malformed required child',
       () => [{type: 'Tag', name: 'p', attrs: [], block: null}],
     ],

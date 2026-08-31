@@ -5,6 +5,7 @@ const validateDependencyASTs = Symbol('validateDependencyASTs');
 // a semantic node plus its Block container, so its deepest valid tree has 512
 // structural edges. Generated-source boundaries use the same ceiling.
 const MAX_AST_DEPTH = 512;
+const tagNamePattern = /^[A-Za-z](?:[-:A-Za-z0-9_]*[A-Za-z0-9_])?$/;
 
 const knownNodeTypes = new Set([
   'Block',
@@ -609,7 +610,7 @@ function validateNodeShape(node, path, state) {
       expectOptionalBoolean(node, 'usesUnnamedBlock', path);
       break;
     case 'Tag':
-      expectString(node, 'name', path);
+      expectTagName(node, 'name', path);
       validateAttributes(node, 'attrs', path, state);
       expectOptionalArray(node, 'attributeBlocks', path);
       expectOptionalBoolean(node, 'isInline', path);
@@ -617,7 +618,7 @@ function validateNodeShape(node, path, state) {
       addNode(node, 'block', path, children);
       break;
     case 'InterpolatedTag':
-      expectString(node, 'expr', path);
+      expectTagName(node, 'expr', path);
       validateAttributes(node, 'attrs', path, state);
       expectOptionalArray(node, 'attributeBlocks', path);
       expectOptionalBoolean(node, 'isInline', path);
@@ -969,6 +970,18 @@ function expectOptionalArray(node, field, path) {
 function expectString(node, field, path) {
   if (typeof node[field] !== 'string') {
     throw invalidField(node, field, path, 'a string');
+  }
+}
+
+function expectTagName(node, field, path) {
+  expectString(node, field, path);
+  if (!tagNamePattern.test(node[field])) {
+    throw invalidField(
+      node,
+      field,
+      path,
+      'a tag name beginning with an ASCII letter',
+    );
   }
 }
 

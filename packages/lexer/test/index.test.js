@@ -722,6 +722,33 @@ describe('given keyword', () => {
   });
 });
 
+describe('tag-name boundary', () => {
+  for (const [source, column] of [
+    ['1card Hello', 1],
+    ['_panel Hello', 1],
+    ['\\1card Hello', 2],
+    ['p #(1shape Hello)', 5],
+  ]) {
+    test('rejects a non-letter start in ' + JSON.stringify(source), () => {
+      assertLexerDiagnostic(source, {
+        code: 'INVALID_TAG_NAME',
+        msg: 'Tag names must start with an ASCII letter',
+        line: 1,
+        column,
+      });
+    });
+  }
+
+  test('keeps supported custom-element and namespace-style names', () => {
+    for (const name of ['x-card', 'svg:path', 'A1_b']) {
+      const token = lex(name, {filename: 'tag-name.pg'}).find(
+        (candidate) => candidate.type === 'tag',
+      );
+      assert.strictEqual(token.val, name);
+    }
+  });
+});
+
 describe('mixin call line boundaries', () => {
   test('the call head accepts horizontal whitespace only', () => {
     const tokens = lex('+\tfoo\t(alpha\tbeta)', {filename: 'call.pg'});

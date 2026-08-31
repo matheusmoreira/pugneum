@@ -149,6 +149,12 @@ physical span across escapes and multiline folding. Consumers must therefore
 use `loc`, rather than the length of a transformed token value, for source
 mapping. The final `eos` token is also zero-width.
 
+Every `tag` token value begins with an ASCII letter. Later characters may be
+ASCII letters, digits, underscores, hyphens, or colons, with a hyphen or colon
+only between word characters. The same rule applies inside `#(...)` and after
+the keyword-escape backslash. A digit- or underscore-led candidate throws the
+located `PUGNEUM:INVALID_TAG_NAME` diagnostic.
+
 ## License
 
   MIT

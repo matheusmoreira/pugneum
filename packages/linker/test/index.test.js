@@ -72,6 +72,52 @@ describe('duplicate reference definitions', () => {
   });
 });
 
+describe('reference resolver-owned attributes', () => {
+  for (const {source, type, name} of [
+    {
+      source: 'references\n  docs /canonical\n\np @[docs text]',
+      type: 'ReferenceLink',
+      name: 'HREF',
+    },
+    {
+      source: 'references\n  pic /canonical.png\n\np ![pic image]',
+      type: 'ReferenceImage',
+      name: 'SRC',
+    },
+    {
+      source: 'references\n  pic /canonical.png\n\np ![pic image]',
+      type: 'ReferenceImage',
+      name: 'Alt',
+    },
+  ]) {
+    test(`direct ${type} AST rejects ${name} override`, () => {
+      const options = {filename: 'reserved.pg', source, lex, parse, basedir};
+      const loaded = load(parse(lex(source, options), options), options);
+      let reference;
+      walk(loaded, function (node) {
+        if (node.type === type) reference = node;
+      });
+      reference.attrs.push({
+        name,
+        val: 'override',
+        line: reference.line,
+        column: reference.column,
+        filename: reference.filename,
+      });
+
+      assert.throws(
+        () => link(loaded, options),
+        (err) =>
+          err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE' &&
+          err.filename === 'reserved.pg' &&
+          err.line === reference.line &&
+          err.msg ===
+            'Duplicate attribute "' + name.toLowerCase() + '" is not allowed.',
+      );
+    });
+  }
+});
+
 describe('RawInclude with filters', () => {
   test('RawInclude with filters is preserved for the filterer', () => {
     var dir = __dirname + '/cases';
@@ -529,6 +575,36 @@ function linkProject(files, entry) {
   }
 }
 
+function tocOutline(ast) {
+  let nav;
+  walk(ast, function (node) {
+    if (
+      node.type === 'Tag' &&
+      node.name === 'nav' &&
+      node.attrs.some((attr) => attr.name === 'role' && attr.val === 'doc-toc')
+    ) {
+      nav = node;
+    }
+  });
+  assert(nav, 'expected a generated table of contents');
+
+  function outlineList(list) {
+    return list.block.nodes.map(function (item) {
+      const linkNode = item.block.nodes[0];
+      const nested = item.block.nodes.find(function (node) {
+        return node.type === 'Tag' && node.name === 'ol';
+      });
+      return {
+        href: linkNode.attrs.find((attr) => attr.name === 'href').val,
+        text: linkNode.block.nodes.map((node) => node.val || '').join(''),
+        children: nested ? outlineList(nested) : [],
+      };
+    });
+  }
+
+  return outlineList(nav.block.nodes[0]);
+}
+
 function collectNamedBlocks(ast) {
   var blocks = [];
   walk(ast, function (node) {
@@ -864,6 +940,102 @@ describe('toc id-value handling', () => {
       w.filter((x) => x.code === 'PUGNEUM:EMPTY_TOC').length,
       1,
     );
+  });
+
+  for (const value of ['', '   ', 'bad id', '\t']) {
+    test(`a heading id ${JSON.stringify(value)} is not a usable target`, () => {
+      const source = `toc\nh2(id=${JSON.stringify(value)}) Invalid`;
+      const w = warningsFor(source);
+      assert.strictEqual(
+        w.filter((x) => x.code === 'PUGNEUM:EMPTY_TOC').length,
+        1,
+      );
+    });
+  }
+
+  test('a non-ASCII id remains a usable fragment target', () => {
+    const result = linkProject(
+      {'main.pg': 'toc\nh2(id="章") Unicode heading'},
+      'main.pg',
+    );
+    assert.deepStrictEqual(tocOutline(result.linked), [
+      {href: '#章', text: 'Unicode heading', children: []},
+    ]);
+    assert.strictEqual(
+      result.warnings.filter((x) => x.code === 'PUGNEUM:EMPTY_TOC').length,
+      0,
+    );
+  });
+});
+
+describe('toc accessible text and hierarchy', () => {
+  test('uses visible text introduced through an included transparent block', () => {
+    const result = linkProject(
+      {
+        'main.pg': 'toc\nh2#sec\n  include title.pg',
+        'title.pg': '| Visible title',
+      },
+      'main.pg',
+    );
+    assert.deepStrictEqual(tocOutline(result.linked), [
+      {href: '#sec', text: 'Visible title', children: []},
+    ]);
+  });
+
+  test('includes image alt text in mixed and image-only headings', () => {
+    const result = linkProject(
+      {
+        'main.pg': [
+          'references',
+          '  pic /picture.png',
+          '',
+          'toc',
+          'h2#mixed Prefix ![pic Brand icon] suffix',
+          'h2#image ![pic Image only]',
+        ].join('\n'),
+      },
+      'main.pg',
+    );
+    assert.deepStrictEqual(tocOutline(result.linked), [
+      {href: '#mixed', text: 'Prefix Brand icon suffix', children: []},
+      {href: '#image', text: 'Image only', children: []},
+    ]);
+  });
+
+  test('recovers hierarchy after a shallower heading and skipped levels', () => {
+    const result = linkProject(
+      {
+        'main.pg': [
+          'toc',
+          'h3#a A',
+          'h2#b B',
+          'h3#c C',
+          'h5#d D',
+          'h2#e E',
+          'h4#f F',
+        ].join('\n'),
+      },
+      'main.pg',
+    );
+    assert.deepStrictEqual(tocOutline(result.linked), [
+      {href: '#a', text: 'A', children: []},
+      {
+        href: '#b',
+        text: 'B',
+        children: [
+          {
+            href: '#c',
+            text: 'C',
+            children: [{href: '#d', text: 'D', children: []}],
+          },
+        ],
+      },
+      {
+        href: '#e',
+        text: 'E',
+        children: [{href: '#f', text: 'F', children: []}],
+      },
+    ]);
   });
 });
 

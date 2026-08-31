@@ -53,6 +53,25 @@ function appendItems(target, items) {
   }
 }
 
+function appendReferenceAttributes(target, attrs, reserved, sources) {
+  if (!attrs) return;
+  for (const attr of attrs) {
+    const name = asciiLowerCase(attr.name);
+    if (reserved.has(name)) {
+      error(
+        'DUPLICATE_ATTRIBUTE',
+        'Duplicate attribute "' + name + '" is not allowed.',
+        attr,
+        sources,
+      );
+    }
+    target.push(attr);
+  }
+}
+
+const LINK_RESERVED_ATTRIBUTES = new Set(['href']);
+const IMAGE_RESERVED_ATTRIBUTES = new Set(['src', 'alt']);
+
 function normalizeTextNewlines(value) {
   return value.replace(/\r\n|\r/g, '\n');
 }
@@ -538,9 +557,12 @@ function resolveReferences(ast, sources, warnings) {
           filename: node.filename,
         },
       ];
-      if (node.attrs) {
-        appendItems(attrs, node.attrs);
-      }
+      appendReferenceAttributes(
+        attrs,
+        node.attrs,
+        LINK_RESERVED_ATTRIBUTES,
+        sources,
+      );
 
       replace({
         type: 'Tag',
@@ -599,9 +621,12 @@ function resolveReferences(ast, sources, warnings) {
           filename: node.filename,
         },
       ];
-      if (node.attrs) {
-        appendItems(attrs, node.attrs);
-      }
+      appendReferenceAttributes(
+        attrs,
+        node.attrs,
+        IMAGE_RESERVED_ATTRIBUTES,
+        sources,
+      );
 
       replace({
         type: 'Tag',
@@ -1021,7 +1046,7 @@ function resolveToc(ast, sources, warnings) {
         });
       // Match lintDocument's id contract: a valueless/boolean id (val === true)
       // is not a usable anchor target, so skip it rather than emit href="#true".
-      if (!idAttr || typeof idAttr.val !== 'string') return;
+      if (!idAttr || !isUsableId(idAttr.val)) return;
 
       let text = '';
       if (node.block && node.block.nodes) {
@@ -1064,14 +1089,38 @@ function resolveToc(ast, sources, warnings) {
 
 function extractText(nodes) {
   let text = '';
-  for (const node of nodes) {
+  const pending = nodes.slice().reverse();
+  while (pending.length > 0) {
+    const node = pending.pop();
     if (node.type === 'Text') {
       text += node.val;
-    } else if (node.block && node.block.nodes) {
-      text += extractText(node.block.nodes);
+      continue;
+    }
+    if (node.type === 'Tag' && asciiLowerCase(node.name) === 'img') {
+      const alt = node.attrs.find(function (attr) {
+        return asciiLowerCase(attr.name) === 'alt';
+      });
+      if (alt && typeof alt.val === 'string') text += alt.val;
+      continue;
+    }
+    const children = Array.isArray(node.nodes)
+      ? node.nodes
+      : node.block && Array.isArray(node.block.nodes)
+      ? node.block.nodes
+      : null;
+    if (children) {
+      for (let index = children.length - 1; index >= 0; index--) {
+        pending.push(children[index]);
+      }
     }
   }
   return text;
+}
+
+function isUsableId(value) {
+  return (
+    typeof value === 'string' && value !== '' && !/[\t\n\f\r ]/.test(value)
+  );
 }
 
 function buildTocNav(headings, tocNode) {
@@ -1133,14 +1182,13 @@ function buildTocItems(headings, start, end, tocNode) {
   if (start >= end) return [];
 
   const items = [];
-  const topLevel = headings[start].level;
   let i = start;
 
   while (i < end) {
     const heading = headings[i];
     // Find the range of children (deeper headings until next same-or-higher level)
     let j = i + 1;
-    while (j < end && headings[j].level > topLevel) {
+    while (j < end && headings[j].level > heading.level) {
       j++;
     }
 

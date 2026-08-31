@@ -23,13 +23,13 @@ const upstreamNodeStages = Object.freeze(
   }),
 );
 
-function requiredStage(node) {
-  if (node.type === 'RawInclude') {
+function requiredStage(node, type) {
+  if (type === 'RawInclude') {
     return Array.isArray(node.filters) && node.filters.length > 0
       ? 'filter'
       : 'load -> link.assemble';
   }
-  return upstreamNodeStages[node.type];
+  return upstreamNodeStages[type];
 }
 
 // HTML output context escaping.
@@ -223,12 +223,14 @@ class Compiler {
       throw new TypeError(msg);
     }
 
-    if (!this['visit' + node.type]) {
-      const stage = requiredStage(node);
+    const type = node.type;
+    const visitor = this['visit' + type];
+    if (!visitor) {
+      const stage = requiredStage(node, type);
       if (stage) {
         this.error(
           'UNRESOLVED_AST_NODE',
-          `AST node type '${node.type}' requires ${stage} before render`,
+          `AST node type '${type}' requires ${stage} before render`,
           node,
         );
       }
@@ -245,21 +247,17 @@ class Compiler {
         node.line +
         ')' +
         ' is of type ' +
-        node.type +
+        type +
         ',' +
         ' which is not supported by the pugneum compiler';
       throw new TypeError(msg);
     }
 
-    this.visitNode(node);
-  }
-
-  visitNode(node) {
-    return this['visit' + node.type](node);
+    return visitor.call(this, node);
   }
 
   visitInterpolatedTag(interp) {
-    return this.visitTag(Object.assign({}, interp, {name: interp.expr}));
+    return this.visitTag(interp, interp.expr);
   }
 
   visitNamedBlock(namedBlock) {
@@ -269,27 +267,9 @@ class Compiler {
         const callerBlocks = frame.namedBlocks[namedBlock.name];
         if (callerBlocks) {
           delete frame.namedBlocks[namedBlock.name];
-          let fragments = [{nodes: namedBlock.nodes, scope: 'callee'}];
-          for (const callerBlock of callerBlocks) {
-            const fragment = {nodes: callerBlock.nodes, scope: 'caller'};
-            switch (callerBlock.mode) {
-              case 'replace':
-                fragments = [fragment];
-                break;
-              case 'append':
-                fragments.push(fragment);
-                break;
-              case 'prepend':
-                fragments.unshift(fragment);
-                break;
-              default:
-                this.error(
-                  'UNKNOWN_BLOCK_MODE',
-                  `Unknown block mode '${callerBlock.mode}'`,
-                  callerBlock,
-                );
-            }
-          }
+          let base = {nodes: namedBlock.nodes, scope: 'callee'};
+          const prepends = [];
+          const appends = [];
           // A combined slot retains two lexical owners: defaults belong to the
           // callee, while supplied fragments belong to the caller. Keep that
           // boundary through composition instead of flattening both into one
@@ -297,7 +277,30 @@ class Compiler {
           // The named-block entry stays deleted while every fragment renders,
           // preventing same-name content from recursively re-substituting.
           try {
-            for (const fragment of fragments) {
+            for (const callerBlock of callerBlocks) {
+              const fragment = {nodes: callerBlock.nodes, scope: 'caller'};
+              switch (callerBlock.mode) {
+                case 'replace':
+                  base = fragment;
+                  prepends.length = 0;
+                  appends.length = 0;
+                  break;
+                case 'append':
+                  appends.push(fragment);
+                  break;
+                case 'prepend':
+                  prepends.push(fragment);
+                  break;
+                default:
+                  this.error(
+                    'UNKNOWN_BLOCK_MODE',
+                    `Unknown block mode '${callerBlock.mode}'`,
+                    callerBlock,
+                  );
+              }
+            }
+
+            const renderFragment = (fragment) => {
               if (fragment.scope === 'caller') this.callStack.pop();
               try {
                 for (const node of fragment.nodes) {
@@ -306,6 +309,14 @@ class Compiler {
               } finally {
                 if (fragment.scope === 'caller') this.callStack.push(frame);
               }
+            };
+
+            for (let index = prepends.length - 1; index >= 0; index--) {
+              renderFragment(prepends[index]);
+            }
+            renderFragment(base);
+            for (const fragment of appends) {
+              renderFragment(fragment);
             }
           } finally {
             frame.namedBlocks[namedBlock.name] = callerBlocks;
@@ -366,12 +377,13 @@ class Compiler {
     }
   }
 
-  visitTag(tag) {
-    const isHtmlVoid = htmlVoid[asciiLowerCase(tag.name)];
-    const isSvgSelfClosing = svgSelfClosing[tag.name];
+  visitTag(tag, explicitName) {
+    const name = explicitName === undefined ? tag.name : explicitName;
+    const isHtmlVoid = htmlVoid[asciiLowerCase(name)];
+    const isSvgSelfClosing = svgSelfClosing[name];
 
     this.buffer('<');
-    this.buffer(tag.name);
+    this.buffer(name);
     this.visitAttributes(tag.attrs);
 
     if (tag.selfClosing || isHtmlVoid || isSvgSelfClosing) {
@@ -385,9 +397,9 @@ class Compiler {
       ) {
         this.error(
           'VOID_ELEMENT_WITH_CONTENT',
-          tag.name +
+          name +
             ' is a self closing element: <' +
-            tag.name +
+            name +
             '> but contains nested content',
           tag,
         );
@@ -401,7 +413,7 @@ class Compiler {
       this.buffer('>');
       this.visit(tag.block, tag);
       this.buffer('</');
-      this.buffer(tag.name);
+      this.buffer(name);
       this.buffer('>');
     }
   }

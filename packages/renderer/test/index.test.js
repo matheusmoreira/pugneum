@@ -149,6 +149,21 @@ describe('basic rendering', () => {
     assert.strictEqual(render(block([text('hello')])), 'hello');
   });
 
+  test('generic dispatch reads a node type only once', () => {
+    const node = text('hello');
+    let reads = 0;
+    Object.defineProperty(node, 'type', {
+      enumerable: true,
+      get() {
+        reads++;
+        return 'Text';
+      },
+    });
+
+    assert.strictEqual(render(block([node])), 'hello');
+    assert.strictEqual(reads, 1);
+  });
+
   test('tag with text', () => {
     assert.strictEqual(
       render(block([tag('p', [], [text('hi')])])),
@@ -1201,6 +1216,32 @@ describe('interpolated tags', () => {
     render(block([node]));
     assert.strictEqual('name' in node, false);
   });
+
+  test('does not read unrelated extension metadata', () => {
+    var reads = 0;
+    var node = {
+      type: 'InterpolatedTag',
+      expr: 'em',
+      attrs: [],
+      attributeBlocks: [],
+      block: block([text('x')]),
+      selfClosing: false,
+      isInline: true,
+      line: 1,
+      column: 1,
+      filename: 'test',
+    };
+    Object.defineProperty(node, 'extensionMetadata', {
+      enumerable: true,
+      get() {
+        reads++;
+        return 'unused';
+      },
+    });
+
+    assert.strictEqual(render(block([node])), '<em>x</em>');
+    assert.strictEqual(reads, 0);
+  });
 });
 
 describe('yield block', () => {
@@ -1767,6 +1808,74 @@ describe('named mixin blocks', () => {
       [namedBlock('links', 'prepend', [text('B')])],
     );
     assert.strictEqual(render(block([decl, call])), 'BA');
+  });
+
+  test('many prepends preserve order without shifting accumulated fragments', () => {
+    const count = 128;
+    const decl = mixinDef(
+      'nav',
+      [],
+      [namedBlock('links', 'replace', [text('base')])],
+      {usesNamedBlocks: true},
+    );
+    const contributions = Array.from({length: count}, (_, index) =>
+      namedBlock('links', 'prepend', [text(index + ',')]),
+    );
+    const call = mixinCallOpts('nav', [], contributions);
+    const originalUnshift = Array.prototype.unshift;
+    let shifts = 0;
+    let output;
+
+    Array.prototype.unshift = function () {
+      shifts++;
+      return Reflect.apply(originalUnshift, this, arguments);
+    };
+    try {
+      output = render(block([decl, call]));
+    } finally {
+      Array.prototype.unshift = originalUnshift;
+    }
+
+    const expected =
+      Array.from({length: count}, (_, index) => count - index - 1 + ',').join(
+        '',
+      ) + 'base';
+    assert.strictEqual(output, expected);
+    assert.strictEqual(shifts, 0);
+  });
+
+  test('repeated calls do not rescan static named-slot metadata', () => {
+    function metadataReads(callCount) {
+      let reads = 0;
+      const optionalNodes = new Proxy(
+        Array.from({length: 64}, () => text('unused')),
+        {
+          get(target, property, receiver) {
+            if (typeof property === 'string' && /^\d+$/.test(property)) {
+              reads++;
+            }
+            return Reflect.get(target, property, receiver);
+          },
+        },
+      );
+      const given = {
+        type: 'Given',
+        name: 'optional',
+        block: block(optionalNodes),
+        line: 1,
+        column: 1,
+        filename: 'test',
+      };
+      const decl = mixinDef('card', [], [given], {usesNamedBlocks: true});
+      const calls = Array.from({length: callCount}, () =>
+        mixinCallOpts('card', []),
+      );
+
+      assert.strictEqual(render(block([decl].concat(calls))), '');
+      return reads;
+    }
+
+    assert.strictEqual(metadataReads(100), metadataReads(1));
   });
 
   for (const [mode, expected] of [

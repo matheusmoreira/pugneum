@@ -6,6 +6,7 @@ var {run} = require('node:test');
 var {spec} = require('node:test/reporters');
 
 var repositoryRoot = path.resolve(__dirname, '..');
+var DEFAULT_TEST_TIMEOUT_MS = 60_000;
 
 function discoverTestFiles(roots) {
   var files = [];
@@ -42,7 +43,7 @@ function assertNonzeroCounts(counts) {
   }
 }
 
-function runRepositoryTests(roots) {
+function runRepositoryTests(roots, timeout) {
   var files = discoverTestFiles(
     roots || [
       path.join(repositoryRoot, 'packages'),
@@ -55,7 +56,11 @@ function runRepositoryTests(roots) {
   }
 
   var counts = {tests: 0, suites: 0};
-  var stream = run({files, concurrency: true});
+  var stream = run({
+    files,
+    concurrency: true,
+    timeout: timeout === undefined ? DEFAULT_TEST_TIMEOUT_MS : timeout,
+  });
 
   function record(data) {
     if (data.details && data.details.type === 'suite') counts.suites += 1;
@@ -85,6 +90,7 @@ function runRepositoryTests(roots) {
 if (require.main === module) runRepositoryTests();
 
 module.exports = {
+  DEFAULT_TEST_TIMEOUT_MS,
   assertNonzeroCounts,
   discoverTestFiles,
   runRepositoryTests,

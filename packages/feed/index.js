@@ -17,6 +17,116 @@ function feedError(code, message) {
   return makeError(code, message, {});
 }
 
+function invalidOptions(message) {
+  throw feedError('FEED_INVALID_OPTIONS', 'Invalid feed options: ' + message);
+}
+
+function isOptionsObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function validateOptionalString(value, field) {
+  if (value !== undefined && typeof value !== 'string') {
+    invalidOptions(field + ' must be a string when provided');
+  }
+}
+
+function validatePathString(value, field) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    invalidOptions(field + ' must be a non-empty string');
+  }
+  if (value.includes('\0')) {
+    invalidOptions(field + ' must not contain a null byte');
+  }
+}
+
+function canonicalDestination(writeDirectory, outputPath) {
+  const destination = path.resolve(writeDirectory, outputPath);
+  return process.platform === 'win32' ? destination.toLowerCase() : destination;
+}
+
+// Snapshot and validate the entire public option surface before touching the
+// filesystem. Accessor-backed option bags therefore cannot change meaning
+// between validation and use, and disabled feeds do not hide invalid siblings.
+function validateOptions(options) {
+  if (!isOptionsObject(options)) {
+    invalidOptions('options must be an object');
+  }
+
+  const outputDirectory = options.outputDirectory;
+  const configuredWriteDirectory = options.writeDirectory;
+  const configuredFeeds = options.feeds;
+
+  validatePathString(outputDirectory, 'outputDirectory');
+  if (configuredWriteDirectory !== undefined) {
+    validatePathString(configuredWriteDirectory, 'writeDirectory');
+  }
+  if (configuredFeeds !== undefined && !isOptionsObject(configuredFeeds)) {
+    invalidOptions('feeds must be an object when provided');
+  }
+
+  const feeds = configuredFeeds === undefined ? {} : configuredFeeds;
+  const enabled = feeds.enabled;
+  const url = feeds.url;
+  const title = feeds.title;
+  const author = feeds.author;
+  const description = feeds.description;
+  const configuredIndex = feeds.index;
+  const configuredSelector = feeds.selector;
+  const configuredAtom = feeds.atom;
+  const configuredRss = feeds.rss;
+
+  if (enabled !== undefined && typeof enabled !== 'boolean') {
+    invalidOptions('feeds.enabled must be a boolean when provided');
+  }
+  validateOptionalString(url, 'feeds.url');
+  validateOptionalString(title, 'feeds.title');
+  validateOptionalString(author, 'feeds.author');
+  validateOptionalString(description, 'feeds.description');
+
+  const index = configuredIndex === undefined ? 'index.html' : configuredIndex;
+  const selector =
+    configuredSelector === undefined ? 'article' : configuredSelector;
+  const atom = configuredAtom === undefined ? 'atom.xml' : configuredAtom;
+  const rss = configuredRss === undefined ? 'rss.xml' : configuredRss;
+
+  validatePathString(index, 'feeds.index');
+  if (typeof selector !== 'string' || !/^\w(?:[-:\w]*\w)?$/.test(selector)) {
+    invalidOptions('feeds.selector must be one element tag name');
+  }
+  validatePathString(atom, 'feeds.atom');
+  validatePathString(rss, 'feeds.rss');
+
+  const writeDirectory =
+    configuredWriteDirectory === undefined
+      ? outputDirectory
+      : configuredWriteDirectory;
+  if (
+    canonicalDestination(writeDirectory, atom) ===
+    canonicalDestination(writeDirectory, rss)
+  ) {
+    invalidOptions(
+      'feeds.atom and feeds.rss must resolve to different destinations',
+    );
+  }
+
+  return {
+    outputDirectory,
+    writeDirectory,
+    feeds: {
+      enabled: enabled === undefined ? true : enabled,
+      url,
+      title,
+      author,
+      description,
+      index,
+      selector,
+      atom,
+      rss,
+    },
+  };
+}
+
 function rethrowFilesystemBoundary(error, message, includeNonRegular) {
   if (
     error.code === filesystemErrors.PATH_ESCAPE ||
@@ -156,18 +266,19 @@ function throwArticlePathTraversal(href) {
 }
 
 module.exports = function generateFeeds(options) {
-  const feedsConfig = options.feeds || {};
+  const validatedOptions = validateOptions(options);
+  const feedsConfig = validatedOptions.feeds;
 
   if (feedsConfig.enabled === false) {
     return;
   }
 
-  const outputDir = options.outputDirectory;
-  const writeDir = options.writeDirectory || outputDir;
-  const indexFile = feedsConfig.index || 'index.html';
-  const tagName = feedsConfig.selector || 'article';
-  const atomPath = feedsConfig.atom || 'atom.xml';
-  const rssPath = feedsConfig.rss || 'rss.xml';
+  const outputDir = validatedOptions.outputDirectory;
+  const writeDir = validatedOptions.writeDirectory;
+  const indexFile = feedsConfig.index;
+  const tagName = feedsConfig.selector;
+  const atomPath = feedsConfig.atom;
+  const rssPath = feedsConfig.rss;
 
   const inputFiles = createRootedFilesystem(outputDir);
 

@@ -170,6 +170,16 @@ The top-level options (siblings of `feeds`) are:
 the directory they were read from unless a separate destination is given; feed
 filenames (`atom`/`rss`) are resolved against it.
 
+The complete option object is validated before any input is read or output is
+created, including when `feeds.enabled` is `false`. `outputDirectory` is a
+required non-empty string; `writeDirectory` must be a non-empty string when
+provided; `feeds` must be an object; `enabled` must be a boolean; and every
+other supported `feeds.*` value must be a string. `index`, `atom`, and `rss`
+must be non-empty, and `selector` must be one element tag name. Atom and RSS names must
+also resolve to different destinations after path normalization. Invalid
+configuration fails consistently with the `PUGNEUM:FEED_INVALID_OPTIONS` error
+code before filesystem access.
+
 ## License
 
 MIT

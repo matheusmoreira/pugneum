@@ -95,6 +95,17 @@ function assertNoGeneratedFeeds(fixture) {
   assert.ok(!fs.existsSync(path.join(fixture.output, 'rss.xml')));
 }
 
+function assertInvalidOptions(options, field) {
+  assert.throws(
+    () => generateFeeds(options),
+    (error) => {
+      assert.strictEqual(error.code, 'PUGNEUM:FEED_INVALID_OPTIONS');
+      assert.ok(error.message.includes(field));
+      return true;
+    },
+  );
+}
+
 describe('extract.indexPage robustness', () => {
   function writeTemp(content) {
     var p = path.join(
@@ -661,6 +672,116 @@ describe('article URL to filesystem mapping', () => {
       assertFeedTraversal(() => fixture.generate());
       assertNoGeneratedFeeds(fixture);
     });
+  });
+});
+
+describe('option validation', () => {
+  var unreadableRoot = path.join(
+    os.tmpdir(),
+    'pugneum-feed-options-' + crypto.randomUUID(),
+  );
+
+  [
+    ['an absent options value', undefined, 'options'],
+    ['a null options value', null, 'options'],
+    ['an options array', [], 'options'],
+    ['a missing output directory', {}, 'outputDirectory'],
+    ['an empty output directory', {outputDirectory: ''}, 'outputDirectory'],
+    ['a non-string output directory', {outputDirectory: 42}, 'outputDirectory'],
+    [
+      'a null write directory',
+      {outputDirectory: unreadableRoot, writeDirectory: null},
+      'writeDirectory',
+    ],
+    [
+      'a null feeds object',
+      {outputDirectory: unreadableRoot, feeds: null},
+      'feeds',
+    ],
+    ['a feeds array', {outputDirectory: unreadableRoot, feeds: []}, 'feeds'],
+    [
+      'a non-boolean enabled flag',
+      {outputDirectory: unreadableRoot, feeds: {enabled: 'false'}},
+      'feeds.enabled',
+    ],
+    [
+      'a non-string URL override',
+      {outputDirectory: unreadableRoot, feeds: {url: new URL('https://x/')}},
+      'feeds.url',
+    ],
+    [
+      'a non-string title override',
+      {outputDirectory: unreadableRoot, feeds: {title: null}},
+      'feeds.title',
+    ],
+    [
+      'a non-string author override',
+      {outputDirectory: unreadableRoot, feeds: {author: []}},
+      'feeds.author',
+    ],
+    [
+      'a non-string description override',
+      {outputDirectory: unreadableRoot, feeds: {description: {}}},
+      'feeds.description',
+    ],
+    [
+      'an empty index path',
+      {outputDirectory: unreadableRoot, feeds: {index: ''}},
+      'feeds.index',
+    ],
+    [
+      'selector syntax beyond one tag name',
+      {outputDirectory: unreadableRoot, feeds: {selector: 'article.main'}},
+      'feeds.selector',
+    ],
+    [
+      'an empty Atom path',
+      {outputDirectory: unreadableRoot, feeds: {atom: ''}},
+      'feeds.atom',
+    ],
+    [
+      'a non-string RSS path',
+      {outputDirectory: unreadableRoot, feeds: {rss: 3}},
+      'feeds.rss',
+    ],
+    [
+      'an invalid ignored field while disabled',
+      {
+        outputDirectory: unreadableRoot,
+        feeds: {enabled: false, atom: false},
+      },
+      'feeds.atom',
+    ],
+  ].forEach(([label, options, field]) => {
+    test('rejects ' + label + ' before filesystem access', () => {
+      assertInvalidOptions(options, field);
+      assert.ok(!fs.existsSync(unreadableRoot));
+    });
+  });
+
+  [
+    [{atom: 'feed.xml', rss: 'feed.xml'}, 'the same spelling'],
+    [{atom: 'feeds/../feed.xml', rss: 'feed.xml'}, 'normalized aliases'],
+    [{atom: 'rss.xml'}, 'an explicit name colliding with a default'],
+  ].forEach(([feeds, label]) => {
+    test('rejects Atom/RSS destinations using ' + label, () => {
+      assertInvalidOptions(
+        {outputDirectory: unreadableRoot, feeds},
+        'feeds.atom and feeds.rss',
+      );
+      assert.ok(!fs.existsSync(unreadableRoot));
+    });
+  });
+
+  test('a valid disabled configuration still performs no filesystem work', () => {
+    assert.strictEqual(
+      generateFeeds({
+        outputDirectory: unreadableRoot,
+        feeds: {enabled: false},
+      }),
+      undefined,
+    );
+    assert.ok(!fs.existsSync(unreadableRoot));
   });
 });
 

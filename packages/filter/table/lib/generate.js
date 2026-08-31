@@ -297,12 +297,18 @@ function escapeCellText(text) {
   });
 }
 
-// Generate indented Pugneum lines for a section (thead, tbody, or tfoot),
-// with the given default cell tag (th or td).
+// Append indented Pugneum lines for a section (thead, tbody, or tfoot) directly
+// to the caller-owned accumulator, with the given default cell tag (th or td).
 // rows is an array of {trAttrs, cells} objects.
 // sectionAttrs is an optional attribute string like '(class="x")' or ''.
-function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
-  const lines = [];
+function renderSection(
+  lines,
+  sectionTag,
+  rows,
+  defaultCellTag,
+  indent,
+  sectionAttrs,
+) {
   // The section's (attrs) marker group is emitted verbatim; a live `#{` crashes.
   assertNoInterpolation(
     sectionAttrs || '',
@@ -351,7 +357,6 @@ function renderSection(sectionTag, rows, defaultCellTag, indent, sectionAttrs) {
       lines.push(cellLine);
     });
   });
-  return lines;
 }
 
 // Generate a Pugneum source string from the parsed table structure and filter attrs.
@@ -380,7 +385,7 @@ function generate(parsed, attrs) {
   if (!hasSeparatorOrMarker) {
     // No separators or markers: all rows go in tbody with td.
     const allRows = sections.length > 0 ? sections[0].rows : [];
-    lines.push(...renderSection('tbody', allRows, 'td', '  ', ''));
+    renderSection(lines, 'tbody', allRows, 'td', '  ', '');
   } else {
     // Emit colgroups (from first dash-sep, if any).
     if (colgroups !== null) {
@@ -396,14 +401,13 @@ function generate(parsed, attrs) {
     sections.forEach(function (section) {
       if (section.rows.length === 0) return;
       const defaultCellTag = section.tag === 'thead' ? 'th' : 'td';
-      lines.push(
-        ...renderSection(
-          section.tag,
-          section.rows,
-          defaultCellTag,
-          '  ',
-          section.attrStr,
-        ),
+      renderSection(
+        lines,
+        section.tag,
+        section.rows,
+        defaultCellTag,
+        '  ',
+        section.attrStr,
       );
     });
   }

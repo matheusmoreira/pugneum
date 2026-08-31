@@ -84,6 +84,29 @@ describe('table filter', () => {
     var result = tableFilter.filter(input, {class: 'data'});
     assert.match(result, /^table\(class="data"\)/);
   });
+
+  test('large sections append output with constant-arity operations', () => {
+    var input = Array.from(
+      {length: 256},
+      (_, index) => '| ' + index + ' |',
+    ).join('\n');
+    var originalPush = Array.prototype.push;
+    var maxArguments = 0;
+    var result;
+
+    Array.prototype.push = function () {
+      maxArguments = Math.max(maxArguments, arguments.length);
+      return Reflect.apply(originalPush, this, arguments);
+    };
+    try {
+      result = tableFilter.filter(input, {});
+    } finally {
+      Array.prototype.push = originalPush;
+    }
+
+    assert.match(result, /td 255$/);
+    assert.strictEqual(maxArguments, 1);
+  });
 });
 
 describe('tagged cells', () => {

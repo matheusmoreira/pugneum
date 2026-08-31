@@ -25,13 +25,25 @@ const classifyCell = require('./parse').classifyCell;
 const error = require('pugneum-error');
 const lex = require('pugneum-lexer');
 
-// A live (unescaped) `#{` opening a variable interpolation. Inside a verbatim
-// attribute group the lexer's quoted-string layer consumes one backslash before
-// the `#`, so ANY backslash immediately before `#{` makes it literal; only a
-// `#{` with no preceding backslash is live (verified across backslash runs).
-// This differs from cell TEXT, where the even/odd backslash parity rule applies
-// (see escapeCellText) — hence a dedicated detector for the attribute context.
-const LIVE_INTERPOLATION = /(?<!\\)#\{/;
+function backslashRunStart(text, marker, lowerBound) {
+  let start = marker;
+  while (start > lowerBound && text[start - 1] === '\\') start--;
+  return start;
+}
+
+// The lexer preserves raw attribute escape provenance and applies the same
+// odd/even rule as text: an odd run escapes the opener, while an even run leaves
+// a live interpolation after slash-pair decoding.
+function hasLiveInterpolation(source) {
+  let searchFrom = 0;
+  for (;;) {
+    const marker = source.indexOf('#{', searchFrom);
+    if (marker === -1) return false;
+    const slashStart = backslashRunStart(source, marker, searchFrom);
+    if ((marker - slashStart) % 2 === 0) return true;
+    searchFrom = marker + 2;
+  }
+}
 
 // A verbatim attribute group (or tagged-cell head) is emitted as-is for the
 // re-lex. A live `#{...}` in it cannot be neutralized without rewriting the
@@ -41,7 +53,7 @@ const LIVE_INTERPOLATION = /(?<!\\)#\{/;
 // naming the offending construct instead. `what` describes the construct (e.g.
 // "table cell head") and `source` is the verbatim string for the message.
 function assertNoInterpolation(source, what, location) {
-  if (LIVE_INTERPOLATION.test(source)) {
+  if (hasLiveInterpolation(source)) {
     throw error(
       'INTERPOLATION_IN_TABLE_HEAD',
       'live interpolation #{...} is not allowed in a ' +
@@ -351,10 +363,7 @@ function escapeCellText(text) {
     const marker = text.indexOf('#{', copiedThrough);
     if (marker === -1) break;
 
-    let slashStart = marker;
-    while (slashStart > copiedThrough && text[slashStart - 1] === '\\') {
-      slashStart--;
-    }
+    const slashStart = backslashRunStart(text, marker, copiedThrough);
 
     pieces.push(text.slice(copiedThrough, marker));
     if ((marker - slashStart) % 2 === 0) pieces.push('\\');

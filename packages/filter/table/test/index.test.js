@@ -1332,6 +1332,25 @@ describe('live #{ in a verbatim attribute group is a clean coded error', () => {
     assert.match(renderTable(input), /<col class="#\{c\}">/);
   });
 
+  test('even backslash runs cannot bypass the clean head diagnostic', () => {
+    [2, 4, 6].forEach((count) => {
+      var slashes = '\\'.repeat(count);
+      assertCodedInterpolationError(
+        '| --- |\n| td(title="' + slashes + '#{x}") value |',
+      );
+    });
+  });
+
+  test('odd backslash runs remain literal in verbatim attributes', () => {
+    [1, 3, 5].forEach((count) => {
+      var slashes = '\\'.repeat(count);
+      var html = renderTable(
+        '| --- |\n| td(title="' + slashes + '#{x}") value |',
+      );
+      assert.match(html, /<td title=".*#\{x\}">value<\/td>/);
+    });
+  });
+
   test('a # not opening an interpolation (#tag) is fine in a head', () => {
     var input = '| --- |\n| td(data-x="#tag") v |';
     assert.doesNotThrow(() => tableFilter.filter(input, {}));

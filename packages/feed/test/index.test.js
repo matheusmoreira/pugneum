@@ -309,6 +309,21 @@ describe('end-to-end feed generation', () => {
 
     fs.rmSync(outputDir, {recursive: true});
   });
+
+  test('creates contained parents for distinct nested feed paths', (t) => {
+    var fixture = boundaryFixture(t);
+    fixture.generate({
+      atom: 'feeds/atom/site.xml',
+      rss: 'feeds/rss/site.xml',
+    });
+
+    var atomPath = path.join(fixture.output, 'feeds', 'atom', 'site.xml');
+    var rssPath = path.join(fixture.output, 'feeds', 'rss', 'site.xml');
+    assert.ok(
+      fs.readFileSync(atomPath, 'utf8').includes('feeds/atom/site.xml'),
+    );
+    assert.ok(fs.readFileSync(rssPath, 'utf8').includes('feeds/rss/site.xml'));
+  });
 });
 
 describe('config overrides', () => {

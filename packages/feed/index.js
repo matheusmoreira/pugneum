@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const htmlparser2 = require('htmlparser2');
 const DomUtils = htmlparser2.DomUtils;
 const makeError = require('pugneum-error');
@@ -206,8 +207,11 @@ module.exports = function generateFeeds(options) {
   fs.mkdirSync(writeDir, {recursive: true});
   const outputFiles = createRootedFilesystem(writeDir);
   try {
-    // Validate both names before publishing either file, then repeat the same
-    // checks inside each atomic write to close static check/use gaps.
+    // Create each contained parent chain without following symlinks. Validate
+    // both names before publishing either file, then repeat the same checks
+    // inside each atomic write to close static check/use gaps.
+    outputFiles.ensureDirectory(path.dirname(atomPath));
+    outputFiles.ensureDirectory(path.dirname(rssPath));
     outputFiles.assertWritableFile(atomPath);
     outputFiles.assertWritableFile(rssPath);
     outputFiles.writeFileAtomic(atomPath, atom, {encoding: 'utf8'});

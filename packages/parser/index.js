@@ -119,7 +119,7 @@ function containsNodeType(node, type) {
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
 // https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
-const inlineTags = [
+const inlineTags = new Set([
   'a',
   'abbr',
   'acronym',
@@ -154,7 +154,7 @@ const inlineTags = [
   'var',
   'video',
   'wbr',
-];
+]);
 
 // Token types that begin a piece of inline content inside a text block.
 // Used by collectInlineContent to decide whether a consumed newline still
@@ -1143,7 +1143,7 @@ class Parser {
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
-      isInline: inlineTags.indexOf(tok.val) !== -1,
+      isInline: inlineTags.has(tok.val),
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,

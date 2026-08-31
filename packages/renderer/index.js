@@ -394,6 +394,10 @@ class Compiler {
   visitYieldBlock() {}
 
   visitBlockComment(comment) {
+    // An unbuffered comment is opaque discarded source. Avoid evaluating its
+    // descendants, which could otherwise throw or mutate compiler state even
+    // though emitComment would discard the rendered bytes.
+    if (!comment.buffer) return;
     this.emitComment(comment, this.renderToString(comment.block));
   }
 

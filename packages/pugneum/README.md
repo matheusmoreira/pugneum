@@ -136,7 +136,8 @@ p Hello
 <p>Hello</p>
 ```
 
-Unbuffered comments (with `-`) are removed:
+Unbuffered comments (with `-`) are removed as opaque source; their contents are
+not evaluated:
 
 ```pugneum
 //- This is only in the source.

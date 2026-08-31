@@ -488,6 +488,41 @@ describe('comments', () => {
     assert.strictEqual(render(block([node])), '');
   });
 
+  test('unbuffered block comments do not evaluate invalid descendants', () => {
+    var node = {
+      type: 'BlockComment',
+      val: ' hidden ',
+      buffer: false,
+      block: block([
+        {
+          type: 'Variable',
+          name: 'outside',
+          line: 1,
+          column: 1,
+          filename: 'test',
+        },
+      ]),
+      line: 1,
+      filename: 'test',
+    };
+    assert.strictEqual(render(block([node])), '');
+  });
+
+  test('unbuffered block comments do not register hidden mixins', () => {
+    var comment = {
+      type: 'BlockComment',
+      val: ' hidden ',
+      buffer: false,
+      block: block([mixinDef('hidden', [], [text('body')])]),
+      line: 1,
+      filename: 'test',
+    };
+    assert.throws(
+      () => render(block([comment, mixinCallOpts('hidden')])),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_MIXIN',
+    );
+  });
+
   test('block comment with empty val', () => {
     var node = {
       type: 'BlockComment',

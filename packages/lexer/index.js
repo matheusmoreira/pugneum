@@ -654,13 +654,13 @@ function mergeMultiLineInterpolations(
 
 class Lexer {
   constructor(str, options) {
-    options = options || {};
     if (typeof str !== 'string') {
       throw new Error(
         'Expected source code to be a string but got "' + typeof str + '"',
       );
     }
-    if (typeof options !== 'object') {
+    if (options == null) options = {};
+    if (typeof options !== 'object' || Array.isArray(options)) {
       throw new Error(
         'Expected "options" to be an object but got "' + typeof options + '"',
       );

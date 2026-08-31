@@ -16,6 +16,10 @@ var lex = require('pugneum-lexer');
 
 Convert pugneum string to array of tokens.
 
+`str` must be a string. `options` may be omitted or `null`; any supplied value
+must otherwise be a non-array object. Invalid public arguments fail before
+lexing with a stable argument error.
+
 `options` can contain the following properties:
 
  - `filename` (string): name of the pugneum file; used in error reporting.

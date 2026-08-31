@@ -78,6 +78,13 @@ describe('render()', () => {
     assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });
 
+  it('preserves NBSP in rendered text', () => {
+    assert.strictEqual(
+      pg.render('p hello\u00a0world'),
+      '<p>hello\u00a0world</p>',
+    );
+  });
+
   it('should render nested tags', () => {
     var input = 'div\n  p Hello';
     assert.strictEqual(pg.render(input), '<div><p>Hello</p></div>');

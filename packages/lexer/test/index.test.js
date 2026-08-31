@@ -117,6 +117,66 @@ function assertDocumentedTokenStreamContract(tokens, filename) {
   assert.strictEqual(eosCount, 1, filename + ' eos count');
 }
 
+describe('public argument boundary', () => {
+  [
+    ['undefined', undefined],
+    ['null', null],
+    ['boolean', true],
+    ['number', 1],
+    ['array', []],
+    ['object', {}],
+    ['Buffer', Buffer.from('p text')],
+    ['symbol', Symbol('source')],
+    ['bigint', 1n],
+  ].forEach(([label, source]) => {
+    test('rejects ' + label + ' source with the stable message', () => {
+      assert.throws(
+        () => lex(source),
+        new Error(
+          'Expected source code to be a string but got "' + typeof source + '"',
+        ),
+      );
+    });
+  });
+
+  test('omitted and null options retain the supported defaults', () => {
+    [undefined, null].forEach((options) => {
+      const tokens =
+        options === undefined ? lex('p text') : lex('p text', options);
+      assert.deepStrictEqual(
+        tokens.map((token) => token.type),
+        ['tag', 'text', 'eos'],
+      );
+      tokens.forEach((token) => {
+        assert.strictEqual(token.loc.filename, undefined);
+      });
+    });
+  });
+
+  [
+    ['false', false],
+    ['true', true],
+    ['zero', 0],
+    ['one', 1],
+    ['NaN', NaN],
+    ['empty string', ''],
+    ['nonempty string', 'options'],
+    ['symbol', Symbol('options')],
+    ['bigint', 1n],
+    ['array', []],
+    ['function', () => {}],
+  ].forEach(([label, options]) => {
+    test('rejects ' + label + ' as options', () => {
+      assert.throws(
+        () => lex('p text', options),
+        new Error(
+          'Expected "options" to be an object but got "' + typeof options + '"',
+        ),
+      );
+    });
+  });
+});
+
 test('shared streams satisfy the documented v1 envelope and balance', () => {
   sharedCases.forEach((filename) => {
     assertDocumentedTokenStreamContract(
@@ -216,6 +276,92 @@ describe('doctype end-of-line padding', () => {
         column: source.length + 1,
       });
     });
+  });
+});
+
+describe('successful optional syntax forms', () => {
+  test('abbreviation without expansion emits exact text and no title', () => {
+    const source = 'p ?(HTML)';
+    const tokens = lex(source, {filename: 'positive.pg'});
+
+    assert.deepStrictEqual(
+      tokens.map((token) => token.type),
+      [
+        'tag',
+        'text',
+        'start-interpolation',
+        'tag',
+        'text',
+        'end-interpolation',
+        'text',
+        'eos',
+      ],
+    );
+    assert.deepStrictEqual(tokens[3], {
+      type: 'tag',
+      loc: {
+        start: {line: 1, column: 5},
+        filename: 'positive.pg',
+        end: {line: 1, column: 5},
+      },
+      val: 'abbr',
+    });
+    assert.deepStrictEqual(tokens[4], {
+      type: 'text',
+      loc: {
+        start: {line: 1, column: 5},
+        filename: 'positive.pg',
+        end: {line: 1, column: 9},
+      },
+      val: 'HTML',
+    });
+    assert.ok(!tokens.some((token) => token.type === 'attribute'));
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('quoted spaced reference URLs preserve default text and location', () => {
+    ["'", '"'].forEach((quote) => {
+      const source =
+        'references\n  docs ' +
+        quote +
+        '/path with spaces' +
+        quote +
+        ' default docs';
+      const tokens = lex(source, {filename: 'positive.pg'});
+      const definition = tokens.find((token) => token.type === 'ref-def');
+
+      assert.deepStrictEqual(definition, {
+        type: 'ref-def',
+        loc: {
+          start: {line: 2, column: 3},
+          filename: 'positive.pg',
+          end: {line: 2, column: 40},
+        },
+        name: 'docs',
+        url: '/path with spaces',
+        defaultText: 'default docs',
+      });
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+
+  test('unquoted reference URLs retain following default text', () => {
+    const source = 'references\n  docs /plain default docs';
+    const tokens = lex(source, {filename: 'positive.pg'});
+    const definition = tokens.find((token) => token.type === 'ref-def');
+
+    assert.deepStrictEqual(definition, {
+      type: 'ref-def',
+      loc: {
+        start: {line: 2, column: 3},
+        filename: 'positive.pg',
+        end: {line: 2, column: 27},
+      },
+      name: 'docs',
+      url: '/plain',
+      defaultText: 'default docs',
+    });
+    assertPhysicalTokenLocations(source, tokens, source);
   });
 });
 
@@ -1510,10 +1656,21 @@ describe('non-ASCII whitespace in indentation', () => {
     );
   });
 
-  test('NBSP inside text content is left alone (no error)', () => {
-    assert.doesNotThrow(() =>
-      lex('p hello' + NBSP + 'world', {filename: 't.pg'}),
-    );
+  test('NBSP inside text content is preserved byte-for-byte', () => {
+    const tokens = lex('p hello' + NBSP + 'world', {filename: 't.pg'});
+    const text = tokens.filter((token) => token.type === 'text');
+
+    assert.deepStrictEqual(text, [
+      {
+        type: 'text',
+        loc: {
+          start: {line: 1, column: 3},
+          filename: 't.pg',
+          end: {line: 1, column: 14},
+        },
+        val: 'hello' + NBSP + 'world',
+      },
+    ]);
   });
 });
 

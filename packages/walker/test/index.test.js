@@ -6,6 +6,10 @@ var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var walk = require('../');
 
+function plainAST(ast) {
+  return JSON.parse(JSON.stringify(ast));
+}
+
 test('simple', function () {
   var ast = walk(
     parse(lex('.my-class foo')),
@@ -21,10 +25,7 @@ test('simple', function () {
     },
     function after(node, replace) {},
   );
-  assert.deepStrictEqual(
-    JSON.parse(JSON.stringify(ast)),
-    JSON.parse(JSON.stringify(parse(lex('.my-class bar')))),
-  );
+  assert.deepStrictEqual(plainAST(ast), plainAST(parse(lex('.my-class bar'))));
 });
 
 test('README strong-to-text example preserves complete parser nodes', function () {
@@ -111,7 +112,7 @@ describe('replace([])', function () {
       },
     );
 
-    assert.deepStrictEqual(JSON.parse(JSON.stringify(ast)), {
+    assert.deepStrictEqual(plainAST(ast), {
       type: 'Block',
       nodes: [
         {type: 'Text', val: 'e'},
@@ -179,8 +180,8 @@ describe('replace([])', function () {
     );
 
     assert.deepStrictEqual(
-      JSON.parse(JSON.stringify(ast)),
-      JSON.parse(JSON.stringify(parse(lex('include:filter3:filter4 file')))),
+      plainAST(ast),
+      plainAST(parse(lex('include:filter3:filter4 file'))),
     );
   });
 
@@ -413,6 +414,65 @@ test('includeDependencies follows only a preloaded FileReference.ast', function 
   assert.strictEqual(sawDependency, true);
   assert.ok(!Object.hasOwn(unloaded, 'ast'));
   assert.deepStrictEqual(options.parents, []);
+});
+
+test('a shared dependency is walked once per reference with local ancestry', function () {
+  var dependencyText = {type: 'Text', val: 'shared'};
+  var dependency = {type: 'Block', nodes: [dependencyText]};
+  var left = {type: 'FileReference', path: 'left.pg', ast: dependency};
+  var right = {type: 'FileReference', path: 'right.pg', ast: dependency};
+  var root = {type: 'Block', nodes: [left, right]};
+  var parents = [];
+  var options = {includeDependencies: true, parents: parents};
+  var dependencyParents = [];
+
+  walk(
+    root,
+    function before(node) {
+      if (node !== dependencyText) return;
+      dependencyParents.push(
+        parents.map(function (parent) {
+          return parent.path || parent.type;
+        }),
+      );
+    },
+    options,
+  );
+
+  assert.deepStrictEqual(dependencyParents, [
+    ['Block', 'left.pg', 'Block'],
+    ['Block', 'right.pg', 'Block'],
+  ]);
+  assert.deepStrictEqual(parents, []);
+});
+
+test('dependency hook failures restore the caller parent seed', function () {
+  var dependencyText = {type: 'Text', val: 'dependency'};
+  var dependency = {type: 'Block', nodes: [dependencyText]};
+  var file = {type: 'FileReference', path: 'dependency.pg', ast: dependency};
+  var root = {type: 'Block', nodes: [file]};
+  var seed = {type: 'Comment', val: 'seed', buffer: false};
+  var parents = [seed];
+  var options = {includeDependencies: true, parents: parents};
+  var callbackHits = 0;
+
+  assert.throws(
+    function () {
+      walk(
+        root,
+        function before(node) {
+          if (node !== dependencyText) return;
+          callbackHits++;
+          assert.deepStrictEqual(parents, [dependency, file, root, seed]);
+          throw new Error('dependency hook failure');
+        },
+        options,
+      );
+    },
+    {message: 'dependency hook failure'},
+  );
+  assert.strictEqual(callbackHits, 1);
+  assert.deepStrictEqual(parents, [seed]);
 });
 
 describe('child dispatch coverage', function () {

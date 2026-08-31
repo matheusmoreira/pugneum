@@ -155,11 +155,13 @@ remains in the AST until the later resolve phase.
 
 If `binary` is specified as true on the rightmost (innermost) include filter,
 that callback receives the exact raw file `Buffer` (`file.raw`) instead of
-decoded text. Non-binary initial input normalizes LF, CRLF, and CR line endings
-to LF. Every include filter must return a string, including the binary filter;
-each outer filter consumes that preceding string result. A `binary` flag on an
-outer filter does not select the file bytes again. The flag is ignored for
-`:name` block filters, whose input is always the filter body text.
+decoded text. The loader keeps the decoded view lazy, so an all-binary initial
+read does not allocate a second UTF-8 representation. Non-binary initial input
+normalizes LF, CRLF, and CR line endings to LF. Every include filter must return
+a string, including the binary filter; each outer filter consumes that
+preceding string result. A `binary` flag on an outer filter does not select the
+file bytes again. The flag is ignored for `:name` block filters, whose input is
+always the filter body text.
 
 ```js
 var binaryFilter = {

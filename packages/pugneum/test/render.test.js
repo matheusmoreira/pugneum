@@ -1467,6 +1467,25 @@ describe('renderFile()', () => {
   });
 });
 
+describe('documented library include', () => {
+  it('renders the published pugneum-mixins example', () => {
+    var filename = path.join(__dirname, 'readme-library-example.pg');
+    var html = pg.render(
+      'include @pugneum-mixins/quote.pg\n\n' +
+        '+quote(https://example.com)\n' +
+        '  | To be or not to be.\n' +
+        '  block source\n' +
+        '    | Example Author',
+      {filename, warnings: []},
+    );
+
+    assert.strictEqual(
+      html,
+      '<figure><blockquote cite="https://example.com">To be or not to be.</blockquote><figcaption><cite><a href="https://example.com">Example Author</a></cite></figcaption></figure>',
+    );
+  });
+});
+
 describe('test-case manifest', () => {
   it('declares every fixture exactly once', () => {
     var declared = declaredFixtureFiles();

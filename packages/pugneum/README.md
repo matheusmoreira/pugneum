@@ -194,6 +194,10 @@ The command line utility requires a `pugneum.json` file to work:
 }
 ```
 
+`baseDirectory` is the include/extends confinement root. The CLI defaults it
+to `inputDirectory`, so both relative and `/`-prefixed template references stay
+inside the input project unless an explicit broader root is configured.
+
 Committing this file to version control is recommended.
 
 Once it exists, the pugneum templates can be compiled to HTML
@@ -624,20 +628,28 @@ head
 ```
 
 Paths starting with `/` are resolved from `basedir`.
-Relative paths resolve from the including file's directory.
+Relative paths resolve from the including file's directory and, when
+`basedir` is set, must remain inside it. The CLI always supplies that boundary.
+Programmatic `render`/`renderFile` calls should set `basedir` explicitly when
+templates are not fully trusted: without it, relative paths are unconfined and
+may traverse above the entry file's directory.
 
 Include from npm packages with `@`:
 
 ```pugneum
-include @pugneum-mixins-blog/citation.pg
+include @pugneum-mixins/quote.pg
 
-+citation
-  block quote
-    p To be or not to be.
++quote(https://example.com)
+  | To be or not to be.
+  block source
+    | Example Author
 ```
 
-Install the package first: `npm install pugneum-mixins-blog`.
-The path resolves from the package root.
+Install the package first: `npm install pugneum-mixins`.
+Lookup begins in the including project's `node_modules`. If the package has an
+`exports` map, the requested `.pg` subpath must be exported; the package
+manifest itself does not need to be exported. The resolved target is contained
+to the package root.
 
 ## Filters
 
@@ -895,7 +907,7 @@ let html = pg.renderFile('page.pg');
 | Option | Default | Description |
 | --- | --- | --- |
 | `filename` | | Path to source file, required for includes and extends |
-| `basedir` | | Base directory for absolute include/extends paths |
+| `basedir` | | Confinement root for absolute and relative include/extends paths; strongly recommended for programmatic builds |
 | `filters` | | Object mapping filter names to filter objects `{type, filter}`, where `type` is one of `text`/`html`/`pugneum`/`syntax` and `filter(input, attrs)` returns the transformed output |
 | `filterOptions` | | Per-filter options object, keyed by filter name |
 | `warnings` | | Array to collect non-fatal diagnostics into. If provided, the caller owns emission (nothing is written to stderr); if omitted, diagnostics are deduplicated and printed to stderr |

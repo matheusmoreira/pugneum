@@ -28624,7 +28624,7 @@ exports[`ins-shorthand.pg 1`] = `
 ]
 `;
 
-exports[`intepolated-elements.pg 1`] = `
+exports[`interpolated-elements.pg 1`] = `
 [
   {
     "type": "tag",
@@ -28633,7 +28633,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 2
@@ -28648,7 +28648,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 3
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 3
@@ -28663,7 +28663,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 3
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 5
@@ -28677,7 +28677,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 5
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 6
@@ -28692,7 +28692,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 6
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 10
@@ -28707,7 +28707,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 10
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 11
@@ -28721,7 +28721,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 11
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 19
@@ -28737,7 +28737,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 20
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 41
@@ -28753,7 +28753,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 41
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 42
@@ -28767,7 +28767,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 43
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 59
@@ -28782,7 +28782,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 59
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 60
@@ -28796,7 +28796,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 1,
         "column": 60
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 1,
         "column": 60
@@ -28811,7 +28811,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 1
@@ -28825,7 +28825,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 2
@@ -28840,7 +28840,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 3
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 13
@@ -28855,7 +28855,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 13
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 15
@@ -28869,7 +28869,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 15
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 16
@@ -28884,7 +28884,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 16
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 20
@@ -28899,7 +28899,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 20
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 21
@@ -28913,7 +28913,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 21
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 29
@@ -28929,7 +28929,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 30
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 51
@@ -28945,7 +28945,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 51
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 52
@@ -28959,7 +28959,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 52
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 53
@@ -28973,7 +28973,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 2,
         "column": 53
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 2,
         "column": 53
@@ -28988,7 +28988,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 1
@@ -29002,7 +29002,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 2
@@ -29017,7 +29017,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 3
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 13
@@ -29032,7 +29032,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 13
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 15
@@ -29046,7 +29046,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 15
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 16
@@ -29061,7 +29061,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 16
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 20
@@ -29076,7 +29076,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 20
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 21
@@ -29090,7 +29090,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 21
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 29
@@ -29106,7 +29106,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 30
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 51
@@ -29122,7 +29122,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 51
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 52
@@ -29136,7 +29136,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 53
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 69
@@ -29151,7 +29151,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 69
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 70
@@ -29165,7 +29165,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 3,
         "column": 70
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 3,
         "column": 70
@@ -29180,7 +29180,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 4,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 4,
         "column": 1
@@ -29194,7 +29194,7 @@ exports[`intepolated-elements.pg 1`] = `
         "line": 4,
         "column": 1
       },
-      "filename": "intepolated-elements.pg",
+      "filename": "interpolated-elements.pg",
       "end": {
         "line": 4,
         "column": 1

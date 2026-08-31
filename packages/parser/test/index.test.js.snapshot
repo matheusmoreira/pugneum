@@ -11364,7 +11364,7 @@ exports[`ins-shorthand.pg 1`] = `
 }
 `;
 
-exports[`intepolated-elements.pg 1`] = `
+exports[`interpolated-elements.pg 1`] = `
 {
   "type": "Block",
   "nodes": [
@@ -11384,12 +11384,12 @@ exports[`intepolated-elements.pg 1`] = `
                   "type": "Text",
                   "line": 1,
                   "column": 43,
-                  "filename": "intepolated-elements.pg",
+                  "filename": "interpolated-elements.pg",
                   "val": "with inline link"
                 }
               ],
               "line": 1,
-              "filename": "intepolated-elements.pg"
+              "filename": "interpolated-elements.pg"
             },
             "attrs": [
               {
@@ -11397,39 +11397,39 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 1,
                 "column": 6,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 1,
                 "column": 11,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 1,
                 "column": 20,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
             "isInline": true,
             "line": 1,
             "column": 5,
-            "filename": "intepolated-elements.pg"
+            "filename": "interpolated-elements.pg"
           }
         ],
         "line": 1,
-        "filename": "intepolated-elements.pg"
+        "filename": "interpolated-elements.pg"
       },
       "attrs": [],
       "attributeBlocks": [],
       "isInline": false,
       "line": 1,
       "column": 1,
-      "filename": "intepolated-elements.pg"
+      "filename": "interpolated-elements.pg"
     },
     {
       "type": "Tag",
@@ -11441,7 +11441,7 @@ exports[`intepolated-elements.pg 1`] = `
             "type": "Text",
             "line": 2,
             "column": 3,
-            "filename": "intepolated-elements.pg",
+            "filename": "interpolated-elements.pg",
             "val": "Some text "
           },
           {
@@ -11451,7 +11451,7 @@ exports[`intepolated-elements.pg 1`] = `
               "type": "Block",
               "nodes": [],
               "line": 2,
-              "filename": "intepolated-elements.pg"
+              "filename": "interpolated-elements.pg"
             },
             "attrs": [
               {
@@ -11459,39 +11459,39 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 2,
                 "column": 16,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 2,
                 "column": 21,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 2,
                 "column": 30,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
             "isInline": true,
             "line": 2,
             "column": 15,
-            "filename": "intepolated-elements.pg"
+            "filename": "interpolated-elements.pg"
           }
         ],
         "line": 2,
-        "filename": "intepolated-elements.pg"
+        "filename": "interpolated-elements.pg"
       },
       "attrs": [],
       "attributeBlocks": [],
       "isInline": false,
       "line": 2,
       "column": 1,
-      "filename": "intepolated-elements.pg"
+      "filename": "interpolated-elements.pg"
     },
     {
       "type": "Tag",
@@ -11503,7 +11503,7 @@ exports[`intepolated-elements.pg 1`] = `
             "type": "Text",
             "line": 3,
             "column": 3,
-            "filename": "intepolated-elements.pg",
+            "filename": "interpolated-elements.pg",
             "val": "Some text "
           },
           {
@@ -11516,12 +11516,12 @@ exports[`intepolated-elements.pg 1`] = `
                   "type": "Text",
                   "line": 3,
                   "column": 53,
-                  "filename": "intepolated-elements.pg",
+                  "filename": "interpolated-elements.pg",
                   "val": "with inline link"
                 }
               ],
               "line": 3,
-              "filename": "intepolated-elements.pg"
+              "filename": "interpolated-elements.pg"
             },
             "attrs": [
               {
@@ -11529,43 +11529,43 @@ exports[`intepolated-elements.pg 1`] = `
                 "val": "rho",
                 "line": 3,
                 "column": 16,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "href",
                 "val": "#",
                 "line": 3,
                 "column": 21,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               },
               {
                 "name": "class",
                 "val": "rho--modifier",
                 "line": 3,
                 "column": 30,
-                "filename": "intepolated-elements.pg"
+                "filename": "interpolated-elements.pg"
               }
             ],
             "attributeBlocks": [],
             "isInline": true,
             "line": 3,
             "column": 15,
-            "filename": "intepolated-elements.pg"
+            "filename": "interpolated-elements.pg"
           }
         ],
         "line": 3,
-        "filename": "intepolated-elements.pg"
+        "filename": "interpolated-elements.pg"
       },
       "attrs": [],
       "attributeBlocks": [],
       "isInline": false,
       "line": 3,
       "column": 1,
-      "filename": "intepolated-elements.pg"
+      "filename": "interpolated-elements.pg"
     }
   ],
   "line": 0,
-  "filename": "intepolated-elements.pg"
+  "filename": "interpolated-elements.pg"
 }
 `;
 

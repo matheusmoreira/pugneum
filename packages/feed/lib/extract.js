@@ -1,6 +1,7 @@
 const fs = require('fs');
 const htmlparser2 = require('htmlparser2');
 const DomUtils = htmlparser2.DomUtils;
+const {parseAuthoredDate} = require('./date');
 
 exports.indexPage = function indexPage(indexPath, readFile) {
   const html = (readFile || fs.readFileSync)(indexPath, 'utf8');
@@ -112,25 +113,29 @@ function extractEntries(dom) {
     // <a id>/<a name> or icon anchor must not drop the whole entry.
     const link = links.find((l) => l.attribs && l.attribs.href);
     if (link) {
+      const publishedDate = parseAuthoredDate(published);
       entries.push({
         href: link.attribs.href,
         title: DomUtils.textContent(link),
         published: published || '',
+        publishedEpoch: publishedDate ? publishedDate.getTime() : null,
       });
     }
   }
 
-  // data-published-at values are ISO-8601 strings, for which a plain lexical
-  // comparison is chronological, locale-independent, and cheaper than
-  // localeCompare. entries[0] is therefore the newest entry (relied on by the
-  // feed-level <updated>/<lastBuildDate>).
-  entries.sort((a, b) => compareDesc(a.published || '', b.published || ''));
+  // Compare parsed instants, not their differently-offset source spellings.
+  // Invalid values sort after valid entries, while equal instants and invalid
+  // peers return 0 so the runtime's stable sort preserves document order.
+  entries.sort(comparePublishedDesc);
   return entries;
 }
 
-function compareDesc(a, b) {
-  if (a < b) return 1;
-  if (a > b) return -1;
+function comparePublishedDesc(a, b) {
+  const aValid = Number.isFinite(a.publishedEpoch);
+  const bValid = Number.isFinite(b.publishedEpoch);
+  if (aValid && bValid) return b.publishedEpoch - a.publishedEpoch;
+  if (aValid) return -1;
+  if (bValid) return 1;
   return 0;
 }
 

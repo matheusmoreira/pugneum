@@ -3,7 +3,10 @@ const {parseDate, feedTimestamp} = require('./date');
 
 module.exports = function generateAtom(feed) {
   const entries = feed.entries.map((entry) => {
-    const timestamp = toISO8601(entry.published, feed.buildDate);
+    const timestamp = toISO8601(
+      entry.publishedEpoch ?? entry.published,
+      feed.buildDate,
+    );
     return [
       '  <entry>',
       '    <title>' + escapeXml(entry.title) + '</title>',

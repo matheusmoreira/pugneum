@@ -83,20 +83,24 @@ function isLeapYear(year) {
   return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 }
 
+// Parse an authored value without a fallback. Extraction uses this once to
+// retain the epoch used for ordering and serialization; null marks an invalid
+// value so callers can apply their documented policy explicitly.
+function parseAuthoredDate(dateStr) {
+  if (dateStr === null || dateStr === undefined || dateStr === '') {
+    return null;
+  }
+  if (typeof dateStr === 'string' && !hasValidIsoComponents(dateStr)) {
+    return null;
+  }
+  const d = new Date(normalizeToUtc(dateStr));
+  return isNaN(d.getTime()) ? null : d;
+}
+
 // Parse a date string to a Date, normalizing zoneless ISO values to UTC and
 // falling back to `fallback` (then to now) when the input is empty or invalid.
 function parseDate(dateStr, fallback) {
-  if (!dateStr) {
-    return new Date(fallback || Date.now());
-  }
-  if (typeof dateStr === 'string' && !hasValidIsoComponents(dateStr)) {
-    return new Date(fallback || Date.now());
-  }
-  const d = new Date(normalizeToUtc(dateStr));
-  if (isNaN(d.getTime())) {
-    return new Date(fallback || Date.now());
-  }
-  return d;
+  return parseAuthoredDate(dateStr) || new Date(fallback || Date.now());
 }
 
 // Select the feed-level timestamp. Entries are pre-sorted newest-first by
@@ -104,10 +108,12 @@ function parseDate(dateStr, fallback) {
 // no natural timestamp, so we fall back to the build date.
 function feedTimestamp(feed) {
   if (feed.entries.length > 0) {
-    return parseDate(feed.entries[0].published, feed.buildDate);
+    const entry = feed.entries[0];
+    return parseDate(entry.publishedEpoch ?? entry.published, feed.buildDate);
   }
   return parseDate(null, feed.buildDate);
 }
 
+exports.parseAuthoredDate = parseAuthoredDate;
 exports.parseDate = parseDate;
 exports.feedTimestamp = feedTimestamp;

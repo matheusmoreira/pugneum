@@ -88,7 +88,10 @@ and lists articles via elements with a `data-published-at` attribute.
 
 `data-published-at` accepts real ISO-8601 calendar dates or datetimes. Invalid
 or overflowing values (for example `2026-02-30` or an hour of `24`) use the
-feed build time instead of being normalized to a different instant.
+feed build time instead of being normalized to a different instant. Valid
+entries are ordered by their UTC instant regardless of authored offset; equal
+instants retain document order, and invalid values remain stable after valid
+entries.
 
 ### Article pages
 

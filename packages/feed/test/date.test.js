@@ -33,4 +33,11 @@ describe('strict ISO date components', () => {
       '2026-12-31T23:59:59.000Z',
     );
   });
+
+  test('accepts a pre-parsed Unix epoch value', () => {
+    assert.strictEqual(
+      parseDate(0, fallback).toISOString(),
+      '1970-01-01T00:00:00.000Z',
+    );
+  });
 });

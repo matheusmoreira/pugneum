@@ -61,6 +61,55 @@ describe('index page extraction', () => {
     assert.strictEqual(result.entries[1].published, '2026-03-15');
   });
 
+  test('sorts mixed publication representations by instant', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><title>T</title></head><body>' +
+        '<a data-published-at="2026-01-01T00:30:00+01:00" href="older.html">Older</a>' +
+        '<a data-published-at="2026-01-01T00:00:00Z" href="newer.html">Newer</a>' +
+        '<a data-published-at="2025-12-31" href="oldest.html">Oldest</a>' +
+        '</body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.deepStrictEqual(
+        result.entries.map((entry) => entry.href),
+        ['newer.html', 'older.html', 'oldest.html'],
+      );
+      assert.strictEqual(
+        result.entries[0].publishedEpoch,
+        Date.parse('2026-01-01T00:00:00Z'),
+      );
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
+
+  test('keeps equal instants and invalid values stable, with invalid last', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><title>T</title></head><body>' +
+        '<a data-published-at="2026-01-01T00:00:00Z" href="tie-a.html">A</a>' +
+        '<a data-published-at="aaa" href="invalid-a.html">Invalid A</a>' +
+        '<a data-published-at="2025-12-31T19:00:00-05:00" href="tie-b.html">B</a>' +
+        '<a data-published-at="zzz" href="invalid-b.html">Invalid B</a>' +
+        '</body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.deepStrictEqual(
+        result.entries.map((entry) => entry.href),
+        ['tie-a.html', 'tie-b.html', 'invalid-a.html', 'invalid-b.html'],
+      );
+      assert.strictEqual(
+        result.entries[0].publishedEpoch,
+        result.entries[1].publishedEpoch,
+      );
+      assert.strictEqual(result.entries[2].publishedEpoch, null);
+      assert.strictEqual(result.entries[3].publishedEpoch, null);
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
+
   test('ignores links without data-published-at', () => {
     var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 

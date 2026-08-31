@@ -353,6 +353,57 @@ describe('end-to-end feed generation', () => {
       ),
     );
   });
+
+  test('orders feeds and selects freshness by publication instant', (t) => {
+    var sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-feed-order-'));
+    var input = path.join(sandbox, 'input');
+    var output = path.join(sandbox, 'output');
+    fs.mkdirSync(path.join(input, 'articles'), {recursive: true});
+    fs.mkdirSync(output);
+    t.after(() => fs.rmSync(sandbox, {recursive: true}));
+
+    fs.writeFileSync(
+      path.join(input, 'index.html'),
+      '<!DOCTYPE html><html><head><base href="https://example.com/">' +
+        '<title>Site</title><meta name="description" content="D">' +
+        '<meta name="author" content="A"></head><body>' +
+        '<a data-published-at="2026-01-01T00:30:00+01:00" href="articles/older.html">Older</a>' +
+        '<a data-published-at="2026-01-01T00:00:00Z" href="articles/newer.html">Newer</a>' +
+        '</body></html>',
+    );
+    fs.writeFileSync(
+      path.join(input, 'articles', 'older.html'),
+      feedArticle('older').replace(
+        '<title>Post</title>',
+        '<title>Older</title>',
+      ),
+    );
+    fs.writeFileSync(
+      path.join(input, 'articles', 'newer.html'),
+      feedArticle('newer').replace(
+        '<title>Post</title>',
+        '<title>Newer</title>',
+      ),
+    );
+
+    generateFeeds({
+      outputDirectory: input,
+      writeDirectory: output,
+      feeds: {enabled: true},
+    });
+    var atom = fs.readFileSync(path.join(output, 'atom.xml'), 'utf8');
+    var rss = fs.readFileSync(path.join(output, 'rss.xml'), 'utf8');
+    assert.ok(
+      atom.indexOf('<title>Newer</title>') <
+        atom.indexOf('<title>Older</title>'),
+    );
+    assert.ok(atom.includes('<updated>2026-01-01T00:00:00.000Z</updated>'));
+    assert.ok(
+      rss.includes(
+        '<lastBuildDate>Thu, 01 Jan 2026 00:00:00 GMT</lastBuildDate>',
+      ),
+    );
+  });
 });
 
 describe('config overrides', () => {

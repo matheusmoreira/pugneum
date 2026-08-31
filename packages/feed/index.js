@@ -188,6 +188,7 @@ module.exports = function generateFeeds(options) {
       url: new URL(entry.href, url).href,
       title: articleData.title || entry.title,
       published: entry.published,
+      publishedEpoch: entry.publishedEpoch,
       summary: articleData.description,
       author: articleData.author || author,
       content: resolveRelativeUrls(articleData.content, url),

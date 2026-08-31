@@ -44,6 +44,8 @@ outer `<a>`.
 Unlinked citation: no URL, no `<a>` tag.
 
 ```pugneum
+include @pugneum-mixins/quote.pg
+
 +plain-quote
   | An anonymous quote.
   block source
@@ -73,11 +75,16 @@ Code block wrapped in a figure with optional caption.
 include @pugneum-mixins/code.pg
 
 +code
-  :prismjs(javascript)
+  :prismjs(language=javascript)
     console.log('hello');
   block caption
     | A minimal program.
 ```
+
+The Prism filter is a separate optional package. Install it alongside the mixin
+library before using this example:
+
+    npm install pugneum-mixins pugneum-filter-prismjs
 
 ## Disclosure
 
@@ -111,8 +118,10 @@ include @pugneum-mixins/breadcrumb.pg
 
 ### `+file-system`, `+file(name)`, `+directory(name)`
 
-File tree visualization. Directories support an optional
-`block description` annotation.
+File tree visualization. A file's unnamed body is rendered immediately after
+its `<code>` name and can be used for an annotation. Directories instead use an
+optional `block description` annotation; their unnamed body contains child
+entries.
 
 `+file-system` takes an optional CSS class. Multiple classes
 must be quoted, since an unquoted argument list splits on
@@ -127,6 +136,7 @@ include @pugneum-mixins/file-system.pg
     block description
       |  — source code
     +file(index.js)
+      |  — entry point
     +file(render.js)
 ```
 

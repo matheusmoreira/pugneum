@@ -1,0 +1,27 @@
+exports[`README Pugneum examples > example 1 renders exact HTML 1`] = `
+"<figure><blockquote cite=\\"https://example.com\\">Quoted text here.</blockquote><figcaption><cite><a href=\\"https://example.com\\">Author, Source</a></cite></figcaption></figure>"
+`;
+
+exports[`README Pugneum examples > example 2 renders exact HTML 1`] = `
+"<figure><blockquote>An anonymous quote.</blockquote><figcaption><cite>Unknown author</cite></figcaption></figure>"
+`;
+
+exports[`README Pugneum examples > example 3 renders exact HTML 1`] = `
+"<figure><img src=\\"photo.jpg\\" alt=\\"A sunset\\"><figcaption>A sunset over the mountains.</figcaption></figure>"
+`;
+
+exports[`README Pugneum examples > example 4 renders exact HTML 1`] = `
+"<figure><pre><code><span class=\\"token console class-name\\">console</span><span class=\\"token punctuation\\">.</span><span class=\\"token method function property-access\\">log</span><span class=\\"token punctuation\\">(</span><span class=\\"token string\\">'hello'</span><span class=\\"token punctuation\\">)</span><span class=\\"token punctuation\\">;</span></code></pre><figcaption>A minimal program.</figcaption></figure>"
+`;
+
+exports[`README Pugneum examples > example 5 renders exact HTML 1`] = `
+"<details><summary>System Requirements</summary><p>Requires a computer with memory.</p></details>"
+`;
+
+exports[`README Pugneum examples > example 6 renders exact HTML 1`] = `
+"<nav aria-label=\\"Breadcrumb\\"><ol><li><a href=\\"/\\">Home</a></li><li><a href=\\"/articles\\">Articles</a></li><li><a aria-current=\\"page\\">This Article</a></li></ol></nav>"
+`;
+
+exports[`README Pugneum examples > example 7 renders exact HTML 1`] = `
+"<ul><li><code>src</code> — source code<ul><li><code>index.js</code> — entry point</li><li><code>render.js</code></li></ul></li></ul>"
+`;

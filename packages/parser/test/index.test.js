@@ -144,6 +144,102 @@ describe('error paths', () => {
     );
   });
 
+  test('HTML attribute uniqueness is ASCII-case-insensitive', () => {
+    [
+      {
+        source: 'div(ID=a id=b)',
+        duplicate: 'id=b',
+        code: 'DUPLICATE_ID',
+        name: 'id',
+      },
+      {
+        source: 'div(title=a TITLE=b)',
+        duplicate: 'TITLE=b',
+        code: 'DUPLICATE_ATTRIBUTE',
+        name: 'title',
+      },
+      {
+        source: 'div(data-X=a data-x=b)',
+        duplicate: 'data-x=b',
+        code: 'DUPLICATE_ATTRIBUTE',
+        name: 'data-x',
+      },
+    ].forEach(({source, duplicate, code, name}) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:' + code);
+          assert.strictEqual(
+            err.msg,
+            'Duplicate attribute "' + name + '" is not allowed.',
+          );
+          assert.strictEqual(err.column, source.indexOf(duplicate) + 1);
+          return true;
+        },
+        source,
+      );
+    });
+  });
+
+  test('ASCII-case variants of class retain merge semantics', () => {
+    const ast = parseSource('div(CLASS=a Class=b class=c)');
+
+    assert.deepStrictEqual(
+      ast.nodes[0].attrs.map(({name, val}) => ({name, val})),
+      [
+        {name: 'class', val: 'a'},
+        {name: 'class', val: 'b'},
+        {name: 'class', val: 'c'},
+      ],
+    );
+  });
+
+  test('reference attributes cannot duplicate resolver-owned names', () => {
+    [
+      {
+        source: 'p @[docs](href=/override)',
+        duplicate: 'href=',
+        name: 'href',
+      },
+      {
+        source: 'p @[docs](HREF=/override)',
+        duplicate: 'HREF=',
+        name: 'href',
+      },
+      {
+        source: 'p ![logo alt](src=/override)',
+        duplicate: 'src=',
+        name: 'src',
+      },
+      {
+        source: 'p ![logo alt](ALT=override)',
+        duplicate: 'ALT=',
+        name: 'alt',
+      },
+    ].forEach(({source, duplicate, name}) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_ATTRIBUTE');
+          assert.strictEqual(
+            err.msg,
+            'Duplicate attribute "' + name + '" is not allowed.',
+          );
+          assert.deepStrictEqual(
+            {line: err.line, column: err.column, filename: err.filename},
+            {
+              line: 1,
+              column: source.indexOf(duplicate) + 1,
+              filename: 'test.pg',
+            },
+          );
+          return true;
+        },
+        source,
+      );
+    });
+  });
+
   test('grammar diagnostics expose complete source and formatted location', () => {
     const source = 'p before\ndiv(title=a title=b)\np after';
     assert.throws(

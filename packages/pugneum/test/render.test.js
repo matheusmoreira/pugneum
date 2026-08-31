@@ -413,6 +413,42 @@ describe('reference links', () => {
     );
   });
 
+  it('merges case variants of class on reference attributes', () => {
+    var input =
+      'references\n  ex https://example.com\n\np @[ex](CLASS="primary" class="secondary")';
+    assert.strictEqual(
+      pg.render(input),
+      '<p><a class="primary secondary" href="https://example.com">ex</a></p>',
+    );
+  });
+
+  it('rejects attributes owned by reference resolution', () => {
+    [
+      {
+        source:
+          'references\n  ex https://example.com\n\np @[ex](HREF="/override")',
+        name: 'href',
+      },
+      {
+        source:
+          'references\n  logo /logo.png\n\np ![logo alt](SRC="/override")',
+        name: 'src',
+      },
+      {
+        source: 'references\n  logo /logo.png\n\np ![logo alt](ALT="override")',
+        name: 'alt',
+      },
+    ].forEach(({source, name}) => {
+      assert.throws(
+        () => pg.render(source, {filename: 'reference-attrs.pg'}),
+        (err) =>
+          err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE' &&
+          err.msg === 'Duplicate attribute "' + name + '" is not allowed.',
+        source,
+      );
+    });
+  });
+
   it('should treat bare [ as literal in link text', () => {
     var input =
       'references\n  mdn https://developer.mozilla.org\n\np @[mdn see [ bracket]';

@@ -268,6 +268,9 @@ references
 `@[docs]` renders as "Documentation". Explicit text overrides:
 `@[docs click here]` renders as "click here".
 References can be defined anywhere in the file, including via `include`.
+Custom reference-link attributes cannot set `href`; that value always comes
+from the matching reference definition. Conflicts, including case variants
+such as `HREF`, are rejected as duplicate attributes.
 
 ## Reference images
 
@@ -291,6 +294,8 @@ If no alt text is given, the default text from the definition
 is used. If no default text was defined, an empty `alt=""`
 is used (decorative image).
 Custom attributes can be appended after the shorthand in parentheses.
+They cannot set `src` or `alt`, which are owned by reference resolution;
+case variants such as `SRC` and `ALT` are rejected as duplicate attributes.
 Escape with `\![` to output a literal `![`.
 
 ## Strong shorthand

@@ -163,6 +163,14 @@ These records do not have a `type` discriminator:
 | `ReferenceDefinition` | `name: string`, `url: string`, `defaultText: string \| null`, `line: number`, `column: number`, `filename: string \| undefined` |
 | `FootnoteDefinition` | `name: string`, `block: Block`, `line: number`, `column: number`, `filename: string \| undefined` |
 
+HTML attribute identity is ASCII-case-insensitive. The parser preserves an
+attribute's authored spelling except that every `class` case variant is
+canonicalized to `class`, so repeated class contributions keep the documented
+merge behavior. Other repeated names are rejected. Reference-link attributes
+cannot supply `href`, and reference-image attributes cannot supply `src` or
+`alt`, because reference resolution owns those values. Filter option names are
+a separate, case-sensitive namespace.
+
 #### Mixin and control fields
 
 A `Mixin` definition has `name: string`, `args: MixinParameter[]`,
@@ -192,9 +200,9 @@ Their `code` values and conditions are:
 | Code | Condition |
 | --- | --- |
 | `PUGNEUM:BLOCK_OUTSIDE_MIXIN` | An anonymous mixin block appears outside a mixin. |
-| `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class, non-`id` attribute name is repeated. |
+| `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class, non-`id` HTML attribute name is repeated under ASCII-case-insensitive comparison, including a resolver-owned reference attribute. |
 | `PUGNEUM:DUPLICATE_FILTER_OPTION` | A block or include filter repeats an exact option name. |
-| `PUGNEUM:DUPLICATE_ID` | An `id` is repeated, using shorthand, a parenthesized attribute, or both. |
+| `PUGNEUM:DUPLICATE_ID` | An `id` is repeated under ASCII-case-insensitive comparison, using shorthand, a parenthesized attribute, or both. |
 | `PUGNEUM:DUPLICATE_MIXIN_PARAMETER` | A mixin declaration repeats an exact parameter name. |
 | `PUGNEUM:GIVEN_OUTSIDE_MIXIN` | `given` is outside a mixin definition or inside a mixin call body. |
 | `PUGNEUM:INVALID_TOKEN` | A well-formed token is not valid in the current grammar position. |

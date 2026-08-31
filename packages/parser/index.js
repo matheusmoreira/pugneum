@@ -96,6 +96,12 @@ function validateTokenStream(tokens) {
   }
 }
 
+function asciiLowerCase(value) {
+  return value.replace(/[A-Z]/g, function (character) {
+    return String.fromCharCode(character.charCodeAt(0) + 32);
+  });
+}
+
 // Used to compute a mixin's usesNamedBlocks / usesUnnamedBlock flags by
 // searching its body for NamedBlock / MixinBlock / Given nodes. The stop at
 // nested Mixin nodes is load-bearing: a mixin's block flags must reflect only
@@ -725,7 +731,7 @@ class Parser {
     // Collect optional (attrs) after ]
     let attrs = [];
     if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs();
+      attrs = this.attrs(new Set(['href']));
     }
 
     return {
@@ -771,7 +777,7 @@ class Parser {
 
     let attrs = [];
     if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs();
+      attrs = this.attrs(new Set(['src', 'alt']));
     }
 
     return {
@@ -1266,37 +1272,38 @@ class Parser {
     this.expect('start-attributes');
 
     const attrs = [];
+    attributeNames = attributeNames || new Set();
     let tok = this.advance();
     while (tok.type === 'attribute') {
-      if (policy && policy.reservedNames.has(tok.name)) {
+      const name = policy ? tok.name : asciiLowerCase(tok.name);
+      const mergeClass =
+        name === 'class' && (!policy || policy.allowDuplicateClass !== false);
+
+      if (policy && policy.reservedNames.has(name)) {
         this.error(
           'RESERVED_FILTER_OPTION',
           'Filter option "' +
-            tok.name +
+            name +
             '" is reserved for the invocation filename.',
           tok,
         );
       }
-      if (
-        attributeNames &&
-        (tok.name !== 'class' ||
-          (policy && policy.allowDuplicateClass === false))
-      ) {
-        if (attributeNames.has(tok.name)) {
+      if (!mergeClass) {
+        if (attributeNames.has(name)) {
           if (policy) {
             this.error(
               'DUPLICATE_FILTER_OPTION',
-              'Duplicate filter option "' + tok.name + '" is not allowed.',
+              'Duplicate filter option "' + name + '" is not allowed.',
               tok,
             );
           } else {
-            this.duplicateAttribute(tok.name, tok);
+            this.duplicateAttribute(name, tok);
           }
         }
-        attributeNames.add(tok.name);
+        attributeNames.add(name);
       }
       attrs.push({
-        name: tok.name,
+        name: mergeClass ? 'class' : tok.name,
         val: tok.val,
         line: tok.loc.start.line,
         column: tok.loc.start.column,

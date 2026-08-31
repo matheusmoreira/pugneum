@@ -1,5 +1,8 @@
 const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
+const attributeInterpolationSource = Symbol.for(
+  'pugneum.attributeInterpolationSource',
+);
 
 function diagnosticSources(options) {
   return {
@@ -45,6 +48,17 @@ function asciiLowerCase(value) {
   return value.replace(/[A-Z]/g, function (character) {
     return String.fromCharCode(character.charCodeAt(0) + 32);
   });
+}
+
+function copyAttributeInterpolationSource(source, target) {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    source,
+    attributeInterpolationSource,
+  );
+  if (descriptor) {
+    Object.defineProperty(target, attributeInterpolationSource, descriptor);
+  }
+  return target;
 }
 
 function appendItems(target, items) {
@@ -659,13 +673,13 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
       }
 
       const attrs = [
-        {
+        copyAttributeInterpolationSource(def.node, {
           name: 'href',
           val: url,
           line: node.line,
           column: node.column,
           filename: node.filename,
-        },
+        }),
       ];
       appendReferenceAttributes(
         attrs,
@@ -716,13 +730,13 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
       const altText = extractText(altBlock.nodes);
 
       const attrs = [
-        {
+        copyAttributeInterpolationSource(def.node, {
           name: 'src',
           val: url,
           line: node.line,
           column: node.column,
           filename: node.filename,
-        },
+        }),
         {
           name: 'alt',
           val: altText,

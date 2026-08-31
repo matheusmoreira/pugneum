@@ -1,4 +1,7 @@
 const error = require('pugneum-error');
+const attributeInterpolationSource = Symbol.for(
+  'pugneum.attributeInterpolationSource',
+);
 
 const MAX_PARSE_DEPTH = 256;
 
@@ -100,6 +103,17 @@ function asciiLowerCase(value) {
   return value.replace(/[A-Z]/g, function (character) {
     return String.fromCharCode(character.charCodeAt(0) + 32);
   });
+}
+
+function copyAttributeInterpolationSource(source, target) {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    source,
+    attributeInterpolationSource,
+  );
+  if (descriptor) {
+    Object.defineProperty(target, attributeInterpolationSource, descriptor);
+  }
+  return target;
 }
 
 // Used to compute a mixin's usesNamedBlocks / usesUnnamedBlock flags by
@@ -680,14 +694,16 @@ class Parser {
     const definitions = [];
     while (this.peek().type === 'ref-def') {
       const def = this.advance();
-      definitions.push({
-        name: def.name,
-        url: def.url,
-        defaultText: def.defaultText || null,
-        line: def.loc.start.line,
-        column: def.loc.start.column,
-        filename: this.filename,
-      });
+      definitions.push(
+        copyAttributeInterpolationSource(def, {
+          name: def.name,
+          url: def.url,
+          defaultText: def.defaultText || null,
+          line: def.loc.start.line,
+          column: def.loc.start.column,
+          filename: this.filename,
+        }),
+      );
     }
     return {
       type: 'References',
@@ -1302,13 +1318,15 @@ class Parser {
         }
         attributeNames.add(name);
       }
-      attrs.push({
-        name: mergeClass ? 'class' : tok.name,
-        val: tok.val,
-        line: tok.loc.start.line,
-        column: tok.loc.start.column,
-        filename: this.filename,
-      });
+      attrs.push(
+        copyAttributeInterpolationSource(tok, {
+          name: mergeClass ? 'class' : tok.name,
+          val: tok.val,
+          line: tok.loc.start.line,
+          column: tok.loc.start.column,
+          filename: this.filename,
+        }),
+      );
       tok = this.advance();
     }
     this.tokens.defer(tok);

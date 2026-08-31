@@ -1,4 +1,7 @@
 const error = require('pugneum-error');
+const attributeInterpolationSource = Symbol.for(
+  'pugneum.attributeInterpolationSource',
+);
 
 const MAX_TEMPLATE_DEPTH = 256;
 const MAX_INLINE_ELEMENT_DEPTH = MAX_TEMPLATE_DEPTH - 1;
@@ -177,6 +180,41 @@ function parseVariableAt(str, start) {
   }
 
   return {length: close - start + 1, name};
+}
+
+function validVariableAt(str, start) {
+  if (str[start] !== '#' || str[start + 1] !== '{') return null;
+
+  let end = start + 2;
+  while (end < str.length && variableNameRe.test(str[end])) end++;
+  if (end === start + 2 || str[end] !== '}') return null;
+
+  return {length: end - start + 1, name: str.substring(start + 2, end)};
+}
+
+function backslashRun(str, start) {
+  if (str[start] !== '\\') return null;
+  let end = start;
+  while (str[end] === '\\') end++;
+  return {
+    length: end - start,
+    variable: validVariableAt(str, end),
+  };
+}
+
+function retainAttributeInterpolationSource(target, value, source) {
+  if (
+    typeof value !== 'string' ||
+    typeof source !== 'string' ||
+    source === value
+  ) {
+    return;
+  }
+  Object.defineProperty(target, attributeInterpolationSource, {
+    configurable: true,
+    value: source,
+    writable: true,
+  });
 }
 
 /**
@@ -563,26 +601,59 @@ function findClosingQuote(str, quote, start) {
 }
 
 /**
- * Unescape backslash sequences in a URL or label extracted from resource syntax.
- * Handles \( \) \\ \' \" escapes.
+ * Decode resource escapes while retaining the original slash count before a
+ * valid attribute interpolation. The public value still handles \( \) \\ \' \"
+ * exactly as before; interpolationSource is private cross-stage provenance.
  *
- * @param {string} str - The string to unescape
- * @returns {string}
+ * @param {string} str - The string to decode
+ * @returns {{value: string, interpolationSource: string}}
  */
-function unescapeResource(str) {
-  // Strip the backslash from an escaped shorthand delimiter so the literal
-  // survives: \( \) \\ \' \". NOTE: \# is deliberately NOT stripped here — the
-  // link/image/abbr shorthands route their content into a child ATTRIBUTE that
-  // is interpolated later, where a surviving \#{ is handled correctly; stripping
-  // it here would re-expose a live #{ and crash (CALL_STACK_UNDERFLOW). Literal
-  // code-span content uses unescapeCodeSpan instead.
-  return str.replace(/\\([()\\'"])/g, '$1');
+function decodeResource(str) {
+  let value = '';
+  let interpolationSource = '';
+
+  for (let i = 0; i < str.length; ) {
+    const run = backslashRun(str, i);
+    if (run) {
+      if (run.variable) {
+        value += '\\'.repeat(Math.ceil(run.length / 2));
+        interpolationSource += '\\'.repeat(run.length);
+        i += run.length;
+        continue;
+      }
+      const pairLength = run.length - (run.length % 2);
+      if (pairLength !== 0) {
+        const decoded = '\\'.repeat(pairLength / 2);
+        value += decoded;
+        interpolationSource += decoded;
+        i += pairLength;
+        continue;
+      }
+    }
+
+    if (
+      str[i] === '\\' &&
+      i + 1 < str.length &&
+      '()\\\'"'.includes(str[i + 1])
+    ) {
+      value += str[i + 1];
+      interpolationSource += str[i + 1];
+      i += 2;
+      continue;
+    }
+
+    value += str[i];
+    interpolationSource += str[i];
+    i++;
+  }
+
+  return {value, interpolationSource};
 }
 
 // Code-span content is literal text and is NOT re-interpolated downstream, so an
 // escaped \#{ must become the literal #{ right here — this is how a table cell's
-// neutralized `#{` renders correctly inside `(...). Same as unescapeResource
-// plus \#{ -> #{. The \# strip is scoped to a following `{` on purpose: `#` is
+// neutralized `#{` renders correctly inside `(...). The \# strip is scoped to a
+// following `{` on purpose: `#` is
 // only special as the head of an interpolation, so a bare \# elsewhere in a code
 // span (e.g. `\#general`) keeps its backslash, exactly as base and every other
 // shorthand do — only the interpolation sigil the table filter neutralizes is
@@ -1590,12 +1661,13 @@ class Lexer {
     this.tokens.push(this.tokEnd(tok));
   }
 
-  generatedAttribute(name, value) {
+  generatedAttribute(name, value, interpolationSource) {
     // Generated attributes share the same zero-width origin policy as their
     // generated tag. Appended source attributes are parsed at physical spans.
     const tok = this.tok('attribute');
     tok.name = name;
     tok.val = value;
+    retainAttributeInterpolationSource(tok, value, interpolationSource);
     this.tokens.push(this.tokEnd(tok));
   }
 
@@ -1669,8 +1741,10 @@ class Lexer {
         textStart = spaceIdx + 1;
       }
     }
+    const decodedUrl = decodeResource(url);
     return {
-      url: unescapeResource(url),
+      url: decodedUrl.value,
+      urlInterpolationSource: decodedUrl.interpolationSource,
       rawUrl: url,
       text,
       urlStart,
@@ -1697,7 +1771,7 @@ class Lexer {
 
     tok = this.tok('start-attributes');
     this.tokens.push(this.tokEnd(tok));
-    this.generatedAttribute('href', parsed.url);
+    this.generatedAttribute('href', parsed.url, parsed.urlInterpolationSource);
     tok = this.tok('end-attributes');
     this.tokens.push(this.tokEnd(tok));
 
@@ -1725,7 +1799,10 @@ class Lexer {
       'INVALID_IMAGE',
       '!() image',
     );
-    const altText = parsed.text !== null ? unescapeResource(parsed.text) : '';
+    const decodedAlt =
+      parsed.text !== null
+        ? decodeResource(parsed.text)
+        : {value: '', interpolationSource: ''};
     let afterImage = parsed.after;
     let attrRange = null;
     if (afterImage.startsWith('(')) {
@@ -1745,8 +1822,12 @@ class Lexer {
     this.startDesugaredElement('img');
     tok = this.tok('start-attributes');
     this.tokens.push(this.tokEnd(tok));
-    this.generatedAttribute('src', parsed.url);
-    this.generatedAttribute('alt', altText);
+    this.generatedAttribute('src', parsed.url, parsed.urlInterpolationSource);
+    this.generatedAttribute(
+      'alt',
+      decodedAlt.value,
+      decodedAlt.interpolationSource,
+    );
 
     this.advanceLocation(parsed.content);
     if (attrRange) {
@@ -1786,13 +1867,20 @@ class Lexer {
     // parsed.url = first word (the abbreviation), unescaped for attributes
     // parsed.rawUrl = raw abbreviation, for visible text
     // parsed.text = rest (the expansion), or null if no space
-    const expansion = parsed.text !== null ? unescapeResource(parsed.text) : '';
+    const decodedExpansion =
+      parsed.text !== null
+        ? decodeResource(parsed.text)
+        : {value: '', interpolationSource: ''};
 
     this.startDesugaredElement('abbr');
-    if (expansion) {
+    if (decodedExpansion.value) {
       tok = this.tok('start-attributes');
       this.tokens.push(this.tokEnd(tok));
-      this.generatedAttribute('title', expansion);
+      this.generatedAttribute(
+        'title',
+        decodedExpansion.value,
+        decodedExpansion.interpolationSource,
+      );
       tok = this.tok('end-attributes');
       this.tokens.push(this.tokEnd(tok));
     }
@@ -2506,6 +2594,7 @@ class Lexer {
           const restStart = spaceIdx + 1 + leadingRestWhitespace;
           const rest = rawRest.trim();
           let url;
+          let urlInterpolationSource;
           let defaultText = null;
 
           // Handle quoted URLs (may be followed by default text)
@@ -2519,7 +2608,9 @@ class Lexer {
                 'Unclosed quote in reference definition URL: ' + content,
               );
             }
-            url = unescapeResource(rest.substring(1, closeIdx));
+            const decodedUrl = decodeResource(rest.substring(1, closeIdx));
+            url = decodedUrl.value;
+            urlInterpolationSource = decodedUrl.interpolationSource;
             const afterUrl = rest.substring(closeIdx + 1).trim();
             if (afterUrl) defaultText = afterUrl;
           } else {
@@ -2532,6 +2623,7 @@ class Lexer {
               const afterUrl = rest.substring(urlEnd + 1).trim();
               if (afterUrl) defaultText = afterUrl;
             }
+            urlInterpolationSource = url;
           }
 
           if (!url) {
@@ -2545,6 +2637,7 @@ class Lexer {
           tok.name = name;
           tok.url = url;
           tok.defaultText = defaultText;
+          retainAttributeInterpolationSource(tok, url, urlInterpolationSource);
           this.incrementColumn(content.length);
           this.tokens.push(this.tokEnd(tok));
         } else {
@@ -2724,7 +2817,8 @@ class Lexer {
     let quote = '';
     const quoteRe = /['"]/;
     let key = '',
-      value = '';
+      value = '',
+      interpolationValue = '';
     let i;
 
     // consume all whitespace before the key
@@ -2806,6 +2900,26 @@ class Lexer {
 
       // start looping through the value
       for (; i < str.length; i++) {
+        const run = backslashRun(str, i);
+        if (run) {
+          if (run.variable) {
+            value += '\\'.repeat(Math.ceil(run.length / 2));
+            interpolationValue += '\\'.repeat(run.length);
+            this.incrementColumn(run.length);
+            i += run.length - 1;
+            continue;
+          }
+          const pairLength = run.length - (run.length % 2);
+          if (pairLength !== 0) {
+            const decoded = '\\'.repeat(pairLength / 2);
+            value += decoded;
+            interpolationValue += decoded;
+            this.incrementColumn(pairLength);
+            i += pairLength - 1;
+            continue;
+          }
+        }
+
         if (quote) {
           if (str[i] === quote) {
             this.incrementColumn(1);
@@ -2814,27 +2928,30 @@ class Lexer {
           }
           if (str[i] === '\\') {
             const escapeStart = i;
+            let decoded;
             ++i;
             switch (str[i]) {
               case "'":
-                value += "'";
+                decoded = "'";
                 break;
               case '"':
-                value += '"';
+                decoded = '"';
                 break;
               case '\\':
-                value += '\\';
+                decoded = '\\';
                 break;
               case 'n':
-                value += '\n';
+                decoded = '\n';
                 break;
               case 't':
-                value += '\t';
+                decoded = '\t';
                 break;
               default:
-                value += '\\' + str[i];
+                decoded = '\\' + str[i];
                 break;
             }
+            value += decoded;
+            interpolationValue += decoded;
             this.advanceLocation(str.slice(escapeStart, i + 1));
             continue;
           }
@@ -2843,6 +2960,7 @@ class Lexer {
             const next = str[i + 1];
             if (next === '\\' || whitespaceRe.test(next)) {
               value += next;
+              interpolationValue += next;
               this.incrementColumn(2);
               i++;
               continue;
@@ -2854,6 +2972,7 @@ class Lexer {
         }
 
         value += str[i];
+        interpolationValue += str[i];
 
         if (str[i] === '\n') {
           this.incrementLine(1);
@@ -2867,6 +2986,7 @@ class Lexer {
     }
 
     tok.val = value;
+    retainAttributeInterpolationSource(tok, value, interpolationValue);
 
     this.tokens.push(this.tokEnd(tok));
 

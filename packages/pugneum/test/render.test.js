@@ -751,6 +751,13 @@ describe('public custom filters', () => {
 });
 
 describe('variables in attributes', () => {
+  function interpolationResult(backslashes, value) {
+    return (
+      '\\'.repeat(Math.floor(backslashes / 2)) +
+      (backslashes % 2 === 0 ? value : '#{x}')
+    );
+  }
+
   it('should resolve #{var} in attribute values', () => {
     assert.strictEqual(
       pg.render('mixin link(url)\n  a(href="#{url}") Click\n+link(/home)'),
@@ -787,11 +794,97 @@ describe('variables in attributes', () => {
 
   it('should escape \\#{var} as literal text', () => {
     assert.strictEqual(
-      pg.render(
-        'mixin test(x)\n  div(data-template="\\\\#{x}") Hi\n+test(val)',
-      ),
+      pg.render('mixin test(x)\n  div(data-template="\\#{x}") Hi\n+test(val)'),
       '<div data-template="#{x}">Hi</div>',
     );
+  });
+
+  it('keeps text and attribute interpolation escape parity', () => {
+    for (let count = 0; count <= 4; count++) {
+      const slashes = '\\'.repeat(count);
+      const expected = interpolationResult(count, 'value');
+      const source =
+        'mixin sample(x)\n' +
+        '  p ' +
+        slashes +
+        '#{x}\n' +
+        '  div(data-quoted="' +
+        slashes +
+        '#{x}" data-bare=' +
+        slashes +
+        '#{x})\n' +
+        '+sample(value)';
+
+      assert.strictEqual(
+        pg.render(source, {warnings: []}),
+        '<p>' +
+          expected +
+          '</p><div data-quoted="' +
+          expected +
+          '" data-bare="' +
+          expected +
+          '"></div>',
+        count + ' source backslashes',
+      );
+    }
+  });
+
+  it('keeps generated shorthand attribute interpolation escape parity', () => {
+    for (let count = 0; count <= 4; count++) {
+      const slashes = '\\'.repeat(count);
+      const expected = interpolationResult(count, 'value');
+      const source =
+        'mixin sample(x)\n' +
+        '  p @(' +
+        slashes +
+        '#{x} label)\n' +
+        '  p !(' +
+        slashes +
+        '#{x} ' +
+        slashes +
+        '#{x})\n' +
+        '  p ?(abbr ' +
+        slashes +
+        '#{x})\n' +
+        '+sample(value)';
+
+      assert.strictEqual(
+        pg.render(source, {warnings: []}),
+        '<p><a href="' +
+          expected +
+          '">label</a></p>' +
+          '<p><img src="' +
+          expected +
+          '" alt="' +
+          expected +
+          '"></p>' +
+          '<p><abbr title="' +
+          expected +
+          '">abbr</abbr></p>',
+        count + ' source backslashes',
+      );
+    }
+  });
+
+  it('keeps quoted reference URL interpolation escape parity', () => {
+    for (let count = 0; count <= 4; count++) {
+      const slashes = '\\'.repeat(count);
+      const expected = interpolationResult(count, 'value');
+      const source =
+        'references\n' +
+        '  item "' +
+        slashes +
+        '#{x}"\n' +
+        'mixin sample(x)\n' +
+        '  p @[item label]\n' +
+        '+sample(value)';
+
+      assert.strictEqual(
+        pg.render(source, {warnings: []}),
+        '<p><a href="' + expected + '">label</a></p>',
+        count + ' source backslashes',
+      );
+    }
   });
 
   it('should error on #{var} outside mixin', () => {

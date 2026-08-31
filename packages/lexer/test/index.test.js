@@ -1568,6 +1568,81 @@ describe('escaped physical newlines in quoted attributes', () => {
   });
 });
 
+describe('attribute interpolation escape provenance', () => {
+  const interpolationSource = Symbol.for(
+    'pugneum.attributeInterpolationSource',
+  );
+
+  function attributeToken(source) {
+    return lex(source, {filename: 'attributes.pg'}).find(
+      (tok) => tok.type === 'attribute',
+    );
+  }
+
+  test('keeps cooked values public while retaining raw slash parity privately', () => {
+    for (let count = 0; count <= 4; count++) {
+      const slashes = '\\'.repeat(count);
+      const token = attributeToken('div(data-x="' + slashes + '#{x}")');
+      const retained = token[interpolationSource];
+
+      assert.strictEqual(
+        token.val,
+        '\\'.repeat(Math.ceil(count / 2)) + '#{x}',
+        count + ' cooked source backslashes',
+      );
+      assert.strictEqual(
+        retained === undefined ? token.val : retained,
+        slashes + '#{x}',
+        count + ' retained source backslashes',
+      );
+      if (retained !== undefined) {
+        assert.strictEqual(
+          Object.getOwnPropertyDescriptor(token, interpolationSource)
+            .enumerable,
+          false,
+        );
+      }
+    }
+  });
+
+  test('retains parity for generated shorthand attributes', () => {
+    const slashes = '\\\\';
+    const tokens = lex(
+      'p @(' +
+        slashes +
+        '#{x} label) !(' +
+        slashes +
+        '#{x} ' +
+        slashes +
+        '#{x}) ?(abbr ' +
+        slashes +
+        '#{x})',
+      {filename: 'attributes.pg'},
+    );
+    const attributes = tokens.filter((tok) => tok.type === 'attribute');
+
+    assert.deepStrictEqual(
+      attributes.map((token) => token.val),
+      ['\\#{x}', '\\#{x}', '\\#{x}', '\\#{x}'],
+    );
+    assert.deepStrictEqual(
+      attributes.map((token) => token[interpolationSource]),
+      [slashes + '#{x}', slashes + '#{x}', slashes + '#{x}', slashes + '#{x}'],
+    );
+  });
+
+  test('decodes a long non-interpolating slash run in linear time', () => {
+    const slashes = '\\'.repeat(40000);
+    const start = process.hrtime.bigint();
+    const token = attributeToken('div(data-x="' + slashes + 'tail")');
+    const ms = Number(process.hrtime.bigint() - start) / 1e6;
+
+    assert.ok(ms < 2000, 'lexing 40k slashes took ' + ms.toFixed(0) + 'ms');
+    assert.strictEqual(token.val, '\\'.repeat(20000) + 'tail');
+    assert.strictEqual(token[interpolationSource], undefined);
+  });
+});
+
 describe('variable interpolation validation', () => {
   function assertVariableError(source, code, line, column) {
     assert.throws(

@@ -573,6 +573,23 @@ describe('error paths', () => {
   });
 });
 
+test('preserves private attribute interpolation provenance', () => {
+  const interpolationSource = Symbol.for(
+    'pugneum.attributeInterpolationSource',
+  );
+  const ast = parse(lex('div(data-x="\\\\#{x}")', {filename: 'test.pg'}), {
+    filename: 'test.pg',
+  });
+  const attr = ast.nodes[0].attrs[0];
+
+  assert.strictEqual(attr.val, '\\#{x}');
+  assert.strictEqual(attr[interpolationSource], '\\\\#{x}');
+  assert.strictEqual(
+    Object.getOwnPropertyDescriptor(attr, interpolationSource).enumerable,
+    false,
+  );
+});
+
 describe('direct variable continuations', () => {
   function contentSignature(tag) {
     return tag.block.nodes

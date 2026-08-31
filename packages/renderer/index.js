@@ -1,5 +1,9 @@
 const makeError = require('pugneum-error');
 const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
+const attributeInterpolationSource = Symbol.for(
+  'pugneum.attributeInterpolationSource',
+);
+const attributeVariableNameCharacter = /[-a-zA-Z_?]/;
 
 const MAX_MIXIN_DEPTH = 256;
 
@@ -73,6 +77,18 @@ function asciiLowerCase(value) {
   return value.replace(/[A-Z]/g, function (character) {
     return String.fromCharCode(character.charCodeAt(0) + 32);
   });
+}
+
+function attributeVariableAt(str, start) {
+  if (str[start] !== '#' || str[start + 1] !== '{') return null;
+
+  let end = start + 2;
+  while (end < str.length && attributeVariableNameCharacter.test(str[end])) {
+    end++;
+  }
+  if (end === start + 2 || str[end] !== '}') return null;
+
+  return {end: end + 1, name: str.substring(start + 2, end)};
 }
 
 function sourceOrigin(sources, filename) {
@@ -483,21 +499,54 @@ class Compiler {
   }
 
   resolveAttrValue(str, attr) {
-    if (!str.includes('#{')) return str;
+    const retained = attr[attributeInterpolationSource];
+    const source = typeof retained === 'string' ? retained : str;
+    if (!source.includes('#{')) return source;
+
+    const pieces = [];
     let hasNull = false;
-    const resolved = str.replace(
-      /\\#\{([-a-zA-Z_?]+)\}|#\{([-a-zA-Z_?]+)\}/g,
-      (match, escapedName, name) => {
-        if (escapedName) return '#{' + escapedName + '}';
-        const value = this.resolveVariable(name, attr);
-        if (value === null) {
-          hasNull = true;
-          return '';
+    let index = 0;
+
+    while (index < source.length) {
+      let marker = index;
+      while (source[marker] === '\\') marker++;
+      const variable = attributeVariableAt(source, marker);
+
+      if (variable) {
+        const backslashes = marker - index;
+        pieces.push('\\'.repeat(Math.floor(backslashes / 2)));
+        if (backslashes % 2 !== 0) {
+          pieces.push(source.slice(marker, variable.end));
+        } else {
+          const value = this.resolveVariable(variable.name, attr);
+          if (value === null) {
+            hasNull = true;
+          } else {
+            pieces.push(value);
+          }
         }
-        return value;
-      },
-    );
-    return hasNull ? null : resolved;
+        index = variable.end;
+        continue;
+      }
+
+      if (marker !== index) {
+        pieces.push(source.slice(index, marker));
+        index = marker;
+      } else {
+        let literalEnd = index + 1;
+        while (
+          literalEnd < source.length &&
+          source[literalEnd] !== '\\' &&
+          (source[literalEnd] !== '#' || source[literalEnd + 1] !== '{')
+        ) {
+          literalEnd++;
+        }
+        pieces.push(source.slice(index, literalEnd));
+        index = literalEnd;
+      }
+    }
+
+    return hasNull ? null : pieces.join('');
   }
 
   visitMixin(mixin) {

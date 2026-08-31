@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const walk = require('pugneum-walker');
 const makeError = require('pugneum-error');
+const attributeInterpolationSource = Symbol.for(
+  'pugneum.attributeInterpolationSource',
+);
 
 module.exports = load;
 module.exports.resolve = resolve;
@@ -92,6 +95,37 @@ function registerSource(sources, filename, source) {
   });
 }
 
+// structuredClone deliberately copies only enumerable string-keyed fields.
+// Attribute interpolation provenance is private parser metadata, so restore
+// that symbol on the cloned graph without exposing it in the public AST shape.
+function transferAttributeInterpolationSources(source, target) {
+  const pending = [[source, target]];
+  const seen = new WeakSet();
+
+  while (pending.length > 0) {
+    const [current, copy] = pending.pop();
+    if (current === null || typeof current !== 'object' || seen.has(current)) {
+      continue;
+    }
+    seen.add(current);
+
+    const descriptor = Object.getOwnPropertyDescriptor(
+      current,
+      attributeInterpolationSource,
+    );
+    if (descriptor) {
+      Object.defineProperty(copy, attributeInterpolationSource, descriptor);
+    }
+
+    for (const key of Object.keys(current)) {
+      const child = current[key];
+      if (child !== null && typeof child === 'object') {
+        pending.push([child, copy[key]]);
+      }
+    }
+  }
+}
+
 function load(ast, options) {
   // Validate before mutating anything: load() is otherwise free to be called
   // with a non-object options bag, and writing options.sources onto it first
@@ -114,7 +148,9 @@ function load(ast, options) {
   // Clone the caller's AST once: walk() mutates nodes in place, and the input
   // tree belongs to the caller. Recursive loads work on freshly-parsed,
   // single-owner ASTs and are not cloned again (see loadAST).
-  ast = structuredClone(ast);
+  const inputAst = ast;
+  ast = structuredClone(inputAst);
+  transferAttributeInterpolationSources(inputAst, ast);
   const state = options[loadState];
   const entryFilename = options.filename || ast.filename;
   if (entryFilename) {

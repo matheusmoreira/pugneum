@@ -1,34 +1,33 @@
 var assert = require('node:assert/strict');
 var {test} = require('node:test');
 var generateAtom = require('../lib/atom');
+var {makeAtomFeed, makeEntry} = require('./helpers');
 var {assertValidAtom} = require('./validate');
 
 test('generates valid Atom feed', (t) => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeAtomFeed({
     title: 'Test Site',
     description: 'A test site',
     author: 'Test Author',
     entries: [
-      {
+      makeEntry({
         url: 'https://example.com/articles/second.html',
         title: 'Second Article',
         published: '2026-04-01',
         summary: 'Summary of the second article',
         author: 'Test Author',
         content: '<h1>Second Article</h1><p>Content.</p>',
-      },
-      {
+      }),
+      makeEntry({
         url: 'https://example.com/articles/first.html',
         title: 'First Article',
         published: '2026-03-15',
         summary: 'Summary of the first article',
         author: 'First Author',
         content: '<h1>First Article</h1><p>Content.</p>',
-      },
+      }),
     ],
-    atomPath: 'atom.xml',
-  };
+  });
 
   var xml = generateAtom(feed);
 
@@ -37,30 +36,27 @@ test('generates valid Atom feed', (t) => {
 });
 
 test('chunked Atom serialization is byte-identical and entry-bounded', () => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeAtomFeed({
     title: 'Test Site',
     description: 'A test site',
     author: 'Test Author',
     entries: [
-      {
+      makeEntry({
         url: 'https://example.com/first',
         title: 'First',
         published: '2026-01-02',
         author: 'A',
         content: '<p>first</p>',
-      },
-      {
+      }),
+      makeEntry({
         url: 'https://example.com/second',
         title: 'Second',
-        published: '2026-01-01',
         author: 'B',
         content: '<p>second</p>',
-      },
+      }),
     ],
-    atomPath: 'atom.xml',
     buildDate: '2026-01-03T00:00:00Z',
-  };
+  });
 
   var chunks = Array.from(generateAtom.chunks(feed));
 
@@ -73,23 +69,9 @@ test('chunked Atom serialization is byte-identical and entry-bounded', () => {
 });
 
 test('date-only published is pinned to midnight UTC', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'd',
-    author: 'A',
-    entries: [
-      {
-        url: 'https://example.com/p',
-        title: 'P',
-        published: '2026-03-15',
-        author: 'A',
-        content: '<p>x</p>',
-      },
-    ],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00.000Z',
-  };
+  var feed = makeAtomFeed({
+    entries: [makeEntry({published: '2026-03-15'})],
+  });
 
   var xml = generateAtom(feed);
 
@@ -100,23 +82,9 @@ test('zoneless datetime is interpreted as UTC, not local time', () => {
   // A datetime with no timezone designator must be treated as UTC so the feed
   // is reproducible regardless of the build machine's timezone. With local-time
   // parsing the emitted instant would shift by the host offset.
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'd',
-    author: 'A',
-    entries: [
-      {
-        url: 'https://example.com/p',
-        title: 'P',
-        published: '2026-03-15T10:30:00',
-        author: 'A',
-        content: '<p>x</p>',
-      },
-    ],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00.000Z',
-  };
+  var feed = makeAtomFeed({
+    entries: [makeEntry({published: '2026-03-15T10:30:00'})],
+  });
 
   var xml = generateAtom(feed);
 
@@ -124,23 +92,10 @@ test('zoneless datetime is interpreted as UTC, not local time', () => {
 });
 
 test('invalid date string falls back to buildDate', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Test',
-    description: 'desc',
-    author: 'Author',
-    entries: [
-      {
-        url: 'https://example.com/post',
-        title: 'Post',
-        published: 'not-a-date',
-        author: 'Author',
-        content: '<p>Content</p>',
-      },
-    ],
-    atomPath: 'atom.xml',
+  var feed = makeAtomFeed({
+    entries: [makeEntry({published: 'not-a-date'})],
     buildDate: '2026-01-15T12:00:00.000Z',
-  };
+  });
 
   var xml = generateAtom(feed);
 
@@ -150,18 +105,7 @@ test('invalid date string falls back to buildDate', () => {
 });
 
 test('feed language is emitted as xml:lang on the root', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'd',
-    author: 'A',
-    language: 'en',
-    entries: [],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
-
-  var xml = generateAtom(feed);
+  var xml = generateAtom(makeAtomFeed({language: 'en'}));
 
   assert.ok(
     xml.includes('<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">'),
@@ -169,24 +113,9 @@ test('feed language is emitted as xml:lang on the root', () => {
 });
 
 test('entry keywords are emitted as Atom categories', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'd',
-    author: 'A',
-    entries: [
-      {
-        url: 'https://example.com/p',
-        title: 'P',
-        published: '2026-01-01',
-        author: 'A',
-        content: '<p>x</p>',
-        keywords: ['alpha', 'beta'],
-      },
-    ],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  var feed = makeAtomFeed({
+    entries: [makeEntry({keywords: ['alpha', 'beta']})],
+  });
 
   var xml = generateAtom(feed);
 
@@ -196,15 +125,11 @@ test('entry keywords are emitted as Atom categories', () => {
 
 test('generates valid Atom feed with no entries', (t) => {
   // With no entries the feed-level <updated> comes from buildDate.
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeAtomFeed({
     title: 'Empty Site',
     description: 'No articles yet',
     author: 'Test Author',
-    entries: [],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  });
 
   var xml = generateAtom(feed);
 
@@ -213,28 +138,19 @@ test('generates valid Atom feed with no entries', (t) => {
 });
 
 test('custom Atom self links remain valid', () => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeAtomFeed({
     title: 'T',
+    description: undefined,
     author: 'A',
-    entries: [],
     atomPath: 'ignored.xml',
     atomUrl: 'https://feeds.example.com/custom.atom',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  });
 
   assertValidAtom(generateAtom(feed), {selfUrl: feed.atomUrl});
 });
 
 test('Atom validity oracle rejects missing required structure', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    author: 'A',
-    entries: [],
-    atomPath: 'atom.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  var feed = makeAtomFeed({title: 'T', description: undefined, author: 'A'});
   var xml = generateAtom(feed);
 
   assert.throws(() =>
@@ -247,14 +163,12 @@ test('Atom validity oracle rejects missing required structure', () => {
 });
 
 test('empty feed with no buildDate does not emit "Invalid Date"', () => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeAtomFeed({
     title: 'Empty Site',
     description: 'No articles yet',
     author: 'Test Author',
-    entries: [],
-    atomPath: 'atom.xml',
-  };
+    buildDate: undefined,
+  });
 
   var xml = generateAtom(feed);
 

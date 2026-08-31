@@ -1,35 +1,34 @@
 var assert = require('node:assert/strict');
 var {test} = require('node:test');
 var generateRss = require('../lib/rss');
+var {makeEntry, makeRssFeed} = require('./helpers');
 var {assertValidRss} = require('./validate');
 
 test('generates valid RSS feed', (t) => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeRssFeed({
     title: 'Test Site',
     description: 'A test site',
     author: 'Test Author',
     language: 'en',
     entries: [
-      {
+      makeEntry({
         url: 'https://example.com/articles/second.html',
         title: 'Second Article',
         published: '2026-04-01',
         summary: 'Summary of the second article',
         author: 'Test Author',
         content: '<h1>Second Article</h1><p>Content.</p>',
-      },
-      {
+      }),
+      makeEntry({
         url: 'https://example.com/articles/first.html',
         title: 'First Article',
         published: '2026-03-15',
         summary: 'Summary of the first article',
         author: 'First Author',
         content: '<h1>First Article</h1><p>Content.</p>',
-      },
+      }),
     ],
-    rssPath: 'rss.xml',
-  };
+  });
 
   var xml = generateRss(feed);
 
@@ -38,30 +37,27 @@ test('generates valid RSS feed', (t) => {
 });
 
 test('chunked RSS serialization is byte-identical and item-bounded', () => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeRssFeed({
     title: 'Test Site',
     description: 'A test site',
     author: 'Test Author',
     entries: [
-      {
+      makeEntry({
         url: 'https://example.com/first',
         title: 'First',
         published: '2026-01-02',
         author: 'A',
         content: '<p>first</p>',
-      },
-      {
+      }),
+      makeEntry({
         url: 'https://example.com/second',
         title: 'Second',
-        published: '2026-01-01',
         author: 'B',
         content: '<p>second</p>',
-      },
+      }),
     ],
-    rssPath: 'rss.xml',
     buildDate: '2026-01-03T00:00:00Z',
-  };
+  });
 
   var chunks = Array.from(generateRss.chunks(feed));
 
@@ -82,24 +78,9 @@ test('chunked RSS serialization is byte-identical and item-bounded', () => {
 });
 
 test('entry keywords are emitted as RSS categories', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'A test feed',
-    author: 'A',
-    entries: [
-      {
-        url: 'https://example.com/p',
-        title: 'P',
-        published: '2026-01-01',
-        author: 'A',
-        content: '<p>x</p>',
-        keywords: ['alpha', 'beta'],
-      },
-    ],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  var feed = makeRssFeed({
+    entries: [makeEntry({keywords: ['alpha', 'beta']})],
+  });
 
   var rss = generateRss(feed);
 
@@ -109,16 +90,12 @@ test('entry keywords are emitted as RSS categories', () => {
 
 test('generates valid RSS feed with no entries', (t) => {
   // With no entries the feed-level <lastBuildDate> comes from buildDate.
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeRssFeed({
     title: 'Empty Site',
     description: 'No articles yet',
     author: 'Test Author',
     language: 'en',
-    entries: [],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  });
 
   var xml = generateRss(feed);
 
@@ -127,30 +104,19 @@ test('generates valid RSS feed with no entries', (t) => {
 });
 
 test('custom RSS self links remain valid', () => {
-  var feed = {
-    url: 'https://example.com/',
+  var feed = makeRssFeed({
     title: 'T',
     description: 'D',
     author: 'A',
-    entries: [],
     rssPath: 'ignored.xml',
     rssUrl: 'https://feeds.example.com/custom.rss',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  });
 
   assertValidRss(generateRss(feed), {selfUrl: feed.rssUrl});
 });
 
 test('RSS validity oracle rejects missing required structure', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'T',
-    description: 'D',
-    author: 'A',
-    entries: [],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  var feed = makeRssFeed({title: 'T', description: 'D', author: 'A'});
   var xml = generateRss(feed);
 
   assert.throws(() =>
@@ -168,17 +134,15 @@ test('RSS validity oracle rejects missing required structure', () => {
 });
 
 test('empty feed with no buildDate does not emit "Invalid Date"', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Empty Site',
-    description: 'No articles yet',
-    author: 'Test Author',
-    language: 'en',
-    entries: [],
-    rssPath: 'rss.xml',
-  };
-
-  var rss = generateRss(feed);
+  var rss = generateRss(
+    makeRssFeed({
+      title: 'Empty Site',
+      description: 'No articles yet',
+      author: 'Test Author',
+      language: 'en',
+      buildDate: undefined,
+    }),
+  );
 
   // The empty-feed branch must reuse the guarded date fallback rather than
   // formatting `new Date(undefined)`, which yields the literal "Invalid Date".
@@ -186,42 +150,22 @@ test('empty feed with no buildDate does not emit "Invalid Date"', () => {
 });
 
 test('RSS description is required', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Test Site',
-    description: null,
-    author: 'Test Author',
-    language: 'en',
-    entries: [],
-    rssPath: 'rss.xml',
-  };
-
   assert.throws(
-    () => generateRss(feed),
-    (err) => err.code === 'PUGNEUM:FEED_MISSING_DESCRIPTION',
+    () => generateRss(makeRssFeed({description: null})),
+    (error) => {
+      assert.strictEqual(error.code, 'PUGNEUM:FEED_MISSING_DESCRIPTION');
+      assert.doesNotMatch(error.message, /^0(?:\n|$)/);
+      return true;
+    },
   );
 });
 
 test('zoneless datetime is interpreted as UTC, not local time', () => {
   // RFC-822 output of a zoneless datetime must reflect the UTC instant, not the
   // build host's local interpretation.
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Test',
-    description: 'A test feed',
-    author: 'Author',
-    entries: [
-      {
-        url: 'https://example.com/post',
-        title: 'Post',
-        published: '2026-03-15T10:30:00',
-        author: 'Author',
-        content: '<p>Content</p>',
-      },
-    ],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00.000Z',
-  };
+  var feed = makeRssFeed({
+    entries: [makeEntry({published: '2026-03-15T10:30:00'})],
+  });
 
   var rss = generateRss(feed);
 
@@ -229,23 +173,10 @@ test('zoneless datetime is interpreted as UTC, not local time', () => {
 });
 
 test('invalid date string falls back to buildDate', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Test',
-    description: 'A test feed',
-    author: 'Author',
-    entries: [
-      {
-        url: 'https://example.com/post',
-        title: 'Post',
-        published: 'garbage-date',
-        author: 'Author',
-        content: '<p>Content</p>',
-      },
-    ],
-    rssPath: 'rss.xml',
+  var feed = makeRssFeed({
+    entries: [makeEntry({published: 'garbage-date'})],
     buildDate: '2026-03-01T00:00:00.000Z',
-  };
+  });
 
   var rss = generateRss(feed);
 
@@ -255,23 +186,14 @@ test('invalid date string falls back to buildDate', () => {
 });
 
 test('content with XML control characters produces valid XML without them', () => {
-  var feed = {
-    url: 'https://example.com/',
-    title: 'Test',
-    description: 'A test feed',
-    author: 'Author',
+  var feed = makeRssFeed({
     entries: [
-      {
-        url: 'https://example.com/post',
+      makeEntry({
         title: 'Post with\x00control\x08chars',
-        published: '2026-01-01',
-        author: 'Author',
         content: '<p>text\x01with\x0Bcontrol\x1Fchars</p>',
-      },
+      }),
     ],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
+  });
 
   var rss = generateRss(feed);
 
@@ -287,47 +209,25 @@ test('content with XML control characters produces valid XML without them', () =
 });
 
 test('CDATA content with ]]> is properly escaped', () => {
-  const feed = {
-    url: 'https://example.com/',
-    title: 'Test',
-    description: 'A test feed',
-    author: 'Author',
-    entries: [
-      {
-        url: 'https://example.com/post',
-        title: 'Post',
-        published: '2026-01-01',
-        author: 'Author',
-        content: '<pre>xml: ]]></pre>',
-      },
-    ],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
-  const rss = generateRss(feed);
+  var feed = makeRssFeed({
+    entries: [makeEntry({content: '<pre>xml: ]]></pre>'})],
+  });
+
+  var rss = generateRss(feed);
+
   assert.ok(!rss.includes('<pre>xml: ]]></pre>'));
   assert.ok(rss.includes(']]]]><![CDATA[>'));
 });
 
 test('null entry fields do not crash', () => {
-  const feed = {
-    url: 'https://example.com/',
+  var feed = makeRssFeed({
     title: null,
-    description: 'A feed',
     author: null,
-    entries: [
-      {
-        url: 'https://example.com/post',
-        title: null,
-        published: '2026-01-01',
-        author: null,
-        content: '',
-      },
-    ],
-    rssPath: 'rss.xml',
-    buildDate: '2026-01-01T00:00:00Z',
-  };
-  const rss = generateRss(feed);
+    entries: [makeEntry({title: null, author: null, content: ''})],
+  });
+
+  var rss = generateRss(feed);
+
   assert.ok(rss.includes('<title></title>'));
   assert.ok(rss.includes('<dc:creator></dc:creator>'));
 });

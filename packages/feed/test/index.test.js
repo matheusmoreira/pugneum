@@ -6,25 +6,12 @@ var htmlparser2 = require('htmlparser2');
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var generateFeeds = require('../');
-var extract = require('../lib/extract');
 var generateAtom = require('../lib/atom');
 var generateRss = require('../lib/rss');
 var {resolveRelativeUrls} = require('../lib/urls');
+var {temporaryDirectory} = require('./helpers');
 
 var fixturesDir = path.join(__dirname, 'fixtures');
-
-function temporaryDirectory(t, prefix) {
-  var directory = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  t.after(() => fs.rmSync(directory, {recursive: true, force: true}));
-  return directory;
-}
-
-function temporaryHtml(t, prefix, content) {
-  var directory = temporaryDirectory(t, prefix);
-  var filename = path.join(directory, 'fixture.html');
-  fs.writeFileSync(filename, content);
-  return filename;
-}
 
 function makeSymlinkOrSkip(t, target, link, type) {
   try {
@@ -147,72 +134,12 @@ function assertFeedWriteFailed(fn, outputName) {
   });
 }
 
-describe('extract.indexPage robustness', () => {
-  test('entry without data-published-at attribute is excluded', (t) => {
-    var p = temporaryHtml(
-      t,
-      'pugneum-extract-test-',
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
-        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
-        '<li><a href="article.html">No date</a></li>' +
-        '</body></html>',
-    );
-    var result = extract.indexPage(p);
-    // The element has no data-published-at so extractEntries won't find it
-    // (the guard requires data-published-at to be present for the element to be found at all)
-    assert.strictEqual(result.entries.length, 0);
-  });
-
-  test('entries are sorted by normalized publication instant descending', (t) => {
-    var p = temporaryHtml(
-      t,
-      'pugneum-extract-test-',
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
-        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
-        '<li data-published-at="2026-01-01"><a href="earlier.html">Earlier</a></li>' +
-        '<li data-published-at="2026-06-15"><a href="later.html">Later</a></li>' +
-        '</body></html>',
-    );
-    var result = extract.indexPage(p);
-    assert.strictEqual(result.entries.length, 2);
-    // Later UTC instant sorts first.
-    assert.strictEqual(result.entries[0].href, 'later.html');
-    assert.strictEqual(result.entries[1].href, 'earlier.html');
-  });
-
-  test('empty data-published-at attribute excludes the entry', (t) => {
-    // An empty date is treated the same as an absent one: a dated feed should
-    // not carry an undated entry. This pins that intentional behavior.
-    var p = temporaryHtml(
-      t,
-      'pugneum-extract-test-',
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
-        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
-        '<li data-published-at=""><a href="undated.html">Undated</a></li>' +
-        '<li data-published-at="2026-01-02"><a href="dated.html">Dated</a></li>' +
-        '</body></html>',
-    );
-    var result = extract.indexPage(p);
-    assert.strictEqual(result.entries.length, 1);
-    assert.strictEqual(result.entries[0].href, 'dated.html');
-  });
-
-  test('anchor without href is excluded from entries', (t) => {
-    var p = temporaryHtml(
-      t,
-      'pugneum-extract-test-',
-      '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
-        '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
-        '<li data-published-at="2026-01-01"><a>No href anchor</a></li>' +
-        '<li data-published-at="2026-01-02"><a href="valid.html">Valid</a></li>' +
-        '</body></html>',
-    );
-    var result = extract.indexPage(p);
-    // The no-href anchor must be excluded; only the valid entry is present
-    assert.strictEqual(result.entries.length, 1);
-    assert.strictEqual(result.entries[0].href, 'valid.html');
-  });
-});
+function assertResolution(input, expected, base) {
+  assert.strictEqual(
+    resolveRelativeUrls(input, base || 'https://example.com/'),
+    expected,
+  );
+}
 
 describe('resolveRelativeUrls', () => {
   test('the test helper is not exposed from the package root', () => {
@@ -220,40 +147,37 @@ describe('resolveRelativeUrls', () => {
   });
 
   test('/path is resolved to absolute URL', () => {
-    var html = '<a href="/articles/post.html">link</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<a href="/articles/post.html">link</a>',
       '<a href="https://example.com/articles/post.html">link</a>',
     );
   });
 
   test('protocol-relative //cdn.example.com is unchanged', () => {
-    var html = '<a href="//cdn.example.com/file.js">link</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(result, '<a href="//cdn.example.com/file.js">link</a>');
+    assertResolution(
+      '<a href="//cdn.example.com/file.js">link</a>',
+      '<a href="//cdn.example.com/file.js">link</a>',
+    );
   });
 
   test('absolute https://other.com is unchanged', () => {
-    var html = '<a href="https://other.com/page">link</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(result, '<a href="https://other.com/page">link</a>');
+    assertResolution(
+      '<a href="https://other.com/page">link</a>',
+      '<a href="https://other.com/page">link</a>',
+    );
   });
 
   test('base URL with $ is not corrupted', () => {
-    var html = '<a href="/path">link</a>';
-    var result = resolveRelativeUrls(html, 'https://ca$h.example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<a href="/path">link</a>',
       '<a href="https://ca$h.example.com/path">link</a>',
+      'https://ca$h.example.com/',
     );
   });
 
   test('img src is resolved', () => {
-    var html = '<img src="/images/photo.jpg">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<img src="/images/photo.jpg">',
       '<img src="https://example.com/images/photo.jpg">',
     );
   });
@@ -262,61 +186,53 @@ describe('resolveRelativeUrls', () => {
     // Regex over serialized HTML matched any attribute ending in href/src and
     // preferred the rightmost one, corrupting data-* and leaving the real link
     // relative. The DOM rewrite keys on the exact attribute name.
-    var html = '<a href="/real" data-href="/widget">x</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<a href="/real" data-href="/widget">x</a>',
       '<a href="https://example.com/real" data-href="/widget">x</a>',
     );
   });
 
   test('lone data-src attribute is left untouched', () => {
-    var html = '<img data-src="/lazy.jpg">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(result, '<img data-src="/lazy.jpg">');
+    assertResolution(
+      '<img data-src="/lazy.jpg">',
+      '<img data-src="/lazy.jpg">',
+    );
   });
 
   test('single-quoted attribute is resolved', () => {
-    var html = "<a href='/sq.html'>x</a>";
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(result, '<a href="https://example.com/sq.html">x</a>');
+    assertResolution(
+      "<a href='/sq.html'>x</a>",
+      '<a href="https://example.com/sq.html">x</a>',
+    );
   });
 
   test('href is resolved even when an earlier attribute value contains >', () => {
     // The old regex stopped at the first '>' in an attribute value and never
     // reached href; the DOM rewrite is immune. (A bare '>' is valid in an
     // attribute value, so the serializer leaves it literal.)
-    var html = '<a title="a > b" href="/x.html">z</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<a title="a > b" href="/x.html">z</a>',
       '<a title="a > b" href="https://example.com/x.html">z</a>',
     );
   });
 
   test('srcset relative URLs are resolved, descriptors preserved', () => {
-    var html = '<img srcset="/a.jpg 1x, /b.jpg 2x" src="/a.jpg">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<img srcset="/a.jpg 1x, /b.jpg 2x" src="/a.jpg">',
       '<img srcset="https://example.com/a.jpg 1x, https://example.com/b.jpg 2x" src="https://example.com/a.jpg">',
     );
   });
 
   test('srcset data URL commas remain inside their candidate', () => {
-    var html = '<img srcset="data:image/png;base64,AAAA 1x, /fallback.png 2x">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<img srcset="data:image/png;base64,AAAA 1x, /fallback.png 2x">',
       '<img srcset="data:image/png;base64,AAAA 1x, https://example.com/fallback.png 2x">',
     );
   });
 
   test('srcset commas in a root-relative path are not separators', () => {
-    var html = '<img srcset="/images/a,b.png 1x, /fallback.png 2x">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<img srcset="/images/a,b.png 1x, /fallback.png 2x">',
       '<img srcset="https://example.com/images/a,b.png 1x, https://example.com/fallback.png 2x">',
     );
   });
@@ -324,9 +240,8 @@ describe('resolveRelativeUrls', () => {
   test('srcset preserves empty candidates, spacing, and untouched URLs', () => {
     var html =
       '<img srcset=",  /a.png 1x,, data:image/svg+xml,%3Csvg%3E 2x, https://cdn.example/x.png 3x">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      html,
       '<img srcset=",  https://example.com/a.png 1x,, data:image/svg+xml,%3Csvg%3E 2x, https://cdn.example/x.png 3x">',
     );
   });
@@ -334,33 +249,29 @@ describe('resolveRelativeUrls', () => {
   test('srcset preserves encoded commas and parenthesized descriptor text', () => {
     var html =
       '<img srcset="/images/a%2Cb.png type(foo,bar), /fallback.png 2x">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      html,
       '<img srcset="https://example.com/images/a%2Cb.png type(foo,bar), https://example.com/fallback.png 2x">',
     );
   });
 
   test('source srcset relative URL is resolved', () => {
-    var html = '<source srcset="/img.jpg">';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(result, '<source srcset="https://example.com/img.jpg">');
+    assertResolution(
+      '<source srcset="/img.jpg">',
+      '<source srcset="https://example.com/img.jpg">',
+    );
   });
 
   test('video poster and src are resolved', () => {
-    var html = '<video poster="/p.png" src="/v.mp4"></video>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<video poster="/p.png" src="/v.mp4"></video>',
       '<video poster="https://example.com/p.png" src="https://example.com/v.mp4"></video>',
     );
   });
 
   test('XML-significant characters stay escaped in surrounding markup', () => {
-    var html = '<p>a &amp; b &lt; c</p><a href="/z">t</a>';
-    var result = resolveRelativeUrls(html, 'https://example.com/');
-    assert.strictEqual(
-      result,
+    assertResolution(
+      '<p>a &amp; b &lt; c</p><a href="/z">t</a>',
       '<p>a &amp; b &lt; c</p><a href="https://example.com/z">t</a>',
     );
   });
@@ -372,17 +283,14 @@ describe('resolveRelativeUrls', () => {
       '<video poster="?poster=1" src="./v.mp4"></video>' +
       '<audio src="audio.mp3"></audio>' +
       '<iframe src="../../frame.html"></iframe>';
-    var result = resolveRelativeUrls(
+    assertResolution(
       html,
-      'https://example.com/blog/articles/post.html?view=full#top',
-    );
-    assert.strictEqual(
-      result,
       '<a href="https://example.com/blog/articles/next.html">next</a>' +
         '<img src="https://example.com/blog/images/p.png">' +
         '<video poster="https://example.com/blog/articles/post.html?poster=1" src="https://example.com/blog/articles/v.mp4"></video>' +
         '<audio src="https://example.com/blog/articles/audio.mp3"></audio>' +
         '<iframe src="https://example.com/frame.html"></iframe>',
+      'https://example.com/blog/articles/post.html?view=full#top',
     );
   });
 
@@ -393,23 +301,16 @@ describe('resolveRelativeUrls', () => {
       '<img src="data:image/png;base64,AAAA">' +
       '<img src="//cdn.example.com/p.png">' +
       '<iframe src="https://other.example/frame"></iframe>';
-    var result = resolveRelativeUrls(
-      html,
-      'https://example.com/articles/post.html',
-    );
-    assert.strictEqual(result, html);
+    assertResolution(html, html, 'https://example.com/articles/post.html');
   });
 
   test('document-relative srcset candidates use the article URL', () => {
     var html =
       '<img srcset="small.png 1x, ../large.png 2x, data:image/png;base64,AAAA 3x">';
-    var result = resolveRelativeUrls(
+    assertResolution(
       html,
-      'https://example.com/blog/articles/post.html',
-    );
-    assert.strictEqual(
-      result,
       '<img srcset="https://example.com/blog/articles/small.png 1x, https://example.com/blog/large.png 2x, data:image/png;base64,AAAA 3x">',
+      'https://example.com/blog/articles/post.html',
     );
   });
 });

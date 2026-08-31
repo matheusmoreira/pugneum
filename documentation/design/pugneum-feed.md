@@ -1,5 +1,13 @@
 # Feed Generation for Pugneum
 
+> **Status: historical design proposal (non-normative).** This document records
+> the original feed design and its planned inventory; it is not the current API,
+> schema, algorithm, or test specification. The authoritative user contract is
+> [`packages/feed/README.md`](../../packages/feed/README.md), while current code
+> and tests under `packages/feed/` define implementation behavior. In particular,
+> configurable output names, activation order, metadata validation, date policy,
+> and the package/test inventory have evolved since this proposal.
+
 ## Overview
 
 A separate build tool that reads compiled HTML output and generates Atom and RSS 2.0 feed files. It extracts article metadata from index pages and article pages, then serializes it into standard feed formats.

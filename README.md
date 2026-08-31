@@ -213,6 +213,12 @@ The command line utility requires a `pugneum.json` file to work:
 to `inputDirectory`, so both relative and `/`-prefixed template references stay
 inside the input project unless an explicit broader root is configured.
 
+The same boundary is named `basedir` in the JavaScript API and loader options.
+In other words, CLI configuration `baseDirectory` is passed to the compiler as
+`basedir`; `inputDirectory` and `outputDirectory` remain traversal/input and
+publication roots, respectively. These spellings are retained for compatibility,
+not separate security boundaries.
+
 Committing this file to version control is recommended.
 
 Once it exists, the pugneum templates can be compiled to HTML

@@ -11,6 +11,18 @@ const {checkRootReadme} = require('../../../scripts/sync-root-readme');
 
 const readmePath = path.join(__dirname, '..', 'README.md');
 const readme = fs.readFileSync(readmePath, 'utf8');
+const feedDesign = fs.readFileSync(
+  path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'documentation',
+    'design',
+    'pugneum-feed.md',
+  ),
+  'utf8',
+);
 const exampleFilename = path.join(
   path.dirname(readmePath),
   'README-example.pg',
@@ -94,6 +106,18 @@ function renderExample(example) {
 describe('README examples', () => {
   test('the repository manual is a synchronized regular file', () => {
     assert.doesNotThrow(checkRootReadme);
+  });
+
+  test('names the build-root mapping and documentation authority', () => {
+    assert.match(
+      readme,
+      /CLI configuration `baseDirectory` is passed to the compiler as\n`basedir`/,
+    );
+    assert.match(
+      feedDesign,
+      /Status: historical design proposal \(non-normative\)/,
+    );
+    assert.match(feedDesign, /packages\/feed\/README\.md/);
   });
 
   test('every Pugneum fence compiles', () => {

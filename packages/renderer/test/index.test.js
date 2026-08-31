@@ -1765,6 +1765,57 @@ describe('named mixin blocks', () => {
     assert.strictEqual(render(block([decl, call])), 'BA');
   });
 
+  for (const [mode, expected] of [
+    ['append', 'default:inner|caller'],
+    ['prepend', 'caller|default:inner'],
+  ]) {
+    test(mode + ' keeps the default in the callee parameter scope', () => {
+      const decl = mixinDef(
+        'wrap',
+        [{name: 'label'}],
+        [namedBlock('slot', 'replace', [text('default:'), variable('label')])],
+        {usesNamedBlocks: true},
+      );
+      const call = mixinCallOpts(
+        'wrap',
+        ['inner'],
+        [
+          namedBlock('slot', mode, [
+            text(mode === 'append' ? '|caller' : 'caller|'),
+          ]),
+        ],
+      );
+
+      assert.strictEqual(render(block([decl, call])), expected);
+    });
+  }
+
+  test('combined slot fragments retain distinct nested lexical scopes', () => {
+    const inner = mixinDef(
+      'inner',
+      [{name: 'label'}],
+      [namedBlock('slot', 'replace', [variable('label')])],
+      {usesNamedBlocks: true},
+    );
+    const outer = mixinDef(
+      'outer',
+      [{name: 'label'}],
+      [
+        mixinCallOpts(
+          'inner',
+          ['inner'],
+          [namedBlock('slot', 'append', [text('|caller:'), variable('label')])],
+        ),
+      ],
+    );
+    const call = mixinCallOpts('outer', ['outer']);
+
+    assert.strictEqual(
+      render(block([inner, outer, call])),
+      'inner|caller:outer',
+    );
+  });
+
   test('named blocks with variables', () => {
     const decl = mixinDef(
       'card',

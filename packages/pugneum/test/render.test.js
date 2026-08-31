@@ -122,6 +122,21 @@ describe('render()', () => {
     assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });
 
+  it('keeps combined named-slot fragments in their lexical scopes', () => {
+    var source = [
+      'mixin inner(label)',
+      '  block slot',
+      '    | #{label}',
+      'mixin outer(label)',
+      '  +inner(inner)',
+      '    append slot',
+      '      | |caller:#{label}',
+      '+outer(outer)',
+    ].join('\n');
+
+    assert.strictEqual(pg.render(source), 'inner|caller:outer');
+  });
+
   it('preserves NBSP in rendered text', () => {
     assert.strictEqual(
       pg.render('p hello\u00a0world'),

@@ -252,17 +252,18 @@ class Compiler {
         const callerBlocks = frame.namedBlocks[namedBlock.name];
         if (callerBlocks) {
           delete frame.namedBlocks[namedBlock.name];
-          let nodes = namedBlock.nodes;
+          let fragments = [{nodes: namedBlock.nodes, scope: 'callee'}];
           for (const callerBlock of callerBlocks) {
+            const fragment = {nodes: callerBlock.nodes, scope: 'caller'};
             switch (callerBlock.mode) {
               case 'replace':
-                nodes = callerBlock.nodes;
+                fragments = [fragment];
                 break;
               case 'append':
-                nodes = nodes.concat(callerBlock.nodes);
+                fragments.push(fragment);
                 break;
               case 'prepend':
-                nodes = callerBlock.nodes.concat(nodes);
+                fragments.unshift(fragment);
                 break;
               default:
                 this.error(
@@ -272,18 +273,24 @@ class Compiler {
                 );
             }
           }
-          // Caller-supplied content must render in the caller's lexical scope,
-          // so temporarily drop this mixin's frame (restored in finally). The
-          // named-block entry was deleted above (and is restored here) so a
-          // same-named NamedBlock nested in the caller content renders its own
-          // default instead of recursively re-substituting.
-          this.callStack.pop();
+          // A combined slot retains two lexical owners: defaults belong to the
+          // callee, while supplied fragments belong to the caller. Keep that
+          // boundary through composition instead of flattening both into one
+          // array and evaluating the default after the callee frame is gone.
+          // The named-block entry stays deleted while every fragment renders,
+          // preventing same-name content from recursively re-substituting.
           try {
-            for (const node of nodes) {
-              this.visit(node, namedBlock);
+            for (const fragment of fragments) {
+              if (fragment.scope === 'caller') this.callStack.pop();
+              try {
+                for (const node of fragment.nodes) {
+                  this.visit(node, namedBlock);
+                }
+              } finally {
+                if (fragment.scope === 'caller') this.callStack.push(frame);
+              }
             }
           } finally {
-            this.callStack.push(frame);
             frame.namedBlocks[namedBlock.name] = callerBlocks;
           }
           return;

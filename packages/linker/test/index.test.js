@@ -277,6 +277,60 @@ describe('error handling', () => {
   });
 });
 
+describe('large flat collections', () => {
+  const aboveHistoricalArgumentLimit = 130000;
+
+  function linkReferenceWithLargeAttrs(source, referenceType, outputTag) {
+    const options = {filename: 'large.pg', source, lex, parse, basedir};
+    const loaded = load(parse(lex(source, options), options), options);
+    let reference = null;
+    walk(loaded, function (node) {
+      if (node.type === referenceType) reference = node;
+    });
+    assert(reference);
+
+    const attr = {
+      name: 'data-large',
+      val: 'value',
+      line: reference.line,
+      column: reference.column,
+      filename: reference.filename,
+    };
+    reference.attrs = new Array(aboveHistoricalArgumentLimit).fill(attr);
+
+    const linked = link(loaded, options);
+    let output = null;
+    walk(linked, function (node) {
+      if (node.type === 'Tag' && node.name === outputTag) output = node;
+    });
+    assert(output);
+    assert.strictEqual(output.attrs.at(-1), attr);
+    return output.attrs.length;
+  }
+
+  test('reference links append attributes above the function-argument limit', () => {
+    assert.strictEqual(
+      linkReferenceWithLargeAttrs(
+        'references\n  ref /target\n\np @[ref]',
+        'ReferenceLink',
+        'a',
+      ),
+      aboveHistoricalArgumentLimit + 1,
+    );
+  });
+
+  test('reference images append attributes above the function-argument limit', () => {
+    assert.strictEqual(
+      linkReferenceWithLargeAttrs(
+        'references\n  image /image.png\n\np ![image alt]',
+        'ReferenceImage',
+        'img',
+      ),
+      aboveHistoricalArgumentLimit + 2,
+    );
+  });
+});
+
 describe('warnings', () => {
   function warningsFor(source, extra) {
     const warnings = [];

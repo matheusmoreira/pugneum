@@ -27,6 +27,12 @@ function asciiLowerCase(value) {
   });
 }
 
+function appendItems(target, items) {
+  for (let index = 0; index < items.length; index++) {
+    target.push(items[index]);
+  }
+}
+
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
 function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
@@ -509,7 +515,7 @@ function resolveReferences(ast, sources, warnings) {
         },
       ];
       if (node.attrs) {
-        attrs.push.apply(attrs, node.attrs);
+        appendItems(attrs, node.attrs);
       }
 
       replace({
@@ -570,7 +576,7 @@ function resolveReferences(ast, sources, warnings) {
         },
       ];
       if (node.attrs) {
-        attrs.push.apply(attrs, node.attrs);
+        appendItems(attrs, node.attrs);
       }
 
       replace({
@@ -892,7 +898,7 @@ function resolveFootnotes(ast, sources, warnings) {
             ? [def.block]
             : def.block.nodes.slice()
           : [];
-        liContentNodes.push.apply(liContentNodes, backLinkNodes);
+        appendItems(liContentNodes, backLinkNodes);
 
         return {
           type: 'Tag',

@@ -26,25 +26,27 @@ const earlierPhaseTypes = new Set([
   'YieldBlock',
 ]);
 
-// Return the first generated node that has no owner at the post-assembly filter
-// stage. The walker exposes nearest-parent-first ancestry during `before`, so a
-// NamedBlock remains legal only under a Mixin (definition or call), while
-// Given/MixinBlock/Variable retain the parser's mixin-context restrictions.
-function firstUnsupportedGeneratedNode(ast) {
+// Inspect a validated generated tree once for post-assembly ownership and
+// collect the records that need invocation provenance. The walker exposes
+// nearest-parent-first ancestry during `before`, so a NamedBlock remains legal
+// only under a Mixin (definition or call), while Given/MixinBlock/Variable
+// retain the parser's mixin-context restrictions.
+function inspectGeneratedAst(ast) {
   const root = generatedRoot(ast);
   const parents = [];
-  let hit = null;
+  const records = [];
+  let unsupported = null;
   walk(
     root,
     function (node, replace, control) {
-      const mixinAncestors = parents.filter(
-        (parent) => parent.type === 'Mixin',
-      );
-      const insideMixin = mixinAncestors.length > 0;
-      const insideMixinDefinition = mixinAncestors.some(
-        (mixin) => mixin.call === false,
-      );
-      const nearestMixin = mixinAncestors[0];
+      let nearestMixin;
+      let insideMixinDefinition = false;
+      for (const parent of parents) {
+        if (parent.type !== 'Mixin') continue;
+        if (!nearestMixin) nearestMixin = parent;
+        if (parent.call === false) insideMixinDefinition = true;
+      }
+      const insideMixin = nearestMixin !== undefined;
 
       if (
         earlierPhaseTypes.has(node.type) ||
@@ -54,13 +56,20 @@ function firstUnsupportedGeneratedNode(ast) {
         ((node.type === 'MixinBlock' || node.type === 'Variable') &&
           !insideMixinDefinition)
       ) {
-        hit = node;
+        unsupported = node;
         control.stop();
+        return;
+      }
+
+      if (node !== root) records.push(node);
+      for (const attr of node.attrs || []) records.push(attr);
+      for (const definition of node.definitions || []) {
+        records.push(definition);
       }
     },
     {parents},
   );
-  return hit;
+  return {records, unsupported};
 }
 
 function generatedRoot(ast) {
@@ -97,33 +106,23 @@ function validateGeneratedAst(
     );
   }
 
-  const unsupported = firstUnsupportedGeneratedNode(root);
-  if (unsupported) {
+  const inspection = inspectGeneratedAst(root);
+  if (inspection.unsupported) {
     throw error(
       'UNSUPPORTED_FILTER_CONSTRUCT',
-      `Filter '${name}' (type ${type}) cannot emit ${unsupported.type}: ` +
+      `Filter '${name}' (type ${type}) cannot emit ${inspection.unsupported.type}: ` +
         'file loading and template assembly run before filters',
       nodeLocation(invocation, options),
     );
   }
+  return inspection.records;
 }
 
-function stampGeneratedProvenance(ast, invocation, ownedNodes) {
-  const root = generatedRoot(ast);
-  walk(root, function (node) {
-    if (node !== root) {
-      stampLocation(node, invocation);
-      ownedNodes.add(node);
-    }
-    for (const attr of node.attrs || []) {
-      stampLocation(attr, invocation);
-      ownedNodes.add(attr);
-    }
-    for (const definition of node.definitions || []) {
-      stampLocation(definition, invocation);
-      ownedNodes.add(definition);
-    }
-  });
+function stampGeneratedProvenance(records, invocation, ownedNodes) {
+  for (const record of records) {
+    stampLocation(record, invocation);
+    ownedNodes.add(record);
+  }
 }
 
 function stampLocation(record, invocation) {
@@ -471,13 +470,25 @@ function applyFilterResult(
         context.sourceState,
       );
       const ast = generated.ast;
-      validateGeneratedAst(ast, name, type, node, options, context, nodeDepth);
+      const generatedRecords = validateGeneratedAst(
+        ast,
+        name,
+        type,
+        node,
+        options,
+        context,
+        nodeDepth,
+      );
       const generatedLocation = {
         filename: generated.filename,
         line: 1,
         column: 1,
       };
-      stampGeneratedProvenance(ast, generatedLocation, context.ownedNodes);
+      stampGeneratedProvenance(
+        generatedRecords,
+        generatedLocation,
+        context.ownedNodes,
+      );
       rememberNode(node, context);
       node.type = 'Block';
       node.nodes = ast.nodes;
@@ -490,7 +501,7 @@ function applyFilterResult(
     }
     case 'syntax': {
       validateArrayOutput(result, name, type, node, options);
-      validateGeneratedAst(
+      const generatedRecords = validateGeneratedAst(
         result,
         name,
         type,
@@ -499,7 +510,7 @@ function applyFilterResult(
         context,
         nodeDepth,
       );
-      stampGeneratedProvenance(result, node, context.ownedNodes);
+      stampGeneratedProvenance(generatedRecords, node, context.ownedNodes);
       rememberNode(node, context);
       node.type = 'Block';
       node.nodes = result;
@@ -665,23 +676,27 @@ function applyFilters(ast, filters, options, context) {
         } else if (node.type === 'RawInclude' && node.filters.length) {
           // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
           // file content, then b, then a (outermost), matching nested `:` order.
-          const chain = node.filters.slice().reverse();
-          const resolvedChain = chain.map((invocation) => ({
-            invocation,
-            descriptor: resolveFilter(invocation.name, filters, node, options),
-          }));
+          const innermostIndex = node.filters.length - 1;
+          const descriptors = new Array(node.filters.length);
+          for (let index = innermostIndex; index >= 0; index--) {
+            const invocation = node.filters[index];
+            descriptors[index] = resolveFilter(
+              invocation.name,
+              filters,
+              node,
+              options,
+            );
+          }
           // The innermost filter reads the file; its `binary` flag chooses raw
           // bytes vs decoded text. Each later filter consumes the previous result.
-          const innermost = resolvedChain[0].descriptor;
+          const innermost = descriptors[innermostIndex];
           let result = innermost.binary
             ? node.file.raw
             : normalizeTextNewlines(node.file.str);
-          let lastName;
           let lastType;
-          resolvedChain.forEach(function ({
-            invocation: f,
-            descriptor: resolved,
-          }) {
+          for (let index = innermostIndex; index >= 0; index--) {
+            const f = node.filters[index];
+            const resolved = descriptors[index];
             const filterAttrs = getAttributes(f, options);
             filterAttrs.filename = node.file.fullPath;
             validateIncludeFilterType(resolved, f.name, node, options);
@@ -697,9 +712,8 @@ function applyFilters(ast, filters, options, context) {
             // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
             // naming the stage that failed rather than silent garbage downstream.
             validateStringOutput(result, f.name, resolved.type, node, options);
-            lastName = f.name;
             lastType = resolved.type;
-          });
+          }
           rememberNode(node, context);
           node.type = 'Text';
           node.val = lastType === 'text' ? escapeFilterText(result) : result;

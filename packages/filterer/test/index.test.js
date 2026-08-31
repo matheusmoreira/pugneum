@@ -94,6 +94,25 @@ test('filtering returns the same root and mutates invocation nodes in place', ()
   assert.strictEqual(failingInvocation.type, 'Filter');
 });
 
+test('a filter-free pass preserves every existing child-list identity', () => {
+  const source = 'main\n  section\n    p unchanged\n';
+  const ast = parse(lex(source, {filename}), {filename, source});
+  const rootNodes = ast.nodes;
+  const mainNodes = ast.nodes[0].block.nodes;
+  const sectionNodes = ast.nodes[0].block.nodes[0].block.nodes;
+  const paragraphNodes = ast.nodes[0].block.nodes[0].block.nodes[0].block.nodes;
+
+  const output = filter(ast, {});
+
+  assert.strictEqual(output.nodes, rootNodes);
+  assert.strictEqual(output.nodes[0].block.nodes, mainNodes);
+  assert.strictEqual(output.nodes[0].block.nodes[0].block.nodes, sectionNodes);
+  assert.strictEqual(
+    output.nodes[0].block.nodes[0].block.nodes[0].block.nodes,
+    paragraphNodes,
+  );
+});
+
 test('a failed pass restores the caller AST and generated-source side channel', () => {
   const source = ':good\n  first\n:bad\n  second';
   const options = {

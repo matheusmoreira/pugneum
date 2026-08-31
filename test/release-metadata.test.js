@@ -136,7 +136,10 @@ const expectedReleaseManifests = Object.freeze({
     name: 'pugneum-filter-highlight.js',
     version: '1.1.1',
     files: ['index.js'],
-    dependencies: {'highlight.js': '^11.8.0'},
+    dependencies: {
+      'highlight.js': '^11.8.0',
+      'pugneum-error': '^1.0.0',
+    },
     devDependencies: {
       'pugneum-filterer': '^1.2.0',
       'pugneum-lexer': '^1.2.1',
@@ -148,7 +151,10 @@ const expectedReleaseManifests = Object.freeze({
     name: 'pugneum-filter-prismjs',
     version: '1.1.1',
     files: ['index.js'],
-    dependencies: {'prism-minmaxed': '^1.0.0'},
+    dependencies: {
+      'prism-minmaxed': '^1.0.0',
+      'pugneum-error': '^1.0.0',
+    },
     devDependencies: {
       'pugneum-filterer': '^1.2.0',
       'pugneum-lexer': '^1.2.1',

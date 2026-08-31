@@ -201,7 +201,7 @@ exports[`syntax-highlighting-works.pg 1`] = `
                               "line": 5,
                               "column": 9,
                               "filename": "syntax-highlighting-works.pg",
-                              "val": "<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">thisShouldBeHighlighted</span><span class=\\"hljs-params\\">(syntax)</span> {\\n  <span class=\\"hljs-keyword\\">return</span> <span class=\\"hljs-keyword\\">with</span>(<span class=\\"hljs-string\\">&#x27;highlight&#x27;</span>, { extension: <span class=\\"hljs-string\\">&#x27;js&#x27;</span> });\\n}"
+                              "val": "<span class=\\"hljs-keyword\\">function</span> <span class=\\"hljs-title function_\\">thisShouldBeHighlighted</span>(<span class=\\"hljs-params\\">syntax</span>) {\\n  <span class=\\"hljs-keyword\\">return</span> <span class=\\"hljs-title function_\\">with</span>(<span class=\\"hljs-string\\">&#x27;highlight&#x27;</span>, { <span class=\\"hljs-attr\\">extension</span>: <span class=\\"hljs-string\\">&#x27;js&#x27;</span> });\\n}"
                             }
                           ],
                           "line": 4,

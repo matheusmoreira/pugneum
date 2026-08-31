@@ -252,7 +252,6 @@ function createLinkState(options) {
       options.maxLinkDepth === undefined
         ? DEFAULT_MAX_LINK_DEPTH
         : options.maxLinkDepth,
-    parentBlocks: new WeakMap(),
   };
 }
 
@@ -278,7 +277,7 @@ function linkInner(ast, options, state, depth) {
   const declaredBlocks = findDeclaredBlocks(ast);
   state.declaredBlocks.set(ast, declaredBlocks);
   if (extendsNode) {
-    const mixins = [];
+    const declarations = [];
     const expectedBlocks = [];
     ast.nodes.forEach(function addNode(node) {
       if (node.type === 'NamedBlock') {
@@ -286,11 +285,13 @@ function linkInner(ast, options, state, depth) {
       } else if (node.type === 'Block') {
         node.nodes.forEach(addNode);
       } else if (node.type === 'Mixin' && node.call === false) {
-        mixins.push(node);
+        declarations.push(node);
+      } else if (node.type === 'References') {
+        declarations.push(node);
       } else {
         error(
           'UNEXPECTED_NODES_IN_EXTENDING_ROOT',
-          'Only named blocks and mixins can appear at the top level of an extending template',
+          'Only named blocks, mixins, and references can appear at the top level of an extending template',
           node,
           sources,
         );
@@ -299,14 +300,14 @@ function linkInner(ast, options, state, depth) {
 
     // Validate expected blocks BEFORE mutating parent via extend()
     const parent = linkInner(extendsNode.file.ast, options, state, depth + 1);
-    const parentBlockNames = [];
-    walk(parent, function (node) {
-      if (node.type === 'NamedBlock') {
-        parentBlockNames.push(node.name);
-      }
-    });
+    const parentDeclaredBlocks = state.declaredBlocks.get(parent);
     for (const expectedBlock of expectedBlocks) {
-      if (!parentBlockNames.includes(expectedBlock.name)) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          parentDeclaredBlocks,
+          expectedBlock.name,
+        )
+      ) {
         error(
           'UNEXPECTED_BLOCK',
           'Unexpected block ' + expectedBlock.name,
@@ -316,12 +317,13 @@ function linkInner(ast, options, state, depth) {
       }
     }
 
-    const parentDeclaredBlocks = state.declaredBlocks.get(parent);
-    extend(parentDeclaredBlocks, ast, sources, state.parentBlocks);
-    Object.keys(declaredBlocks).forEach(function (name) {
-      parentDeclaredBlocks[name] = declaredBlocks[name];
-    });
-    parent.nodes = mixins.concat(parent.nodes);
+    extend(parentDeclaredBlocks, ast, sources);
+    parent.nodes = declarations.concat(parent.nodes);
+    // Composition cloned payloads into the actual parent slots. Recompute the
+    // authoritative map from that output tree so a later inheritance level
+    // targets rendered occurrences, including newly introduced nested slots,
+    // rather than detached override nodes or ancestry aliases.
+    state.declaredBlocks.set(parent, findDeclaredBlocks(parent));
     parent.hasExtends = true;
     return parent;
   }
@@ -330,8 +332,8 @@ function linkInner(ast, options, state, depth) {
 
 function findDeclaredBlocks(ast) {
   const definitions = Object.create(null);
-  walk(ast, function before(node) {
-    if (node.type === 'NamedBlock' && node.mode === 'replace') {
+  forEachInheritanceBlock(ast, function (node) {
+    if (node.mode === 'replace') {
       definitions[node.name] = definitions[node.name] || [];
       definitions[node.name].push(node);
     }
@@ -339,86 +341,64 @@ function findDeclaredBlocks(ast) {
   return definitions;
 }
 
-// Flatten a NamedBlock's private ancestor chain (grandparent -> parent -> ...)
-// into a single list. Template inheritance forms a DAG: the same block object
-// is reachable along multiple paths, so without memoization the recursion
-// re-expands shared ancestors an exponentially growing number of times (a chain
-// of N `replace`-mode overrides crashes with RangeError once the accumulator
-// exceeds 2^32-1). `seen` dedupes visited blocks: a parent block appears at most
-// once in the flattened list, which is also the correct result.
-function flattenParentBlocks(
-  parentBlocks,
-  parentBlocksByOverride,
-  accumulator,
-  seen,
-) {
-  accumulator = accumulator || [];
-  seen = seen || new Set();
-  parentBlocks.forEach(function (parentBlock) {
-    if (seen.has(parentBlock)) return;
-    seen.add(parentBlock);
-    const ancestors = parentBlocksByOverride.get(parentBlock);
-    if (ancestors) {
-      flattenParentBlocks(ancestors, parentBlocksByOverride, accumulator, seen);
-    }
-    accumulator.push(parentBlock);
-  });
-  return accumulator;
-}
-
-// Merge the child template's NamedBlock overrides into the parent's block
-// slots. `parentBlocks` maps a block name to its declared parent block(s);
-// flattenParentBlocks expands each into its full ancestor chain so the override
-// reaches every inherited level. The `stack` Set guards against a NamedBlock
-// nested inside another block of the SAME name: the inner occurrence is marked
-// `ignore` and its subtree is pruned (return false) so it is neither merged a
-// second time nor descended into, which would otherwise re-merge the same
-// content and corrupt the ancestor chain.
-function extend(parentBlocks, ast, sources, parentBlocksByOverride) {
-  const stack = new Set();
+// NamedBlock is shared by template inheritance and mixin slots. Only blocks in
+// document structure belong to inheritance: a Mixin owns its entire subtree.
+// Within document structure, a same-named nested block is content of the outer
+// override rather than another target. Discovery and merging both route through
+// this helper so validation cannot accept a slot that composition will ignore.
+function forEachInheritanceBlock(ast, visit) {
+  const activeNames = new Set();
+  const enteredNames = new WeakMap();
   walk(
     ast,
     function before(node) {
-      if (node.type === 'NamedBlock') {
-        if (stack.has(node.name)) {
-          node.ignore = true;
-          return false;
-        }
-        stack.add(node.name);
-        const parentBlockList = parentBlocks[node.name]
-          ? flattenParentBlocks(parentBlocks[node.name], parentBlocksByOverride)
-          : [];
-        if (parentBlockList.length) {
-          parentBlocksByOverride.set(node, parentBlockList);
-          parentBlockList.forEach(function (parentBlock) {
-            switch (node.mode) {
-              case 'append':
-                parentBlock.nodes = parentBlock.nodes.concat(node.nodes);
-                break;
-              case 'prepend':
-                parentBlock.nodes = node.nodes.concat(parentBlock.nodes);
-                break;
-              case 'replace':
-                parentBlock.nodes = node.nodes;
-                break;
-              default:
-                error(
-                  'UNKNOWN_BLOCK_MODE',
-                  "Unknown block mode '" + node.mode + "'",
-                  node,
-                  sources,
-                );
-            }
-          });
-        }
-      }
+      if (node.type === 'Mixin') return false;
+      if (node.type !== 'NamedBlock') return;
+      if (activeNames.has(node.name)) return false;
+      activeNames.add(node.name);
+      enteredNames.set(node, node.name);
+      visit(node);
     },
     function after(node) {
-      if (node.type === 'NamedBlock' && !node.ignore) {
-        stack.delete(node.name);
-      }
+      const name = enteredNames.get(node);
+      if (name !== undefined) activeNames.delete(name);
     },
   );
+}
+
+// Merge the child template's effective inheritance overrides into the parent's
+// slots. `parentBlocks` maps each name directly to the current rendered block
+// occurrences. forEachInheritanceBlock applies the same mixin-scope and
+// nested-name rules used to construct that map.
+function extend(parentBlocks, ast, sources) {
+  forEachInheritanceBlock(ast, function (node) {
+    const parentBlockList = parentBlocks[node.name] || [];
+    if (!parentBlockList.length) return;
+    parentBlockList.forEach(function (parentBlock) {
+      // Every effective slot owns its occurrence. Later filters and document
+      // resolution mutate subtrees, so sharing node.nodes here would process
+      // one occurrence and merely alias the already-resolved result elsewhere.
+      const nodes = cloneAst(node.nodes);
+      switch (node.mode) {
+        case 'append':
+          parentBlock.nodes = parentBlock.nodes.concat(nodes);
+          break;
+        case 'prepend':
+          parentBlock.nodes = nodes.concat(parentBlock.nodes);
+          break;
+        case 'replace':
+          parentBlock.nodes = nodes;
+          break;
+        default:
+          error(
+            'UNKNOWN_BLOCK_MODE',
+            "Unknown block mode '" + node.mode + "'",
+            node,
+            sources,
+          );
+      }
+    });
+  });
 }
 
 function assertLinkEdge(depth, maxDepth, node, sources) {
@@ -468,6 +448,9 @@ function applyIncludes(ast, options, state, depth) {
 
 function removeBlocks(ast) {
   return walk(ast, function (node, replace) {
+    // Mixin declarations/calls own their NamedBlock slots. Only flatten the
+    // inheritance wrappers of the included, already-extended document.
+    if (node.type === 'Mixin') return false;
     if (node.type === 'NamedBlock') {
       replace({
         type: 'Block',

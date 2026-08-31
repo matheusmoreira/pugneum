@@ -2001,31 +2001,13 @@ exports[`auxiliary/inheritance.extend.mixin.block.pg 1`] = `
               "type": "Block",
               "nodes": [
                 {
-                  "type": "Mixin",
-                  "name": "article",
-                  "args": [],
-                  "block": {
-                    "type": "Block",
-                    "nodes": [
-                      {
-                        "type": "NamedBlock",
-                        "nodes": [],
-                        "line": 11,
-                        "filename": "auxiliary/inheritance.extend.mixin.block.pg",
-                        "name": "content",
-                        "mode": "replace",
-                        "column": 7
-                      }
-                    ],
-                    "line": 10,
-                    "filename": "auxiliary/inheritance.extend.mixin.block.pg"
-                  },
-                  "call": true,
-                  "attrs": [],
-                  "attributeBlocks": [],
+                  "type": "NamedBlock",
+                  "nodes": [],
                   "line": 10,
-                  "column": 5,
-                  "filename": "auxiliary/inheritance.extend.mixin.block.pg"
+                  "filename": "auxiliary/inheritance.extend.mixin.block.pg",
+                  "name": "content",
+                  "mode": "replace",
+                  "column": 5
                 }
               ],
               "line": 9,
@@ -9855,25 +9837,43 @@ exports[`inheritance.extend.mixins.block.pg 1`] = `
       "type": "NamedBlock",
       "nodes": [
         {
-          "type": "Tag",
-          "name": "p",
+          "type": "Mixin",
+          "name": "article",
+          "args": [],
           "block": {
             "type": "Block",
             "nodes": [
               {
-                "type": "Text",
-                "line": 4,
+                "type": "Tag",
+                "name": "p",
+                "block": {
+                  "type": "Block",
+                  "nodes": [
+                    {
+                      "type": "Text",
+                      "line": 5,
+                      "column": 7,
+                      "filename": "inheritance.extend.mixins.block.pg",
+                      "val": "Hello World!"
+                    }
+                  ],
+                  "line": 5,
+                  "filename": "inheritance.extend.mixins.block.pg"
+                },
+                "attrs": [],
+                "attributeBlocks": [],
+                "isInline": false,
+                "line": 5,
                 "column": 5,
-                "filename": "inheritance.extend.mixins.block.pg",
-                "val": "Hello World!"
+                "filename": "inheritance.extend.mixins.block.pg"
               }
             ],
             "line": 4,
             "filename": "inheritance.extend.mixins.block.pg"
           },
+          "call": true,
           "attrs": [],
           "attributeBlocks": [],
-          "isInline": false,
           "line": 4,
           "column": 3,
           "filename": "inheritance.extend.mixins.block.pg"

@@ -668,28 +668,192 @@ describe('flattenParentBlocks deduplication (exponential blowup guard)', () => {
   });
 });
 
-describe('extend() prunes a same-name nested block instead of descending', () => {
-  test('a triple-nested same-name block leaves only the immediate child ignored', () => {
-    // The guard marks an inner same-name NamedBlock with `ignore` and must
-    // prune its subtree; otherwise the walker descends and marks every deeper
-    // same-name block too. With the prune, only the immediate child is marked.
+describe('inheritance slot scope and occurrence ownership', () => {
+  test('same-name nested content does not reappear as a slot in a later inheritance level', () => {
     var files = {
       'layout.pg': 'html\n  body\n    block content\n      p default\n',
-      'page.pg':
-        'extends layout.pg\nblock content\n  block content\n    block content\n      p deep\n',
+      'middle.pg':
+        'extends layout.pg\nblock content\n  p middle\n  block content\n    p nested\n',
+      'leaf.pg': 'extends middle.pg\nblock append content\n  p leaf\n',
     };
-    var result = linkProject(files, 'page.pg');
-    var named = collectNamedBlocks(result.linked);
-    var ignored = named.filter(function (n) {
-      return n.ignore;
+    var result = linkProject(files, 'leaf.pg');
+    var text = [];
+    walk(result.linked, function (node) {
+      if (node.type === 'Text') text.push(node.val);
     });
-    assert.strictEqual(named.length, 3);
-    assert.strictEqual(
-      ignored.length,
-      1,
-      'only the immediate same-name child should be ignored (subtree pruned)',
+    assert.strictEqual(text.filter((value) => value === 'leaf').length, 1);
+    assert.ok(text.includes('middle'));
+    assert.ok(text.includes('nested'));
+    assert.ok(
+      collectNamedBlocks(result.linked).every(
+        (node) => !Object.hasOwn(node, 'ignore'),
+      ),
     );
   });
+
+  for (const parentMode of ['append', 'prepend']) {
+    test(`a ${parentMode}-only parent occurrence is not an inheritance declaration`, () => {
+      var files = {
+        'layout.pg': `block ${parentMode} content\n  p parent\n`,
+        'page.pg': 'extends layout.pg\nblock append content\n  p child\n',
+      };
+      assert.throws(
+        () => linkProject(files, 'page.pg'),
+        (err) =>
+          err.code === 'PUGNEUM:UNEXPECTED_BLOCK' &&
+          err.msg === 'Unexpected block content',
+      );
+    });
+  }
+
+  test('a mixin-owned named slot cannot satisfy a template override', () => {
+    var files = {
+      'layout.pg': 'mixin card()\n  block title\n    h2 default\n\np layout\n',
+      'page.pg': 'extends layout.pg\nblock title\n  h2 page\n',
+    };
+    assert.throws(
+      () => linkProject(files, 'page.pg'),
+      (err) =>
+        err.code === 'PUGNEUM:UNEXPECTED_BLOCK' &&
+        err.msg === 'Unexpected block title',
+    );
+  });
+
+  test('an unused mixin slot cannot override a layout block', () => {
+    var files = {
+      'layout.pg': 'html\n  body\n    block content\n      p default\n',
+      'page.pg': [
+        'extends layout.pg',
+        'block content',
+        '  p page',
+        'mixin helper()',
+        '  block content',
+        '    p mixin',
+      ].join('\n'),
+    };
+    const {linked} = linkProject(files, 'page.pg');
+    let html;
+    walk(linked, function (node, replace, control) {
+      if (node.type === 'Tag' && node.name === 'html') {
+        html = node;
+        control.stop();
+      }
+    });
+    const text = [];
+    walk(html, function (node) {
+      if (node.type === 'Text') text.push(node.val);
+    });
+    assert.deepStrictEqual(text, ['page']);
+  });
+
+  test('including an extended page preserves named slots owned by mixins', () => {
+    var files = {
+      'layout.pg': [
+        'mixin card()',
+        '  article',
+        '    block title',
+        '      h2 default',
+        '    block body',
+        '      p default',
+        'html',
+        '  body',
+        '    block content',
+      ].join('\n'),
+      'page.pg': [
+        'extends layout.pg',
+        'block content',
+        '  +card()',
+        '    block title',
+        '      h2 custom',
+        '    block body',
+        '      p custom',
+      ].join('\n'),
+      'main.pg': 'include page.pg\n',
+    };
+    const {linked} = linkProject(files, 'main.pg');
+    const mixinSlotNames = [];
+    walk(linked, function (node) {
+      if (node.type !== 'Mixin') return;
+      walk(node, function (owned) {
+        if (owned.type === 'NamedBlock') mixinSlotNames.push(owned.name);
+      });
+      return false;
+    });
+    assert.deepStrictEqual(mixinSlotNames.sort(), [
+      'body',
+      'body',
+      'title',
+      'title',
+    ]);
+  });
+
+  test('references declared by an extending template remain document-global', () => {
+    var files = {
+      'layout.pg': 'html\n  body\n    block content\n',
+      'page.pg': [
+        'extends layout.pg',
+        'references',
+        '  docs /docs',
+        'block content',
+        '  p @[docs read]',
+      ].join('\n'),
+    };
+    const {linked} = linkProject(files, 'page.pg');
+    let referenceLink;
+    walk(linked, function (node) {
+      if (node.type === 'Tag' && node.name === 'a') referenceLink = node;
+      assert.notStrictEqual(node.type, 'References');
+    });
+    assert.equal(
+      referenceLink.attrs.find((attr) => attr.name === 'href').val,
+      '/docs',
+    );
+  });
+
+  for (const mode of ['replace', 'append', 'prepend']) {
+    test(`${mode} fan-out owns and resolves each rendered occurrence`, () => {
+      var files = {
+        'layout.pg': [
+          'main',
+          '  block slot',
+          '    p main-default',
+          'aside',
+          '  block slot',
+          '    p aside-default',
+          'footnotes',
+          '  x note',
+        ].join('\n'),
+        'page.pg': [
+          'extends layout.pg',
+          `block${mode === 'replace' ? '' : ' ' + mode} slot`,
+          '  p Reused^[x]',
+        ].join('\n'),
+      };
+      const {linked, warnings} = linkProject(files, 'page.pg');
+      const referenceIds = [];
+      let backlinkCount = 0;
+      walk(linked, function (node) {
+        if (node.type !== 'Tag' || !node.attrs) return;
+        const role = node.attrs.find((attr) => attr.name === 'role');
+        if (!role) return;
+        if (role.val === 'doc-noteref') {
+          referenceIds.push(node.attrs.find((attr) => attr.name === 'id').val);
+        } else if (role.val === 'doc-backlink') {
+          backlinkCount++;
+        }
+      });
+      assert.deepStrictEqual(referenceIds, [
+        'footnote-reference-x',
+        'footnote-reference-x-2',
+      ]);
+      assert.strictEqual(backlinkCount, 2);
+      assert.strictEqual(
+        warnings.filter((warning) => warning.code === 'PUGNEUM:DUPLICATE_ID')
+          .length,
+        0,
+      );
+    });
+  }
 });
 
 describe('applyYield clones the passed block per yield site', () => {

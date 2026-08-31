@@ -60,6 +60,19 @@ input tree.
   the edge that would exceed the limit. Caller properties that resemble private
   recursion state are ignored.
 
+### Inheritance blocks
+
+A replace-mode `block name` in document structure declares an inheritance slot.
+`block append name` and `block prepend name` modify an existing declared slot;
+an append/prepend occurrence alone does not create a slot that descendants can
+override. Validation and composition use this same effective-slot model.
+
+Named blocks inside mixin declarations or calls belong to that mixin and are
+never template-inheritance targets. Put the inheritance block outside the mixin
+call, then invoke or fill the mixin inside the overriding block when both
+features are needed. An extending root may contain inheritance blocks, mixin
+declarations, and document-global `references` declarations.
+
 ### Diagnostics
 
 The linker throws `PUGNEUM:`-coded errors (e.g. `UNDEFINED_REFERENCE`,

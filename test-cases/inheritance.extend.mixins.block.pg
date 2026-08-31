@@ -1,4 +1,5 @@
 extends auxiliary/inheritance.extend.mixin.block.pg
 
 block content
-  p Hello World!
+  +article()
+    p Hello World!

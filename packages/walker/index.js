@@ -114,13 +114,16 @@ function walkAST(ast, before, after, options) {
 function walkNode(ast, before, after, context) {
   const parents = context.parents;
   const currentDepth = Math.max(0, parents.length - context.parentSeedLength);
+  const parent = context.parentsAreNearestFirst
+    ? parents[0]
+    : parents[parents.length - 1];
 
   // String compares rather than a per-call RegExp: arrayAllowed is recomputed
   // on every node and the walker is the linker's hottest inner loop. Equivalent
   // to the previous /^(Named)?Block$/ test.
-  const parentType = parents[0] && parents[0].type;
+  const parentType = parent && parent.type;
   const arrayAllowed = Boolean(
-    parents[0] &&
+    parent &&
       (parentType === 'Block' ||
         parentType === 'NamedBlock' ||
         (parentType === 'RawInclude' && ast.type === 'IncludeFilter')),
@@ -168,7 +171,8 @@ function walkNode(ast, before, after, context) {
     }
   }
 
-  parents.unshift(ast);
+  if (context.parentsAreNearestFirst) parents.unshift(ast);
+  else parents.push(ast);
 
   try {
     switch (ast.type) {
@@ -250,25 +254,31 @@ function walkNode(ast, before, after, context) {
         );
     }
   } finally {
-    parents.shift();
+    if (context.parentsAreNearestFirst) parents.shift();
+    else parents.pop();
   }
 
   after && after(ast, replace);
   return ast;
 
   function walkAndMergeNodes(nodes) {
-    const merged = [];
-    for (const node of nodes) {
+    let merged;
+    for (let index = 0; index < nodes.length; index++) {
+      const node = nodes[index];
       const result = walkNode(node, before, after, context);
       if (Array.isArray(result)) {
+        if (!merged) merged = nodes.slice(0, index);
         for (const replacement of result) {
           merged.push(replacement);
         }
-      } else {
+      } else if (merged) {
+        merged.push(result);
+      } else if (result !== node) {
+        merged = nodes.slice(0, index);
         merged.push(result);
       }
     }
-    return merged;
+    return merged || nodes;
   }
 }
 
@@ -319,18 +329,27 @@ function createWalkContext(options) {
     options.maxDepth === undefined ? MAX_AST_DEPTH : options.maxDepth;
   const callerParents = options.parents;
   if (callerParents === undefined) {
-    return {includeDependencies, maxDepth, parentSeedLength: 0, parents: []};
+    return {
+      includeDependencies,
+      maxDepth,
+      parentSeedLength: 0,
+      parents: [],
+      parentsAreNearestFirst: false,
+    };
   }
 
   // Immutable arrays are read-only seeds. Reentrant walks sharing a mutable
   // array also get a private copy of its entry-time seed, not the outer walk's
-  // live frames. A first, mutable use remains the callback-time ancestry view.
+  // live frames. Private stacks are stored outermost-first so traversal can use
+  // constant-time push/pop. A first, mutable use remains the public,
+  // nearest-first callback-time ancestry view for compatibility.
   if (!Object.isExtensible(callerParents)) {
     return {
       includeDependencies,
       maxDepth,
       parentSeedLength: callerParents.length,
-      parents: callerParents.slice(),
+      parents: callerParents.slice().reverse(),
+      parentsAreNearestFirst: false,
     };
   }
   const activeSeed = activeParentSeeds.get(callerParents);
@@ -339,7 +358,8 @@ function createWalkContext(options) {
       includeDependencies,
       maxDepth,
       parentSeedLength: activeSeed.length,
-      parents: activeSeed.slice(),
+      parents: activeSeed.slice().reverse(),
+      parentsAreNearestFirst: false,
     };
   }
   return {
@@ -347,6 +367,7 @@ function createWalkContext(options) {
     includeDependencies,
     maxDepth,
     parents: callerParents,
+    parentsAreNearestFirst: true,
     parentSeed: callerParents.slice(),
     parentSeedLength: callerParents.length,
   };

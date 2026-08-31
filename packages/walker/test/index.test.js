@@ -305,6 +305,52 @@ test('parents is nearest-first during hooks and restored afterward', function ()
   assert.deepStrictEqual(parents, [seed]);
 });
 
+test('default traversal does not shift ancestry arrays at every depth', function () {
+  var ast = {type: 'Text', val: 'leaf'};
+  for (var depth = 0; depth < 200; depth++) {
+    ast = {type: 'Block', nodes: [ast]};
+  }
+
+  var originalUnshift = Array.prototype.unshift;
+  var originalShift = Array.prototype.shift;
+  var ancestryMoves = 0;
+  Array.prototype.unshift = function instrumentedUnshift() {
+    ancestryMoves++;
+    return originalUnshift.apply(this, arguments);
+  };
+  Array.prototype.shift = function instrumentedShift() {
+    ancestryMoves++;
+    return originalShift.apply(this, arguments);
+  };
+
+  var visited = 0;
+  try {
+    walk(ast, function before() {
+      visited++;
+    });
+  } finally {
+    Array.prototype.unshift = originalUnshift;
+    Array.prototype.shift = originalShift;
+  }
+
+  assert.strictEqual(visited, 201);
+  assert.strictEqual(ancestryMoves, 0);
+});
+
+test('no-op traversal preserves every child-list identity', function () {
+  var text = {type: 'Text', val: 'content'};
+  var innerNodes = [text];
+  var inner = {type: 'Block', nodes: innerNodes};
+  var tag = {type: 'Tag', name: 'p', attrs: [], block: inner};
+  var rootNodes = [tag];
+  var root = {type: 'Block', nodes: rootNodes};
+
+  assert.strictEqual(walk(root), root);
+  assert.strictEqual(root.nodes, rootNodes);
+  assert.strictEqual(tag.block, inner);
+  assert.strictEqual(inner.nodes, innerNodes);
+});
+
 test('frozen and non-extensible options preserve parent-sensitive replacement', function () {
   var optionFactories = [Object.freeze, Object.seal, Object.preventExtensions];
 

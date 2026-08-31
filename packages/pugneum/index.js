@@ -9,16 +9,57 @@ const link = require('pugneum-linker');
 const filter = require('pugneum-filterer');
 const render = require('pugneum-renderer');
 
+function isMutableArray(value) {
+  return (
+    Array.isArray(value) &&
+    Object.isExtensible(value) &&
+    Object.getOwnPropertyDescriptor(value, 'length').writable
+  );
+}
+
+function normalizeOptions(options, overrides) {
+  if (options == null) options = {};
+  if (
+    typeof options !== 'object' ||
+    Array.isArray(options) ||
+    Object.prototype.toString.call(options) !== '[object Object]'
+  ) {
+    throw new TypeError('Expected "options" to be an object-like option bag');
+  }
+
+  const hasWarnings = Object.prototype.hasOwnProperty.call(options, 'warnings');
+  const warnings = hasWarnings ? options.warnings : undefined;
+  if (hasWarnings && !isMutableArray(warnings)) {
+    throw new TypeError('Expected "options.warnings" to be a mutable array');
+  }
+
+  const normalized = {};
+  for (const key of Reflect.ownKeys(options)) {
+    const descriptor = Object.getOwnPropertyDescriptor(options, key);
+    if (descriptor && descriptor.enumerable && key !== 'warnings') {
+      normalized[key] = options[key];
+    }
+  }
+  Object.assign(normalized, overrides);
+  // Object.assign intentionally ignores non-enumerable properties. Warning
+  // ownership, however, is defined by an own property, so preserve that sink
+  // explicitly while ignoring a collector inherited from a prototype.
+  if (hasWarnings) normalized.warnings = warnings;
+
+  return {options: normalized, ownsWarnings: !hasWarnings};
+}
+
 function renderPugneum(string, options) {
   // If the caller supplies a warnings array we collect into it and let them
   // surface the diagnostics; otherwise we own them and emit them ourselves so
   // nothing fails silently.
-  const ownsWarnings = !Array.isArray(options && options.warnings);
-  options = Object.assign({}, options, {
+  const normalized = normalizeOptions(options, {
     source: string,
     lex: lex,
     parse: parse,
   });
+  const ownsWarnings = normalized.ownsWarnings;
+  options = normalized.options;
   if (ownsWarnings) options.warnings = [];
 
   try {
@@ -55,14 +96,62 @@ function warningKey(warning) {
   ].join('\0');
 }
 
+function validateWarnings(warnings) {
+  if (!Array.isArray(warnings)) {
+    throw new TypeError('Expected "warnings" to be an array');
+  }
+
+  const validated = new Array(warnings.length);
+  for (let i = 0; i < warnings.length; i++) {
+    const warning = warnings[i];
+    if (!warning || typeof warning !== 'object' || Array.isArray(warning)) {
+      throw new TypeError(`Expected warning at index ${i} to be an object`);
+    }
+
+    const code = warning.code;
+    const message = warning.message;
+    const filename = warning.filename;
+    const line = warning.line;
+    const column = warning.column;
+    if (typeof code !== 'string' || code.length === 0) {
+      throw new TypeError(
+        `Expected warning at index ${i} to have a non-empty string code`,
+      );
+    }
+    if (typeof message !== 'string') {
+      throw new TypeError(
+        `Expected warning at index ${i} to have a string message`,
+      );
+    }
+    if (filename !== undefined && typeof filename !== 'string') {
+      throw new TypeError(
+        `Expected warning at index ${i} to have a string filename`,
+      );
+    }
+    if (line !== undefined && (!Number.isSafeInteger(line) || line < 1)) {
+      throw new TypeError(
+        `Expected warning at index ${i} to have a positive integer line`,
+      );
+    }
+    if (column !== undefined && (!Number.isSafeInteger(column) || column < 1)) {
+      throw new TypeError(
+        `Expected warning at index ${i} to have a positive integer column`,
+      );
+    }
+
+    validated[i] = {code, message, filename, line, column};
+  }
+  return validated;
+}
+
 // Print each distinct diagnostic once. Dedup is an emission concern: one
 // shared array is threaded through every file in a build, so a layout included
 // by many pages collects the same warning once per page. Deduping here, rather
 // than after every render, keeps collection linear over the whole build.
 function emitWarnings(warnings) {
+  warnings = validateWarnings(warnings);
   const seen = new Set();
   for (let i = 0; i < warnings.length; i++) {
-    if (!warnings[i]) continue;
     const key = warningKey(warnings[i]);
     if (seen.has(key)) continue;
     seen.add(key);
@@ -75,9 +164,10 @@ function emitWarnings(warnings) {
 }
 
 function renderPugneumFile(filename, options) {
+  options = normalizeOptions(options).options;
   filename = resolve(filename);
   const source = fs.readFileSync(filename, 'utf8');
-  options = Object.assign({}, options, {filename: filename});
+  options.filename = filename;
   return renderPugneum(source, options);
 }
 

@@ -1448,6 +1448,51 @@ describe('attribute value quoting', () => {
   });
 });
 
+describe('public options', () => {
+  for (const [label, options] of [
+    ['number', 1],
+    ['string', 'options'],
+    ['boolean', true],
+    ['array', []],
+    ['Set', new Set()],
+  ]) {
+    it('rejects a ' + label + ' render option bag', () => {
+      assert.throws(
+        () => pg.render('p page', options),
+        /Expected "options" to be an object-like option bag/,
+      );
+    });
+  }
+
+  it('rejects invalid renderFile options before reading the file', () => {
+    var readFileSync = fs.readFileSync;
+    var reads = 0;
+    fs.readFileSync = function () {
+      reads++;
+      return readFileSync.apply(this, arguments);
+    };
+    try {
+      assert.throws(
+        () => pg.renderFile(path.join(testCasesDir, 'basic.pg'), new Set()),
+        /Expected "options" to be an object-like option bag/,
+      );
+      assert.strictEqual(reads, 0);
+    } finally {
+      fs.readFileSync = readFileSync;
+    }
+  });
+
+  it('accepts nullish and frozen option bags without mutating them', () => {
+    assert.strictEqual(pg.render('p page', null), '<p>page</p>');
+    assert.strictEqual(pg.render('p page', undefined), '<p>page</p>');
+
+    var warnings = [];
+    var options = Object.freeze({filename: 'frozen.pg', warnings});
+    assert.doesNotThrow(() => pg.render('a(href=‘/x’) link', options));
+    assert.strictEqual(warnings.length, 1);
+  });
+});
+
 describe('warnings', () => {
   var LSQUO = '‘';
   var RSQUO = '’';
@@ -1487,6 +1532,39 @@ describe('warnings', () => {
       });
     });
     assert.strictEqual(out, '');
+  });
+
+  it('preserves a non-enumerable own warning collector', () => {
+    var warnings = [];
+    var options = {filename: 'hidden.pg'};
+    Object.defineProperty(options, 'warnings', {value: warnings});
+
+    var out = captureStderr(function () {
+      pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T', options);
+    });
+
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(out, '');
+  });
+
+  it('does not treat an inherited warning collector as caller-owned', () => {
+    var inheritedWarnings = [];
+    var options = Object.create({warnings: inheritedWarnings});
+    options.filename = 'inherited.pg';
+
+    var out = captureStderr(function () {
+      pg.render('a(href=' + LSQUO + '/x' + RSQUO + ') T', options);
+    });
+
+    assert.deepStrictEqual(inheritedWarnings, []);
+    assert.match(out, /TYPOGRAPHIC_QUOTE_DELIMITER/);
+  });
+
+  it('rejects an explicitly supplied non-array warning collector', () => {
+    assert.throws(
+      () => pg.render('p clean', {warnings: new Set()}),
+      /Expected "options\.warnings" to be a mutable array/,
+    );
   });
 
   it('prints the warning to stderr when no collector is provided', () => {
@@ -1604,8 +1682,7 @@ describe('warnings', () => {
     assert.doesNotMatch(out, /warning PUGNEUM:/);
   });
 
-  it('emitWarnings tolerates a null entry in the warnings array', () => {
-    // A junk null entry must be skipped, not crash warningKey with a TypeError.
+  it('emitWarnings validates the entire batch before writing', () => {
     var w = {
       code: 'PUGNEUM:X',
       message: 'f.pg:1:1\n\nm',
@@ -1614,11 +1691,23 @@ describe('warnings', () => {
       column: 1,
     };
     var out = captureStderr(function () {
-      assert.doesNotThrow(function () {
+      assert.throws(function () {
         pg.emitWarnings([null, w]);
-      });
+      }, /warning at index 0/);
+      assert.throws(function () {
+        pg.emitWarnings([w, {code: 7, message: 'broken'}]);
+      }, /warning at index 1/);
     });
-    assert.match(out, /warning X/);
+    assert.strictEqual(out, '');
+  });
+
+  it('emitWarnings requires an array', () => {
+    for (const warnings of [null, {}, new Set()]) {
+      assert.throws(
+        () => pg.emitWarnings(warnings),
+        /Expected "warnings" to be an array/,
+      );
+    }
   });
 
   it('emits collected warnings even when a later stage throws', () => {

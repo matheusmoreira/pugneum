@@ -330,6 +330,18 @@ describe('rooted regular-file reads', () => {
 });
 
 describe('rooted atomic publication', () => {
+  test('publishes beneath a configured filesystem root', (t) => {
+    const sandbox = temporaryRoot(t);
+    const systemRoot = path.parse(sandbox).root;
+    const target = path.join(sandbox, 'rooted-output.html');
+    const relative = path.relative(systemRoot, target);
+    const files = createRootedFilesystem(systemRoot);
+
+    files.writeFileAtomic(relative, 'inside', 'utf8');
+
+    assert.strictEqual(fs.readFileSync(target, 'utf8'), 'inside');
+  });
+
   test('creates descendant directories without following links', (t) => {
     const sandbox = temporaryRoot(t);
     const root = path.join(sandbox, 'root');

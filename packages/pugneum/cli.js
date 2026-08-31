@@ -241,6 +241,23 @@ function rethrowInputBoundary(error, relative) {
   throw error;
 }
 
+function prepareOutputDirectory(directory) {
+  try {
+    fs.mkdirSync(directory, {recursive: true});
+    return fs.realpathSync(directory);
+  } catch (error) {
+    if (error && ['EEXIST', 'ELOOP', 'ENOTDIR'].includes(error.code)) {
+      const directoryError = new Error(`Expected directory: '${directory}'`, {
+        cause: error,
+      });
+      directoryError.code = 'ENOTDIR';
+      directoryError.path = directory;
+      throw directoryError;
+    }
+    throw error;
+  }
+}
+
 function errorMessage(error) {
   if (error && typeof error.message === 'string') return error.message;
   try {
@@ -284,9 +301,8 @@ try {
   const resolvedInputDir = fs.realpathSync(inputDirectory);
   const inputFiles = createRootedFilesystem(resolvedInputDir);
   const resolvedOutputDir = path.resolve(outputDirectory);
-  fs.mkdirSync(resolvedOutputDir, {recursive: true});
+  const realOutputDir = prepareOutputDirectory(resolvedOutputDir);
   const outputFiles = createRootedFilesystem(resolvedOutputDir);
-  const realOutputDir = fs.realpathSync(resolvedOutputDir);
   const outputRelativeToInput = path.relative(resolvedInputDir, realOutputDir);
   const nestedOutputDir =
     outputRelativeToInput &&

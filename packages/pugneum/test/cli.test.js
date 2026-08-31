@@ -587,6 +587,59 @@ describe('CLI', () => {
     }
   });
 
+  test('reports an existing file used as the output directory cleanly', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p page');
+      fs.writeFileSync(path.join(tmp, 'out'), 'keep me');
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+
+      const result = runExpectFail([], {cwd: tmp});
+
+      assert.strictEqual(result.status, 4);
+      assert.match(result.stderr, /Expected directory/);
+      assert.doesNotMatch(result.stderr, /\n\s+at /);
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'out'), 'utf8'),
+        'keep me',
+      );
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('reports a circular output-directory symlink cleanly', (t) => {
+    if (process.platform === 'win32') {
+      t.skip('self-referential symlinks are not portable to Windows');
+      return;
+    }
+
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p page');
+      if (!makeSymlinkOrSkip(t, 'loop', path.join(tmp, 'loop'), 'file')) {
+        return;
+      }
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'loop'}),
+      );
+
+      const result = runExpectFail([], {cwd: tmp});
+
+      assert.strictEqual(result.status, 4);
+      assert.match(result.stderr, /Expected directory/);
+      assert.doesNotMatch(result.stderr, /\n\s+at /);
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
   test('output-escape guard is not tripped by a normal symlinked input dir', (t) => {
     // The guard must distinguish a legitimate symlinked input root (builds) from
     // a genuinely escaping output path. This pairs with the symlinked-input

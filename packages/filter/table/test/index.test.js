@@ -165,6 +165,14 @@ describe('row attrs', () => {
     var result = tableFilter.filter(input, {});
     assert.match(result, /tr\(class="highlight"\)/);
   });
+
+  test('a bare tr before the first pipe remains the first data cell', () => {
+    var result = tableFilter.filter('tr | value |', {});
+    assert.strictEqual(
+      result,
+      'table\n  tbody\n    tr\n      td tr\n      td value',
+    );
+  });
 });
 
 describe('caption', () => {
@@ -302,6 +310,26 @@ describe('table structure', () => {
     assert.throws(
       () => tableFilter.filter('| --- | === |', {}),
       /[Mm]ixed separator/,
+    );
+  });
+
+  test('one- and two-character dash or equals cells remain data', () => {
+    ['-', '--', '=', '=='].forEach((value) => {
+      var result = tableFilter.filter('| ' + value + ' |', {});
+      assert.strictEqual(result, 'table\n  tbody\n    tr\n      td ' + value);
+    });
+
+    assert.strictEqual(
+      tableFilter.filter('| - | = |', {}),
+      'table\n  tbody\n    tr\n      td -\n      td =',
+    );
+  });
+
+  test('three-character dash and equals cells remain section separators', () => {
+    assert.throws(() => tableFilter.filter('| --- |', {}), /no.*data.*rows/i);
+    assert.throws(
+      () => tableFilter.filter('| === |', {}),
+      /pending tfoot has no rows/i,
     );
   });
 });

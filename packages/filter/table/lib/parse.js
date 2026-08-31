@@ -73,11 +73,12 @@ function splitPipeCells(fragment) {
 // Parse an optional tr(attrs) prefix before the first | on a line.
 // Returns {trAttrs: string|null, rest: string}.
 function parseTrPrefix(line) {
-  // A tr prefix is the literal `tr` followed by an optional balanced (attrs)
-  // group, then optional whitespace, then a pipe-delimited row. Anything else
-  // (including a bare `tr` not followed by a pipe) is left untouched.
+  // A tr prefix is the literal `tr` followed by a balanced (attrs) group, then
+  // optional whitespace and a pipe-delimited row. Requiring the group keeps a
+  // bare first cell such as `tr | value |` unambiguous data.
   if (line.slice(0, 2) !== 'tr') return {trAttrs: null, rest: line};
   const after = line.slice(2);
+  if (after[0] !== '(') return {trAttrs: null, rest: line};
   const group = matchAttrGroup(after);
   const rest = group.rest.replace(/^\s*/, '');
   if (rest[0] !== '|') return {trAttrs: null, rest: line};
@@ -137,13 +138,13 @@ function isDashSepSegment(cell) {
     const close = scanParenGroup(s, open);
     if (close !== -1) s = s.slice(0, open) + s.slice(close);
   }
-  // Remaining must be only dashes (at least one)
-  return /^-+$/.test(s);
+  // Remaining must be the documented separator width: at least three dashes.
+  return /^-{3,}$/.test(s);
 }
 
-// An equals separator segment is only equals signs (at least one).
+// An equals separator segment is at least three equals signs.
 function isEqualsSepSegment(cell) {
-  return /^=+$/.test(cell);
+  return /^={3,}$/.test(cell);
 }
 
 // Classify a pipe-delimited row by its separator type:

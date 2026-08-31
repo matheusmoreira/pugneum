@@ -39,10 +39,13 @@ errors.
 - **Rows** are pipe-delimited. Leading and trailing pipes are optional, so
   `| a | b |`, `a | b`, and `| a | b` are equivalent. A trailing/leading pipe just
   produces an empty edge cell that is dropped.
-- **Header separator** `| --- | --- |`: the rows above it become a `<thead>`, the
-  rows below begin a `<tbody>`. A second `---` starts another `<tbody>`.
-- **Footer separator** `| === |`: the rows below it become a `<tfoot>`. It may
-  appear at most once and not after a `tfoot` marker.
+- **Header separator** `| --- | --- |`: separator cells contain at least three
+  dashes. The rows above it become a `<thead>`, and the rows below begin a
+  `<tbody>`. A second `---` starts another `<tbody>`.
+- **Footer separator** `| === |`: separator cells contain at least three equals
+  signs. The rows below it become a `<tfoot>`. It may appear at most once and not
+  after a `tfoot` marker. Shorter runs of dashes or equals signs are ordinary
+  cell data.
 - **Alignment** in a separator cell: `:---` left, `---:` right, `:---:` center.
   Each separator column emits a `<col>`; alignment becomes
   `col(style="text-align:...")`.
@@ -57,7 +60,8 @@ errors.
   have at most one `<thead>` and one `<tfoot>`, and `<tfoot>` must come last;
   violating this is an error.
 - **Row attributes**: a `tr(attrs)` prefix before the first pipe on a row applies
-  attributes to that `<tr>`.
+  attributes to that `<tr>`. The attribute group is required, so a bare first
+  cell in `tr | value |` remains the text `tr`.
 - **Tagged cells**: a cell beginning with `th` or `td` followed by an optional
   balanced `(attrs)` group and then whitespace or end of cell is emitted verbatim,
   letting you set per-cell attributes (`td(colspan="2") x`). Header cells in

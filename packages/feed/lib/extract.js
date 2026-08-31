@@ -49,15 +49,16 @@ function extractTitle(dom) {
   return null;
 }
 
-// Collect every <meta name=...> content once per page into a name->content map,
-// so description/author/keywords are read from a single document walk instead of
-// one full scan each. A null-prototype map keeps a <meta name="__proto__"> from
-// colliding with inherited object keys.
+// Collect every <meta name=...> content once per page into an ASCII-folded
+// name->content map, so description/author/keywords are read from a single
+// document walk instead of one full scan each. A null-prototype map keeps a
+// <meta name="__proto__"> from colliding with inherited object keys.
 function extractMetaMap(dom) {
   const metas = DomUtils.getElementsByTagName('meta', dom);
   const map = Object.create(null);
   for (let i = 0; i < metas.length; i++) {
-    const name = metas[i].attribs.name;
+    const rawName = metas[i].attribs.name;
+    const name = rawName && asciiLowerCase(rawName);
     if (name && map[name] === undefined) {
       map[name] = metas[i].attribs.content || null;
     }
@@ -67,6 +68,12 @@ function extractMetaMap(dom) {
 
 function metaValue(metaMap, name) {
   return metaMap[name] !== undefined ? metaMap[name] : null;
+}
+
+function asciiLowerCase(value) {
+  return value.replace(/[A-Z]/g, (character) =>
+    String.fromCharCode(character.charCodeAt(0) + 32),
+  );
 }
 
 function extractLanguage(dom) {

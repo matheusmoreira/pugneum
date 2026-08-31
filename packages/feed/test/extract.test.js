@@ -32,6 +32,23 @@ describe('index page extraction', () => {
     assert.strictEqual(result.language, 'en');
   });
 
+  test('matches metadata names case-insensitively and keeps the first value', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><title>T</title>' +
+        '<meta name="Description" content="first">' +
+        '<meta name="DESCRIPTION" content="later">' +
+        '<meta name="AUTHOR"><meta name="author" content="later">' +
+        '</head><body></body></html>',
+    );
+    try {
+      var result = extract.indexPage(p);
+      assert.strictEqual(result.description, 'first');
+      assert.strictEqual(result.author, null);
+    } finally {
+      fs.unlinkSync(p);
+    }
+  });
+
   test('discovers articles sorted newest first', () => {
     var result = extract.indexPage(path.join(fixturesDir, 'index.html'));
 
@@ -110,6 +127,24 @@ describe('article page enrichment', () => {
     assert.ok(result.content.includes('<h1>First Article</h1>'));
     assert.ok(result.content.includes('<p>This is the full content'));
     assert.ok(!result.content.includes('<nav>'));
+  });
+
+  test('extracts mixed-case article metadata names', () => {
+    var p = writeTemp(
+      '<!DOCTYPE html><html><head><title>T</title>' +
+        '<meta name="Description" content="Summary">' +
+        '<meta name="AUTHOR" content="Author">' +
+        '<meta name="KeyWords" content="one, two">' +
+        '</head><body><article>Content</article></body></html>',
+    );
+    try {
+      var result = extract.articlePage(p, 'article');
+      assert.strictEqual(result.description, 'Summary');
+      assert.strictEqual(result.author, 'Author');
+      assert.deepStrictEqual(result.keywords, ['one', 'two']);
+    } finally {
+      fs.unlinkSync(p);
+    }
   });
 
   test('handles missing optional metadata', () => {

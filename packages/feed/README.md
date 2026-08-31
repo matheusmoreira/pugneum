@@ -87,6 +87,8 @@ and lists articles via elements with a `data-published-at` attribute.
 Each article page provides per-entry metadata via `<meta>` tags.
 The content of the configured selector element
 (default `<article>`) becomes the feed entry content.
+Metadata `name` values are matched ASCII-case-insensitively, as in HTML; when
+the same name appears more than once, the first element supplies the value.
 `<meta name="keywords">` (a comma-separated list) is emitted as feed
 categories: `<category term="...">` in Atom and `<category>` in RSS.
 

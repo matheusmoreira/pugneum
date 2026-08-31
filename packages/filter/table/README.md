@@ -58,6 +58,13 @@ errors.
   the alignment is merged into it (one `style` attribute, never two).
 - **Colgroup boundaries**: `||` in a *separator* row splits columns into separate
   `<colgroup>` elements. In a *data* row, `||` is treated as a single `|`.
+- **Column shape** is permissive. The first dash separator defines all emitted
+  `<colgroup>` elements and column alignments; later dash separators only start a
+  new `<tbody>`. Rows may contain fewer or more cells than that first separator,
+  and are emitted without padding or truncation. Alignment is applied only to
+  columns described by the first separator, so excess cells have no generated
+  alignment; the browser's table-layout algorithm handles the resulting ragged
+  structure.
 - **Caption**: a leading `caption text` or `caption(attrs) text` line.
 - **Section markers**: a `thead`, `tbody`, or `tfoot` line (optionally with
   `(attrs)`) on its own declares the section for the rows that follow. A table may

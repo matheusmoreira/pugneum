@@ -311,6 +311,42 @@ describe('colgroup boundaries', () => {
   });
 });
 
+describe('ragged row widths', () => {
+  test('short and long rows are emitted without padding or truncation', () => {
+    var input =
+      '| first | second |\n' +
+      '| :--- | ---: |\n' +
+      '| short |\n' +
+      '| one | two | excess |';
+    var result = renderRoundTrip(input);
+
+    assert.match(
+      result.html,
+      /<tr><td style="text-align:left">short<\/td><\/tr>/,
+    );
+    assert.match(
+      result.html,
+      /<tr><td style="text-align:left">one<\/td><td style="text-align:right">two<\/td><td>excess<\/td><\/tr>/,
+    );
+  });
+
+  test('later dash separators do not redefine the first column shape', () => {
+    var input =
+      '| heading |\n' +
+      '| :--- |\n' +
+      '| first body |\n' +
+      '| ---: | :---: |\n' +
+      '| left | excess |';
+    var result = renderRoundTrip(input);
+
+    assert.strictEqual((result.html.match(/<col(?=[ >])/g) || []).length, 1);
+    assert.match(
+      result.html,
+      /<tr><td style="text-align:left">left<\/td><td>excess<\/td><\/tr>/,
+    );
+  });
+});
+
 describe('table structure', () => {
   test('second --- separator starts new tbody', () => {
     var input = '| a |\n| --- |\n| b |\n| --- |\n| c |';

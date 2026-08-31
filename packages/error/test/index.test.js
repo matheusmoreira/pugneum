@@ -7,6 +7,20 @@ var packageRoot = path.resolve(__dirname, '..');
 var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
 var manifest = require('../package.json');
 
+function assertDiagnosticFields(actual, expected) {
+  assert.deepStrictEqual(
+    {
+      code: actual.code,
+      msg: actual.msg,
+      line: actual.line,
+      column: actual.column,
+      filename: actual.filename,
+      source: actual.source,
+    },
+    expected,
+  );
+}
+
 describe('public documentation', function () {
   test('documents both factories and caller-owned warning collection', function () {
     assert.match(readme, /### `error\(code, message, options\)`/);
@@ -54,11 +68,14 @@ describe('with a source', function () {
       err.message,
       'myfile:3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, 'myfile');
-    assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: undefined,
+      filename: 'myfile',
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
   });
   test('and no filename', function () {
     var err = error('MY_CODE', 'My message', {
@@ -69,32 +86,54 @@ describe('with a source', function () {
       err.message,
       '3\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, undefined);
-    assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: undefined,
+      filename: undefined,
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
   });
+});
+
+test('error() returns a native Error with a useful caller stack', function () {
+  var err = error('STACK_TEST', 'Stack message', {
+    filename: 'stack.pg',
+    line: 2,
+  });
+
+  assert.ok(err instanceof Error);
+  assert.strictEqual(Object.getPrototypeOf(err), Error.prototype);
+  assert.strictEqual(typeof err.stack, 'string');
+  assert.match(err.stack, /^Error: stack\.pg:2\n\nStack message\n/);
+  assert.match(err.stack, /packages\/error\/test\/index\.test\.js/);
 });
 
 describe('without source', function () {
   test('and with a filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3, filename: 'myfile'});
     assert.strictEqual(err.message, 'myfile:3\n\nMy message');
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, 'myfile');
-    assert.strictEqual(err.source, undefined);
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: undefined,
+      filename: 'myfile',
+      source: undefined,
+    });
   });
   test('and with no filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3});
     assert.strictEqual(err.message, '3\n\nMy message');
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, undefined);
-    assert.strictEqual(err.source, undefined);
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: undefined,
+      filename: undefined,
+      source: undefined,
+    });
   });
 });
 
@@ -110,20 +149,26 @@ describe('with column', function () {
       err.message,
       'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message',
     );
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, 'myfile');
-    assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: 2,
+      filename: 'myfile',
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
   });
   test('and with no filename', function () {
     var err = error('MY_CODE', 'My message', {line: 3, column: 1});
     assert.strictEqual(err.message, '3:1\n\nMy message');
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, undefined);
-    assert.strictEqual(err.source, undefined);
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: 1,
+      filename: undefined,
+      source: undefined,
+    });
   });
 });
 
@@ -138,11 +183,14 @@ describe('invalid information', function () {
       err.message,
       '3:-1\n    1| foo\n    2| bar\n  > 3| baz\n    4| bash\n    5| bing\n\nMy message',
     );
-    assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-    assert.strictEqual(err.msg, 'My message');
-    assert.strictEqual(err.line, 3);
-    assert.strictEqual(err.filename, undefined);
-    assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
+    assertDiagnosticFields(err, {
+      code: 'PUGNEUM:MY_CODE',
+      msg: 'My message',
+      line: 3,
+      column: -1,
+      filename: undefined,
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
   });
   test('out of range line', function () {
     check(0);
@@ -154,11 +202,14 @@ describe('invalid information', function () {
         source: 'foo\nbar\nbaz\nbash\nbing',
       });
       assert.strictEqual(err.message, line + '\n\nMy message');
-      assert.strictEqual(err.code, 'PUGNEUM:MY_CODE');
-      assert.strictEqual(err.msg, 'My message');
-      assert.strictEqual(err.line, line);
-      assert.strictEqual(err.filename, undefined);
-      assert.strictEqual(err.source, 'foo\nbar\nbaz\nbash\nbing');
+      assertDiagnosticFields(err, {
+        code: 'PUGNEUM:MY_CODE',
+        msg: 'My message',
+        line: line,
+        column: undefined,
+        filename: undefined,
+        source: 'foo\nbar\nbaz\nbash\nbing',
+      });
     }
   });
 });
@@ -175,15 +226,20 @@ describe('warning', function () {
       warn.message,
       'myfile:3:2\n    1| foo\n    2| bar\n  > 3| baz\n--------^\n    4| bash\n    5| bing\n\nMy message',
     );
-    assert.strictEqual(warn.code, 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER');
-    assert.strictEqual(warn.msg, 'My message');
-    assert.strictEqual(warn.line, 3);
-    assert.strictEqual(warn.column, 2);
-    assert.strictEqual(warn.filename, 'myfile');
+    assertDiagnosticFields(warn, {
+      code: 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER',
+      msg: 'My message',
+      line: 3,
+      column: 2,
+      filename: 'myfile',
+      source: 'foo\nbar\nbaz\nbash\nbing',
+    });
     assert.ok(
       !(warn instanceof Error),
       'warning must not be an Error instance',
     );
+    assert.strictEqual(Object.getPrototypeOf(warn), Object.prototype);
+    assert.strictEqual(warn.stack, undefined);
   });
 
   test('shares an identical message format with error()', function () {

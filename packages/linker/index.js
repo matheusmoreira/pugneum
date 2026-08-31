@@ -26,8 +26,8 @@ function locContext(node, sources) {
     source = sources.entrySource;
   }
   return {
-    line: node.line,
-    column: node.column,
+    line: node && node.line,
+    column: node && node.column,
     filename,
     source,
   };
@@ -127,16 +127,19 @@ module.exports = link;
 // also why resolution is now document-global — one pass over the assembled tree
 // rather than per-include-level, so references/footnotes/toc cross include/extends.
 function link(ast, options) {
-  options = establishWarnings(options);
-  return resolveDocument(linkInner(ast, options, createLinkState()), options);
+  options = prepareLink(ast, options);
+  return resolveDocument(
+    linkInner(ast, options, createLinkState(options), 0),
+    options,
+  );
 }
 
 // Assembly only: template inheritance (extends/blocks) + includes. No reference/
 // footnote/toc resolution and no whole-document lint — those run later, in
 // resolve(), over the fully assembled + filtered tree.
 link.assemble = function (ast, options) {
-  options = establishWarnings(options);
-  return linkInner(ast, options, createLinkState());
+  options = prepareLink(ast, options);
+  return linkInner(ast, options, createLinkState(options), 0);
 };
 
 // Document-level resolution over the final assembled + filtered tree: references,
@@ -146,7 +149,6 @@ link.assemble = function (ast, options) {
 // its TOC entry). lintDocument runs last so it sees resolution-generated ids
 // (footnote ids, etc.).
 function resolveDocument(ast, options) {
-  options = establishWarnings(options);
   const sources = diagnosticSources(options);
   const warnings = options.warnings;
   ast = resolveReferences(ast, sources, warnings);
@@ -155,50 +157,74 @@ function resolveDocument(ast, options) {
   lintDocument(ast, sources, warnings);
   return ast;
 }
-link.resolve = resolveDocument;
+link.resolve = function (ast, options) {
+  options = prepareLink(ast, options);
+  return resolveDocument(cloneAst(ast), options);
+};
 
-// Establish a single warnings array on the options object (mirroring how the
-// loader establishes options.sources): guards against a non-array `warnings`,
-// makes diagnostics reachable for a bare caller, and ensures every pass collects
-// into the same array.
-function establishWarnings(options) {
-  options = options || {};
-  if (!Array.isArray(options.warnings)) options.warnings = [];
+function prepareLink(ast, options) {
+  options = validateOptions(options);
+  validateRoot(ast, diagnosticSources(options));
+  if (options.warnings === undefined) options.warnings = [];
   return options;
 }
 
-// Inheritance bookkeeping is needed only while one tree is being assembled.
-// Keep it off public AST nodes so the linked result remains a serializable tree
-// instead of exposing a repeated ancestry graph through enumerable metadata.
-function createLinkState() {
-  return {
-    declaredBlocks: new WeakMap(),
-    parentBlocks: new WeakMap(),
-  };
-}
-
-function linkInner(ast, options, state) {
-  options = options || {};
-  const sources = diagnosticSources(options);
-  const maxDepth =
-    options.maxLinkDepth != null
-      ? options.maxLinkDepth
-      : DEFAULT_MAX_LINK_DEPTH;
-  // _linkDepth is internal recursion state, never a caller-supplied option. It
-  // is incremented only on the two recursion edges (the Extends branch below
-  // and the Include branch in applyIncludes) and bounds both chains together.
-  const depth = options._linkDepth || 0;
-
-  if (depth >= maxDepth) {
-    error(
-      'LINK_DEPTH_EXCEEDED',
-      `Template inheritance/include chain exceeds maximum depth of ${maxDepth}`,
-      ast,
-      sources,
+function validateOptions(options) {
+  if (options === undefined) options = {};
+  if (
+    options === null ||
+    typeof options !== 'object' ||
+    Array.isArray(options)
+  ) {
+    throw new TypeError('options must be an object (non-null and non-array)');
+  }
+  if (
+    options.maxLinkDepth !== undefined &&
+    (!Number.isSafeInteger(options.maxLinkDepth) ||
+      options.maxLinkDepth < 0 ||
+      options.maxLinkDepth > DEFAULT_MAX_LINK_DEPTH)
+  ) {
+    throw new TypeError(
+      'options.maxLinkDepth must be an integer from 0 through ' +
+        DEFAULT_MAX_LINK_DEPTH,
     );
   }
+  if (
+    options.sources !== undefined &&
+    (options.sources === null ||
+      typeof options.sources !== 'object' ||
+      Array.isArray(options.sources))
+  ) {
+    throw new TypeError('options.sources must be a non-null, non-array object');
+  }
+  for (const name of ['filename', 'source']) {
+    if (options[name] !== undefined && typeof options[name] !== 'string') {
+      throw new TypeError('options.' + name + ' must be a string');
+    }
+  }
+  if (options.warnings !== undefined) {
+    if (
+      !Array.isArray(options.warnings) ||
+      !Object.isExtensible(options.warnings) ||
+      !Object.getOwnPropertyDescriptor(options.warnings, 'length').writable
+    ) {
+      throw new TypeError('options.warnings must be an extensible array');
+    }
+  } else if (!Object.isExtensible(options)) {
+    throw new TypeError(
+      'options must permit the warnings output property or supply a warnings array',
+    );
+  }
+  return options;
+}
 
-  if (ast.type !== 'Block') {
+function validateRoot(ast, sources) {
+  if (
+    ast === null ||
+    typeof ast !== 'object' ||
+    Array.isArray(ast) ||
+    ast.type !== 'Block'
+  ) {
     error(
       'INVALID_AST',
       'The top level element should always be a block',
@@ -206,20 +232,49 @@ function linkInner(ast, options, state) {
       sources,
     );
   }
+  if (!Array.isArray(ast.nodes)) {
+    error(
+      'INVALID_AST',
+      'The top level block should always contain a nodes array',
+      ast,
+      sources,
+    );
+  }
+}
+
+// Inheritance bookkeeping is needed only while one tree is being assembled.
+// Keep it off public AST nodes so the linked result remains a serializable tree
+// instead of exposing a repeated ancestry graph through enumerable metadata.
+function createLinkState(options) {
+  return {
+    declaredBlocks: new WeakMap(),
+    maxDepth:
+      options.maxLinkDepth === undefined
+        ? DEFAULT_MAX_LINK_DEPTH
+        : options.maxLinkDepth,
+    parentBlocks: new WeakMap(),
+  };
+}
+
+function linkInner(ast, options, state, depth) {
+  const sources = diagnosticSources(options);
+  validateRoot(ast, sources);
+  // Each physical AST is copied at its ownership boundary. FileReference.ast
+  // values stay deferred until their own linkInner call, so the same child AST
+  // can safely be used at multiple include/extends sites without preserving an
+  // alias between rendered occurrences.
+  ast = cloneOwnedAst(ast);
   let extendsNode = null;
   if (ast.nodes.length) {
     const hasExtends = ast.nodes[0].type === 'Extends';
     checkExtendPosition(ast, hasExtends, sources);
     if (hasExtends) {
-      // Note: this and the parent-tree rewrites below mutate the input AST in
-      // place. That is safe only because the loader hands each Include/Extends
-      // site a freshly parsed, structuredClone'd, unshared tree (see
-      // loader/index.js). Do NOT introduce AST caching upstream without making
-      // these mutations copy-on-write.
-      extendsNode = ast.nodes.shift();
+      extendsNode = ast.nodes[0];
+      assertLinkEdge(depth, state.maxDepth, extendsNode, sources);
+      ast.nodes.shift();
     }
   }
-  ast = applyIncludes(ast, options, state);
+  ast = applyIncludes(ast, options, state, depth);
   const declaredBlocks = findDeclaredBlocks(ast);
   state.declaredBlocks.set(ast, declaredBlocks);
   if (extendsNode) {
@@ -243,11 +298,7 @@ function linkInner(ast, options, state) {
     });
 
     // Validate expected blocks BEFORE mutating parent via extend()
-    const parent = linkInner(
-      extendsNode.file.ast,
-      Object.assign({}, options, {_linkDepth: depth + 1}),
-      state,
-    );
+    const parent = linkInner(extendsNode.file.ast, options, state, depth + 1);
     const parentBlockNames = [];
     walk(parent, function (node) {
       if (node.type === 'NamedBlock') {
@@ -370,7 +421,18 @@ function extend(parentBlocks, ast, sources, parentBlocksByOverride) {
   );
 }
 
-function applyIncludes(ast, options, state) {
+function assertLinkEdge(depth, maxDepth, node, sources) {
+  if (depth >= maxDepth) {
+    error(
+      'LINK_DEPTH_EXCEEDED',
+      `Template inheritance/include chain exceeds maximum depth of ${maxDepth}`,
+      node,
+      sources,
+    );
+  }
+}
+
+function applyIncludes(ast, options, state, depth) {
   // RawInclude is handled in `before` (its content is a leaf string, nothing
   // below it to descend into). Include is handled in `after` so the includer's
   // passed-in `node.block` is fully walked before being yielded into the linked
@@ -390,15 +452,11 @@ function applyIncludes(ast, options, state) {
     },
     function after(node, replace) {
       if (node.type === 'Include') {
-        const depth = options._linkDepth || 0;
+        assertLinkEdge(depth, state.maxDepth, node, diagnosticSources(options));
         // linkInner, not link: the included subtree is linted as part of the
         // final assembled tree by the top-level link() wrapper. Calling link()
         // here would lint it again, multiplying warnings by include depth.
-        let childAST = linkInner(
-          node.file.ast,
-          Object.assign({}, options, {_linkDepth: depth + 1}),
-          state,
-        );
+        let childAST = linkInner(node.file.ast, options, state, depth + 1);
         if (childAST.hasExtends) {
           childAST = removeBlocks(childAST);
         }
@@ -426,7 +484,7 @@ function removeBlocks(ast) {
 // nodes. structuredClone preserves the graph, but converts those Buffers to
 // Uint8Arrays. Clone the AST graph explicitly so binary filters keep receiving
 // the loader's Buffer contract while aliases within one copy stay aliases.
-function cloneAst(value, copies) {
+function cloneAst(value, copies, deferDependencies) {
   if (value === null || typeof value !== 'object') return value;
   copies = copies || new Map();
   if (copies.has(value)) return copies.get(value);
@@ -444,11 +502,22 @@ function cloneAst(value, copies) {
   for (const key of Reflect.ownKeys(value)) {
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
-      descriptor.value = cloneAst(descriptor.value, copies);
+      descriptor.value =
+        deferDependencies && value.type === 'FileReference' && key === 'ast'
+          ? descriptor.value
+          : cloneAst(descriptor.value, copies, deferDependencies);
     }
     Object.defineProperty(copy, key, descriptor);
   }
   return copy;
+}
+
+// Clone one physical syntax tree while retaining dependency ASTs as deferred
+// inputs. Each dependency is copied independently when its include/extends edge
+// is followed, which gives every rendered occurrence single ownership even if
+// a direct API caller reuses the same FileReference.ast object.
+function cloneOwnedAst(value) {
+  return cloneAst(value, undefined, true);
 }
 
 function applyYield(ast, block, includeNode, options) {

@@ -268,7 +268,7 @@ describe('error handling', () => {
     );
   });
 
-  test('LINK_DEPTH_EXCEEDED when inheritance chain exceeds limit', () => {
+  test('LINK_DEPTH_EXCEEDED at the inheritance edge when no edges are allowed', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\nblock content\n  p hello';
     var options = {
@@ -277,14 +277,17 @@ describe('error handling', () => {
       lex,
       parse,
       basedir: dir,
-      maxLinkDepth: 1,
+      maxLinkDepth: 0,
     };
     var tokens = lex(source, options);
     var ast = parse(tokens, options);
     var loaded = load(ast, options);
     assert.throws(
       () => link(loaded, options),
-      (err) => err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED',
+      (err) =>
+        err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED' &&
+        err.line === 1 &&
+        err.column === 1,
     );
   });
 
@@ -381,7 +384,8 @@ describe('large flat collections', () => {
       if (node.type === 'Tag' && node.name === outputTag) output = node;
     });
     assert(output);
-    assert.strictEqual(output.attrs.at(-1), attr);
+    assert.deepStrictEqual(output.attrs.at(-1), attr);
+    assert.notStrictEqual(output.attrs.at(-1), attr);
     return output.attrs.length;
   }
 
@@ -1101,8 +1105,208 @@ describe('toc accessible text and hierarchy', () => {
   });
 });
 
+describe('public boundary, depth, and ownership contracts', () => {
+  const loc = {line: 1, column: 1, filename: 'entry.pg'};
+
+  function block(nodes, filename) {
+    return Object.assign(
+      {
+        type: 'Block',
+        nodes,
+        filename: filename || loc.filename,
+      },
+      loc,
+      filename ? {filename} : null,
+    );
+  }
+
+  function fileReference(ast, filename) {
+    return {
+      type: 'FileReference',
+      path: filename,
+      ast,
+      line: 1,
+      column: 1,
+      filename: 'entry.pg',
+    };
+  }
+
+  test('malformed roots consistently raise located INVALID_AST diagnostics', () => {
+    for (const [label, ast] of [
+      ['undefined', undefined],
+      ['null', null],
+      ['scalar', 42],
+      ['array', []],
+      ['wrong type', {type: 'Tag', name: 'div'}],
+      ['missing nodes', {type: 'Block', filename: 'entry.pg'}],
+      ['scalar nodes', {type: 'Block', nodes: 1, filename: 'entry.pg'}],
+    ]) {
+      const options = {
+        filename: 'entry.pg',
+        source: 'p source',
+        warnings: [],
+      };
+      assert.throws(
+        () => link(ast, options),
+        (err) =>
+          err.code === 'PUGNEUM:INVALID_AST' && err.source === 'p source',
+        label,
+      );
+    }
+  });
+
+  test('options and warning collectors are validated before traversal', () => {
+    const ast = block([]);
+    for (const value of [null, 1, 'options', [], () => {}]) {
+      assert.throws(
+        () => link(ast, value),
+        /options must be an object \(non-null and non-array\)/,
+      );
+    }
+    for (const warnings of [null, {}, new Set(), Object.freeze([])]) {
+      assert.throws(
+        () => link(ast, {warnings}),
+        /options\.warnings must be an extensible array/,
+      );
+    }
+    assert.throws(
+      () => link(ast, Object.freeze({})),
+      /options must permit the warnings output property/,
+    );
+    assert.doesNotThrow(() =>
+      link(ast, Object.freeze({warnings: [], maxLinkDepth: 0})),
+    );
+  });
+
+  test('maxLinkDepth is a bounded safe integer and private-looking input is ignored', () => {
+    const ast = block([]);
+    for (const value of [-1, 257, 1.5, NaN, Infinity, '1']) {
+      assert.throws(
+        () => link(ast, {warnings: [], maxLinkDepth: value}),
+        /options\.maxLinkDepth must be an integer from 0 through 256/,
+      );
+    }
+    assert.doesNotThrow(() =>
+      link(ast, {warnings: [], maxLinkDepth: 0, _linkDepth: 1000000}),
+    );
+  });
+
+  test('depth counts followed edges and reports the edge that would exceed it', () => {
+    const leaf = block([], 'leaf.pg');
+    const middleExtends = Object.assign(
+      {
+        type: 'Extends',
+        file: fileReference(leaf, 'leaf.pg'),
+        filename: 'middle.pg',
+      },
+      loc,
+      {line: 7, column: 3, filename: 'middle.pg'},
+    );
+    const middle = block([middleExtends], 'middle.pg');
+    const rootExtends = Object.assign(
+      {
+        type: 'Extends',
+        file: fileReference(middle, 'middle.pg'),
+      },
+      loc,
+    );
+    const root = block([rootExtends]);
+    const before = structuredClone(root);
+    const options = {
+      warnings: [],
+      maxLinkDepth: 1,
+      sources: {'middle.pg': 'extends leaf.pg'},
+    };
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      assert.throws(
+        () => link(root, options),
+        (err) =>
+          err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED' &&
+          err.filename === 'middle.pg' &&
+          err.line === 7 &&
+          err.column === 3 &&
+          err.source === 'extends leaf.pg',
+      );
+      assert.deepStrictEqual(root, before);
+    }
+
+    assert.doesNotThrow(() => link(root, {warnings: [], maxLinkDepth: 2}));
+  });
+
+  test('include depth zero rejects the include edge but permits a plain root', () => {
+    const child = block([], 'child.pg');
+    const include = Object.assign(
+      {
+        type: 'Include',
+        file: fileReference(child, 'child.pg'),
+        block: block([]),
+      },
+      loc,
+      {line: 9, column: 5},
+    );
+    assert.throws(
+      () => link(block([include]), {warnings: [], maxLinkDepth: 0}),
+      (err) =>
+        err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED' &&
+        err.line === 9 &&
+        err.column === 5,
+    );
+    assert.doesNotThrow(() => link(block([]), {warnings: [], maxLinkDepth: 0}));
+  });
+
+  test('the same dependency AST can be included twice with independent yields', () => {
+    const child = block(
+      [Object.assign({type: 'YieldBlock'}, loc, {filename: 'child.pg'})],
+      'child.pg',
+    );
+    function includeWith(text, line) {
+      return Object.assign(
+        {
+          type: 'Include',
+          file: fileReference(child, 'child.pg'),
+          block: block([Object.assign({type: 'Text', val: text}, loc)]),
+        },
+        loc,
+        {line},
+      );
+    }
+    const ast = block([includeWith('first', 2), includeWith('second', 3)]);
+    const before = structuredClone(ast);
+    const linked = link(ast, {warnings: []});
+    const text = [];
+    walk(linked, function (node) {
+      if (node.type === 'Text') text.push(node.val);
+    });
+    assert.deepStrictEqual(text, ['first', 'second']);
+    assert.deepStrictEqual(ast, before);
+    assert.strictEqual(child.nodes[0].type, 'YieldBlock');
+  });
+
+  test('resolve returns a new tree and keeps scalar source context', () => {
+    const source = 'p @[missing]';
+    const options = {filename: 'direct.pg', source, warnings: []};
+    const parsed = parse(lex(source, options), options);
+    const before = structuredClone(parsed);
+    assert.throws(
+      () => link.resolve(parsed, options),
+      (err) =>
+        err.code === 'PUGNEUM:UNDEFINED_REFERENCE' &&
+        err.filename === 'direct.pg' &&
+        err.source === source,
+    );
+    assert.deepStrictEqual(parsed, before);
+
+    const plain = block([Object.assign({type: 'Text', val: 'plain'}, loc)]);
+    const resolved = link.resolve(plain, {warnings: []});
+    assert.notStrictEqual(resolved, plain);
+    assert.notStrictEqual(resolved.nodes[0], plain.nodes[0]);
+    assert.deepStrictEqual(resolved, plain);
+  });
+});
+
 describe('warnings option robustness', () => {
-  test('a non-array warnings option does not throw', () => {
+  test('a non-array warnings option is rejected at the boundary', () => {
     var source = 'img(src=/x.png)';
     var options = {
       filename: 't.pg',
@@ -1115,7 +1319,12 @@ describe('warnings option robustness', () => {
     // Set the malformed value only at the linker boundary under test. The
     // lexer deliberately rejects a non-array collector at its own boundary.
     options.warnings = 'oops';
-    assert.doesNotThrow(() => link(loaded, options));
+    assert.throws(
+      () => link(loaded, options),
+      (err) =>
+        err instanceof TypeError &&
+        err.message === 'options.warnings must be an extensible array',
+    );
   });
 
   test('warnings are reachable when the caller omits the option', () => {

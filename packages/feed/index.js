@@ -1,21 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const makeError = require('pugneum-error');
 const createRootedFilesystem = require('pugneum-filesystem');
 const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const extract = require('./lib/extract');
 const generateAtom = require('./lib/atom');
+const feedError = require('./lib/error');
 const generateRss = require('./lib/rss');
-
-// Feed errors are filesystem/config failures with no source-template location.
-// Pass NO location: pugneum-error renders the `filename:line:column` header only
-// from present parts, so an absent line/column/filename yields a clean message
-// with no header. (Passing `line: 0` would push a literal "0" into the header —
-// line 0 is finite but not a real source line — prefixing every message with a
-// stray "0\n\n".) This wrapper keeps that single decision in one place.
-function feedError(code, message) {
-  return makeError(code, message, {});
-}
 
 function invalidOptions(message) {
   throw feedError('FEED_INVALID_OPTIONS', 'Invalid feed options: ' + message);

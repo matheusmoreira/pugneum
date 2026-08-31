@@ -28,6 +28,12 @@ renders:
 </table>
 ```
 
+The filter callback requires a string body. Its attributes argument is optional;
+when present, it must be a non-null, non-array object. Invalid bodies and
+attribute containers fail with `INVALID_TABLE_INPUT` and
+`INVALID_TABLE_ATTRIBUTES`, respectively, instead of leaking native coercion
+errors.
+
 ## Grammar
 
 - **Rows** are pipe-delimited. Leading and trailing pipes are optional, so

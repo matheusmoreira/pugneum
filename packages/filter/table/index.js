@@ -1,10 +1,26 @@
 const normalize = require('./lib/normalize');
 const parse = require('./lib/parse');
 const generate = require('./lib/generate');
+const error = require('pugneum-error');
 
 exports.type = 'pugneum';
 
 exports.filter = function pugneum_filter_table(text, attributes) {
+  if (typeof text !== 'string') {
+    throw error('INVALID_TABLE_INPUT', 'table body must be a string');
+  }
+  if (attributes === undefined) attributes = Object.create(null);
+  if (
+    attributes === null ||
+    typeof attributes !== 'object' ||
+    Array.isArray(attributes)
+  ) {
+    throw error(
+      'INVALID_TABLE_ATTRIBUTES',
+      'table attributes must be an object when provided',
+    );
+  }
+
   text = normalize(text);
 
   // Split into non-empty trimmed lines.

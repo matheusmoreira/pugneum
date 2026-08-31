@@ -446,6 +446,51 @@ describe('edge cases', () => {
   });
 });
 
+describe('public input validation', () => {
+  test('requires the table body to be a string', () => {
+    [undefined, null, false, 0, 0n, {}, [], function () {}].forEach((value) => {
+      assert.throws(
+        () => tableFilter.filter(value, {}),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:INVALID_TABLE_INPUT');
+          assert.match(err.msg, /body must be a string/i);
+          return true;
+        },
+      );
+    });
+  });
+
+  test('defaults omitted attributes to an empty option bag', () => {
+    assert.strictEqual(
+      tableFilter.filter('| value |'),
+      'table\n  tbody\n    tr\n      td value',
+    );
+  });
+
+  test('requires attributes to be a non-null, non-array object', () => {
+    [null, false, 0, 0n, '', 'attrs', [], function () {}].forEach((value) => {
+      assert.throws(
+        () => tableFilter.filter('| value |', value),
+        (err) => {
+          assert.strictEqual(err.code, 'PUGNEUM:INVALID_TABLE_ATTRIBUTES');
+          assert.match(err.msg, /attributes must be an object/i);
+          return true;
+        },
+      );
+    });
+  });
+
+  test('accepts null-prototype and frozen attribute objects', () => {
+    var nullPrototype = Object.create(null);
+    nullPrototype.compact = true;
+    assert.match(tableFilter.filter('| value |', nullPrototype), /compact/);
+    assert.match(
+      tableFilter.filter('| value |', Object.freeze({compact: true})),
+      /compact/,
+    );
+  });
+});
+
 describe('errors', () => {
   test('empty filter body', () => {
     assert.throws(

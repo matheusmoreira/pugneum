@@ -266,6 +266,44 @@ describe('resolveRelativeUrls', () => {
     );
   });
 
+  test('srcset data URL commas remain inside their candidate', () => {
+    var html = '<img srcset="data:image/png;base64,AAAA 1x, /fallback.png 2x">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img srcset="data:image/png;base64,AAAA 1x, https://example.com/fallback.png 2x">',
+    );
+  });
+
+  test('srcset commas in a root-relative path are not separators', () => {
+    var html = '<img srcset="/images/a,b.png 1x, /fallback.png 2x">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img srcset="https://example.com/images/a,b.png 1x, https://example.com/fallback.png 2x">',
+    );
+  });
+
+  test('srcset preserves empty candidates, spacing, and untouched URLs', () => {
+    var html =
+      '<img srcset=",  /a.png 1x,, data:image/svg+xml,%3Csvg%3E 2x, https://cdn.example/x.png 3x">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img srcset=",  https://example.com/a.png 1x,, data:image/svg+xml,%3Csvg%3E 2x, https://cdn.example/x.png 3x">',
+    );
+  });
+
+  test('srcset preserves encoded commas and parenthesized descriptor text', () => {
+    var html =
+      '<img srcset="/images/a%2Cb.png type(foo,bar), /fallback.png 2x">';
+    var result = resolveRelativeUrls(html, 'https://example.com/');
+    assert.strictEqual(
+      result,
+      '<img srcset="https://example.com/images/a%2Cb.png type(foo,bar), https://example.com/fallback.png 2x">',
+    );
+  });
+
   test('source srcset relative URL is resolved', () => {
     var html = '<source srcset="/img.jpg">';
     var result = resolveRelativeUrls(html, 'https://example.com/');

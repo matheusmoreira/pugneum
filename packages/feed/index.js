@@ -423,21 +423,66 @@ function resolveAgainst(value, baseUrl) {
   return new URL(value, baseUrl).href;
 }
 
-// srcset is a comma-separated list of "url [descriptor]" candidates; resolve the
-// url token of each candidate, leaving descriptors (1x, 200w, ...) intact.
+// Follow srcset's URL-token and descriptor-state boundaries rather than treating
+// every comma as a separator. URL tokens may contain commas (notably data URLs),
+// while a descriptor-list comma separates candidates unless it is parenthesized.
+// Preserve every byte outside a root-relative URL token.
 function resolveSrcset(value, baseUrl) {
-  return value
-    .split(',')
-    .map((candidate) => {
-      const trimmed = candidate.trim();
-      if (trimmed === '') return candidate;
-      const space = trimmed.search(/\s/);
-      const urlToken = space === -1 ? trimmed : trimmed.slice(0, space);
-      const descriptor = space === -1 ? '' : trimmed.slice(space);
-      if (isRootRelative(urlToken)) {
-        return resolveAgainst(urlToken, baseUrl) + descriptor;
+  const output = [];
+  let position = 0;
+
+  while (position < value.length) {
+    const prefixStart = position;
+    while (
+      position < value.length &&
+      (isAsciiWhitespace(value[position]) || value[position] === ',')
+    ) {
+      position++;
+    }
+    output.push(value.slice(prefixStart, position));
+    if (position === value.length) break;
+
+    const urlStart = position;
+    while (position < value.length && !isAsciiWhitespace(value[position])) {
+      position++;
+    }
+
+    // A trailing comma belongs to candidate separation, not the URL token.
+    let urlEnd = position;
+    while (urlEnd > urlStart && value[urlEnd - 1] === ',') urlEnd--;
+    const urlToken = value.slice(urlStart, urlEnd);
+    output.push(
+      isRootRelative(urlToken) ? resolveAgainst(urlToken, baseUrl) : urlToken,
+      value.slice(urlEnd, position),
+    );
+
+    // Trailing URL commas already ended this candidate. Otherwise consume the
+    // descriptor list through its first non-parenthesized comma.
+    if (urlEnd !== position) continue;
+    const descriptorStart = position;
+    let parentheses = 0;
+    while (position < value.length) {
+      const character = value[position++];
+      if (character === '(') {
+        parentheses++;
+      } else if (character === ')' && parentheses > 0) {
+        parentheses--;
+      } else if (character === ',' && parentheses === 0) {
+        break;
       }
-      return trimmed;
-    })
-    .join(', ');
+    }
+    output.push(value.slice(descriptorStart, position));
+  }
+
+  return output.join('');
+}
+
+function isAsciiWhitespace(character) {
+  return (
+    character === '\t' ||
+    character === '\n' ||
+    character === '\f' ||
+    character === '\r' ||
+    character === ' '
+  );
 }

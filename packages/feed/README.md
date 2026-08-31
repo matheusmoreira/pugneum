@@ -116,6 +116,9 @@ against the feed base, so `href`/`src`/`poster`/`srcset` on
 `a`/`img`/`source`/`video`/`audio`/`iframe` resolve in a reader. Already-absolute
 (`https://…`) and protocol-relative (`//host/…`) URLs are left unchanged;
 document-relative URLs (`path` with no leading slash) are not rewritten.
+`srcset` candidate tokenization preserves comma-bearing data URLs and paths,
+empty candidates, descriptors, and spacing; only root-relative URL tokens are
+rewritten.
 
 ```html
 <!DOCTYPE html>

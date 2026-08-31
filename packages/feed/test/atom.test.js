@@ -195,8 +195,7 @@ test('entry keywords are emitted as Atom categories', () => {
 });
 
 test('generates valid Atom feed with no entries', (t) => {
-  // With no entries the feed-level <updated> comes from buildDate (the
-  // production caller always sets buildDate and never sets `updated`).
+  // With no entries the feed-level <updated> comes from buildDate.
   var feed = {
     url: 'https://example.com/',
     title: 'Empty Site',

@@ -108,8 +108,7 @@ test('entry keywords are emitted as RSS categories', () => {
 });
 
 test('generates valid RSS feed with no entries', (t) => {
-  // With no entries the feed-level <lastBuildDate> comes from buildDate (the
-  // production caller always sets buildDate and never sets `updated`).
+  // With no entries the feed-level <lastBuildDate> comes from buildDate.
   var feed = {
     url: 'https://example.com/',
     title: 'Empty Site',

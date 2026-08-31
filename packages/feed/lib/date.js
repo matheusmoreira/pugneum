@@ -1,6 +1,6 @@
 // Shared date handling for the Atom and RSS serializers.
 //
-// `data-published-at` (and feed config dates) are author-controlled strings.
+// `data-published-at` values are author-controlled strings.
 // The only formats pugneum documents are ISO-8601 date-only (YYYY-MM-DD) and
 // ISO-8601 datetime. A zoneless value would otherwise be parsed in the build
 // machine's local timezone by `new Date(...)`, so identical source would emit
@@ -103,9 +103,10 @@ function parseDate(dateStr, fallback) {
   return parseAuthoredDate(dateStr) || new Date(fallback || Date.now());
 }
 
-// Select the feed-level timestamp. Entries are pre-sorted newest-first by
-// extract.js, so entries[0] is the most recent. With no entries the feed has
-// no natural timestamp, so we fall back to the build date.
+// Select the feed-level timestamp. Extraction orders valid parsed instants
+// newest-first and places invalid values after them, so entries[0] is either the
+// newest valid publication or an invalid value that falls back to buildDate.
+// An empty feed has no publication instant and uses buildDate as well.
 function feedTimestamp(feed) {
   if (feed.entries.length > 0) {
     const entry = feed.entries[0];

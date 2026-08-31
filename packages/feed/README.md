@@ -94,12 +94,21 @@ and lists articles via elements with a `data-published-at` attribute.
 </html>
 ```
 
-`data-published-at` accepts real ISO-8601 calendar dates or datetimes. Invalid
-or overflowing values (for example `2026-02-30` or an hour of `24`) use the
-feed build time instead of being normalized to a different instant. Valid
+`data-published-at` accepts a real ISO-8601 calendar date (`YYYY-MM-DD`) or a
+datetime with hours and minutes, optional seconds (and fractional seconds), and
+an optional `Z` or `+HH:MM`/`-HH:MM` offset. Date-only values mean midnight UTC.
+Datetimes with no zone also mean UTC, so output is independent of the build
+machine's timezone.
+Invalid or overflowing values (for example `2026-02-30`, an hour of `24`, or a
+non-date string) use the one feed build timestamp for serialization instead of
+being normalized to another instant. Empty attributes are not entries. Valid
 entries are ordered by their UTC instant regardless of authored offset; equal
 instants retain document order, and invalid values remain stable after valid
-entries.
+entries. With no valid newest entry—including an empty feed—the Atom `updated`
+and RSS `lastBuildDate` values use that same build timestamp.
+
+The index `<html lang>` value is copied to `xml:lang` on the Atom `<feed>` root
+and to RSS `<channel><language>`. Both are omitted when the HTML has no language.
 
 Article `href` values must resolve to the configured site's scheme, host, and
 credentials. Document-relative paths map directly beneath `outputDirectory`;
@@ -163,6 +172,10 @@ generateFeeds({
   },
 });
 ```
+
+The CommonJS package exports this one generation function. URL rewriting,
+extractors, and individual serializers are implementation details rather than
+additional package-root exports.
 
 This reads `site/index.html`, discovers articles,
 and writes `site/atom.xml` and `site/rss.xml`.

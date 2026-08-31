@@ -163,8 +163,7 @@ describe('extract.indexPage robustness', () => {
     assert.strictEqual(result.entries.length, 0);
   });
 
-  test('entries are sorted in descending date order', (t) => {
-    // Also exercises the sort guard: (b.published || '').localeCompare(a.published || '')
+  test('entries are sorted by normalized publication instant descending', (t) => {
     var p = temporaryHtml(
       t,
       'pugneum-extract-test-',
@@ -176,7 +175,7 @@ describe('extract.indexPage robustness', () => {
     );
     var result = extract.indexPage(p);
     assert.strictEqual(result.entries.length, 2);
-    // Later date sorts first (descending)
+    // Later UTC instant sorts first.
     assert.strictEqual(result.entries[0].href, 'later.html');
     assert.strictEqual(result.entries[1].href, 'earlier.html');
   });

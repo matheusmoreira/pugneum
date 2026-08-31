@@ -948,8 +948,9 @@ describe('link shorthand', () => {
 
 describe('footnotes', () => {
   function renderedFootnoteBody(result, name) {
-    const bodyStart = result.indexOf('role="doc-endnote">');
-    const contentStart = bodyStart + 'role="doc-endnote">'.length;
+    const bodyMarker = '<li id="footnote-' + name + '" role="doc-endnote">';
+    const bodyStart = result.indexOf(bodyMarker);
+    const contentStart = bodyStart + bodyMarker.length;
     const backlinkStart = result.indexOf(
       '<a href="#footnote-reference-' + name + '"',
       contentStart,
@@ -1009,6 +1010,63 @@ describe('footnotes', () => {
       'p Note^[fn1].\n\nfootnotes\n  fn1 This is *(important).',
     );
     assert.match(result, /<strong>important<\/strong>/);
+  });
+
+  it('should resolve attributed references in continued footnote content', () => {
+    const warnings = [];
+    const result = pg.render(
+      [
+        'references',
+        '  doc https://example.test/doc',
+        '  logo https://example.test/logo.png',
+        '',
+        'p Cite^[one].',
+        '',
+        'footnotes',
+        '  one See @[doc documentation](class=source) and ![logo diagram](class=icon).',
+        '    Continue ^[two].',
+        '  two Next.',
+      ].join('\n'),
+      {filename: 'footnote.pg', warnings: warnings},
+    );
+
+    assert.strictEqual(
+      renderedFootnoteBody(result, 'one'),
+      'See <a class="source" href="https://example.test/doc">documentation</a> and ' +
+        '<img class="icon" src="https://example.test/logo.png" alt="diagram">. Continue ' +
+        '<sup><a href="#footnote-two" id="footnote-reference-two" role="doc-noteref">[2]</a></sup>.',
+    );
+    assert.strictEqual(renderedFootnoteBody(result, 'two'), 'Next.');
+    assert.deepStrictEqual(warnings, []);
+  });
+
+  it('should render reference images and footnote refs in pipeless text', () => {
+    const warnings = [];
+    const result = pg.render(
+      [
+        'references',
+        '  logo /logo.png',
+        '',
+        'p.',
+        '  Before ![logo alt](class=hero)',
+        '  after ^[note].',
+        '',
+        'footnotes',
+        '  note Note.',
+      ].join('\n'),
+      {filename: 'pipeless.pg', warnings: warnings},
+    );
+    const sectionStart = result.indexOf('<section role="doc-endnotes">');
+
+    assert.notStrictEqual(sectionStart, -1);
+    assert.strictEqual(
+      result.slice(0, sectionStart),
+      '<p>Before <img class="hero" src="/logo.png" alt="alt">\n' +
+        'after <sup><a href="#footnote-note" id="footnote-reference-note" ' +
+        'role="doc-noteref">[1]</a></sup>.\n</p>',
+    );
+    assert.strictEqual(renderedFootnoteBody(result, 'note'), 'Note.');
+    assert.deepStrictEqual(warnings, []);
   });
 
   it('should ignore name-line separator whitespace before a continuation', () => {

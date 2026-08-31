@@ -733,6 +733,149 @@ describe('blind sweep fixes', () => {
     assert.strictEqual(def.block.nodes[1].isFootnoteSeparator, true);
   });
 
+  test('footnote definitions preserve inline references, attrs, and separators', () => {
+    const source = [
+      'references',
+      '  doc https://example.test/doc',
+      '  logo https://example.test/logo.png',
+      '',
+      'p Cite^[one].',
+      '',
+      'footnotes',
+      '  one See @[doc documentation](class=source) and ![logo diagram](class=icon).',
+      '    Continue ^[two].',
+      '  two Next.',
+    ].join('\n');
+    const ast = parse(lex(source, {filename: 'footnotes.pg'}), {
+      filename: 'footnotes.pg',
+      source,
+    });
+    const footnotes = ast.nodes.find((node) => node.type === 'Footnotes');
+    const nodes = footnotes.definitions[0].block.nodes;
+
+    assert.deepStrictEqual(
+      nodes.map((node) => node.type),
+      [
+        'Text',
+        'ReferenceLink',
+        'Text',
+        'ReferenceImage',
+        'Text',
+        'Text',
+        'Text',
+        'FootnoteRef',
+        'Text',
+      ],
+    );
+    assert.deepStrictEqual(
+      {
+        name: nodes[1].name,
+        text: nodes[1].block.nodes[0].val,
+        attrs: nodes[1].attrs.map(({name, val}) => ({name, val})),
+        line: nodes[1].line,
+        column: nodes[1].column,
+        filename: nodes[1].filename,
+      },
+      {
+        name: 'doc',
+        text: 'documentation',
+        attrs: [{name: 'class', val: 'source'}],
+        line: 8,
+        column: 11,
+        filename: 'footnotes.pg',
+      },
+    );
+    assert.deepStrictEqual(
+      {
+        name: nodes[3].name,
+        alt: nodes[3].block.nodes[0].val,
+        attrs: nodes[3].attrs.map(({name, val}) => ({name, val})),
+        line: nodes[3].line,
+        column: nodes[3].column,
+        filename: nodes[3].filename,
+      },
+      {
+        name: 'logo',
+        alt: 'diagram',
+        attrs: [{name: 'class', val: 'icon'}],
+        line: 8,
+        column: 50,
+        filename: 'footnotes.pg',
+      },
+    );
+    assert.deepStrictEqual(
+      {
+        val: nodes[5].val,
+        separator: nodes[5].isFootnoteSeparator,
+        line: nodes[5].line,
+        column: nodes[5].column,
+      },
+      {val: ' ', separator: true, line: 9, column: 1},
+    );
+    assert.deepStrictEqual(
+      {name: nodes[7].name, line: nodes[7].line, column: nodes[7].column},
+      {name: 'two', line: 9, column: 14},
+    );
+  });
+
+  test('pipeless text preserves reference images and footnote refs', () => {
+    const source = [
+      'references',
+      '  logo /logo.png',
+      '',
+      'p.',
+      '  Before ![logo alt](class=hero)',
+      '  after ^[note].',
+      '',
+      'footnotes',
+      '  note Note.',
+    ].join('\n');
+    const ast = parse(lex(source, {filename: 'pipeless.pg'}), {
+      filename: 'pipeless.pg',
+      source,
+    });
+    const paragraph = ast.nodes.find(
+      (node) => node.type === 'Tag' && node.name === 'p',
+    );
+    const nodes = paragraph.block.nodes;
+
+    assert.deepStrictEqual(
+      nodes.map((node) => node.type),
+      ['Text', 'ReferenceImage', 'Text', 'Text', 'FootnoteRef', 'Text', 'Text'],
+    );
+    assert.deepStrictEqual(
+      nodes.filter((node) => node.type === 'Text').map((node) => node.val),
+      ['Before ', '\n', 'after ', '.', '\n'],
+    );
+    assert.deepStrictEqual(
+      {
+        name: nodes[1].name,
+        alt: nodes[1].block.nodes[0].val,
+        attrs: nodes[1].attrs.map(({name, val}) => ({name, val})),
+        line: nodes[1].line,
+        column: nodes[1].column,
+        filename: nodes[1].filename,
+      },
+      {
+        name: 'logo',
+        alt: 'alt',
+        attrs: [{name: 'class', val: 'hero'}],
+        line: 5,
+        column: 10,
+        filename: 'pipeless.pg',
+      },
+    );
+    assert.deepStrictEqual(
+      {
+        name: nodes[4].name,
+        line: nodes[4].line,
+        column: nodes[4].column,
+        filename: nodes[4].filename,
+      },
+      {name: 'note', line: 6, column: 9, filename: 'pipeless.pg'},
+    );
+  });
+
   test('footnote joins are pending, coalesced, and never terminal', () => {
     const source = ['p ^[n] z', '', 'footnotes', '  n first', '    '].join(
       '\n',

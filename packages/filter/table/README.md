@@ -73,11 +73,17 @@ errors.
   cell like `td.5` is treated as ordinary data).
 - **Escapes**: prefix a cell with `\` (`\td foo`) to keep literal text that would
   otherwise be read as a tagged cell.
-- **Box-drawing input**: Unicode box-drawing characters are normalized before
-  parsing — single-line verticals/junctions (`│ ├ ┤ ┼`) become `|`, double-line
-  ones (`║ ╠ ╣ ╬`) become `||` (colgroup boundaries), `─`/`═` become `-`/`=`, and
-  decorative corners (`┌ ┐ └ ┘` etc.) are stripped — so a full box-drawn table is
-  accepted.
+- **Box-drawing input** is recognized structurally, line by line. The supported
+  single-line frame is `┌ ┬ ┐`, `├ ┼ ┤`, `└ ┴ ┘`, `│`, and `─`; the supported
+  double-line frame is `╔ ╦ ╗`, `╠ ╬ ╣`, `╚ ╩ ╝`, `║`, and `═`. Outer border
+  lines are discarded, middle borders become `---`/`===` separator rows, and
+  verticals at box-row boundaries become cell delimiters. `║` also keeps its
+  historical `||` colgroup-boundary meaning in an otherwise ASCII row.
+  Horizontal and decorative glyphs inside ordinary cells, captions, and
+  attribute values remain literal data. In a box-framed row, prefix an ambiguous
+  literal vertical with a backslash (`\│` or `\║`); the escape is removed from
+  the resulting cell text. Other heavy or mixed box-drawing families are not
+  table syntax.
 
 ## Cell content contract
 

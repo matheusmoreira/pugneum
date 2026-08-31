@@ -130,6 +130,11 @@ function classifySeparatorRow(row) {
   return null; // all cells empty: not a separator
 }
 
+function classifySeparatorLine(line) {
+  const row = parseRow(line);
+  return row === null ? null : classifySeparatorRow(row);
+}
+
 // Parse a separator segment into {align, attrs}.
 // align is '' | 'left' | 'right' | 'center'
 // attrs is the raw content inside parens, or ''
@@ -526,3 +531,4 @@ function parse(lines) {
 
 module.exports = parse;
 module.exports.classifyCell = classifyCell;
+module.exports.classifySeparatorLine = classifySeparatorLine;

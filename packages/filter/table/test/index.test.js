@@ -342,6 +342,62 @@ describe('table structure', () => {
 });
 
 describe('box drawing normalization', () => {
+  test('box glyphs inside ASCII-delimited cells remain literal payload', () => {
+    var input =
+      '| Glyphs |\n| --- |\n| vertical │ horizontal ─═ junctions ┼╬ corners ┌┘ |';
+    var result = renderRoundTrip(input);
+
+    assert.match(
+      result.html,
+      /<td>vertical │ horizontal ─═ junctions ┼╬ corners ┌┘<\/td>/,
+    );
+    assert.strictEqual(
+      collectNodes(result.ast, 'Tag').filter((node) => node.name === 'td')
+        .length,
+      1,
+    );
+  });
+
+  test('a backslash preserves an ambiguous delimiter inside a box row', () => {
+    var input =
+      '┌───────────┐\n│ Glyph     │\n├───────────┤\n│ left \\│ right │\n└───────────┘';
+    var result = renderRoundTrip(input);
+
+    assert.match(result.html, /<td>left │ right<\/td>/);
+    assert.doesNotMatch(result.html, /\\│/);
+    assert.strictEqual(
+      collectNodes(result.ast, 'Tag').filter((node) => node.name === 'td')
+        .length,
+      1,
+    );
+  });
+
+  test('caption and attribute payload is not normalized as box structure', () => {
+    var input =
+      'caption(title="│ ─ ═ ┼ ╬ ┌ ┘") Glyphs ┬ ┴\n' +
+      '| td(title="│ ─ ═ ┼ ╬ ┌ ┘") value |';
+    var result = renderRoundTrip(input);
+
+    assert.match(result.src, /caption\(title="│ ─ ═ ┼ ╬ ┌ ┘"\) Glyphs ┬ ┴/);
+    assert.match(result.src, /td\(title="│ ─ ═ ┼ ╬ ┌ ┘"\) value/);
+    assert.match(
+      result.html,
+      /<caption title="│ ─ ═ ┼ ╬ ┌ ┘">Glyphs ┬ ┴<\/caption>/,
+    );
+    assert.match(result.html, /<td title="│ ─ ═ ┼ ╬ ┌ ┘">value<\/td>/);
+  });
+
+  test('an escaped double vertical stays data in a mixed ASCII row', () => {
+    var result = renderRoundTrip('| --- |\n| left \\║ right |');
+
+    assert.match(result.html, /<td>left ║ right<\/td>/);
+    assert.strictEqual(
+      collectNodes(result.ast, 'Tag').filter((node) => node.name === 'td')
+        .length,
+      1,
+    );
+  });
+
   test('│ normalizes to |', () => {
     var input = '│ a │ b │\n│ --- │ --- │\n│ 1 │ 2 │';
     var result = tableFilter.filter(input, {});

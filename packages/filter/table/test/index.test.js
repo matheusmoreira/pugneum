@@ -609,6 +609,18 @@ describe('edge cases', () => {
     assert.match(result, /th\(scope="col"\) a/);
     assert.match(result, /td b/);
   });
+
+  test('quotes do not shield a pipe from context-free cell splitting', () => {
+    assert.strictEqual(
+      tableFilter.filter('| "left|right" |', {}),
+      'table\n  tbody\n    tr\n      td "left\n      td right"',
+    );
+  });
+
+  test('an HTML character reference supplies a rendered literal pipe', () => {
+    var result = renderRoundTrip('| left&#124;right |');
+    assert.match(result.html, /<td>left&#124;right<\/td>/);
+  });
 });
 
 describe('public input validation', () => {

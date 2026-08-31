@@ -40,7 +40,11 @@ errors.
   `| a | b |`, `a | b`, and `| a | b` are equivalent. A trailing/leading pipe just
   produces an empty edge cell that is dropped. Every nonblank, non-caption line
   must be a recognized section marker or contain a row delimiter; other text is
-  rejected with `INVALID_TABLE_LINE` instead of being discarded.
+  rejected with `INVALID_TABLE_LINE` instead of being discarded. Splitting is
+  context-free: every ASCII `|` is a delimiter, including inside quotes,
+  shorthands, code spans, or attribute groups, and there is no backslash escape
+  for a literal pipe. Use an HTML character reference such as `&#124;` when a
+  rendered cell needs one.
 - **Header separator** `| --- | --- |`: separator cells contain at least three
   dashes. The rows above it become a `<thead>`, and the rows below begin a
   `<tbody>`. A second `---` starts another `<tbody>`.
@@ -107,6 +111,15 @@ pugneum inline content**:
 - **A literal `#{` is neutralized.** `#{name}` is variable interpolation, which is
   illegal outside a mixin, so the filter escapes a literal `#{` in cell/caption
   text — a table documenting shell prompts or pugneum syntax will not crash.
+  Backslashes follow the lexer contract: an odd-length run before `#{` already
+  escapes it, while an even-length run leaves it live and is neutralized by the
+  filter.
+- **Verbatim heads do not interpolate.** Attribute groups on captions, sections,
+  rows, separator columns, and tagged cells are passed back to the pugneum lexer
+  rather than treated as cell text. A live `#{` in one of those groups (or in a
+  programmatic filter attribute value) is rejected with
+  `INTERPOLATION_IN_TABLE_HEAD`; use an odd backslash run to make the opener
+  literal. Even backslash runs leave it live and are rejected.
 - **HTML metacharacters follow pugneum's normal text rules.** As with hand-written
   pugneum text, `<`, `>`, and `&` in cell text are emitted as-is (not
   HTML-escaped). If you splice externally-sourced data into a `:table` block, treat

@@ -711,116 +711,55 @@ exports[`attrs.pg 1`] = `
     },
     {
       "type": "Tag",
-      "name": "a",
+      "name": "foo",
       "block": {
         "type": "Block",
-        "nodes": [
-          {
-            "type": "Text",
-            "line": 13,
-            "column": 20,
-            "filename": "attrs.pg",
-            "val": "contact"
-          }
-        ],
+        "nodes": [],
         "line": 13,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "href",
-          "val": "/contact",
+          "name": "terse",
+          "val": "true",
           "line": 13,
-          "column": 3,
+          "column": 5,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": true,
+      "isInline": false,
       "line": 13,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "a",
+      "name": "foo",
       "block": {
         "type": "Block",
-        "nodes": [
-          {
-            "type": "Text",
-            "line": 14,
-            "column": 24,
-            "filename": "attrs.pg",
-            "val": "save"
-          }
-        ],
+        "nodes": [],
         "line": 14,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "href",
-          "val": "/save",
+          "name": "date",
+          "val": "new Date(0)",
           "line": 14,
-          "column": 3,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "class",
-          "val": "button",
-          "line": 14,
-          "column": 16,
+          "column": 5,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": true,
+      "isInline": false,
       "line": 14,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "a",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 15,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "foo",
-          "val": true,
-          "line": 15,
-          "column": 3,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "bar",
-          "val": true,
-          "line": 15,
-          "column": 7,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "baz",
-          "val": true,
-          "line": 15,
-          "column": 11,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": true,
-      "line": 15,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "a",
+      "name": "foo",
       "block": {
         "type": "Block",
         "nodes": [],
@@ -829,146 +768,51 @@ exports[`attrs.pg 1`] = `
       },
       "attrs": [
         {
-          "name": "foo",
-          "val": "foo, bar, baz",
+          "name": "abc",
+          "val": true,
           "line": 16,
-          "column": 3,
+          "column": 5,
           "filename": "attrs.pg"
         },
         {
-          "name": "bar",
-          "val": "1",
-          "line": 16,
-          "column": 23,
+          "name": "def",
+          "val": true,
+          "line": 17,
+          "column": 5,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": true,
+      "isInline": false,
       "line": 16,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "a",
+      "name": "foo",
       "block": {
         "type": "Block",
         "nodes": [],
-        "line": 17,
+        "line": 18,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "foo",
-          "val": "((foo))",
-          "line": 17,
-          "column": 3,
+          "name": "abc",
+          "val": true,
+          "line": 18,
+          "column": 5,
           "filename": "attrs.pg"
         },
         {
-          "name": "bar",
-          "val": "(1) ? 1 : 0",
-          "line": 17,
-          "column": 17,
+          "name": ",def",
+          "val": true,
+          "line": 19,
+          "column": 4,
           "filename": "attrs.pg"
         }
       ],
-      "attributeBlocks": [],
-      "isInline": true,
-      "line": 17,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "select",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "Tag",
-            "name": "option",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 19,
-                  "column": 32,
-                  "filename": "attrs.pg",
-                  "val": "Foo"
-                }
-              ],
-              "line": 19,
-              "filename": "attrs.pg"
-            },
-            "attrs": [
-              {
-                "name": "value",
-                "val": "foo",
-                "line": 19,
-                "column": 10,
-                "filename": "attrs.pg"
-              },
-              {
-                "name": "selected",
-                "val": true,
-                "line": 19,
-                "column": 22,
-                "filename": "attrs.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 19,
-            "column": 3,
-            "filename": "attrs.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "option",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "Text",
-                  "line": 20,
-                  "column": 32,
-                  "filename": "attrs.pg",
-                  "val": "Bar"
-                }
-              ],
-              "line": 20,
-              "filename": "attrs.pg"
-            },
-            "attrs": [
-              {
-                "name": "selected",
-                "val": true,
-                "line": 20,
-                "column": 10,
-                "filename": "attrs.pg"
-              },
-              {
-                "name": "value",
-                "val": "bar",
-                "line": 20,
-                "column": 19,
-                "filename": "attrs.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 20,
-            "column": 3,
-            "filename": "attrs.pg"
-          }
-        ],
-        "line": 18,
-        "filename": "attrs.pg"
-      },
-      "attrs": [],
       "attributeBlocks": [],
       "isInline": false,
       "line": 18,
@@ -977,31 +821,38 @@ exports[`attrs.pg 1`] = `
     },
     {
       "type": "Tag",
-      "name": "a",
+      "name": "foo",
       "block": {
         "type": "Block",
         "nodes": [],
-        "line": 21,
+        "line": 20,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "foo",
-          "val": "class:",
+          "name": "abc,",
+          "val": true,
+          "line": 20,
+          "column": 5,
+          "filename": "attrs.pg"
+        },
+        {
+          "name": "def",
+          "val": true,
           "line": 21,
-          "column": 3,
+          "column": 5,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": true,
-      "line": 21,
+      "isInline": false,
+      "line": 20,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "input",
+      "name": "foo",
       "block": {
         "type": "Block",
         "nodes": [],
@@ -1010,10 +861,17 @@ exports[`attrs.pg 1`] = `
       },
       "attrs": [
         {
-          "name": "pattern",
-          "val": "\\\\S+",
+          "name": "abc,",
+          "val": true,
           "line": 22,
-          "column": 7,
+          "column": 5,
+          "filename": "attrs.pg"
+        },
+        {
+          "name": "def",
+          "val": true,
+          "line": 23,
+          "column": 3,
           "filename": "attrs.pg"
         }
       ],
@@ -1029,39 +887,22 @@ exports[`attrs.pg 1`] = `
       "block": {
         "type": "Block",
         "nodes": [],
-        "line": 23,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "terse",
-          "val": "true",
-          "line": 23,
-          "column": 5,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 23,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "foo",
-      "block": {
-        "type": "Block",
-        "nodes": [],
         "line": 24,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "date",
-          "val": "new Date(0)",
+          "name": "abc",
+          "val": true,
           "line": 24,
           "column": 5,
+          "filename": "attrs.pg"
+        },
+        {
+          "name": ",def",
+          "val": true,
+          "line": 25,
+          "column": 3,
           "filename": "attrs.pg"
         }
       ],
@@ -1092,7 +933,7 @@ exports[`attrs.pg 1`] = `
           "name": "def",
           "val": true,
           "line": 27,
-          "column": 5,
+          "column": 3,
           "filename": "attrs.pg"
         }
       ],
@@ -1120,10 +961,10 @@ exports[`attrs.pg 1`] = `
           "filename": "attrs.pg"
         },
         {
-          "name": ",def",
+          "name": "def",
           "val": true,
           "line": 29,
-          "column": 4,
+          "column": 5,
           "filename": "attrs.pg"
         }
       ],
@@ -1135,69 +976,69 @@ exports[`attrs.pg 1`] = `
     },
     {
       "type": "Tag",
-      "name": "foo",
+      "name": "div",
       "block": {
         "type": "Block",
         "nodes": [],
-        "line": 30,
+        "line": 31,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "abc,",
-          "val": true,
-          "line": 30,
-          "column": 5,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "def",
-          "val": true,
+          "name": "foo",
+          "val": "bar",
           "line": 31,
           "column": 5,
           "filename": "attrs.pg"
+        },
+        {
+          "name": "bar",
+          "val": "<baz>",
+          "line": 31,
+          "column": 13,
+          "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
       "isInline": false,
-      "line": 30,
+      "line": 31,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "foo",
+      "name": "a",
       "block": {
         "type": "Block",
         "nodes": [],
-        "line": 32,
+        "line": 33,
         "filename": "attrs.pg"
       },
       "attrs": [
         {
-          "name": "abc,",
-          "val": true,
-          "line": 32,
-          "column": 5,
+          "name": "foo",
+          "val": "foo",
+          "line": 33,
+          "column": 3,
           "filename": "attrs.pg"
         },
         {
-          "name": "def",
-          "val": true,
+          "name": "bar",
+          "val": "bar",
           "line": 33,
-          "column": 3,
+          "column": 13,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 32,
+      "isInline": true,
+      "line": 33,
       "column": 1,
       "filename": "attrs.pg"
     },
     {
       "type": "Tag",
-      "name": "foo",
+      "name": "a",
       "block": {
         "type": "Block",
         "nodes": [],
@@ -1206,178 +1047,23 @@ exports[`attrs.pg 1`] = `
       },
       "attrs": [
         {
-          "name": "abc",
-          "val": true,
+          "name": "foo",
+          "val": "foo",
           "line": 34,
-          "column": 5,
+          "column": 3,
           "filename": "attrs.pg"
         },
         {
-          "name": ",def",
-          "val": true,
-          "line": 35,
-          "column": 3,
+          "name": "bar",
+          "val": "bar",
+          "line": 34,
+          "column": 13,
           "filename": "attrs.pg"
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 34,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "foo",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 36,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "abc",
-          "val": true,
-          "line": 36,
-          "column": 5,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "def",
-          "val": true,
-          "line": 37,
-          "column": 3,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 36,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "foo",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 38,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "abc",
-          "val": true,
-          "line": 38,
-          "column": 5,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "def",
-          "val": true,
-          "line": 39,
-          "column": 5,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 38,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "div",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 41,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "foo",
-          "val": "bar",
-          "line": 41,
-          "column": 5,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "bar",
-          "val": "<baz>",
-          "line": 41,
-          "column": 13,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 41,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "a",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 43,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "foo",
-          "val": "foo",
-          "line": 43,
-          "column": 3,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "bar",
-          "val": "bar",
-          "line": 43,
-          "column": 13,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": true,
-      "line": 43,
-      "column": 1,
-      "filename": "attrs.pg"
-    },
-    {
-      "type": "Tag",
-      "name": "a",
-      "block": {
-        "type": "Block",
-        "nodes": [],
-        "line": 44,
-        "filename": "attrs.pg"
-      },
-      "attrs": [
-        {
-          "name": "foo",
-          "val": "foo",
-          "line": 44,
-          "column": 3,
-          "filename": "attrs.pg"
-        },
-        {
-          "name": "bar",
-          "val": "bar",
-          "line": 44,
-          "column": 13,
-          "filename": "attrs.pg"
-        }
-      ],
-      "attributeBlocks": [],
-      "isInline": true,
-      "line": 44,
       "column": 1,
       "filename": "attrs.pg"
     }
@@ -6447,7 +6133,7 @@ exports[`fixtures/append-without-block/app-layout.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "layout.pg",
+        "path": "../layout-mutation-base.pg",
         "line": 2,
         "column": 9,
         "filename": "fixtures/append-without-block/app-layout.pg"
@@ -6496,117 +6182,6 @@ exports[`fixtures/append-without-block/app-layout.pg 1`] = `
 }
 `;
 
-exports[`fixtures/append-without-block/layout.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Tag",
-      "name": "html",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "fixtures/append-without-block/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "fixtures/append-without-block/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "fixtures/append-without-block/layout.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "fixtures/append-without-block/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "fixtures/append-without-block/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "fixtures/append-without-block/layout.pg"
-              }
-            ],
-            "line": 3,
-            "filename": "fixtures/append-without-block/layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 3
-          },
-          {
-            "type": "Tag",
-            "name": "body",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "NamedBlock",
-                  "nodes": [],
-                  "line": 7,
-                  "filename": "fixtures/append-without-block/layout.pg",
-                  "name": "body",
-                  "mode": "replace",
-                  "column": 5
-                }
-              ],
-              "line": 6,
-              "filename": "fixtures/append-without-block/layout.pg"
-            },
-            "attrs": [],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "fixtures/append-without-block/layout.pg"
-          }
-        ],
-        "line": 2,
-        "filename": "fixtures/append-without-block/layout.pg"
-      },
-      "attrs": [],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "fixtures/append-without-block/layout.pg"
-    }
-  ],
-  "line": 0,
-  "filename": "fixtures/append-without-block/layout.pg"
-}
-`;
-
 exports[`fixtures/append/app-layout.pg 1`] = `
 {
   "type": "Block",
@@ -6615,7 +6190,7 @@ exports[`fixtures/append/app-layout.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "layout.pg",
+        "path": "../layout-mutation-base.pg",
         "line": 2,
         "column": 9,
         "filename": "fixtures/append/app-layout.pg"
@@ -6664,7 +6239,16 @@ exports[`fixtures/append/app-layout.pg 1`] = `
 }
 `;
 
-exports[`fixtures/append/layout.pg 1`] = `
+exports[`fixtures/empty.pg 1`] = `
+{
+  "type": "Block",
+  "nodes": [],
+  "line": 0,
+  "filename": "fixtures/empty.pg"
+}
+`;
+
+exports[`fixtures/layout-mutation-base.pg 1`] = `
 {
   "type": "Block",
   "nodes": [
@@ -6683,23 +6267,23 @@ exports[`fixtures/append/layout.pg 1`] = `
                 "block": {
                   "type": "Block",
                   "nodes": [],
-                  "line": 4,
-                  "filename": "fixtures/append/layout.pg"
+                  "line": 3,
+                  "filename": "fixtures/layout-mutation-base.pg"
                 },
                 "attrs": [
                   {
                     "name": "src",
                     "val": "vendor/jquery.js",
-                    "line": 4,
+                    "line": 3,
                     "column": 12,
-                    "filename": "fixtures/append/layout.pg"
+                    "filename": "fixtures/layout-mutation-base.pg"
                   }
                 ],
                 "attributeBlocks": [],
                 "isInline": false,
-                "line": 4,
+                "line": 3,
                 "column": 5,
-                "filename": "fixtures/append/layout.pg"
+                "filename": "fixtures/layout-mutation-base.pg"
               },
               {
                 "type": "Tag",
@@ -6707,27 +6291,27 @@ exports[`fixtures/append/layout.pg 1`] = `
                 "block": {
                   "type": "Block",
                   "nodes": [],
-                  "line": 5,
-                  "filename": "fixtures/append/layout.pg"
+                  "line": 4,
+                  "filename": "fixtures/layout-mutation-base.pg"
                 },
                 "attrs": [
                   {
                     "name": "src",
                     "val": "vendor/caustic.js",
-                    "line": 5,
+                    "line": 4,
                     "column": 12,
-                    "filename": "fixtures/append/layout.pg"
+                    "filename": "fixtures/layout-mutation-base.pg"
                   }
                 ],
                 "attributeBlocks": [],
                 "isInline": false,
-                "line": 5,
+                "line": 4,
                 "column": 5,
-                "filename": "fixtures/append/layout.pg"
+                "filename": "fixtures/layout-mutation-base.pg"
               }
             ],
-            "line": 3,
-            "filename": "fixtures/append/layout.pg",
+            "line": 2,
+            "filename": "fixtures/layout-mutation-base.pg",
             "name": "head",
             "mode": "replace",
             "column": 3
@@ -6741,46 +6325,37 @@ exports[`fixtures/append/layout.pg 1`] = `
                 {
                   "type": "NamedBlock",
                   "nodes": [],
-                  "line": 7,
-                  "filename": "fixtures/append/layout.pg",
+                  "line": 6,
+                  "filename": "fixtures/layout-mutation-base.pg",
                   "name": "body",
                   "mode": "replace",
                   "column": 5
                 }
               ],
-              "line": 6,
-              "filename": "fixtures/append/layout.pg"
+              "line": 5,
+              "filename": "fixtures/layout-mutation-base.pg"
             },
             "attrs": [],
             "attributeBlocks": [],
             "isInline": false,
-            "line": 6,
+            "line": 5,
             "column": 3,
-            "filename": "fixtures/append/layout.pg"
+            "filename": "fixtures/layout-mutation-base.pg"
           }
         ],
-        "line": 2,
-        "filename": "fixtures/append/layout.pg"
+        "line": 1,
+        "filename": "fixtures/layout-mutation-base.pg"
       },
       "attrs": [],
       "attributeBlocks": [],
       "isInline": false,
-      "line": 2,
+      "line": 1,
       "column": 1,
-      "filename": "fixtures/append/layout.pg"
+      "filename": "fixtures/layout-mutation-base.pg"
     }
   ],
   "line": 0,
-  "filename": "fixtures/append/layout.pg"
-}
-`;
-
-exports[`fixtures/empty.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [],
-  "line": 0,
-  "filename": "fixtures/empty.pg"
+  "filename": "fixtures/layout-mutation-base.pg"
 }
 `;
 
@@ -6918,7 +6493,7 @@ exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "layout.pg",
+        "path": "../layout-mutation-base.pg",
         "line": 2,
         "column": 9,
         "filename": "fixtures/prepend-without-block/app-layout.pg"
@@ -6967,117 +6542,6 @@ exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
 }
 `;
 
-exports[`fixtures/prepend-without-block/layout.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Tag",
-      "name": "html",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "fixtures/prepend-without-block/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "fixtures/prepend-without-block/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "fixtures/prepend-without-block/layout.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "fixtures/prepend-without-block/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "fixtures/prepend-without-block/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "fixtures/prepend-without-block/layout.pg"
-              }
-            ],
-            "line": 3,
-            "filename": "fixtures/prepend-without-block/layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 3
-          },
-          {
-            "type": "Tag",
-            "name": "body",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "NamedBlock",
-                  "nodes": [],
-                  "line": 7,
-                  "filename": "fixtures/prepend-without-block/layout.pg",
-                  "name": "body",
-                  "mode": "replace",
-                  "column": 5
-                }
-              ],
-              "line": 6,
-              "filename": "fixtures/prepend-without-block/layout.pg"
-            },
-            "attrs": [],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "fixtures/prepend-without-block/layout.pg"
-          }
-        ],
-        "line": 2,
-        "filename": "fixtures/prepend-without-block/layout.pg"
-      },
-      "attrs": [],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "fixtures/prepend-without-block/layout.pg"
-    }
-  ],
-  "line": 0,
-  "filename": "fixtures/prepend-without-block/layout.pg"
-}
-`;
-
 exports[`fixtures/prepend/app-layout.pg 1`] = `
 {
   "type": "Block",
@@ -7086,7 +6550,7 @@ exports[`fixtures/prepend/app-layout.pg 1`] = `
       "type": "Extends",
       "file": {
         "type": "FileReference",
-        "path": "layout.pg",
+        "path": "../layout-mutation-base.pg",
         "line": 2,
         "column": 9,
         "filename": "fixtures/prepend/app-layout.pg"
@@ -7132,117 +6596,6 @@ exports[`fixtures/prepend/app-layout.pg 1`] = `
   ],
   "line": 0,
   "filename": "fixtures/prepend/app-layout.pg"
-}
-`;
-
-exports[`fixtures/prepend/layout.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Tag",
-      "name": "html",
-      "block": {
-        "type": "Block",
-        "nodes": [
-          {
-            "type": "NamedBlock",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "fixtures/prepend/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "fixtures/prepend/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "fixtures/prepend/layout.pg"
-              },
-              {
-                "type": "Tag",
-                "name": "script",
-                "block": {
-                  "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "fixtures/prepend/layout.pg"
-                },
-                "attrs": [
-                  {
-                    "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "fixtures/prepend/layout.pg"
-                  }
-                ],
-                "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "fixtures/prepend/layout.pg"
-              }
-            ],
-            "line": 3,
-            "filename": "fixtures/prepend/layout.pg",
-            "name": "head",
-            "mode": "replace",
-            "column": 3
-          },
-          {
-            "type": "Tag",
-            "name": "body",
-            "block": {
-              "type": "Block",
-              "nodes": [
-                {
-                  "type": "NamedBlock",
-                  "nodes": [],
-                  "line": 7,
-                  "filename": "fixtures/prepend/layout.pg",
-                  "name": "body",
-                  "mode": "replace",
-                  "column": 5
-                }
-              ],
-              "line": 6,
-              "filename": "fixtures/prepend/layout.pg"
-            },
-            "attrs": [],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "fixtures/prepend/layout.pg"
-          }
-        ],
-        "line": 2,
-        "filename": "fixtures/prepend/layout.pg"
-      },
-      "attrs": [],
-      "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "fixtures/prepend/layout.pg"
-    }
-  ],
-  "line": 0,
-  "filename": "fixtures/prepend/layout.pg"
 }
 `;
 
@@ -10175,121 +9528,6 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
   ],
   "line": 0,
   "filename": "inheritance.extend.whitespace.pg"
-}
-`;
-
-exports[`inheritance.pg 1`] = `
-{
-  "type": "Block",
-  "nodes": [
-    {
-      "type": "Extends",
-      "file": {
-        "type": "FileReference",
-        "path": "auxiliary/layout.pg",
-        "line": 2,
-        "column": 9,
-        "filename": "inheritance.pg"
-      },
-      "line": 2,
-      "column": 1,
-      "filename": "inheritance.pg"
-    },
-    {
-      "type": "NamedBlock",
-      "nodes": [
-        {
-          "type": "Tag",
-          "name": "script",
-          "block": {
-            "type": "Block",
-            "nodes": [],
-            "line": 5,
-            "filename": "inheritance.pg"
-          },
-          "attrs": [
-            {
-              "name": "src",
-              "val": "jquery.js",
-              "line": 5,
-              "column": 10,
-              "filename": "inheritance.pg"
-            }
-          ],
-          "attributeBlocks": [],
-          "isInline": false,
-          "line": 5,
-          "column": 3,
-          "filename": "inheritance.pg"
-        }
-      ],
-      "line": 4,
-      "filename": "inheritance.pg",
-      "name": "head",
-      "mode": "replace",
-      "column": 1
-    },
-    {
-      "type": "NamedBlock",
-      "nodes": [
-        {
-          "type": "Tag",
-          "name": "h2",
-          "block": {
-            "type": "Block",
-            "nodes": [
-              {
-                "type": "Text",
-                "line": 8,
-                "column": 6,
-                "filename": "inheritance.pg",
-                "val": "Page"
-              }
-            ],
-            "line": 8,
-            "filename": "inheritance.pg"
-          },
-          "attrs": [],
-          "attributeBlocks": [],
-          "isInline": false,
-          "line": 8,
-          "column": 3,
-          "filename": "inheritance.pg"
-        },
-        {
-          "type": "Tag",
-          "name": "p",
-          "block": {
-            "type": "Block",
-            "nodes": [
-              {
-                "type": "Text",
-                "line": 9,
-                "column": 5,
-                "filename": "inheritance.pg",
-                "val": "Some content"
-              }
-            ],
-            "line": 9,
-            "filename": "inheritance.pg"
-          },
-          "attrs": [],
-          "attributeBlocks": [],
-          "isInline": false,
-          "line": 9,
-          "column": 3,
-          "filename": "inheritance.pg"
-        }
-      ],
-      "line": 7,
-      "filename": "inheritance.pg",
-      "name": "content",
-      "mode": "replace",
-      "column": 1
-    }
-  ],
-  "line": 0,
-  "filename": "inheritance.pg"
 }
 `;
 
@@ -21483,90 +20721,10 @@ exports[`tags.self-closing.pg 1`] = `
             "filename": "tags.self-closing.pg"
           },
           {
-            "type": "Tag",
-            "name": "foo",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 5,
-              "filename": "tags.self-closing.pg"
-            },
-            "attrs": [],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 5,
-            "column": 3,
-            "filename": "tags.self-closing.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "foo",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 6,
-              "filename": "tags.self-closing.pg"
-            },
-            "attrs": [
-              {
-                "name": "bar",
-                "val": "baz",
-                "line": 6,
-                "column": 7,
-                "filename": "tags.self-closing.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "tags.self-closing.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "foo",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 7,
-              "filename": "tags.self-closing.pg"
-            },
-            "attrs": [],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 7,
-            "column": 3,
-            "filename": "tags.self-closing.pg"
-          },
-          {
-            "type": "Tag",
-            "name": "foo",
-            "block": {
-              "type": "Block",
-              "nodes": [],
-              "line": 8,
-              "filename": "tags.self-closing.pg"
-            },
-            "attrs": [
-              {
-                "name": "bar",
-                "val": "baz",
-                "line": 8,
-                "column": 7,
-                "filename": "tags.self-closing.pg"
-              }
-            ],
-            "attributeBlocks": [],
-            "isInline": false,
-            "line": 8,
-            "column": 3,
-            "filename": "tags.self-closing.pg"
-          },
-          {
             "type": "Comment",
             "val": " can have a single space after them",
             "buffer": false,
-            "line": 9,
+            "line": 5,
             "column": 3,
             "filename": "tags.self-closing.pg"
           },
@@ -21578,27 +20736,27 @@ exports[`tags.self-closing.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "line": 10,
+                  "line": 6,
                   "column": 14,
                   "filename": "tags.self-closing.pg",
                   "val": " "
                 }
               ],
-              "line": 10,
+              "line": 6,
               "filename": "tags.self-closing.pg"
             },
             "attrs": [
               {
                 "name": "alt",
                 "val": "",
-                "line": 10,
+                "line": 6,
                 "column": 7,
                 "filename": "tags.self-closing.pg"
               }
             ],
             "attributeBlocks": [],
             "isInline": true,
-            "line": 10,
+            "line": 6,
             "column": 3,
             "filename": "tags.self-closing.pg"
           },
@@ -21606,7 +20764,7 @@ exports[`tags.self-closing.pg 1`] = `
             "type": "Comment",
             "val": " can have lots of white space after them",
             "buffer": false,
-            "line": 11,
+            "line": 7,
             "column": 3,
             "filename": "tags.self-closing.pg"
           },
@@ -21618,27 +20776,27 @@ exports[`tags.self-closing.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "line": 12,
+                  "line": 8,
                   "column": 15,
                   "filename": "tags.self-closing.pg",
                   "val": "   "
                 }
               ],
-              "line": 12,
+              "line": 8,
               "filename": "tags.self-closing.pg"
             },
             "attrs": [
               {
                 "name": "alt",
                 "val": "",
-                "line": 12,
+                "line": 8,
                 "column": 7,
                 "filename": "tags.self-closing.pg"
               }
             ],
             "attributeBlocks": [],
             "isInline": true,
-            "line": 12,
+            "line": 8,
             "column": 3,
             "filename": "tags.self-closing.pg"
           }

@@ -1981,864 +1981,6 @@ exports[`attrs.pg 1`] = `
       "filename": "attrs.pg",
       "end": {
         "line": 13,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 13,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 13,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 13,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 13,
-        "column": 18
-      }
-    },
-    "name": "href",
-    "val": "/contact"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 13,
-        "column": 18
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 13,
-        "column": 19
-      }
-    }
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 13,
-        "column": 20
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 13,
-        "column": 27
-      }
-    },
-    "val": "contact"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 15
-      }
-    },
-    "name": "href",
-    "val": "/save"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 15
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 16
-      }
-    }
-  },
-  {
-    "type": "class",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 16
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 23
-      }
-    },
-    "val": "button"
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 14,
-        "column": 24
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 14,
-        "column": 28
-      }
-    },
-    "val": "save"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 7
-      }
-    },
-    "name": "foo",
-    "val": true
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 7
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 11
-      }
-    },
-    "name": "bar",
-    "val": true
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 11
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 14
-      }
-    },
-    "name": "baz",
-    "val": true
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 15,
-        "column": 14
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 15,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 22
-      }
-    },
-    "name": "foo",
-    "val": "foo, bar, baz"
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 23
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 28
-      }
-    },
-    "name": "bar",
-    "val": "1"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 16,
-        "column": 28
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 16,
-        "column": 29
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 16
-      }
-    },
-    "name": "foo",
-    "val": "((foo))"
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 17
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 34
-      }
-    },
-    "name": "bar",
-    "val": "(1) ? 1 : 0"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 17,
-        "column": 35
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 17,
-        "column": 36
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 18,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 18,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 18,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 18,
-        "column": 7
-      }
-    },
-    "val": "select"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 9
-      }
-    },
-    "val": "option"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 9
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 10
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 10
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 21
-      }
-    },
-    "name": "value",
-    "val": "foo"
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 22
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 30
-      }
-    },
-    "name": "selected",
-    "val": true
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 30
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 31
-      }
-    }
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 19,
-        "column": 32
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 19,
-        "column": 35
-      }
-    },
-    "val": "Foo"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 9
-      }
-    },
-    "val": "option"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 9
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 10
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 10
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 19
-      }
-    },
-    "name": "selected",
-    "val": true
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 19
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 30
-      }
-    },
-    "name": "value",
-    "val": "bar"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 30
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 31
-      }
-    }
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 20,
-        "column": 32
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 20,
-        "column": 35
-      }
-    },
-    "val": "Bar"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 21,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 21,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 21,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 21,
-        "column": 2
-      }
-    },
-    "val": "a"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 21,
-        "column": 2
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 21,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 21,
-        "column": 3
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 21,
-        "column": 15
-      }
-    },
-    "name": "foo",
-    "val": "class:"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 21,
-        "column": 15
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 21,
-        "column": 16
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 22,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 22,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 22,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 22,
-        "column": 6
-      }
-    },
-    "val": "input"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 22,
-        "column": 6
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 22,
-        "column": 7
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 22,
-        "column": 7
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 22,
-        "column": 21
-      }
-    },
-    "name": "pattern",
-    "val": "\\\\S+"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 22,
-        "column": 21
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 22,
-        "column": 22
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 23,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 23,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 23,
-        "column": 1
-      },
-      "filename": "attrs.pg",
-      "end": {
-        "line": 23,
         "column": 4
       }
     },
@@ -2848,12 +1990,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 23,
+        "line": 13,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 23,
+        "line": 13,
         "column": 5
       }
     }
@@ -2862,12 +2004,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 23,
+        "line": 13,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 23,
+        "line": 13,
         "column": 17
       }
     },
@@ -2878,12 +2020,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 23,
+        "line": 13,
         "column": 17
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 23,
+        "line": 13,
         "column": 18
       }
     }
@@ -2892,12 +2034,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 24,
+        "line": 14,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 24,
+        "line": 14,
         "column": 1
       }
     }
@@ -2906,12 +2048,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 24,
+        "line": 14,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 24,
+        "line": 14,
         "column": 4
       }
     },
@@ -2921,12 +2063,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 24,
+        "line": 14,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 24,
+        "line": 14,
         "column": 5
       }
     }
@@ -2935,12 +2077,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 24,
+        "line": 14,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 24,
+        "line": 14,
         "column": 23
       }
     },
@@ -2951,12 +2093,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 24,
+        "line": 14,
         "column": 23
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 24,
+        "line": 14,
         "column": 24
       }
     }
@@ -2965,12 +2107,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 26,
+        "line": 16,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 26,
+        "line": 16,
         "column": 1
       }
     }
@@ -2979,12 +2121,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 26,
+        "line": 16,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 26,
+        "line": 16,
         "column": 4
       }
     },
@@ -2994,12 +2136,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 26,
+        "line": 16,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 26,
+        "line": 16,
         "column": 5
       }
     }
@@ -3008,12 +2150,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 26,
+        "line": 16,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 27,
+        "line": 17,
         "column": 5
       }
     },
@@ -3024,12 +2166,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 27,
+        "line": 17,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 27,
+        "line": 17,
         "column": 8
       }
     },
@@ -3040,12 +2182,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 27,
+        "line": 17,
         "column": 8
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 27,
+        "line": 17,
         "column": 9
       }
     }
@@ -3054,12 +2196,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 28,
+        "line": 18,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 28,
+        "line": 18,
         "column": 1
       }
     }
@@ -3068,12 +2210,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 28,
+        "line": 18,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 28,
+        "line": 18,
         "column": 4
       }
     },
@@ -3083,12 +2225,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 28,
+        "line": 18,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 28,
+        "line": 18,
         "column": 5
       }
     }
@@ -3097,12 +2239,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 28,
+        "line": 18,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 29,
+        "line": 19,
         "column": 4
       }
     },
@@ -3113,12 +2255,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 29,
+        "line": 19,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 29,
+        "line": 19,
         "column": 8
       }
     },
@@ -3129,12 +2271,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 29,
+        "line": 19,
         "column": 8
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 29,
+        "line": 19,
         "column": 9
       }
     }
@@ -3143,12 +2285,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 30,
+        "line": 20,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 30,
+        "line": 20,
         "column": 1
       }
     }
@@ -3157,12 +2299,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 30,
+        "line": 20,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 30,
+        "line": 20,
         "column": 4
       }
     },
@@ -3172,12 +2314,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 30,
+        "line": 20,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 30,
+        "line": 20,
         "column": 5
       }
     }
@@ -3186,12 +2328,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 30,
+        "line": 20,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 31,
+        "line": 21,
         "column": 5
       }
     },
@@ -3202,12 +2344,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 31,
+        "line": 21,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 31,
+        "line": 21,
         "column": 8
       }
     },
@@ -3218,12 +2360,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 31,
+        "line": 21,
         "column": 8
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 31,
+        "line": 21,
         "column": 9
       }
     }
@@ -3232,12 +2374,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 32,
+        "line": 22,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 32,
+        "line": 22,
         "column": 1
       }
     }
@@ -3246,12 +2388,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 32,
+        "line": 22,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 32,
+        "line": 22,
         "column": 4
       }
     },
@@ -3261,12 +2403,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 32,
+        "line": 22,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 32,
+        "line": 22,
         "column": 5
       }
     }
@@ -3275,12 +2417,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 32,
+        "line": 22,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 33,
+        "line": 23,
         "column": 3
       }
     },
@@ -3291,12 +2433,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 33,
+        "line": 23,
         "column": 3
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 33,
+        "line": 23,
         "column": 6
       }
     },
@@ -3307,12 +2449,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 33,
+        "line": 23,
         "column": 6
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 33,
+        "line": 23,
         "column": 7
       }
     }
@@ -3321,12 +2463,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 34,
+        "line": 24,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 34,
+        "line": 24,
         "column": 1
       }
     }
@@ -3335,12 +2477,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 34,
+        "line": 24,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 34,
+        "line": 24,
         "column": 4
       }
     },
@@ -3350,12 +2492,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 34,
+        "line": 24,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 34,
+        "line": 24,
         "column": 5
       }
     }
@@ -3364,12 +2506,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 34,
+        "line": 24,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 35,
+        "line": 25,
         "column": 3
       }
     },
@@ -3380,12 +2522,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 35,
+        "line": 25,
         "column": 3
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 35,
+        "line": 25,
         "column": 7
       }
     },
@@ -3396,12 +2538,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 35,
+        "line": 25,
         "column": 7
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 35,
+        "line": 25,
         "column": 8
       }
     }
@@ -3410,12 +2552,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 36,
+        "line": 26,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 36,
+        "line": 26,
         "column": 1
       }
     }
@@ -3424,12 +2566,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 36,
+        "line": 26,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 36,
+        "line": 26,
         "column": 4
       }
     },
@@ -3439,12 +2581,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 36,
+        "line": 26,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 36,
+        "line": 26,
         "column": 5
       }
     }
@@ -3453,12 +2595,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 36,
+        "line": 26,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 37,
+        "line": 27,
         "column": 3
       }
     },
@@ -3469,12 +2611,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 37,
+        "line": 27,
         "column": 3
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 37,
+        "line": 27,
         "column": 6
       }
     },
@@ -3485,12 +2627,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 37,
+        "line": 27,
         "column": 6
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 37,
+        "line": 27,
         "column": 7
       }
     }
@@ -3499,12 +2641,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 38,
+        "line": 28,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 38,
+        "line": 28,
         "column": 1
       }
     }
@@ -3513,12 +2655,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 38,
+        "line": 28,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 38,
+        "line": 28,
         "column": 4
       }
     },
@@ -3528,12 +2670,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 38,
+        "line": 28,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 38,
+        "line": 28,
         "column": 5
       }
     }
@@ -3542,12 +2684,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 38,
+        "line": 28,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 39,
+        "line": 29,
         "column": 5
       }
     },
@@ -3558,12 +2700,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 39,
+        "line": 29,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 39,
+        "line": 29,
         "column": 8
       }
     },
@@ -3574,12 +2716,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 39,
+        "line": 29,
         "column": 8
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 39,
+        "line": 29,
         "column": 9
       }
     }
@@ -3588,12 +2730,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 1
       }
     }
@@ -3602,12 +2744,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 4
       }
     },
@@ -3617,12 +2759,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 4
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 5
       }
     }
@@ -3631,12 +2773,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 5
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 12
       }
     },
@@ -3647,12 +2789,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 13
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 24
       }
     },
@@ -3663,12 +2805,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 41,
+        "line": 31,
         "column": 24
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 41,
+        "line": 31,
         "column": 25
       }
     }
@@ -3677,12 +2819,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 1
       }
     }
@@ -3691,12 +2833,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 2
       }
     },
@@ -3706,12 +2848,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 2
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 3
       }
     }
@@ -3720,12 +2862,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 3
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 12
       }
     },
@@ -3736,12 +2878,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 13
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 24
       }
     },
@@ -3752,12 +2894,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 43,
+        "line": 33,
         "column": 24
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 43,
+        "line": 33,
         "column": 25
       }
     }
@@ -3766,12 +2908,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 1
       }
     }
@@ -3780,12 +2922,12 @@ exports[`attrs.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 2
       }
     },
@@ -3795,12 +2937,12 @@ exports[`attrs.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 2
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 3
       }
     }
@@ -3809,12 +2951,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 3
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 12
       }
     },
@@ -3825,12 +2967,12 @@ exports[`attrs.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 13
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 24
       }
     },
@@ -3841,12 +2983,12 @@ exports[`attrs.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 44,
+        "line": 34,
         "column": 24
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 44,
+        "line": 34,
         "column": 25
       }
     }
@@ -3855,12 +2997,12 @@ exports[`attrs.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 45,
+        "line": 35,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 45,
+        "line": 35,
         "column": 1
       }
     }
@@ -3869,12 +3011,12 @@ exports[`attrs.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 45,
+        "line": 35,
         "column": 1
       },
       "filename": "attrs.pg",
       "end": {
-        "line": 45,
+        "line": 35,
         "column": 1
       }
     }
@@ -15554,10 +14696,10 @@ exports[`fixtures/append-without-block/app-layout.pg 1`] = `
       "filename": "fixtures/append-without-block/app-layout.pg",
       "end": {
         "line": 2,
-        "column": 18
+        "column": 35
       }
     },
-    "val": "layout.pg"
+    "val": "../layout-mutation-base.pg"
   },
   {
     "type": "newline",
@@ -15688,320 +14830,6 @@ exports[`fixtures/append-without-block/app-layout.pg 1`] = `
       "end": {
         "line": 6,
         "column": 1
-      }
-    }
-  }
-]
-`;
-
-exports[`fixtures/append-without-block/layout.pg 1`] = `
-[
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 5
-      }
-    },
-    "val": "html"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 3
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 13
-      }
-    },
-    "val": "head",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 5
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 11
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 12
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 34
-      }
-    },
-    "name": "src",
-    "val": "vendor/jquery.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 34
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 35
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 5
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 5
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 11
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 12
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 35
-      }
-    },
-    "name": "src",
-    "val": "vendor/caustic.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 35
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 36
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 7
-      }
-    },
-    "val": "body"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 5
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    },
-    "val": "body",
-    "mode": "replace"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "eos",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
       }
     }
   }
@@ -16048,10 +14876,10 @@ exports[`fixtures/append/app-layout.pg 1`] = `
       "filename": "fixtures/append/app-layout.pg",
       "end": {
         "line": 2,
-        "column": 18
+        "column": 35
       }
     },
-    "val": "layout.pg"
+    "val": "../layout-mutation-base.pg"
   },
   {
     "type": "newline",
@@ -16188,320 +15016,6 @@ exports[`fixtures/append/app-layout.pg 1`] = `
 ]
 `;
 
-exports[`fixtures/append/layout.pg 1`] = `
-[
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 5
-      }
-    },
-    "val": "html"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 3
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 13
-      }
-    },
-    "val": "head",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 5
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 11
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 12
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 34
-      }
-    },
-    "name": "src",
-    "val": "vendor/jquery.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 34
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 35
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 5
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 5
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 11
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 12
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 35
-      }
-    },
-    "name": "src",
-    "val": "vendor/caustic.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 35
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 36
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 7
-      }
-    },
-    "val": "body"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 5
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    },
-    "val": "body",
-    "mode": "replace"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "eos",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/append/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  }
-]
-`;
-
 exports[`fixtures/empty.pg 1`] = `
 [
   {
@@ -16514,6 +15028,306 @@ exports[`fixtures/empty.pg 1`] = `
       "filename": "fixtures/empty.pg",
       "end": {
         "line": 1,
+        "column": 1
+      }
+    }
+  }
+]
+`;
+
+exports[`fixtures/layout-mutation-base.pg 1`] = `
+[
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 1,
+        "column": 5
+      }
+    },
+    "val": "html"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 2,
+        "column": 3
+      }
+    },
+    "val": 2
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 2,
+        "column": 3
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 2,
+        "column": 13
+      }
+    },
+    "val": "head",
+    "mode": "replace"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 3,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 5
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 3,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 11
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 3,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 12
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 3,
+        "column": 34
+      }
+    },
+    "name": "src",
+    "val": "vendor/jquery.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 3,
+        "column": 34
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 3,
+        "column": 35
+      }
+    }
+  },
+  {
+    "type": "newline",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 4,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 5
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 4,
+        "column": 11
+      }
+    },
+    "val": "script"
+  },
+  {
+    "type": "start-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 11
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 4,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "attribute",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 12
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 4,
+        "column": 35
+      }
+    },
+    "name": "src",
+    "val": "vendor/caustic.js"
+  },
+  {
+    "type": "end-attributes",
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 35
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 4,
+        "column": 36
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 5,
+        "column": 3
+      }
+    }
+  },
+  {
+    "type": "tag",
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 3
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 5,
+        "column": 7
+      }
+    },
+    "val": "body"
+  },
+  {
+    "type": "indent",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 6,
+        "column": 5
+      }
+    },
+    "val": 4
+  },
+  {
+    "type": "block",
+    "loc": {
+      "start": {
+        "line": 6,
+        "column": 5
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 6,
+        "column": 15
+      }
+    },
+    "val": "body",
+    "mode": "replace"
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "outdent",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 7,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "eos",
+    "loc": {
+      "start": {
+        "line": 7,
+        "column": 1
+      },
+      "filename": "fixtures/layout-mutation-base.pg",
+      "end": {
+        "line": 7,
         "column": 1
       }
     }
@@ -16910,10 +15724,10 @@ exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
       "filename": "fixtures/prepend-without-block/app-layout.pg",
       "end": {
         "line": 2,
-        "column": 18
+        "column": 35
       }
     },
-    "val": "layout.pg"
+    "val": "../layout-mutation-base.pg"
   },
   {
     "type": "newline",
@@ -17050,320 +15864,6 @@ exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
 ]
 `;
 
-exports[`fixtures/prepend-without-block/layout.pg 1`] = `
-[
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 5
-      }
-    },
-    "val": "html"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 3
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 13
-      }
-    },
-    "val": "head",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 5
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 11
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 12
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 34
-      }
-    },
-    "name": "src",
-    "val": "vendor/jquery.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 34
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 35
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 5
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 5
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 11
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 12
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 35
-      }
-    },
-    "name": "src",
-    "val": "vendor/caustic.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 35
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 36
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 7
-      }
-    },
-    "val": "body"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 5
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    },
-    "val": "body",
-    "mode": "replace"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "eos",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend-without-block/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  }
-]
-`;
-
 exports[`fixtures/prepend/app-layout.pg 1`] = `
 [
   {
@@ -17404,10 +15904,10 @@ exports[`fixtures/prepend/app-layout.pg 1`] = `
       "filename": "fixtures/prepend/app-layout.pg",
       "end": {
         "line": 2,
-        "column": 18
+        "column": 35
       }
     },
-    "val": "layout.pg"
+    "val": "../layout-mutation-base.pg"
   },
   {
     "type": "newline",
@@ -17538,320 +16038,6 @@ exports[`fixtures/prepend/app-layout.pg 1`] = `
       "end": {
         "line": 6,
         "column": 1
-      }
-    }
-  }
-]
-`;
-
-exports[`fixtures/prepend/layout.pg 1`] = `
-[
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 2,
-        "column": 5
-      }
-    },
-    "val": "html"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 3,
-        "column": 3
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 3,
-        "column": 13
-      }
-    },
-    "val": "head",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 5
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 11
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 12
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 34
-      }
-    },
-    "name": "src",
-    "val": "vendor/jquery.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 34
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 4,
-        "column": 35
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 5
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 5
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 11
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 11
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 12
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 12
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 35
-      }
-    },
-    "name": "src",
-    "val": "vendor/caustic.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 35
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 5,
-        "column": 36
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 6,
-        "column": 7
-      }
-    },
-    "val": "body"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 5
-      }
-    },
-    "val": 4
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 5
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    },
-    "val": "body",
-    "mode": "replace"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
-      }
-    }
-  },
-  {
-    "type": "eos",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 15
-      },
-      "filename": "fixtures/prepend/layout.pg",
-      "end": {
-        "line": 7,
-        "column": 15
       }
     }
   }
@@ -25633,305 +23819,6 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
       "filename": "inheritance.extend.whitespace.pg",
       "end": {
         "line": 14,
-        "column": 1
-      }
-    }
-  }
-]
-`;
-
-exports[`inheritance.pg 1`] = `
-[
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 2,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "extends",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 2,
-        "column": 8
-      }
-    }
-  },
-  {
-    "type": "path",
-    "loc": {
-      "start": {
-        "line": 2,
-        "column": 9
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 2,
-        "column": 28
-      }
-    },
-    "val": "auxiliary/layout.pg"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 4,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 4,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 4,
-        "column": 11
-      }
-    },
-    "val": "head",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 5,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 3
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 5,
-        "column": 9
-      }
-    },
-    "val": "script"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 9
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 5,
-        "column": 10
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 10
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 5,
-        "column": 25
-      }
-    },
-    "name": "src",
-    "val": "jquery.js"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 25
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 5,
-        "column": 26
-      }
-    }
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 7,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "block",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 7,
-        "column": 14
-      }
-    },
-    "val": "content",
-    "mode": "replace"
-  },
-  {
-    "type": "indent",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 8,
-        "column": 3
-      }
-    },
-    "val": 2
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 3
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 8,
-        "column": 5
-      }
-    },
-    "val": "h2"
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 6
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 8,
-        "column": 10
-      }
-    },
-    "val": "Page"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 9,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 9,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 9,
-        "column": 3
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 9,
-        "column": 4
-      }
-    },
-    "val": "p"
-  },
-  {
-    "type": "text",
-    "loc": {
-      "start": {
-        "line": 9,
-        "column": 5
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 9,
-        "column": 17
-      }
-    },
-    "val": "Some content"
-  },
-  {
-    "type": "outdent",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 10,
-        "column": 1
-      }
-    }
-  },
-  {
-    "type": "eos",
-    "loc": {
-      "start": {
-        "line": 10,
-        "column": 1
-      },
-      "filename": "inheritance.pg",
-      "end": {
-        "line": 10,
         "column": 1
       }
     }
@@ -54298,219 +52185,15 @@ exports[`tags.self-closing.pg 1`] = `
     }
   },
   {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 5,
-        "column": 3
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 5,
-        "column": 6
-      }
-    },
-    "val": "foo"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 1
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 6,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 3
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 6,
-        "column": 6
-      }
-    },
-    "val": "foo"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 6
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 6,
-        "column": 7
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 7
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 6,
-        "column": 16
-      }
-    },
-    "name": "bar",
-    "val": "baz"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 6,
-        "column": 16
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 6,
-        "column": 17
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 1
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 7,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 7,
-        "column": 3
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 7,
-        "column": 6
-      }
-    },
-    "val": "foo"
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 1
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 8,
-        "column": 3
-      }
-    }
-  },
-  {
-    "type": "tag",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 3
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 8,
-        "column": 6
-      }
-    },
-    "val": "foo"
-  },
-  {
-    "type": "start-attributes",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 6
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 8,
-        "column": 7
-      }
-    }
-  },
-  {
-    "type": "attribute",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 7
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 8,
-        "column": 16
-      }
-    },
-    "name": "bar",
-    "val": "baz"
-  },
-  {
-    "type": "end-attributes",
-    "loc": {
-      "start": {
-        "line": 8,
-        "column": 16
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 8,
-        "column": 17
-      }
-    }
-  },
-  {
-    "type": "newline",
-    "loc": {
-      "start": {
-        "line": 9,
-        "column": 1
-      },
-      "filename": "tags.self-closing.pg",
-      "end": {
-        "line": 9,
-        "column": 3
-      }
-    }
-  },
-  {
     "type": "comment",
     "loc": {
       "start": {
-        "line": 9,
+        "line": 5,
         "column": 3
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 9,
+        "line": 5,
         "column": 41
       }
     },
@@ -54521,12 +52204,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 1
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 3
       }
     }
@@ -54535,12 +52218,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 3
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 6
       }
     },
@@ -54550,12 +52233,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 6
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 7
       }
     }
@@ -54564,12 +52247,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 7
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 13
       }
     },
@@ -54580,12 +52263,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 13
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 14
       }
     }
@@ -54594,12 +52277,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 10,
+        "line": 6,
         "column": 14
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 10,
+        "line": 6,
         "column": 15
       }
     },
@@ -54609,12 +52292,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 7,
         "column": 1
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 11,
+        "line": 7,
         "column": 3
       }
     }
@@ -54623,12 +52306,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "comment",
     "loc": {
       "start": {
-        "line": 11,
+        "line": 7,
         "column": 3
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 11,
+        "line": 7,
         "column": 46
       }
     },
@@ -54639,12 +52322,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "newline",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 1
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 3
       }
     }
@@ -54653,12 +52336,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "tag",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 3
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 6
       }
     },
@@ -54668,12 +52351,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "start-attributes",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 6
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 7
       }
     }
@@ -54682,12 +52365,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "attribute",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 7
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 13
       }
     },
@@ -54698,12 +52381,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "end-attributes",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 13
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 14
       }
     }
@@ -54712,12 +52395,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "text",
     "loc": {
       "start": {
-        "line": 12,
+        "line": 8,
         "column": 15
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 12,
+        "line": 8,
         "column": 18
       }
     },
@@ -54727,12 +52410,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "outdent",
     "loc": {
       "start": {
-        "line": 13,
+        "line": 9,
         "column": 1
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 13,
+        "line": 9,
         "column": 1
       }
     }
@@ -54741,12 +52424,12 @@ exports[`tags.self-closing.pg 1`] = `
     "type": "eos",
     "loc": {
       "start": {
-        "line": 13,
+        "line": 9,
         "column": 1
       },
       "filename": "tags.self-closing.pg",
       "end": {
-        "line": 13,
+        "line": 9,
         "column": 1
       }
     }

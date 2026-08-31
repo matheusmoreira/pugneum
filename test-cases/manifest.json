@@ -48,7 +48,6 @@
     "inheritance.extend",
     "inheritance.extend.recursive",
     "inheritance.extend.whitespace",
-    "inheritance",
     "inline-block-comment",
     "inline-shorthands-combined",
     "inline-tag",
@@ -161,15 +160,12 @@
     "auxiliary/window.pg",
     "auxiliary/yield-nested.pg",
     "fixtures/append/app-layout.pg",
-    "fixtures/append/layout.pg",
     "fixtures/append-without-block/app-layout.pg",
-    "fixtures/append-without-block/layout.pg",
+    "fixtures/layout-mutation-base.pg",
     "fixtures/multi-append-prepend-block/redefine.pg",
     "fixtures/multi-append-prepend-block/root.pg",
     "fixtures/prepend/app-layout.pg",
-    "fixtures/prepend/layout.pg",
     "fixtures/prepend-without-block/app-layout.pg",
-    "fixtures/prepend-without-block/layout.pg",
     "javascript-new-lines.js"
   ],
   "warningOracles": {
@@ -180,7 +176,7 @@
     "boundary-whitespace.pg": "768469d55b377680d6ac656d48e758a903f193d43b6525ee7838cf544de4d16d",
     "mixin-block-with-space.pg": "d20272847fbb11c3a8be23dafa463610398fc7a6acff523b5e2aff70d2d288b1",
     "script.whitespace.pg": "aaf9e42333bb359c5415ae257cdd77f5f4d4cace1d50bab1461662f07ec232c2",
-    "tags.self-closing.pg": "403aeeaec64c00bd911090dc78b8a9ea4e63580acfe28eb770e1f766f96b97ce",
+    "tags.self-closing.pg": "332881b9701495a87bcfe4363a316b10dc11168ef05228c37746d60c8d61c648",
     "utf8bom.pg": "c9094e8968bb53787504e0687cb49bcc721cf7a967df12ff122c71981393548b"
   }
 }

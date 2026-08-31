@@ -1,4 +1,3 @@
-
 html
   block head
     script(src='vendor/jquery.js')

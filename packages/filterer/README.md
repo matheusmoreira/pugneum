@@ -135,6 +135,12 @@ resolution pass. Loading and template assembly have already finished, which is
 why generated include, extends, raw-include, file-reference, include-filter,
 and yield nodes are rejected at the filter invocation.
 
+Each `pugneum` result receives a deterministic synthetic source name that also
+identifies its filter invocation. Later errors and warnings use the generated
+text with its generated line and column, rather than pairing those coordinates
+with an unrelated caller line. The synthetic name retains the caller filename
+and invocation location so the origin remains visible.
+
 Nested block filters such as `:outer:inner` run from the inside out. When an
 inner `pugneum` or `syntax` filter feeds a string-consuming `text` or `html`
 outer filter, the inner subtree is serialized to HTML before the outer callback

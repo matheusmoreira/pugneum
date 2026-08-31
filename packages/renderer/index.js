@@ -1,4 +1,5 @@
 const makeError = require('pugneum-error');
+const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
 
 const MAX_MIXIN_DEPTH = 256;
 
@@ -72,6 +73,13 @@ function asciiLowerCase(value) {
   return value.replace(/[A-Z]/g, function (character) {
     return String.fromCharCode(character.charCodeAt(0) + 32);
   });
+}
+
+function sourceOrigin(sources, filename) {
+  const origins = sources && sources[generatedSourceOrigins];
+  return origins && Object.prototype.hasOwnProperty.call(origins, filename)
+    ? origins[filename]
+    : filename;
 }
 
 function nameSet(names) {
@@ -149,9 +157,13 @@ class Compiler {
   // typically reusable library definitions that a given page may not call.
   warnUnusedMixins() {
     const entry = this.options.filename;
+    const sources = this.options.sources;
     for (const name in this.mixins) {
       const mixin = this.mixins[name];
-      if (!this.usedMixins.has(name) && mixin.filename === entry) {
+      if (
+        !this.usedMixins.has(name) &&
+        sourceOrigin(sources, mixin.filename) === sourceOrigin(sources, entry)
+      ) {
         this.warn(
           'UNUSED_MIXIN',
           "Mixin '" + name + "' is defined but never called",

@@ -653,6 +653,68 @@ describe('filter option validation', () => {
   });
 });
 
+describe('public custom filters', () => {
+  it('runs generated structure before document-wide resolution', () => {
+    var filters = {
+      generated: {
+        type: 'pugneum',
+        filter() {
+          return 'p @[documentation]';
+        },
+      },
+    };
+    var html = pg.render(
+      'references\n  documentation /docs\n\n:generated\n  ignored',
+      {filters, warnings: []},
+    );
+
+    assert.strictEqual(html, '<p><a href="/docs">documentation</a></p>');
+  });
+
+  it('retains entry ownership for warnings from generated structure', () => {
+    var warnings = [];
+    var filters = {
+      generated: {
+        type: 'pugneum',
+        filter() {
+          return 'mixin unused\n  p hidden\np visible';
+        },
+      },
+    };
+
+    assert.strictEqual(
+      pg.render(':generated\n  ignored', {
+        filename: 'generated-warning.pg',
+        filters,
+        warnings,
+      }),
+      '<p>visible</p>',
+    );
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(warnings[0].code, 'PUGNEUM:UNUSED_MIXIN');
+    assert.match(
+      warnings[0].filename,
+      /^<filter generated output #1 from generated-warning\.pg:1:1>$/,
+    );
+  });
+
+  it('keeps scalar entry source on filename-less linker diagnostics', () => {
+    var source = 'p before\np @[missing-entry]\np after';
+
+    assert.throws(
+      () => pg.render(source, {warnings: []}),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:UNDEFINED_REFERENCE');
+        assert.strictEqual(err.filename, undefined);
+        assert.strictEqual(err.source, source);
+        assert.strictEqual(err.line, 2);
+        assert.match(err.message, />\s*2\| p @\[missing-entry\]/);
+        return true;
+      },
+    );
+  });
+});
+
 describe('variables in attributes', () => {
   it('should resolve #{var} in attribute values', () => {
     assert.strictEqual(

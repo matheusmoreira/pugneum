@@ -1121,6 +1121,30 @@ p
   assert.strictEqual(textNode.val, '&lt;em&gt;x&lt;/em&gt;');
 });
 
+test('nested early rendering retains generated warning provenance', () => {
+  const generated = 'mixin unused\n  p hidden\np visible';
+  const filters = {
+    outer: {type: 'html', filter: (text) => text},
+    inner: {type: 'pugneum', filter: () => generated},
+  };
+  const source = ':outer:inner\n  caller-only body';
+  const options = {filename: 'nested-entry.pg', source, warnings: []};
+  const ast = parse(lex(source, options), options);
+
+  filter(ast, filters, options);
+
+  assert.strictEqual(options.warnings.length, 1);
+  const warning = options.warnings[0];
+  assert.strictEqual(warning.code, 'PUGNEUM:UNUSED_MIXIN');
+  assert.match(
+    warning.filename,
+    /^<filter inner output #1 from nested-entry\.pg:1:7>$/,
+  );
+  assert.strictEqual(warning.source, generated);
+  assert.match(warning.message, />\s*1\| mixin unused/);
+  assert.doesNotMatch(warning.message, /caller-only body/);
+});
+
 test('filterer errors carry the source code frame', () => {
   const source = `
 p
@@ -1164,6 +1188,48 @@ test('filterer errors use options.sources for an included node filename', () => 
     () => filter(ast, {}, opts),
     (err) => err.code === 'PUGNEUM:UNKNOWN_FILTER' && /:nope/.test(err.message),
   );
+});
+
+test('downstream diagnostics pair generated coordinates with generated source', () => {
+  const generated =
+    'p generated-first\np @[missing-generated]\np generated-last';
+  const filters = {
+    generated: {type: 'pugneum', filter: () => generated},
+  };
+
+  for (const origin of ['entry.pg', 'included.pg']) {
+    const source = ':generated\n  caller-only body';
+    const options = {
+      filename: origin,
+      source,
+      sources: {[origin]: source},
+      warnings: [],
+    };
+    const ast = parse(lex(source, options), options);
+    const assembled = link.assemble(ast, options);
+    const filtered = filter(assembled, filters, options);
+
+    assert.throws(
+      () => link.resolve(filtered, options),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:UNDEFINED_REFERENCE');
+        assert.match(
+          err.filename,
+          new RegExp(
+            '^<filter generated output #1 from ' +
+              origin.replace('.', '\\.') +
+              ':1:1>$',
+          ),
+        );
+        assert.strictEqual(err.source, generated);
+        assert.strictEqual(err.line, 2);
+        assert.match(err.message, />\s*2\| p @\[missing-generated\]/);
+        assert.doesNotMatch(err.message, /caller-only body/);
+        return true;
+      },
+      origin,
+    );
+  }
 });
 
 test('filter that throws a primitive (null) is wrapped as FILTER_ERROR', () => {

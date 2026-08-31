@@ -4,6 +4,7 @@ const walk = require('pugneum-walker');
 module.exports = applyFilters;
 
 const packagePrefix = 'pugneum-filter-';
+const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
 
 const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
 
@@ -131,6 +132,42 @@ function stampLocation(record, invocation) {
   }
   if (record.line == null) record.line = invocation.line;
   if (record.column == null) record.column = invocation.column;
+}
+
+function registerGeneratedSource(result, name, invocation, options, state) {
+  let sources = options.sources;
+  let origins;
+  if (
+    sources == null ||
+    (typeof sources !== 'object' && typeof sources !== 'function')
+  ) {
+    sources = Object.create(null);
+    options.sources = sources;
+  } else if (!Object.isExtensible(sources)) {
+    origins = sources[generatedSourceOrigins];
+    sources = Object.assign(Object.create(null), sources);
+    options.sources = sources;
+  }
+
+  origins = origins || sources[generatedSourceOrigins];
+  if (origins == null || !Object.isExtensible(origins)) {
+    origins = Object.assign(Object.create(null), origins || null);
+    Object.defineProperty(sources, generatedSourceOrigins, {
+      configurable: true,
+      value: origins,
+    });
+  }
+
+  const origin = invocation.filename || '<anonymous>';
+  const line = invocation.line == null ? '?' : invocation.line;
+  const column = invocation.column == null ? '?' : invocation.column;
+  let identity;
+  do {
+    identity = `<filter ${name} output #${state.next++} from ${origin}:${line}:${column}>`;
+  } while (Object.prototype.hasOwnProperty.call(sources, identity));
+  sources[identity] = result;
+  origins[identity] = invocation.filename;
+  return identity;
 }
 
 // Build the location/source context object shared by every error() call in
@@ -348,11 +385,26 @@ function applyFilterResult(
       break;
     case 'pugneum': {
       validateStringOutput(result, name, type, node, options);
-      const ast = parsePugneum(result, node, options);
+      const generated = parsePugneum(
+        result,
+        name,
+        node,
+        options,
+        context.sourceState,
+      );
+      const ast = generated.ast;
       validateGeneratedAst(ast, name, type, node, options, context, nodeDepth);
-      stampGeneratedProvenance(ast, node, context.ownedNodes);
+      const generatedLocation = {
+        filename: generated.filename,
+        line: 1,
+        column: 1,
+      };
+      stampGeneratedProvenance(ast, generatedLocation, context.ownedNodes);
       node.type = 'Block';
       node.nodes = ast.nodes;
+      node.filename = generated.filename;
+      node.line = 1;
+      node.column = 1;
       stripFilterFields(node);
       delete node.val;
       break;
@@ -400,15 +452,22 @@ function applyFilterResult(
 // resolution. A loader construct (include/extends/raw-include) cannot be
 // resolved downstream because loading already ran. Both this parsed tree and
 // direct syntax output pass through validateGeneratedAst before insertion.
-function parsePugneum(result, node, options) {
+function parsePugneum(result, name, node, options, sourceState) {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
+  const filename = registerGeneratedSource(
+    result,
+    name,
+    node,
+    options,
+    sourceState,
+  );
   const reopts = Object.assign({}, options, {
-    filename: node.filename,
+    filename,
     source: result,
   });
   const tokens = lex(result, reopts);
-  return parse(tokens, reopts);
+  return {ast: parse(tokens, reopts), filename};
 }
 
 // Snapshot structural ownership before filters run so a plugin cannot insert
@@ -485,7 +544,7 @@ function applyFilters(ast, filters, options, context) {
   if (!context) {
     const ownedNodes = new WeakSet();
     collectOwnedNodes(ast, ownedNodes);
-    context = {baseDepth: 0, ownedNodes};
+    context = {baseDepth: 0, ownedNodes, sourceState: {next: 1}};
   }
   const parents = [];
   walk(
@@ -578,6 +637,7 @@ function handleNestedFilters(node, filters, options, context, nodeDepth) {
     applyFilters(node.block, filters, options, {
       baseDepth: nodeDepth + 1,
       ownedNodes: context.ownedNodes,
+      sourceState: context.sourceState,
     });
   }
 }
@@ -631,6 +691,7 @@ function bodyNodeToText(node, options) {
   const render = require('pugneum-renderer');
   return render(node, {
     warnings: options && options.warnings,
+    filename: node.filename,
     source: options && options.source,
     sources: options && options.sources,
   });

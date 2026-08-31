@@ -1,15 +1,35 @@
 const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
 
+function diagnosticSources(options) {
+  return {
+    byFilename: options && options.sources,
+    entryFilename: options && options.filename,
+    entrySource: options && options.source,
+  };
+}
+
 // Build the {line, column, filename, source} context both error() and warn()
 // attach to a diagnostic. The source line is looked up per-filename so an error
-// in an included file shows that file's source, not the entry file's.
+// in an included/generated file shows that source. A filename-less entry still
+// uses the scalar source supplied by the programmatic facade.
 function locContext(node, sources) {
+  const filename = node && node.filename;
+  const byFilename = sources && sources.byFilename;
+  let source = (byFilename && byFilename[filename]) || '';
+  if (
+    !source &&
+    sources &&
+    (!filename || filename === sources.entryFilename) &&
+    typeof sources.entrySource === 'string'
+  ) {
+    source = sources.entrySource;
+  }
   return {
     line: node.line,
     column: node.column,
-    filename: node.filename,
-    source: (sources && sources[node.filename]) || '',
+    filename,
+    source,
   };
 }
 
@@ -108,7 +128,7 @@ link.assemble = function (ast, options) {
 // (footnote ids, etc.).
 function resolveDocument(ast, options) {
   options = establishWarnings(options);
-  const sources = options.sources;
+  const sources = diagnosticSources(options);
   const warnings = options.warnings;
   ast = resolveReferences(ast, sources, warnings);
   ast = resolveToc(ast, sources, warnings);
@@ -140,7 +160,7 @@ function createLinkState() {
 
 function linkInner(ast, options, state) {
   options = options || {};
-  const sources = options.sources;
+  const sources = diagnosticSources(options);
   const maxDepth =
     options.maxLinkDepth != null
       ? options.maxLinkDepth
@@ -432,7 +452,7 @@ function applyYield(ast, block, includeNode, options) {
       'MISSING_YIELD',
       'Included template has no yield block but the include passes a block into it',
       includeNode,
-      options && options.sources,
+      diagnosticSources(options),
     );
   }
   return ast;

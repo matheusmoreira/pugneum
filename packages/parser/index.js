@@ -196,7 +196,6 @@ class Parser {
     this.filename = options.filename;
     this.source = options.source;
     this.inMixin = 0;
-    this.inMixinCall = 0;
     // Stack of the enclosing mixin constructs in lexical nesting order: 'def'
     // for a mixin definition body, 'call' for a mixin call block. The top of
     // the stack is the innermost enclosing mixin construct, which is what
@@ -975,13 +974,11 @@ class Parser {
       filename: this.filename,
     };
 
-    this.inMixinCall++;
     this.mixinCtx.push('call');
     try {
       this.tag(mixin);
     } finally {
       this.mixinCtx.pop();
-      this.inMixinCall--;
     }
     if (mixin.block.nodes.length === 0) mixin.block = null;
     return mixin;

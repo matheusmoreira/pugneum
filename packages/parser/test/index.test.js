@@ -542,12 +542,11 @@ describe('given keyword', () => {
     );
   });
 
-  // given validity must be decided by the innermost enclosing mixin construct,
-  // not by comparing the cumulative inMixin/inMixinCall counters (which cannot
-  // express "innermost" and mis-decide both directions).
+  // Given validity is decided by the top of the lexical mixin-context stack;
+  // aggregate definition/call counts cannot express "innermost" and mis-decide
+  // both nesting directions below.
   test('given inside a mixin DEFINITION nested in a call block is accepted', (t) => {
-    // inMixin == 1, inMixinCall == 1 here, so the old `inMixin <= inMixinCall`
-    // check wrongly rejected this valid definition-scoped given.
+    // Both a call and a definition are open, but the definition is innermost.
     const source =
       'mixin host\n  block\n+host\n  mixin nested\n    given slot\n      p y';
     const tokens = lex(source, {filename: 'test'});
@@ -560,8 +559,7 @@ describe('given keyword', () => {
   });
 
   test('given lexically inside a call block (with more defs than calls stacked) throws', (t) => {
-    // inMixin == 2, inMixinCall == 1 here, so the old `inMixin <= inMixinCall`
-    // check (2 <= 1 === false) wrongly accepted this call-scoped given.
+    // Two definitions are open, but the call is innermost.
     const source = 'mixin a\n  mixin b\n    +c\n      given slot\n        p hi';
     const tokens = lex(source, {filename: 'test'});
     assert.throws(

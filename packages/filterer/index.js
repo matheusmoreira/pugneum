@@ -179,6 +179,10 @@ function escapeFilterText(str) {
     .replace(/"/g, '&quot;');
 }
 
+function normalizeTextNewlines(value) {
+  return value.replace(/\r\n|\r/g, '\n');
+}
+
 function validateStringOutput(result, name, type, node, options) {
   if (typeof result !== 'string') {
     throw error(
@@ -401,7 +405,9 @@ function applyFilters(ast, filters, options, context) {
         // The innermost filter reads the file; its `binary` flag chooses raw
         // bytes vs decoded text. Each later filter consumes the previous result.
         const innermost = resolveFilter(chain[0].name, filters, node, options);
-        let result = innermost.binary ? node.file.raw : node.file.str;
+        let result = innermost.binary
+          ? node.file.raw
+          : normalizeTextNewlines(node.file.str);
         let lastName;
         let lastType;
         chain.forEach(function (f) {

@@ -85,11 +85,11 @@ invocation's filename, line, and column.
 ```
 
 If `binary` is specified as true, an include filter (`include:name`)
-receives the raw file contents (`file.raw`) instead of the decoded
-string. The `binary` flag is only consulted on the include path; it
-has no effect on `:name` block filters, whose input is always the
-filter body text. Whether the raw contents are a `Buffer` or a string
-depends on the configured loader `read()` function.
+receives the raw file contents as a `Buffer` (`file.raw`) instead of decoded
+text. Non-binary include input normalizes LF, CRLF, and CR line endings to LF
+before the innermost filter runs. The `binary` flag is only consulted on the
+include path; it has no effect on `:name` block filters, whose input is always
+the filter body text.
 
 The built-in `verbatim` filter passes text through unchanged.
 It is always available without any configuration.

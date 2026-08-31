@@ -115,6 +115,37 @@ describe('RawInclude with filters', () => {
     var textNode = linked.nodes[0];
     assert.strictEqual(textNode.type, 'Text');
   });
+
+  ['first\nsecond\n', 'first\r\nsecond\r\n', 'first\rsecond\r'].forEach(
+    (input) => {
+      test('normalizes raw text line endings: ' + JSON.stringify(input), () => {
+        const ast = {
+          type: 'Block',
+          nodes: [
+            {
+              type: 'RawInclude',
+              filters: [],
+              file: {type: 'FileReference', path: 'raw.txt', str: input},
+              line: 3,
+              column: 5,
+              filename: 'source.pg',
+            },
+          ],
+          line: 1,
+          column: 1,
+          filename: 'source.pg',
+        };
+
+        assert.deepStrictEqual(link(ast).nodes[0], {
+          type: 'Text',
+          val: 'first\nsecond\n',
+          line: 3,
+          column: 5,
+          filename: 'source.pg',
+        });
+      });
+    },
+  );
 });
 
 describe('error handling', () => {

@@ -33,6 +33,10 @@ function appendItems(target, items) {
   }
 }
 
+function normalizeTextNewlines(value) {
+  return value.replace(/\r\n|\r/g, '\n');
+}
+
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
 function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
@@ -338,7 +342,7 @@ function applyIncludes(ast, options, state) {
       if (node.type === 'RawInclude' && node.filters.length === 0) {
         replace({
           type: 'Text',
-          val: node.file.str.replace(/\r/g, ''),
+          val: normalizeTextNewlines(node.file.str),
           line: node.line,
           column: node.column,
           filename: node.filename,

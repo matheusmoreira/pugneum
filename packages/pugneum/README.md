@@ -612,6 +612,8 @@ html
 
 Included `.pg` files are parsed as pugneum.
 Non-`.pg` files are included as raw text.
+Textual raw includes normalize LF, CRLF, and CR line endings to LF before
+insertion or non-binary filtering; binary include filters receive exact bytes.
 
 Include with a filter to transform the content:
 

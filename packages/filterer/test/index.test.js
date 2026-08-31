@@ -982,6 +982,23 @@ test('single html-type include filter passes file content through raw', () => {
   assert.strictEqual(node.val, '<b>a & b</b>');
 });
 
+['first\nsecond\n', 'first\r\nsecond\r\n', 'first\rsecond\r'].forEach(
+  (input) => {
+    test(
+      'identity html include filter normalizes line endings: ' +
+        JSON.stringify(input),
+      () => {
+        const ident = {type: 'html', filter: (str) => str};
+        const output = filter(
+          rawIncludeAst([{name: 'ident', attrs: []}], input),
+          {ident},
+        );
+        assert.strictEqual(output.nodes[0].val, 'first\nsecond\n');
+      },
+    );
+  },
+);
+
 test('single text-type include filter escapes the final output', () => {
   const ident = {type: 'text', filter: (s) => s};
   const ast = rawIncludeAst([{name: 'ident', attrs: []}], '<x> & "y"');

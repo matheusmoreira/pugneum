@@ -12,7 +12,19 @@ var generateRss = require('../lib/rss');
 var {resolveRelativeUrls} = require('../lib/urls');
 
 var fixturesDir = path.join(__dirname, 'fixtures');
-var outputDir = path.join(__dirname, 'output');
+
+function temporaryDirectory(t, prefix) {
+  var directory = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  t.after(() => fs.rmSync(directory, {recursive: true, force: true}));
+  return directory;
+}
+
+function temporaryHtml(t, prefix, content) {
+  var directory = temporaryDirectory(t, prefix);
+  var filename = path.join(directory, 'fixture.html');
+  fs.writeFileSync(filename, content);
+  return filename;
+}
 
 function makeSymlinkOrSkip(t, target, link, type) {
   try {
@@ -53,9 +65,7 @@ function feedArticle(content) {
 }
 
 function boundaryFixture(t) {
-  var sandbox = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'pugneum-feed-boundary-'),
-  );
+  var sandbox = temporaryDirectory(t, 'pugneum-feed-boundary-');
   var input = path.join(sandbox, 'input');
   var output = path.join(sandbox, 'output');
   var outside = path.join(sandbox, 'outside');
@@ -70,8 +80,6 @@ function boundaryFixture(t) {
     path.join(input, 'articles', 'post.html'),
     feedArticle('inside content'),
   );
-  t.after(() => fs.rmSync(sandbox, {recursive: true}));
-
   return {
     input,
     output,
@@ -140,87 +148,70 @@ function assertFeedWriteFailed(fn, outputName) {
 }
 
 describe('extract.indexPage robustness', () => {
-  function writeTemp(content) {
-    var p = path.join(
-      os.tmpdir(),
-      'pugneum-extract-test-' + crypto.randomUUID() + '.html',
-    );
-    fs.writeFileSync(p, content);
-    return p;
-  }
-
-  test('entry without data-published-at attribute is excluded', () => {
-    var p = writeTemp(
+  test('entry without data-published-at attribute is excluded', (t) => {
+    var p = temporaryHtml(
+      t,
+      'pugneum-extract-test-',
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
         '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
         '<li><a href="article.html">No date</a></li>' +
         '</body></html>',
     );
-    try {
-      var result = extract.indexPage(p);
-      // The element has no data-published-at so extractEntries won't find it
-      // (the guard requires data-published-at to be present for the element to be found at all)
-      assert.strictEqual(result.entries.length, 0);
-    } finally {
-      fs.unlinkSync(p);
-    }
+    var result = extract.indexPage(p);
+    // The element has no data-published-at so extractEntries won't find it
+    // (the guard requires data-published-at to be present for the element to be found at all)
+    assert.strictEqual(result.entries.length, 0);
   });
 
-  test('entries are sorted in descending date order', () => {
+  test('entries are sorted in descending date order', (t) => {
     // Also exercises the sort guard: (b.published || '').localeCompare(a.published || '')
-    var p = writeTemp(
+    var p = temporaryHtml(
+      t,
+      'pugneum-extract-test-',
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
         '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
         '<li data-published-at="2026-01-01"><a href="earlier.html">Earlier</a></li>' +
         '<li data-published-at="2026-06-15"><a href="later.html">Later</a></li>' +
         '</body></html>',
     );
-    try {
-      var result = extract.indexPage(p);
-      assert.strictEqual(result.entries.length, 2);
-      // Later date sorts first (descending)
-      assert.strictEqual(result.entries[0].href, 'later.html');
-      assert.strictEqual(result.entries[1].href, 'earlier.html');
-    } finally {
-      fs.unlinkSync(p);
-    }
+    var result = extract.indexPage(p);
+    assert.strictEqual(result.entries.length, 2);
+    // Later date sorts first (descending)
+    assert.strictEqual(result.entries[0].href, 'later.html');
+    assert.strictEqual(result.entries[1].href, 'earlier.html');
   });
 
-  test('empty data-published-at attribute excludes the entry', () => {
+  test('empty data-published-at attribute excludes the entry', (t) => {
     // An empty date is treated the same as an absent one: a dated feed should
     // not carry an undated entry. This pins that intentional behavior.
-    var p = writeTemp(
+    var p = temporaryHtml(
+      t,
+      'pugneum-extract-test-',
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
         '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
         '<li data-published-at=""><a href="undated.html">Undated</a></li>' +
         '<li data-published-at="2026-01-02"><a href="dated.html">Dated</a></li>' +
         '</body></html>',
     );
-    try {
-      var result = extract.indexPage(p);
-      assert.strictEqual(result.entries.length, 1);
-      assert.strictEqual(result.entries[0].href, 'dated.html');
-    } finally {
-      fs.unlinkSync(p);
-    }
+    var result = extract.indexPage(p);
+    assert.strictEqual(result.entries.length, 1);
+    assert.strictEqual(result.entries[0].href, 'dated.html');
   });
 
-  test('anchor without href is excluded from entries', () => {
-    var p = writeTemp(
+  test('anchor without href is excluded from entries', (t) => {
+    var p = temporaryHtml(
+      t,
+      'pugneum-extract-test-',
       '<!DOCTYPE html><html><head><base href="https://x.com/"><title>T</title>' +
         '<meta name="description" content="d"><meta name="author" content="a"></head><body>' +
         '<li data-published-at="2026-01-01"><a>No href anchor</a></li>' +
         '<li data-published-at="2026-01-02"><a href="valid.html">Valid</a></li>' +
         '</body></html>',
     );
-    try {
-      var result = extract.indexPage(p);
-      // The no-href anchor must be excluded; only the valid entry is present
-      assert.strictEqual(result.entries.length, 1);
-      assert.strictEqual(result.entries[0].href, 'valid.html');
-    } finally {
-      fs.unlinkSync(p);
-    }
+    var result = extract.indexPage(p);
+    // The no-href anchor must be excluded; only the valid entry is present
+    assert.strictEqual(result.entries.length, 1);
+    assert.strictEqual(result.entries[0].href, 'valid.html');
   });
 });
 
@@ -426,21 +417,19 @@ describe('resolveRelativeUrls', () => {
 
 describe('end-to-end feed generation', () => {
   test('generates atom.xml and rss.xml from fixtures', (t) => {
-    fs.mkdirSync(outputDir, {recursive: true});
+    var output = temporaryDirectory(t, 'pugneum-feed-output-');
 
     generateFeeds({
       outputDirectory: fixturesDir,
       feeds: {enabled: true},
-      writeDirectory: outputDir,
+      writeDirectory: output,
     });
 
-    var atom = fs.readFileSync(path.join(outputDir, 'atom.xml'), 'utf8');
-    var rss = fs.readFileSync(path.join(outputDir, 'rss.xml'), 'utf8');
+    var atom = fs.readFileSync(path.join(output, 'atom.xml'), 'utf8');
+    var rss = fs.readFileSync(path.join(output, 'rss.xml'), 'utf8');
 
     t.assert.snapshot(atom);
     t.assert.snapshot(rss);
-
-    fs.rmSync(outputDir, {recursive: true});
   });
 
   test('creates contained parents for distinct nested feed paths', (t) => {
@@ -488,13 +477,11 @@ describe('end-to-end feed generation', () => {
   });
 
   test('orders feeds and selects freshness by publication instant', (t) => {
-    var sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-feed-order-'));
+    var sandbox = temporaryDirectory(t, 'pugneum-feed-order-');
     var input = path.join(sandbox, 'input');
     var output = path.join(sandbox, 'output');
     fs.mkdirSync(path.join(input, 'articles'), {recursive: true});
     fs.mkdirSync(output);
-    t.after(() => fs.rmSync(sandbox, {recursive: true}));
-
     fs.writeFileSync(
       path.join(input, 'index.html'),
       '<!DOCTYPE html><html><head><base href="https://example.com/">' +
@@ -639,7 +626,7 @@ describe('feed generation work bounds', () => {
 
 describe('config overrides', () => {
   test('json config overrides html-extracted values', (t) => {
-    fs.mkdirSync(outputDir, {recursive: true});
+    var output = temporaryDirectory(t, 'pugneum-feed-output-');
 
     generateFeeds({
       outputDirectory: fixturesDir,
@@ -650,22 +637,20 @@ describe('config overrides', () => {
         author: 'Override Author',
         description: 'Override Description',
       },
-      writeDirectory: outputDir,
+      writeDirectory: output,
     });
 
-    var atom = fs.readFileSync(path.join(outputDir, 'atom.xml'), 'utf8');
+    var atom = fs.readFileSync(path.join(output, 'atom.xml'), 'utf8');
     assert.match(atom, /https:\/\/override\.com\//);
     assert.ok(atom.includes('Override Title'));
     assert.ok(atom.includes('Override Author'));
     assert.ok(atom.includes('Override Description'));
-
-    fs.rmSync(outputDir, {recursive: true});
   });
 });
 
 describe('end-to-end URL resolution', () => {
-  test('article content keeps its original URL semantics in the feed', () => {
-    var dir = path.join(__dirname, 'fixtures-urls');
+  test('article content keeps its original URL semantics in the feed', (t) => {
+    var dir = temporaryDirectory(t, 'pugneum-feed-urls-');
     fs.mkdirSync(path.join(dir, 'articles'), {recursive: true});
     fs.writeFileSync(
       path.join(dir, 'index.html'),
@@ -695,33 +680,27 @@ describe('end-to-end URL resolution', () => {
         '</article></body></html>',
     );
 
-    try {
-      generateFeeds({
-        outputDirectory: dir,
-        feeds: {enabled: true},
-        writeDirectory: dir,
-      });
-      var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
-      // Root-relative href/src/srcset are absolutized...
-      assert.ok(atom.includes('https://example.com/other.html'));
-      assert.ok(atom.includes('https://example.com/articles/next.html'));
-      assert.ok(
-        atom.includes('https://example.com/articles/post.html?print=1'),
-      );
-      assert.ok(atom.includes('href=&quot;#local&quot;'));
-      assert.ok(atom.includes('href=&quot;mailto:a@example.com&quot;'));
-      assert.ok(atom.includes('https://example.com/articles/hero.png'));
-      assert.ok(atom.includes('https://example.com/articles/small.png 1x'));
-      assert.ok(atom.includes('https://example.com/large.png 2x'));
-      assert.ok(atom.includes('https://example.com/articles/poster.png'));
-      assert.ok(atom.includes('https://example.com/video.mp4'));
-      assert.ok(atom.includes('https://example.com/articles/audio.mp3'));
-      assert.ok(atom.includes('https://example.com/frame.html'));
-      // ...but data-href is left exactly as authored.
-      assert.ok(atom.includes('data-href=&quot;/keep&quot;'));
-    } finally {
-      fs.rmSync(dir, {recursive: true});
-    }
+    generateFeeds({
+      outputDirectory: dir,
+      feeds: {enabled: true},
+      writeDirectory: dir,
+    });
+    var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
+    // Root-relative href/src/srcset are absolutized...
+    assert.ok(atom.includes('https://example.com/other.html'));
+    assert.ok(atom.includes('https://example.com/articles/next.html'));
+    assert.ok(atom.includes('https://example.com/articles/post.html?print=1'));
+    assert.ok(atom.includes('href=&quot;#local&quot;'));
+    assert.ok(atom.includes('href=&quot;mailto:a@example.com&quot;'));
+    assert.ok(atom.includes('https://example.com/articles/hero.png'));
+    assert.ok(atom.includes('https://example.com/articles/small.png 1x'));
+    assert.ok(atom.includes('https://example.com/large.png 2x'));
+    assert.ok(atom.includes('https://example.com/articles/poster.png'));
+    assert.ok(atom.includes('https://example.com/video.mp4'));
+    assert.ok(atom.includes('https://example.com/articles/audio.mp3'));
+    assert.ok(atom.includes('https://example.com/frame.html'));
+    // ...but data-href is left exactly as authored.
+    assert.ok(atom.includes('data-href=&quot;/keep&quot;'));
   });
 });
 
@@ -917,9 +896,8 @@ describe('option validation', () => {
 });
 
 describe('error handling', () => {
-  test('throws FEED_INVALID_URL for a path-only base href', () => {
-    var dir = path.join(__dirname, 'fixtures-relbase');
-    fs.mkdirSync(dir, {recursive: true});
+  test('throws FEED_INVALID_URL for a path-only base href', (t) => {
+    var dir = temporaryDirectory(t, 'pugneum-feed-relative-base-');
     fs.writeFileSync(
       path.join(dir, 'index.html'),
       '<!DOCTYPE html><html><head>' +
@@ -937,17 +915,16 @@ describe('error handling', () => {
         }),
       (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
     );
-
-    fs.rmSync(dir, {recursive: true});
   });
 
-  test('throws FEED_INVALID_URL for a protocol-relative feeds.url', () => {
+  test('throws FEED_INVALID_URL for a protocol-relative feeds.url', (t) => {
+    var output = temporaryDirectory(t, 'pugneum-feed-output-');
     assert.throws(
       () =>
         generateFeeds({
           outputDirectory: fixturesDir,
           feeds: {enabled: true, url: '//cdn.example.com/'},
-          writeDirectory: outputDir,
+          writeDirectory: output,
         }),
       (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
     );
@@ -964,9 +941,8 @@ describe('error handling', () => {
     });
   });
 
-  test('throws when base URL is unresolvable', () => {
-    var noBaseDir = path.join(__dirname, 'fixtures-no-base');
-    fs.mkdirSync(noBaseDir, {recursive: true});
+  test('throws when base URL is unresolvable', (t) => {
+    var noBaseDir = temporaryDirectory(t, 'pugneum-feed-no-base-');
     fs.writeFileSync(
       path.join(noBaseDir, 'index.html'),
       '<!DOCTYPE html><html><head><title>No Base</title><meta name="description" content="test"></head><body></body></html>',
@@ -981,49 +957,42 @@ describe('error handling', () => {
         }),
       (err) => err.code === 'PUGNEUM:FEED_MISSING_URL',
     );
-
-    fs.rmSync(noBaseDir, {recursive: true});
   });
 
-  test('error messages do not carry a stray leading "0"', () => {
+  test('error messages do not carry a stray leading "0"', (t) => {
     // Feed errors have no source-template location. pugneum-error builds its
     // header from present parts, so passing line:0 (finite but not a real line)
     // used to push a literal "0", rendering every message as "0\n\n<message>".
     // The message must equal the raw message text with no header prefix.
-    var noBaseDir = path.join(__dirname, 'fixtures-no-base-msg');
-    fs.mkdirSync(noBaseDir, {recursive: true});
+    var noBaseDir = temporaryDirectory(t, 'pugneum-feed-no-base-message-');
     fs.writeFileSync(
       path.join(noBaseDir, 'index.html'),
       '<!DOCTYPE html><html><head><title>No Base</title>' +
         '<meta name="description" content="test"></head><body></body></html>',
     );
 
-    try {
-      assert.throws(
-        () =>
-          generateFeeds({
-            outputDirectory: noBaseDir,
-            feeds: {enabled: true},
-            writeDirectory: noBaseDir,
-          }),
-        (err) => {
-          assert.strictEqual(err.code, 'PUGNEUM:FEED_MISSING_URL');
-          // No "0\n\n" (or any) header in front of the message.
-          assert.strictEqual(err.message, err.msg);
-          assert.doesNotMatch(err.message, /^0\n/);
-          return true;
-        },
-      );
-    } finally {
-      fs.rmSync(noBaseDir, {recursive: true});
-    }
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: noBaseDir,
+          feeds: {enabled: true},
+          writeDirectory: noBaseDir,
+        }),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:FEED_MISSING_URL');
+        // No "0\n\n" (or any) header in front of the message.
+        assert.strictEqual(err.message, err.msg);
+        assert.doesNotMatch(err.message, /^0\n/);
+        return true;
+      },
+    );
   });
 
-  test('extensionless article href resolves via the .html fallback', () => {
+  test('extensionless article href resolves via the .html fallback', (t) => {
     // A common SSG pattern: index links to "articles/post" (no extension) and the
     // file on disk is "articles/post.html". index.js appends ".html" when the bare
     // path is absent. Exercises that previously-untested fallback end-to-end.
-    var dir = path.join(__dirname, 'fixtures-html-fallback');
+    var dir = temporaryDirectory(t, 'pugneum-feed-html-fallback-');
     fs.mkdirSync(path.join(dir, 'articles'), {recursive: true});
     fs.writeFileSync(
       path.join(dir, 'index.html'),
@@ -1041,30 +1010,26 @@ describe('error handling', () => {
         '<article><p>hi</p></article></body></html>',
     );
 
-    try {
-      generateFeeds({
-        outputDirectory: dir,
-        feeds: {enabled: true},
-        writeDirectory: dir,
-      });
-      var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
-      // The entry was built from the .html file: its link is the (extensionless)
-      // href resolved against the base, and title/content came from the article
-      // page (the article body content is XML-escaped inside <content>).
-      assert.ok(atom.includes('https://example.com/articles/post'));
-      assert.ok(atom.includes('<title>Post</title>'));
-      assert.ok(
-        atom.includes('<content type="html">&lt;p&gt;hi&lt;/p&gt;</content>'),
-      );
-    } finally {
-      fs.rmSync(dir, {recursive: true});
-    }
+    generateFeeds({
+      outputDirectory: dir,
+      feeds: {enabled: true},
+      writeDirectory: dir,
+    });
+    var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
+    // The entry was built from the .html file: its link is the (extensionless)
+    // href resolved against the base, and title/content came from the article
+    // page (the article body content is XML-escaped inside <content>).
+    assert.ok(atom.includes('https://example.com/articles/post'));
+    assert.ok(atom.includes('<title>Post</title>'));
+    assert.ok(
+      atom.includes('<content type="html">&lt;p&gt;hi&lt;/p&gt;</content>'),
+    );
   });
 
-  test('throws FEED_ARTICLE_NOT_FOUND when an article href is a directory', () => {
+  test('throws FEED_ARTICLE_NOT_FOUND when an article href is a directory', (t) => {
     // The href resolves to an existing path, but it is a directory, not a file.
-    // index.js guards this with statSync(...).isFile().
-    var dir = path.join(__dirname, 'fixtures-article-dir');
+    // The rooted reader rejects it before attempting a content read.
+    var dir = temporaryDirectory(t, 'pugneum-feed-article-directory-');
     fs.mkdirSync(path.join(dir, 'articles', 'post.html'), {recursive: true});
     fs.writeFileSync(
       path.join(dir, 'index.html'),
@@ -1076,24 +1041,19 @@ describe('error handling', () => {
         '</body></html>',
     );
 
-    try {
-      assert.throws(
-        () =>
-          generateFeeds({
-            outputDirectory: dir,
-            feeds: {enabled: true},
-            writeDirectory: dir,
-          }),
-        (err) => err.code === 'PUGNEUM:FEED_ARTICLE_NOT_FOUND',
-      );
-    } finally {
-      fs.rmSync(dir, {recursive: true});
-    }
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: dir,
+          feeds: {enabled: true},
+          writeDirectory: dir,
+        }),
+      (err) => err.code === 'PUGNEUM:FEED_ARTICLE_NOT_FOUND',
+    );
   });
 
-  test('throws FEED_ARTICLE_NOT_FOUND for missing article', () => {
-    var missingDir = path.join(__dirname, 'fixtures-missing-article');
-    fs.mkdirSync(missingDir, {recursive: true});
+  test('throws FEED_ARTICLE_NOT_FOUND for missing article', (t) => {
+    var missingDir = temporaryDirectory(t, 'pugneum-feed-missing-article-');
     fs.writeFileSync(
       path.join(missingDir, 'index.html'),
       '<!DOCTYPE html><html lang="en"><head>' +
@@ -1115,13 +1075,10 @@ describe('error handling', () => {
         }),
       (err) => err.code === 'PUGNEUM:FEED_ARTICLE_NOT_FOUND',
     );
-
-    fs.rmSync(missingDir, {recursive: true});
   });
 
-  test('throws FEED_PATH_TRAVERSAL for article href escaping output directory', () => {
-    var traversalDir = path.join(__dirname, 'fixtures-traversal');
-    fs.mkdirSync(traversalDir, {recursive: true});
+  test('throws FEED_PATH_TRAVERSAL for article href escaping output directory', (t) => {
+    var traversalDir = temporaryDirectory(t, 'pugneum-feed-traversal-');
     fs.writeFileSync(
       path.join(traversalDir, 'index.html'),
       '<!DOCTYPE html><html lang="en"><head>' +
@@ -1143,39 +1100,33 @@ describe('error handling', () => {
         }),
       (err) => err.code === 'PUGNEUM:FEED_PATH_TRAVERSAL',
     );
-
-    fs.rmSync(traversalDir, {recursive: true});
   });
 
-  test('throws FEED_PATH_TRAVERSAL for feed write path escaping write directory', () => {
-    fs.mkdirSync(outputDir, {recursive: true});
+  test('throws FEED_PATH_TRAVERSAL for feed write path escaping write directory', (t) => {
+    var output = temporaryDirectory(t, 'pugneum-feed-output-');
 
     assert.throws(
       () =>
         generateFeeds({
           outputDirectory: fixturesDir,
           feeds: {enabled: true, atom: '../../malicious.xml'},
-          writeDirectory: outputDir,
+          writeDirectory: output,
         }),
       (err) => err.code === 'PUGNEUM:FEED_PATH_TRAVERSAL',
     );
-
-    fs.rmSync(outputDir, {recursive: true});
   });
 
-  test('skips when feeds.enabled is false', () => {
-    fs.mkdirSync(outputDir, {recursive: true});
+  test('skips when feeds.enabled is false', (t) => {
+    var output = temporaryDirectory(t, 'pugneum-feed-output-');
 
     generateFeeds({
       outputDirectory: fixturesDir,
       feeds: {enabled: false},
-      writeDirectory: outputDir,
+      writeDirectory: output,
     });
 
-    assert.ok(!fs.existsSync(path.join(outputDir, 'atom.xml')));
-    assert.ok(!fs.existsSync(path.join(outputDir, 'rss.xml')));
-
-    fs.rmSync(outputDir, {recursive: true});
+    assert.ok(!fs.existsSync(path.join(output, 'atom.xml')));
+    assert.ok(!fs.existsSync(path.join(output, 'rss.xml')));
   });
 });
 

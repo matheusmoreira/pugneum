@@ -2,20 +2,13 @@
 
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
-var path = require('path');
-var pg = require('pugneum');
+var {createRenderer} = require('./helpers');
 
-function render(input) {
-  return pg.render(input, {
-    filename: path.join(__dirname, 'test.pg'),
-  });
-}
+var render = createRenderer('breadcrumb.pg');
 
 describe('breadcrumb mixins', () => {
   test('basic breadcrumb trail', () => {
     var input =
-      'include ../breadcrumb.pg\n' +
-      '\n' +
       '+breadcrumbs\n' +
       '  +breadcrumb(/) Home\n' +
       '  +breadcrumb(/articles) Articles\n' +
@@ -31,22 +24,14 @@ describe('breadcrumb mixins', () => {
   });
 
   test('single item breadcrumb (just current page)', () => {
-    var input =
-      'include ../breadcrumb.pg\n' +
-      '\n' +
-      '+breadcrumbs\n' +
-      '  +breadcrumb-current Home';
+    var input = '+breadcrumbs\n' + '  +breadcrumb-current Home';
     var html = render(input);
     assert.ok(html.includes('<nav aria-label="Breadcrumb">'));
     assert.ok(html.includes('<li><a aria-current="page">Home</a></li>'));
   });
 
   test('breadcrumb with inline shorthands', () => {
-    var input =
-      'include ../breadcrumb.pg\n' +
-      '\n' +
-      '+breadcrumbs\n' +
-      '  +breadcrumb(/) *(Home)';
+    var input = '+breadcrumbs\n' + '  +breadcrumb(/) *(Home)';
     var html = render(input);
     assert.ok(html.includes('<a href="/"><strong>Home</strong></a>'));
   });

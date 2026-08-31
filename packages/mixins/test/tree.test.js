@@ -2,23 +2,14 @@
 
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
-var path = require('path');
-var pg = require('pugneum');
+var {createRenderer} = require('./helpers');
 
-function render(input) {
-  return pg.render(input, {
-    filename: path.join(__dirname, 'test.pg'),
-  });
-}
+var render = createRenderer('file-system.pg');
 
 describe('file-system mixin', () => {
   test('basic file list', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
-      '+file-system\n' +
-      '  +file(index.js)\n' +
-      '  +file(package.json)';
+      '+file-system\n' + '  +file(index.js)\n' + '  +file(package.json)';
     var html = render(input);
     assert.ok(html.includes('<ul>'));
     assert.ok(html.includes('<li><code>index.js</code></li>'));
@@ -26,18 +17,13 @@ describe('file-system mixin', () => {
   });
 
   test('custom class on root ul', () => {
-    var input =
-      'include ../file-system.pg\n' +
-      '\n' +
-      '+file-system(tree)\n' +
-      '  +file(a.js)';
+    var input = '+file-system(tree)\n' + '  +file(a.js)';
     var html = render(input);
     assert.ok(html.includes('<ul class="tree">'));
   });
 
   test('no class when parameter omitted', () => {
-    var input =
-      'include ../file-system.pg\n' + '\n' + '+file-system\n' + '  +file(a.js)';
+    var input = '+file-system\n' + '  +file(a.js)';
     var html = render(input);
     assert.ok(html.includes('<ul>'));
     assert.ok(!html.includes('class='));
@@ -45,8 +31,6 @@ describe('file-system mixin', () => {
 
   test('nested directories', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
       '+file-system\n' +
       '  +directory(src)\n' +
       '    +file(main.js)\n' +
@@ -63,11 +47,7 @@ describe('file-system mixin', () => {
 
   test('file with annotation', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
-      '+file-system\n' +
-      '  +file(index.js)\n' +
-      '    |  — entry point';
+      '+file-system\n' + '  +file(index.js)\n' + '    |  — entry point';
     var html = render(input);
     assert.ok(html.includes('<code>index.js</code>'));
     assert.ok(html.includes('entry point'));
@@ -75,8 +55,6 @@ describe('file-system mixin', () => {
 
   test('deep nesting matches original website pattern', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
       '+file-system\n' +
       '  +directory(~/.files)\n' +
       '    +directory(~)\n' +
@@ -93,8 +71,6 @@ describe('file-system mixin', () => {
 
   test('directory with description annotation', () => {
     var input =
-      'include ../file-system.pg\n' +
-      '\n' +
       '+file-system\n' +
       '  +directory(src)\n' +
       '    block description\n' +
@@ -108,12 +84,7 @@ describe('file-system mixin', () => {
   });
 
   test('directory without description still works', () => {
-    var input =
-      'include ../file-system.pg\n' +
-      '\n' +
-      '+file-system\n' +
-      '  +directory(src)\n' +
-      '    +file(main.js)';
+    var input = '+file-system\n' + '  +directory(src)\n' + '    +file(main.js)';
     var html = render(input);
     assert.ok(html.includes('<code>src</code>'));
     assert.ok(html.includes('<code>main.js</code>'));

@@ -2,25 +2,19 @@
 
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
-var path = require('path');
-var pg = require('pugneum');
+var {createRenderer} = require('./helpers');
 
-function render(input) {
-  return pg.render(input, {
-    filename: path.join(__dirname, 'test.pg'),
-  });
-}
+var renderCode = createRenderer('code.pg');
+var renderFigure = createRenderer('figure.pg');
 
 describe('figure mixin', () => {
   test('figure with caption', () => {
     var input =
-      'include ../figure.pg\n' +
-      '\n' +
       '+figure\n' +
       '  img(src="photo.jpg" alt="A photo")\n' +
       '  block caption\n' +
       '    | Photo of the sunset.';
-    var html = render(input);
+    var html = renderFigure(input);
     assert.ok(html.includes('<figure>'));
     assert.ok(html.includes('<img src="photo.jpg" alt="A photo">'));
     assert.ok(html.includes('<figcaption>Photo of the sunset.</figcaption>'));
@@ -29,11 +23,8 @@ describe('figure mixin', () => {
 
   test('figure without caption — figcaption omitted', () => {
     var input =
-      'include ../figure.pg\n' +
-      '\n' +
-      '+figure\n' +
-      '  img(src="diagram.svg" alt="Architecture diagram")';
-    var html = render(input);
+      '+figure\n' + '  img(src="diagram.svg" alt="Architecture diagram")';
+    var html = renderFigure(input);
     assert.ok(html.includes('<figure>'));
     assert.ok(html.includes('<img src="diagram.svg"'));
     assert.ok(!html.includes('<figcaption>'));
@@ -43,13 +34,11 @@ describe('figure mixin', () => {
 describe('code mixin', () => {
   test('code block with caption', () => {
     var input =
-      'include ../code.pg\n' +
-      '\n' +
       '+code\n' +
       '  | console.log("hello");\n' +
       '  block caption\n' +
       '    | A minimal program.';
-    var html = render(input);
+    var html = renderCode(input);
     assert.ok(html.includes('<figure>'));
     assert.ok(html.includes('<pre><code>'));
     assert.ok(html.includes('console.log("hello");'));
@@ -57,9 +46,8 @@ describe('code mixin', () => {
   });
 
   test('code block without caption — figcaption omitted', () => {
-    var input =
-      'include ../code.pg\n' + '\n' + '+code\n' + '  | npm install pugneum';
-    var html = render(input);
+    var input = '+code\n' + '  | npm install pugneum';
+    var html = renderCode(input);
     assert.ok(html.includes('<figure>'));
     assert.ok(html.includes('<pre><code>'));
     assert.ok(html.includes('npm install pugneum'));
@@ -68,13 +56,11 @@ describe('code mixin', () => {
 
   test('code with inline shorthands in caption', () => {
     var input =
-      'include ../code.pg\n' +
-      '\n' +
       '+code\n' +
       '  | x = 1\n' +
       '  block caption\n' +
       '    | A *(simple) assignment.';
-    var html = render(input);
+    var html = renderCode(input);
     assert.ok(html.includes('<strong>simple</strong>'));
   });
 });

@@ -934,6 +934,45 @@ function smokeMixins() {
     assert.match(codeHtml, /<figure>/);
     assert.match(codeHtml, /token /);
     assert.match(codeHtml, /<figcaption>Example<\/figcaption>/);
+
+    const allMixins = path.join(root, 'all-mixins.pg');
+    fs.writeFileSync(
+      allMixins,
+      [
+        'include @pugneum-mixins/breadcrumb.pg',
+        'include @pugneum-mixins/code.pg',
+        'include @pugneum-mixins/details.pg',
+        'include @pugneum-mixins/figure.pg',
+        'include @pugneum-mixins/file-system.pg',
+        'include @pugneum-mixins/quote.pg',
+        '+breadcrumbs',
+        '  +breadcrumb(/) Home',
+        '  +breadcrumb-current Here',
+        '+code',
+        '  | const answer = 42;',
+        '+details(Summary)',
+        '  p Details',
+        '+figure',
+        '  img(src=/image.png alt=Image)',
+        '+file-system',
+        '  +file(index.js)',
+        '+plain-quote',
+        '  | Quote',
+      ].join('\n'),
+    );
+    const allHtml = pg.renderFile(allMixins, {
+      basedir: root,
+      warnings: [],
+    });
+    assert.match(allHtml, /<nav aria-label="Breadcrumb"><ol>/);
+    assert.match(allHtml, /<pre><code>const answer = 42;<\/code><\/pre>/);
+    assert.match(allHtml, /<details><summary>Summary<\/summary>/);
+    assert.match(
+      allHtml,
+      /<figure><img src="\/image.png" alt="Image"><\/figure>/,
+    );
+    assert.match(allHtml, /<ul><li><code>index.js<\/code><\/li><\/ul>/);
+    assert.match(allHtml, /<figure><blockquote>Quote<\/blockquote><\/figure>/);
   } finally {
     fs.rmSync(root, {recursive: true, force: true});
   }

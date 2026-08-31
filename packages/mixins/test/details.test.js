@@ -2,22 +2,13 @@
 
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
-var path = require('path');
-var pg = require('pugneum');
+var {createRenderer} = require('./helpers');
 
-function render(input) {
-  return pg.render(input, {
-    filename: path.join(__dirname, 'test.pg'),
-  });
-}
+var render = createRenderer('details.pg');
 
 describe('details mixin', () => {
   test('basic disclosure widget', () => {
-    var input =
-      'include ../details.pg\n' +
-      '\n' +
-      '+details(Requirements)\n' +
-      '  p A computer with memory.';
+    var input = '+details(Requirements)\n' + '  p A computer with memory.';
     var html = render(input);
     assert.ok(html.includes('<details>'));
     assert.ok(html.includes('<summary>Requirements</summary>'));
@@ -26,11 +17,10 @@ describe('details mixin', () => {
   });
 
   test('unquoted multi-word arg is split — too many arguments', () => {
-    var input =
-      'include ../details.pg\n' +
-      '\n' +
-      '+details(System Requirements)\n' +
-      '  p Content here.';
+    var input = '+details(System Requirements)\n' + '  p Content here.';
+    // Unquoted whitespace separates mixin arguments. details declares exactly
+    // one parameter, so this two-argument author error must keep the language's
+    // normalized argument-count diagnostic rather than render partial text.
     assert.throws(
       () => render(input),
       (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
@@ -38,19 +28,13 @@ describe('details mixin', () => {
   });
 
   test('single-quoted summary with spaces', () => {
-    var input =
-      'include ../details.pg\n' +
-      '\n' +
-      "+details('System Requirements')\n" +
-      '  p Content here.';
+    var input = "+details('System Requirements')\n" + '  p Content here.';
     var html = render(input);
     assert.ok(html.includes('<summary>System Requirements</summary>'));
   });
 
   test('double-quoted summary with spaces', () => {
     var input =
-      'include ../details.pg\n' +
-      '\n' +
       '+details("Frequently Asked Questions")\n' +
       '  p Answer to first question.';
     var html = render(input);
@@ -59,8 +43,6 @@ describe('details mixin', () => {
 
   test('multi-line content', () => {
     var input =
-      'include ../details.pg\n' +
-      '\n' +
       '+details(Installation)\n' +
       '  ol\n' +
       '    li Download\n' +

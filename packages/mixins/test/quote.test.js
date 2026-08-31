@@ -2,20 +2,13 @@
 
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
-var path = require('path');
-var pg = require('pugneum');
+var {createRenderer} = require('./helpers');
 
-function render(input) {
-  return pg.render(input, {
-    filename: path.join(__dirname, 'test.pg'),
-  });
-}
+var render = createRenderer('quote.pg');
 
 describe('quote mixin', () => {
   test('linked quote with source', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
       '+quote(https://example.com)\n' +
       '  | Quoted text.\n' +
       '  block source\n' +
@@ -31,11 +24,7 @@ describe('quote mixin', () => {
   });
 
   test('linked quote without source — figcaption omitted', () => {
-    var input =
-      'include ../quote.pg\n' +
-      '\n' +
-      '+quote(https://example.com)\n' +
-      '  | Just a linked quote.';
+    var input = '+quote(https://example.com)\n' + '  | Just a linked quote.';
     var html = render(input);
     assert.ok(html.includes('<blockquote cite="https://example.com">'));
     assert.ok(html.includes('Just a linked quote.'));
@@ -44,8 +33,6 @@ describe('quote mixin', () => {
 
   test('multi-paragraph linked quote', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
       '+quote(https://example.com)\n' +
       '  p First paragraph.\n' +
       '  p Second paragraph.\n' +
@@ -63,8 +50,6 @@ describe('quote mixin', () => {
 
   test('source with rich content', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
       '+quote(https://example.com)\n' +
       '  | Text.\n' +
       '  block source\n' +
@@ -78,8 +63,6 @@ describe('quote mixin', () => {
 describe('plain-quote mixin', () => {
   test('plain quote with source', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
       '+plain-quote\n' +
       '  | Anonymous wisdom.\n' +
       '  block source\n' +
@@ -95,8 +78,7 @@ describe('plain-quote mixin', () => {
   });
 
   test('plain quote without source — figcaption omitted', () => {
-    var input =
-      'include ../quote.pg\n' + '\n' + '+plain-quote\n' + '  | Just a thought.';
+    var input = '+plain-quote\n' + '  | Just a thought.';
     var html = render(input);
     assert.ok(html.includes('<blockquote>'));
     assert.ok(html.includes('Just a thought.'));
@@ -105,19 +87,13 @@ describe('plain-quote mixin', () => {
   });
 
   test('plain quote supports inline shorthands', () => {
-    var input =
-      'include ../quote.pg\n' +
-      '\n' +
-      '+plain-quote\n' +
-      '  | This is *(important) text.';
+    var input = '+plain-quote\n' + '  | This is *(important) text.';
     var html = render(input);
     assert.ok(html.includes('<strong>important</strong>'));
   });
 
   test('plain quote multi-paragraph', () => {
     var input =
-      'include ../quote.pg\n' +
-      '\n' +
       '+plain-quote\n' +
       '  p First.\n' +
       '  p Second.\n' +

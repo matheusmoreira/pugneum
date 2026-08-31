@@ -1,6 +1,7 @@
 var assert = require('node:assert/strict');
 var {test} = require('node:test');
 var generateAtom = require('../lib/atom');
+var {assertValidAtom} = require('./validate');
 
 test('generates valid Atom feed', (t) => {
   var feed = {
@@ -31,6 +32,7 @@ test('generates valid Atom feed', (t) => {
 
   var xml = generateAtom(feed);
 
+  assertValidAtom(xml, {selfUrl: 'https://example.com/atom.xml'});
   t.assert.snapshot(xml);
 });
 
@@ -207,7 +209,42 @@ test('generates valid Atom feed with no entries', (t) => {
 
   var xml = generateAtom(feed);
 
+  assertValidAtom(xml, {selfUrl: 'https://example.com/atom.xml'});
   t.assert.snapshot(xml);
+});
+
+test('custom Atom self links remain valid', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    author: 'A',
+    entries: [],
+    atomPath: 'ignored.xml',
+    atomUrl: 'https://feeds.example.com/custom.atom',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+
+  assertValidAtom(generateAtom(feed), {selfUrl: feed.atomUrl});
+});
+
+test('Atom validity oracle rejects missing required structure', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    author: 'A',
+    entries: [],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+  var xml = generateAtom(feed);
+
+  assert.throws(() =>
+    assertValidAtom(xml.replace('<title>T</title>', '<title></title>')),
+  );
+  assert.throws(() =>
+    assertValidAtom(xml.replace('<name>A</name>', '<name></name>')),
+  );
+  assert.throws(() => assertValidAtom(xml.replace('</feed>', '</not-feed>')));
 });
 
 test('empty feed with no buildDate does not emit "Invalid Date"', () => {

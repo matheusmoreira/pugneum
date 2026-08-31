@@ -1,6 +1,7 @@
 var assert = require('node:assert/strict');
 var {test} = require('node:test');
 var generateRss = require('../lib/rss');
+var {assertValidRss} = require('./validate');
 
 test('generates valid RSS feed', (t) => {
   var feed = {
@@ -32,6 +33,7 @@ test('generates valid RSS feed', (t) => {
 
   var xml = generateRss(feed);
 
+  assertValidRss(xml, {selfUrl: 'https://example.com/rss.xml'});
   t.assert.snapshot(xml);
 });
 
@@ -121,7 +123,49 @@ test('generates valid RSS feed with no entries', (t) => {
 
   var xml = generateRss(feed);
 
+  assertValidRss(xml, {selfUrl: 'https://example.com/rss.xml'});
   t.assert.snapshot(xml);
+});
+
+test('custom RSS self links remain valid', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'D',
+    author: 'A',
+    entries: [],
+    rssPath: 'ignored.xml',
+    rssUrl: 'https://feeds.example.com/custom.rss',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+
+  assertValidRss(generateRss(feed), {selfUrl: feed.rssUrl});
+});
+
+test('RSS validity oracle rejects missing required structure', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'T',
+    description: 'D',
+    author: 'A',
+    entries: [],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-01T00:00:00Z',
+  };
+  var xml = generateRss(feed);
+
+  assert.throws(() =>
+    assertValidRss(xml.replace('<title>T</title>', '<title></title>')),
+  );
+  assert.throws(() =>
+    assertValidRss(
+      xml.replace(
+        '<description>D</description>',
+        '<description></description>',
+      ),
+    ),
+  );
+  assert.throws(() => assertValidRss(xml.replace('</rss>', '</not-rss>')));
 });
 
 test('empty feed with no buildDate does not emit "Invalid Date"', () => {

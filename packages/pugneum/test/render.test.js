@@ -6,6 +6,7 @@ var {describe, it} = require('node:test');
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
+var pugneumError = require('pugneum-error');
 var pg = require('../');
 
 var testCasesDir = path.resolve(__dirname, '../../../test-cases');
@@ -74,6 +75,42 @@ function serializeWarning(warning) {
 }
 
 describe('render()', () => {
+  it('releases diagnostic source indexes after a failed render', () => {
+    var source = [
+      'p lifecycle-one',
+      'p lifecycle-two',
+      'p lifecycle-three',
+      'p lifecycle-four',
+      'p @[missing-lifecycle-reference]',
+      'p lifecycle-six',
+      'p lifecycle-seven',
+      'p lifecycle-eight',
+      'p lifecycle-nine',
+    ].join('\n');
+
+    assert.throws(
+      () => pg.render(source, {filename: 'cache-lifecycle.pg', warnings: []}),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_REFERENCE',
+    );
+
+    var originalCharCodeAt = String.prototype.charCodeAt;
+    var scans = 0;
+    String.prototype.charCodeAt = function (index) {
+      if (String(this) === source) scans++;
+      return originalCharCodeAt.call(this, index);
+    };
+    try {
+      pugneumError('CACHE_LIFECYCLE_PROBE', 'probe', {
+        line: 5,
+        source: source,
+      });
+    } finally {
+      String.prototype.charCodeAt = originalCharCodeAt;
+    }
+
+    assert.ok(scans > 0, 'the completed render retained its source index');
+  });
+
   it('should render a simple tag', () => {
     assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });

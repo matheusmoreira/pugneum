@@ -94,6 +94,15 @@ without interrupting the build. Preserve whether a value came from `error()`
 or `error.warning()` if that distinction matters to the consumer; serialization
 does not add a severity field.
 
+### `error.clearSourceCache()`
+
+Clears the bounded internal source-line index used to format repeated
+diagnostics efficiently. Long-lived compilers should call this after a
+synchronous compilation finishes so completed work does not retain source text.
+Clearing changes only formatter performance; existing diagnostic values and
+future formatted output are unchanged. The `pugneum` facade does this after
+every successful or failed render.
+
 ## Serialization
 
 Both diagnostic shapes implement `toJSON()`. Calling it returns exactly these

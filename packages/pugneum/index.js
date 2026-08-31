@@ -8,6 +8,7 @@ const load = require('pugneum-loader');
 const link = require('pugneum-linker');
 const filter = require('pugneum-filterer');
 const render = require('pugneum-renderer');
+const error = require('pugneum-error');
 
 function isMutableArray(value) {
   return (
@@ -75,10 +76,17 @@ function renderPugneum(string, options) {
     let rendered = render(resolved, options);
     return rendered;
   } finally {
-    // Emit even on the error path: warnings collected from earlier stages must
-    // not be discarded just because a later stage threw. (When the caller owns
-    // the array they handle emission and we stay silent.)
-    if (ownsWarnings) emitWarnings(options.warnings);
+    try {
+      // Emit even on the error path: warnings collected from earlier stages
+      // must not be discarded just because a later stage threw. (When the
+      // caller owns the array they handle emission and we stay silent.)
+      if (ownsWarnings) emitWarnings(options.warnings);
+    } finally {
+      // Source indexes are useful while one synchronous compilation produces
+      // several diagnostics, but completed calls must not retain their source
+      // text through module-global formatter state.
+      error.clearSourceCache();
+    }
   }
 }
 

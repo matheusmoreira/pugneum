@@ -1,5 +1,6 @@
 module.exports = makeError;
 module.exports.warning = makeWarning;
+module.exports.clearSourceCache = clearSourceCache;
 
 var CONTEXT_RADIUS = 3;
 var TAB_SIZE = 8;
@@ -17,6 +18,11 @@ var MAX_CACHE_ENTRY_BYTES = 1024 * 1024;
 var MAX_CACHE_BYTES = 4 * 1024 * 1024;
 var sourceLineCache = new Map();
 var sourceLineCacheBytes = 0;
+
+function clearSourceCache() {
+  sourceLineCache.clear();
+  sourceLineCacheBytes = 0;
+}
 
 var segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'});
 var markPattern = /^\p{Mark}$/u;

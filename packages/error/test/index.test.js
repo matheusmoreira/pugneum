@@ -684,6 +684,26 @@ describe('terminal-safe bounded source frames', function () {
 describe('bounded source indexing', function () {
   var src = 'L1\nL2\nL3\nL4\nL5\nL6\nL7\nL8\nL9';
 
+  test('clearSourceCache releases every prepared source index', function () {
+    var source = 'clear-1\nclear-2\nclear-3';
+    error('CACHE', 'message', {line: 2, source: source});
+
+    error.clearSourceCache();
+
+    var originalCharCodeAt = String.prototype.charCodeAt;
+    var scans = 0;
+    String.prototype.charCodeAt = function (index) {
+      if (String(this) === source) scans++;
+      return originalCharCodeAt.call(this, index);
+    };
+    try {
+      error('CACHE', 'message', {line: 2, source: source});
+    } finally {
+      String.prototype.charCodeAt = originalCharCodeAt;
+    }
+    assert.ok(scans > 0);
+  });
+
   test('repeated same-source calls produce byte-identical output', function () {
     var expected = error('MY_CODE', 'My message', {
       line: 5,

@@ -115,6 +115,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.3.0',
     files: ['index.js', 'cli.js'],
     dependencies: {
+      'pugneum-error': '^1.1.0',
       'pugneum-filterer': '^1.2.0',
       'pugneum-filesystem': '^1.0.0',
       'pugneum-lexer': '^1.2.1',

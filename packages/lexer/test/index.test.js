@@ -1951,6 +1951,54 @@ describe('addText escaped-run performance', () => {
   });
 });
 
+describe('successful shorthand scaling', () => {
+  function normalizedSourceWork(source) {
+    const originalReplace = String.prototype.replace;
+    let normalizedUnits = 0;
+    let tokens;
+
+    String.prototype.replace = function (pattern, replacement) {
+      if (
+        pattern instanceof RegExp &&
+        pattern.source === '\\r\\n|\\r' &&
+        pattern.flags === 'g' &&
+        replacement === '\n'
+      ) {
+        normalizedUnits += String(this).length;
+      }
+      return Reflect.apply(originalReplace, this, arguments);
+    };
+    try {
+      tokens = lex(source, {filename: 'scaling.pg'});
+    } finally {
+      String.prototype.replace = originalReplace;
+    }
+    return {normalizedUnits, tokens};
+  }
+
+  test('dense direct inline tags normalize only linear source volume', () => {
+    function measure(count) {
+      const source = 'p ' + '#(em x)'.repeat(count);
+      const result = normalizedSourceWork(source);
+
+      assert.strictEqual(
+        result.tokens.filter(
+          (token) => token.type === 'tag' && token.val === 'em',
+        ).length,
+        count,
+      );
+      return result.normalizedUnits;
+    }
+
+    const small = measure(200);
+    const large = measure(400);
+    assert.ok(
+      large <= small * 2.2,
+      'doubling input normalized ' + large + ' units after ' + small,
+    );
+  });
+});
+
 describe('footnote reference bracket parsing', () => {
   // Regression: interpolationsAreClosed treated a bare '[' inside an open ^[
   // as a nested bracket (needing a second ']'), while parseBracketContent (the

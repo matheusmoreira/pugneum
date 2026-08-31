@@ -491,6 +491,12 @@ function parseBracketContent(str, start) {
   return end === -1 ? null : {end, src: str.substring(start, end)};
 }
 
+function findInterpolationEnd(str) {
+  const frame = interpolationFrame();
+  frame.stop = true;
+  return scanInlineContexts(str, {stack: [frame]}, 0);
+}
+
 /**
  * Check if brackets are properly nested in the given expression string.
  * Returns true if nesting is incorrect (unbalanced brackets).
@@ -1590,7 +1596,13 @@ class Lexer {
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
-    const childInput = value.slice(pos + 2);
+    const remainder = value.slice(pos + 2);
+    const end = findInterpolationEnd(remainder);
+    // Keep the trailing caller text out of the child. Passing the whole suffix
+    // makes a dense run of sibling #() tags normalize and scan shrinking tails,
+    // turning linear source into quadratic work. An unclosed interpolation is
+    // left intact so the child retains its established diagnostic path.
+    const childInput = end === -1 ? remainder : remainder.slice(0, end + 1);
     const child = this.spawnChildLexer(
       childInput,
       this.sourceLocationMap(childInput),
@@ -1603,7 +1615,7 @@ class Lexer {
     tok = this.tok('end-interpolation');
     this.incrementColumn(1);
     this.tokens.push(this.tokEnd(tok));
-    return child.input;
+    return child.input + remainder.slice(childInput.length);
   }
 
   parseShorthandContent(rest, errorPrefix, errorCode, label) {

@@ -38,7 +38,9 @@ errors.
 
 - **Rows** are pipe-delimited. Leading and trailing pipes are optional, so
   `| a | b |`, `a | b`, and `| a | b` are equivalent. A trailing/leading pipe just
-  produces an empty edge cell that is dropped.
+  produces an empty edge cell that is dropped. Every nonblank, non-caption line
+  must be a recognized section marker or contain a row delimiter; other text is
+  rejected with `INVALID_TABLE_LINE` instead of being discarded.
 - **Header separator** `| --- | --- |`: separator cells contain at least three
   dashes. The rows above it become a `<thead>`, and the rows below begin a
   `<tbody>`. A second `---` starts another `<tbody>`.
@@ -107,11 +109,12 @@ Expected table failures use stable `PUGNEUM:` codes. Empty input and tables
 without rows report `EMPTY_TABLE` and `TABLE_WITHOUT_ROWS`; malformed separator
 or section structure reports `MIXED_TABLE_SEPARATOR`,
 `INVALID_TABLE_SEPARATOR_ATTRIBUTES`, `INVALID_TABLE_SECTION_ORDER`,
-`DUPLICATE_TABLE_SECTION`, or `EMPTY_TABLE_SECTION`. Generated attribute
-problems report `INVALID_TABLE_ATTRIBUTE_NAME`, `DUPLICATE_TABLE_ATTRIBUTE`, or
-`INTERPOLATION_IN_TABLE_HEAD`. When invoked through `pugneum-filterer`, these
-diagnostics retain the caller filename, authored table line and column, and
-source frame rather than pointing at generated output.
+`DUPLICATE_TABLE_SECTION`, `EMPTY_TABLE_SECTION`, or `INVALID_TABLE_LINE`.
+Generated attribute problems report `INVALID_TABLE_ATTRIBUTE_NAME`,
+`DUPLICATE_TABLE_ATTRIBUTE`, or `INTERPOLATION_IN_TABLE_HEAD`. When invoked
+through `pugneum-filterer`, these diagnostics retain the caller filename,
+authored table line and column, and source frame rather than pointing at
+generated output.
 
 ## License
 

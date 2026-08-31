@@ -261,7 +261,9 @@ function parse(lines) {
   const caption = captionResult.caption;
   const dataLines = captionResult.rest;
 
-  // Parse each data line as: section marker, pipe row, or ignored non-pipe line.
+  // Parse each data line as a section marker or a pipe row. Rejecting any other
+  // nonempty line prevents a missing delimiter or misspelled marker from
+  // disappearing silently.
   // Build a sequence of events: 'marker', 'row', 'dash-sep', 'equals-sep'.
   // Each event carries its payload.
   const events = [];
@@ -284,7 +286,13 @@ function parse(lines) {
 
     // Check for pipe row
     const row = parseRow(line);
-    if (row === null) continue; // non-pipe, non-marker line: skip
+    if (row === null) {
+      throw error(
+        'INVALID_TABLE_LINE',
+        'expected a section marker or pipe-delimited table row',
+        location,
+      );
+    }
     row.location = location;
 
     // Classify the row

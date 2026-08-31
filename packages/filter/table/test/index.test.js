@@ -692,6 +692,21 @@ describe('errors', () => {
         bodyLine: 1,
       },
       {
+        body: '| kept |\nmissing delimiter',
+        code: 'PUGNEUM:INVALID_TABLE_LINE',
+        bodyLine: 2,
+      },
+      {
+        body: 'thead(class="x") trailing text\n| kept |',
+        code: 'PUGNEUM:INVALID_TABLE_LINE',
+        bodyLine: 1,
+      },
+      {
+        body: '┏━━━━┓\n| kept |',
+        code: 'PUGNEUM:INVALID_TABLE_LINE',
+        bodyLine: 1,
+      },
+      {
         body: '| head |\n| --- |\n| td(title="#{q}") value |',
         code: 'PUGNEUM:INTERPOLATION_IN_TABLE_HEAD',
         bodyLine: 3,

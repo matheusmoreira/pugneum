@@ -127,6 +127,12 @@ Running after the filterer is also what lets references, footnotes, and `toc`
 emitted by a `pugneum`-type filter (e.g. a `:table` cell) resolve against the
 document's blocks.
 
+An unused footnote definition is discarded content. Its reference links and
+reference declarations do not participate in resolution or mark global
+definitions as used. When a footnote is reached from the document—or
+transitively from another reached footnote—its definition body joins the same
+document-global reference namespace and is resolved normally.
+
 Resolution runs before the renderer expands mixin calls. A construct inside a
 mixin definition is therefore seen once at its definition site rather than once
 per rendered call, including when the mixin is unused. Avoid IDs, footnote

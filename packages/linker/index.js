@@ -151,7 +151,8 @@ link.assemble = function (ast, options) {
 function resolveDocument(ast, options) {
   const sources = diagnosticSources(options);
   const warnings = options.warnings;
-  ast = resolveReferences(ast, sources, warnings);
+  const reachableFootnotes = findReachableFootnoteDefinitions(ast);
+  ast = resolveReferences(ast, sources, warnings, reachableFootnotes);
   ast = resolveToc(ast, sources, warnings);
   ast = resolveFootnotes(ast, sources, warnings);
   lintDocument(ast, sources, warnings);
@@ -545,10 +546,67 @@ function resolveDefOrThrow(node, definitions, sources) {
   return def;
 }
 
-function resolveReferences(ast, sources, warnings) {
+// Return definition records reachable from FootnoteRef nodes outside the
+// Footnotes container, then transitively through reached definition bodies.
+// This is deliberately a non-validating index: resolveFootnotes retains the
+// established diagnostic ordering for duplicate/invalid/undefined footnotes.
+function findReachableFootnoteDefinitions(ast) {
+  const definitions = Object.create(null);
+  const names = [];
+  const enqueued = Object.create(null);
+  function enqueue(node) {
+    if (node.type === 'FootnoteRef' && !(node.name in enqueued)) {
+      enqueued[node.name] = true;
+      names.push(node.name);
+    }
+  }
+
+  walk(ast, function (node) {
+    if (node.type === 'Footnotes') {
+      for (const definition of node.definitions) {
+        if (!(definition.name in definitions)) {
+          definitions[definition.name] = definition;
+        }
+      }
+      return false;
+    }
+    enqueue(node);
+  });
+
+  const reachable = [];
+  for (let index = 0; index < names.length; index++) {
+    const definition = definitions[names[index]];
+    if (!definition || !definition.block) continue;
+    reachable.push(definition);
+    walk(definition.block, function (node) {
+      if (node.type === 'Footnotes') return false;
+      enqueue(node);
+    });
+  }
+  return reachable;
+}
+
+// Walk the rendered document while pruning the Footnotes container, then walk
+// only definition bodies that the footnote reachability queue selected. This
+// keeps reference collection, resolution, and unused diagnostics on the same
+// content graph without requiring reference and footnote syntax to be coupled.
+function walkReferenceContent(ast, reachableFootnotes, before) {
+  function visit(node, replace, control) {
+    if (node.type === 'Footnotes') return false;
+    return before(node, replace, control);
+  }
+
+  ast = walk(ast, visit);
+  for (const definition of reachableFootnotes) {
+    definition.block = walk(definition.block, visit);
+  }
+  return ast;
+}
+
+function resolveReferences(ast, sources, warnings, reachableFootnotes) {
   const definitions = Object.create(null);
   const used = Object.create(null);
-  walk(ast, function (node) {
+  walkReferenceContent(ast, reachableFootnotes, function (node) {
     if (node.type === 'References') {
       for (const def of node.definitions) {
         if (def.name in definitions) {
@@ -568,7 +626,7 @@ function resolveReferences(ast, sources, warnings) {
     }
   });
 
-  const result = walk(ast, function before(node, replace) {
+  function resolveReferenceNode(node, replace) {
     if (node.type === 'References') {
       replace([]);
       return false;
@@ -699,7 +757,13 @@ function resolveReferences(ast, sources, warnings) {
         filename: node.filename,
       });
     }
-  });
+  }
+
+  const result = walkReferenceContent(
+    ast,
+    reachableFootnotes,
+    resolveReferenceNode,
+  );
 
   for (const name in definitions) {
     if (!used[name]) {

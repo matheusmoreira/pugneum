@@ -993,6 +993,74 @@ describe('footnote error paths', () => {
   });
 });
 
+describe('reference reachability follows rendered footnotes', () => {
+  function linkSource(source) {
+    const warnings = [];
+    const options = {filename: 'reachable.pg', source, lex, parse, basedir};
+    const loaded = load(parse(lex(source, options), options), options);
+    return {linked: link(loaded, Object.assign(options, {warnings})), warnings};
+  }
+
+  test('a missing reference inside an unreachable footnote is discarded', () => {
+    const {linked, warnings} = linkSource(
+      'p live\n\nfootnotes\n  dead See @[missing]',
+    );
+    let anchorCount = 0;
+    walk(linked, function (node) {
+      if (node.type === 'Tag' && node.name === 'a') anchorCount++;
+    });
+    assert.strictEqual(anchorCount, 0);
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.code),
+      ['PUGNEUM:UNUSED_FOOTNOTE'],
+    );
+  });
+
+  test('a global reference used only by an unreachable footnote remains unused', () => {
+    const {warnings} = linkSource(
+      'references\n  docs /docs\n\np live\n\nfootnotes\n  dead See @[docs]',
+    );
+    assert.deepStrictEqual(warnings.map((warning) => warning.code).sort(), [
+      'PUGNEUM:UNUSED_FOOTNOTE',
+      'PUGNEUM:UNUSED_REFERENCE',
+    ]);
+  });
+
+  test('a reference declaration inside an unreachable footnote is not global', () => {
+    assert.throws(
+      () =>
+        linkSource(
+          'p @[hidden]\n\nfootnotes\n  dead\n    references\n      hidden /hidden',
+        ),
+      (err) =>
+        err.code === 'PUGNEUM:UNDEFINED_REFERENCE' &&
+        err.msg === "Undefined reference 'hidden'",
+    );
+  });
+
+  test('references in transitively reachable footnotes resolve globally', () => {
+    const {linked, warnings} = linkSource(
+      'references\n  docs /docs\n\np live^[first]\n\nfootnotes\n  first Next^[second]\n  second See @[docs]',
+    );
+    let docsLink;
+    walk(linked, function (node) {
+      if (
+        node.type === 'Tag' &&
+        node.name === 'a' &&
+        node.attrs.some((attr) => attr.name === 'href' && attr.val === '/docs')
+      ) {
+        docsLink = node;
+      }
+    });
+    assert.ok(docsLink);
+    assert.strictEqual(
+      warnings.filter((warning) => warning.code === 'PUGNEUM:UNUSED_REFERENCE')
+        .length,
+      0,
+    );
+  });
+});
+
 describe('footnote transitive fixpoint and multi-reference rendering', () => {
   // The resolveFootnotes reachability queue and the toSuperscript /
   // footnoteRefId(-N) scheme need direct structural assertions. These pin

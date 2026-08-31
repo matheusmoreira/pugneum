@@ -94,6 +94,48 @@ test('filtering returns the same root and mutates invocation nodes in place', ()
   assert.strictEqual(failingInvocation.type, 'Filter');
 });
 
+test('a failed pass restores the caller AST and generated-source side channel', () => {
+  const source = ':good\n  first\n:bad\n  second';
+  const options = {
+    filename,
+    source,
+    sources: {[filename]: source},
+    warnings: [],
+  };
+  const ast = parse(lex(source, options), options);
+  const before = structuredClone(ast);
+  const root = ast;
+  const goodInvocation = ast.nodes[0];
+  const badInvocation = ast.nodes[1];
+  const originalSources = options.sources;
+  const originalSourceKeys = Reflect.ownKeys(originalSources);
+  const filters = {
+    good: {type: 'pugneum', filter: () => 'p generated'},
+    bad: null,
+  };
+
+  assert.throws(
+    () => filter(ast, filters, options),
+    (err) => err.code === 'PUGNEUM:INVALID_FILTER_DESCRIPTOR',
+  );
+
+  assert.strictEqual(ast, root);
+  assert.strictEqual(ast.nodes[0], goodInvocation);
+  assert.strictEqual(ast.nodes[1], badInvocation);
+  assert.deepStrictEqual(ast, before);
+  assert.strictEqual(options.sources, originalSources);
+  assert.deepStrictEqual(Reflect.ownKeys(options.sources), originalSourceKeys);
+
+  filters.bad = {type: 'html', filter: (text) => text.toUpperCase()};
+  const retried = filter(ast, filters, options);
+  assert.strictEqual(retried, root);
+  assert.strictEqual(retried.nodes[0], goodInvocation);
+  assert.strictEqual(retried.nodes[1], badInvocation);
+  assert.strictEqual(goodInvocation.type, 'Block');
+  assert.strictEqual(badInvocation.type, 'Text');
+  assert.strictEqual(badInvocation.val, 'SECOND');
+});
+
 test('__proto__ attribute does not pollute Object.prototype', () => {
   var calls = 0;
   var receivedOptions;
@@ -864,6 +906,9 @@ test('syntax output cannot reuse a node already inserted by another invocation',
   const source = ':shared\n  first\n:shared\n  second\n';
   const options = {filename, source, warnings: []};
   const ast = parse(lex(source, options), options);
+  const before = structuredClone(ast);
+  const firstInvocation = ast.nodes[0];
+  const secondInvocation = ast.nodes[1];
   const shared = {type: 'Text', val: 'shared'};
   const filters = {shared: {type: 'syntax', filter: () => [shared]}};
 
@@ -873,8 +918,9 @@ test('syntax output cannot reuse a node already inserted by another invocation',
       err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
       /owned|shared|alias/i.test(err.message),
   );
-  assert.strictEqual(ast.nodes[0].type, 'Block');
-  assert.strictEqual(ast.nodes[1].type, 'Filter');
+  assert.deepStrictEqual(ast, before);
+  assert.strictEqual(ast.nodes[0], firstInvocation);
+  assert.strictEqual(ast.nodes[1], secondInvocation);
 });
 
 test('syntax output receives invocation provenance before later stages', () => {

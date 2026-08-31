@@ -134,6 +134,71 @@ function stampLocation(record, invocation) {
   if (record.column == null) record.column = invocation.column;
 }
 
+function createSourceState(options) {
+  return {
+    next: 1,
+    options,
+    optionsSourcesDescriptor: Object.getOwnPropertyDescriptor(
+      options,
+      'sources',
+    ),
+    entries: [],
+    originDescriptors: [],
+  };
+}
+
+function restoreSourceState(state) {
+  for (let index = state.entries.length - 1; index >= 0; index--) {
+    const entry = state.entries[index];
+    Reflect.deleteProperty(entry.sources, entry.identity);
+    Reflect.deleteProperty(entry.origins, entry.identity);
+  }
+  for (let index = state.originDescriptors.length - 1; index >= 0; index--) {
+    const record = state.originDescriptors[index];
+    if (record.descriptor) {
+      Object.defineProperty(
+        record.sources,
+        generatedSourceOrigins,
+        record.descriptor,
+      );
+    } else {
+      Reflect.deleteProperty(record.sources, generatedSourceOrigins);
+    }
+  }
+
+  Reflect.deleteProperty(state.options, 'sources');
+  if (state.optionsSourcesDescriptor) {
+    Object.defineProperty(
+      state.options,
+      'sources',
+      state.optionsSourcesDescriptor,
+    );
+  }
+}
+
+function rememberNode(node, context) {
+  const rollback = context.rollback;
+  if (rollback.seen.has(node)) return;
+  rollback.seen.add(node);
+  rollback.nodes.push({
+    node,
+    descriptors: Object.getOwnPropertyDescriptors(node),
+  });
+}
+
+function rollbackFilterPass(context) {
+  for (let index = context.rollback.nodes.length - 1; index >= 0; index--) {
+    const record = context.rollback.nodes[index];
+    for (const key of Reflect.ownKeys(record.node)) {
+      if (!Object.prototype.hasOwnProperty.call(record.descriptors, key)) {
+        Reflect.deleteProperty(record.node, key);
+      }
+    }
+    Object.defineProperties(record.node, record.descriptors);
+  }
+  restoreSourceState(context.sourceState);
+}
+
 function registerGeneratedSource(result, name, invocation, options, state) {
   let sources = options.sources;
   let origins;
@@ -152,6 +217,13 @@ function registerGeneratedSource(result, name, invocation, options, state) {
   origins = origins || sources[generatedSourceOrigins];
   if (origins == null || !Object.isExtensible(origins)) {
     origins = Object.assign(Object.create(null), origins || null);
+    state.originDescriptors.push({
+      sources,
+      descriptor: Object.getOwnPropertyDescriptor(
+        sources,
+        generatedSourceOrigins,
+      ),
+    });
     Object.defineProperty(sources, generatedSourceOrigins, {
       configurable: true,
       value: origins,
@@ -164,7 +236,11 @@ function registerGeneratedSource(result, name, invocation, options, state) {
   let identity;
   do {
     identity = `<filter ${name} output #${state.next++} from ${origin}:${line}:${column}>`;
-  } while (Object.prototype.hasOwnProperty.call(sources, identity));
+  } while (
+    Object.prototype.hasOwnProperty.call(sources, identity) ||
+    Object.prototype.hasOwnProperty.call(origins, identity)
+  );
+  state.entries.push({sources, origins, identity});
   sources[identity] = result;
   origins[identity] = invocation.filename;
   return identity;
@@ -373,12 +449,14 @@ function applyFilterResult(
   switch (type) {
     case 'text':
       validateStringOutput(result, name, type, node, options);
+      rememberNode(node, context);
       node.type = 'Text';
       node.val = escapeFilterText(result);
       stripFilterFields(node);
       break;
     case 'html':
       validateStringOutput(result, name, type, node, options);
+      rememberNode(node, context);
       node.type = 'Text';
       node.val = result;
       stripFilterFields(node);
@@ -400,6 +478,7 @@ function applyFilterResult(
         column: 1,
       };
       stampGeneratedProvenance(ast, generatedLocation, context.ownedNodes);
+      rememberNode(node, context);
       node.type = 'Block';
       node.nodes = ast.nodes;
       node.filename = generated.filename;
@@ -421,6 +500,7 @@ function applyFilterResult(
         nodeDepth,
       );
       stampGeneratedProvenance(result, node, context.ownedNodes);
+      rememberNode(node, context);
       node.type = 'Block';
       node.nodes = result;
       stripFilterFields(node);
@@ -541,84 +621,99 @@ function collectOwnedNodes(ast, ownedNodes) {
 
 function applyFilters(ast, filters, options, context) {
   options = options || {};
+  const rootCall = !context;
   if (!context) {
     const ownedNodes = new WeakSet();
     collectOwnedNodes(ast, ownedNodes);
-    context = {baseDepth: 0, ownedNodes, sourceState: {next: 1}};
+    context = {
+      baseDepth: 0,
+      ownedNodes,
+      sourceState: createSourceState(options),
+      rollback: {nodes: [], seen: new WeakSet()},
+    };
   }
   const parents = [];
-  walk(
-    ast,
-    function (node) {
-      const nodeDepth = context.baseDepth + parents.length;
-      if (node.type === 'Filter') {
-        handleNestedFilters(node, filters, options, context, nodeDepth);
-        const text = getBodyAsText(node, options);
-        const attrs = getAttributes(node, options);
-        attrs.filename = node.filename;
-        const resolved = resolveFilter(node.name, filters, node, options);
-        validateFilterType(resolved, node.name, node, options);
-        const result = runFilter(
-          resolved,
-          node.name,
-          text,
-          attrs,
-          node,
-          options,
-        );
-        applyFilterResult(
-          node,
-          resolved.type,
-          result,
-          node.name,
-          options,
-          context,
-          nodeDepth,
-        );
-      } else if (node.type === 'RawInclude' && node.filters.length) {
-        // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
-        // file content, then b, then a (outermost), matching nested `:` order.
-        const chain = node.filters.slice().reverse();
-        const resolvedChain = chain.map((invocation) => ({
-          invocation,
-          descriptor: resolveFilter(invocation.name, filters, node, options),
-        }));
-        // The innermost filter reads the file; its `binary` flag chooses raw
-        // bytes vs decoded text. Each later filter consumes the previous result.
-        const innermost = resolvedChain[0].descriptor;
-        let result = innermost.binary
-          ? node.file.raw
-          : normalizeTextNewlines(node.file.str);
-        let lastName;
-        let lastType;
-        resolvedChain.forEach(function ({invocation: f, descriptor: resolved}) {
-          const filterAttrs = getAttributes(f, options);
-          filterAttrs.filename = node.file.fullPath;
-          validateIncludeFilterType(resolved, f.name, node, options);
-          result = runFilter(
+  try {
+    walk(
+      ast,
+      function (node) {
+        const nodeDepth = context.baseDepth + parents.length;
+        if (node.type === 'Filter') {
+          handleNestedFilters(node, filters, options, context, nodeDepth);
+          const text = getBodyAsText(node, options);
+          const attrs = getAttributes(node, options);
+          attrs.filename = node.filename;
+          const resolved = resolveFilter(node.name, filters, node, options);
+          validateFilterType(resolved, node.name, node, options);
+          const result = runFilter(
             resolved,
-            f.name,
-            result,
-            filterAttrs,
+            node.name,
+            text,
+            attrs,
             node,
             options,
           );
-          // Validate every stage's output, not just the final one, so a
-          // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
-          // naming the stage that failed rather than silent garbage downstream.
-          validateStringOutput(result, f.name, resolved.type, node, options);
-          lastName = f.name;
-          lastType = resolved.type;
-        });
-        node.type = 'Text';
-        node.val = lastType === 'text' ? escapeFilterText(result) : result;
-        delete node.filters;
-        delete node.file;
-      }
-    },
-    {includeDependencies: true, parents},
-  );
-  return ast;
+          applyFilterResult(
+            node,
+            resolved.type,
+            result,
+            node.name,
+            options,
+            context,
+            nodeDepth,
+          );
+        } else if (node.type === 'RawInclude' && node.filters.length) {
+          // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
+          // file content, then b, then a (outermost), matching nested `:` order.
+          const chain = node.filters.slice().reverse();
+          const resolvedChain = chain.map((invocation) => ({
+            invocation,
+            descriptor: resolveFilter(invocation.name, filters, node, options),
+          }));
+          // The innermost filter reads the file; its `binary` flag chooses raw
+          // bytes vs decoded text. Each later filter consumes the previous result.
+          const innermost = resolvedChain[0].descriptor;
+          let result = innermost.binary
+            ? node.file.raw
+            : normalizeTextNewlines(node.file.str);
+          let lastName;
+          let lastType;
+          resolvedChain.forEach(function ({
+            invocation: f,
+            descriptor: resolved,
+          }) {
+            const filterAttrs = getAttributes(f, options);
+            filterAttrs.filename = node.file.fullPath;
+            validateIncludeFilterType(resolved, f.name, node, options);
+            result = runFilter(
+              resolved,
+              f.name,
+              result,
+              filterAttrs,
+              node,
+              options,
+            );
+            // Validate every stage's output, not just the final one, so a
+            // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
+            // naming the stage that failed rather than silent garbage downstream.
+            validateStringOutput(result, f.name, resolved.type, node, options);
+            lastName = f.name;
+            lastType = resolved.type;
+          });
+          rememberNode(node, context);
+          node.type = 'Text';
+          node.val = lastType === 'text' ? escapeFilterText(result) : result;
+          delete node.filters;
+          delete node.file;
+        }
+      },
+      {includeDependencies: true, parents},
+    );
+    return ast;
+  } catch (failure) {
+    if (rootCall) rollbackFilterPass(context);
+    throw failure;
+  }
 }
 
 // Resolve a nested inner filter in place. Nested filters (`:outer:inner`) parse
@@ -638,6 +733,7 @@ function handleNestedFilters(node, filters, options, context, nodeDepth) {
       baseDepth: nodeDepth + 1,
       ownedNodes: context.ownedNodes,
       sourceState: context.sourceState,
+      rollback: context.rollback,
     });
   }
 }

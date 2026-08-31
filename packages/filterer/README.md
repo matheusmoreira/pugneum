@@ -40,7 +40,11 @@ console.log(output.nodes[0].val); // <strong>hello</strong>
 ### `applyFilters(ast, filters, options)`
 
 Applies filters to a pugneum abstract syntax tree, mutating it in
-place and also returning it. Two kinds of node are processed:
+place and also returning it. Successful rewrites preserve the root and
+invocation-node identities. If any descriptor, callback, generated parse, or
+later traversal fails, caller-AST rewrites and generated-source bookkeeping
+from earlier in that pass are rolled back, so the same AST can be inspected or
+retried safely. Two kinds of node are processed:
 
 - `Filter` nodes — block filters written as `:name`. All four filter
   types (`text`, `html`, `pugneum`, `syntax`) are allowed.

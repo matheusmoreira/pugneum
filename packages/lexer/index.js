@@ -285,6 +285,30 @@ function parseExpressionUntil(str, end, start) {
   throwUnclosed(end, i, quoteStart);
 }
 
+// Return the index just past a balanced (...) expression group, or -1 when the
+// requested offset is not an opener or the group is incomplete. Generated-
+// source packages use this narrow helper instead of duplicating the lexer's
+// quote and escape boundary rules.
+function scanExpressionGroup(str, start) {
+  if (
+    typeof str !== 'string' ||
+    !Number.isSafeInteger(start) ||
+    start < 0 ||
+    str[start] !== '('
+  ) {
+    return -1;
+  }
+
+  try {
+    return parseExpressionUntil(str, ')', start + 1).end + 1;
+  } catch (ex) {
+    if (ex.code === 'CHARACTER_PARSER:END_OF_STRING_REACHED') return -1;
+    throw ex;
+  }
+}
+
+lex.scanExpressionGroup = scanExpressionGroup;
+
 /**
  * Find the closing bracket in a text context (inline shorthands).
  * Quotes are literal; backslash escapes brackets.

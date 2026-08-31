@@ -155,6 +155,19 @@ only between word characters. The same rule applies inside `#(...)` and after
 the keyword-escape backslash. A digit- or underscore-led candidate throws the
 located `PUGNEUM:INVALID_TAG_NAME` diagnostic.
 
+### Generated-source grammar helpers
+
+Packages that generate Pugneum source can use two lexer-owned predicates rather
+than maintaining parallel grammar fragments:
+
+- `lex.isValidAttributeName(name)` reports whether `name` is one complete HTML
+  attribute-name token accepted by the lexer.
+- `lex.scanExpressionGroup(source, start)` scans a `(` at the zero-based
+  `start` offset with the lexer's attribute/expression rules. It returns the
+  offset just past the matching `)`, or `-1` when the offset is not an opener or
+  the group is incomplete. Parentheses nest, quotes protect parentheses, and a
+  backslash escapes the next byte only inside a quoted value.
+
 ## License
 
   MIT

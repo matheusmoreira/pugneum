@@ -24,6 +24,32 @@ function nestedInlineSource(depth) {
   return 'p ' + '*('.repeat(depth) + 'end' + ')'.repeat(depth);
 }
 
+describe('expression group boundary helper', () => {
+  test('uses the lexer attribute grammar at arbitrary offsets', () => {
+    const source = 'prefix(title="a)b" nested=(x)) suffix';
+    const start = source.indexOf('(');
+
+    assert.strictEqual(
+      lex.scanExpressionGroup(source, start),
+      source.indexOf(' suffix'),
+    );
+  });
+
+  test('treats backslashes outside quotes as ordinary bytes', () => {
+    const source = '(title=x\\)) suffix';
+
+    assert.strictEqual(
+      lex.scanExpressionGroup(source, 0),
+      source.indexOf(')') + 1,
+    );
+  });
+
+  test('returns -1 for a missing opener or closer', () => {
+    assert.strictEqual(lex.scanExpressionGroup('plain text', 0), -1);
+    assert.strictEqual(lex.scanExpressionGroup('(title="open', 0), -1);
+  });
+});
+
 function comparePoints(left, right) {
   return left.line - right.line || left.column - right.column;
 }

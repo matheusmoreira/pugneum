@@ -720,6 +720,14 @@ describe('errors', () => {
 // the old `\([^)]*\)` regexes, silently dropping or misparsing the construct.
 // Balanced-paren scanning fixes all five sites; each output must also re-lex.
 describe('balanced parens in attribute groups', () => {
+  test('an unquoted backslash cannot hide the lexer closing paren', () => {
+    var input = '| --- |\n| td(title=x\\)) value |';
+    var result = renderRoundTrip(input);
+
+    assert.match(result.src, /^\s+td td\(title=x\\\)\) value$/m);
+    assert.match(result.html, /<td>td\(title=x\\\)\) value<\/td>/);
+  });
+
   test('caption(style="calc(...)") is recognized, not dropped', () => {
     var input =
       'caption(style="width:calc(100% - 1em)") Title\n| a |\n| --- |\n| b |';

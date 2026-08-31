@@ -1,50 +1,5 @@
 const error = require('pugneum-error');
-
-// Find the index just past a balanced, quote-aware (...) group that begins at
-// `start` (where str[start] must be '('). Quotes ("..."/'...') are treated as
-// opaque so a ')' inside a quoted attribute value does not close the group, and
-// a backslash escapes the next character (inside or outside a quote). Returns
-// the index one past the matching ')', or -1 if the group is never closed.
-//
-// This is the table filter's quote-aware analogue of the lexer's bracket
-// scanner (packages/lexer/index.js scanChar/parseExpressionUntil). It must stay
-// consistent with how the lexer parses attribute groups, since the table filter
-// emits Pugneum source that the filterer re-lexes. A single linear scan, so it
-// cannot exhibit the O(n^2) backtracking of the old `\([^)]*\)` regexes.
-function scanParenGroup(str, start) {
-  let depth = 0;
-  let quote = null;
-  let i = start;
-  while (i < str.length) {
-    const c = str[i];
-    if (quote) {
-      if (c === '\\') {
-        i += 2;
-        continue;
-      }
-      if (c === quote) quote = null;
-      i++;
-      continue;
-    }
-    if (c === '\\') {
-      i += 2;
-      continue;
-    }
-    if (c === '"' || c === "'") {
-      quote = c;
-      i++;
-      continue;
-    }
-    if (c === '(') {
-      depth++;
-    } else if (c === ')') {
-      depth--;
-      if (depth === 0) return i + 1;
-    }
-    i++;
-  }
-  return -1;
-}
+const scanParenGroup = require('pugneum-lexer').scanExpressionGroup;
 
 // Match an optional balanced (attrs) group at the start of `s`.
 // Returns {attrs: string, rest: string} where attrs includes the surrounding

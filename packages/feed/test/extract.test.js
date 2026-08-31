@@ -209,6 +209,15 @@ describe('article page enrichment', () => {
     assert.ok(result.content.includes('<h1>Second Article</h1>'));
   });
 
+  test('a valid tag name with no matching element produces empty content', () => {
+    var result = extract.articlePage(
+      path.join(fixturesDir, 'articles', 'second.html'),
+      'aside',
+    );
+
+    assert.strictEqual(result.content, '');
+  });
+
   test('uses the first article base href for extracted content URLs', () => {
     var p = writeTemp(
       '<!DOCTYPE html><html><head><title>B</title>' +

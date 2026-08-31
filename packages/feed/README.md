@@ -112,8 +112,11 @@ separators are rejected before filesystem access.
 ### Article pages
 
 Each article page provides per-entry metadata via `<meta>` tags.
-The content of the configured selector element
-(default `<article>`) becomes the feed entry content.
+The content of the configured `selector` element (default `<article>`) becomes
+the feed entry content. Despite its historical option name, `selector` accepts
+one element tag name, not CSS selector syntax; CSS-like values are rejected as
+invalid options. A valid tag name that does not occur in an article page
+produces an empty entry body.
 Metadata `name` values are matched ASCII-case-insensitively, as in HTML; when
 the same name appears more than once, the first element supplies the value.
 `<meta name="keywords">` (a comma-separated list) is emitted as feed

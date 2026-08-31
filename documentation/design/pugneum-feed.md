@@ -66,7 +66,7 @@ All fields except `enabled` are optional. JSON config values take priority over 
 | `author` | Extracted from `<meta name="author">` | Feed author name |
 | `index` | `index.html` | Index page to parse for article discovery |
 | `description` | Extracted from `<meta name="description">` | Feed description (required for RSS) |
-| `selector` | `article` | Tag name for article content extraction |
+| `selector` | `article` | Element tag name for article content extraction (not CSS syntax); a missing element produces empty content |
 | `atom` | `atom.xml` | Output filename for Atom feed |
 | `rss` | `rss.xml` | Output filename for RSS feed |
 
@@ -117,7 +117,7 @@ For each discovered entry:
 3. Extract from `<meta>` tags: `description`, `author`, `keywords`
 4. Resolve relative URLs on the selected subtree against the first article
    `<base href>` when usable, falling back to the canonical entry URL
-5. Extract innerHTML of `<article>` element (or configured selector) for full content
+5. Extract innerHTML of the configured element tag (default `<article>`) for full content; a missing element produces an empty body
 6. Extract `<title>` as authoritative title (falling back to link text from index)
 
 ### Extracted Entry Data Structure

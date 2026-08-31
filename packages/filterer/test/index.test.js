@@ -133,6 +133,284 @@ p
   );
 });
 
+test('FILTER_ERROR preserves the thrown cause and invocation source frame', () => {
+  const fixture = singleFilterAst('exploding');
+  const cause = new Error('kaboom');
+  const exploding = {
+    type: 'html',
+    filter: function () {
+      throw cause;
+    },
+  };
+
+  assert.throws(
+    () => filter(fixture.ast, {exploding}, fixture.options),
+    (err) =>
+      err.code === 'PUGNEUM:FILTER_ERROR' &&
+      err.cause === cause &&
+      /^index\.test\.js:1:1\n/.test(err.message) &&
+      />\s*1\| :exploding/.test(err.message),
+  );
+});
+
+test('FILTER_ERROR selects an included invocation source frame', () => {
+  const ast = {
+    type: 'Block',
+    nodes: [
+      {
+        type: 'Filter',
+        name: 'exploding',
+        block: {type: 'Block', nodes: []},
+        attrs: [],
+        line: 2,
+        column: 3,
+        filename: 'included.pg',
+      },
+    ],
+  };
+  const includedSource = 'p before\n  :exploding\np after';
+  const options = {
+    source: 'entry source',
+    sources: {'included.pg': includedSource},
+  };
+  const exploding = {
+    type: 'html',
+    filter() {
+      throw new Error('included failure');
+    },
+  };
+
+  assert.throws(
+    () => filter(ast, {exploding}, options),
+    (err) =>
+      err.code === 'PUGNEUM:FILTER_ERROR' &&
+      /^included\.pg:2:3\n/.test(err.message) &&
+      />\s*2\|   :exploding/.test(err.message),
+  );
+});
+
+test('arbitrary callback throw values normalize without masking the cause', () => {
+  const cases = [
+    ['null', null],
+    ['undefined', undefined],
+    ['number', 42],
+    ['symbol', Symbol('boom')],
+    ['numeric code', {code: 42, message: 'actual failure'}],
+    [
+      'unprintable object',
+      {
+        toString() {
+          throw new Error('conversion trap');
+        },
+      },
+    ],
+  ];
+
+  for (const [label, thrown] of cases) {
+    const fixture = singleFilterAst('arbitrary');
+    const arbitrary = {
+      type: 'html',
+      filter: function () {
+        throw thrown;
+      },
+    };
+    assert.throws(
+      () => filter(fixture.ast, {arbitrary}, fixture.options),
+      (err) =>
+        err.code === 'PUGNEUM:FILTER_ERROR' &&
+        err.cause === thrown &&
+        !/TypeError.*startsWith/.test(err.message),
+      label,
+    );
+  }
+});
+
+test('already-coded callback errors retain their identity', () => {
+  const fixture = singleFilterAst('coded');
+  const codedError = new Error('coded failure');
+  codedError.code = 'PUGNEUM:CUSTOM_FAILURE';
+  const coded = {
+    type: 'html',
+    filter: function () {
+      throw codedError;
+    },
+  };
+
+  assert.throws(
+    () => filter(fixture.ast, {coded}, fixture.options),
+    (err) => err === codedError,
+  );
+});
+
+test('custom filter descriptors are validated before property use', () => {
+  const cases = [
+    ['null', null],
+    ['number', 42],
+    ['array', []],
+    ['non-callable filter', {type: 'html', filter: 'nope'}],
+    ['non-boolean binary', {type: 'html', filter: () => '', binary: 'yes'}],
+    [
+      'throwing proxy',
+      new Proxy(
+        {},
+        {
+          get() {
+            throw new Error('descriptor trap');
+          },
+        },
+      ),
+    ],
+  ];
+
+  for (const [label, descriptor] of cases) {
+    const fixture = singleFilterAst('invalidDescriptor');
+    assert.throws(
+      () =>
+        filter(fixture.ast, {invalidDescriptor: descriptor}, fixture.options),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_FILTER_DESCRIPTOR' &&
+        /^index\.test\.js:1:1\n/.test(err.message),
+      label,
+    );
+    assert.strictEqual(fixture.invocation.type, 'Filter', label);
+  }
+});
+
+test('descriptor normalization preserves the callback receiver', () => {
+  const fixture = singleFilterAst('receiver');
+  const descriptor = {
+    type: 'html',
+    marker: 'kept',
+    filter(text) {
+      assert.strictEqual(this, descriptor);
+      assert.strictEqual(this.marker, 'kept');
+      return text;
+    },
+  };
+
+  assert.doesNotThrow(() =>
+    filter(fixture.ast, {receiver: descriptor}, fixture.options),
+  );
+});
+
+test('filter types must use the documented string protocol', () => {
+  for (const type of [42, false, Symbol('html')]) {
+    const fixture = singleFilterAst('invalidType');
+    const invalidType = {type, filter: () => ''};
+    assert.throws(
+      () => filter(fixture.ast, {invalidType}, fixture.options),
+      (err) => err.code === 'PUGNEUM:INVALID_FILTER_TYPE',
+    );
+  }
+});
+
+test('per-filter option maps reject unsafe coercion', () => {
+  const invalidMaps = [null, 'characters', [], new Set()];
+  for (const invalid of invalidMaps) {
+    const fixture = singleFilterAst('capture');
+    const capture = {type: 'html', filter: (text) => text};
+    assert.throws(
+      () =>
+        filter(
+          fixture.ast,
+          {capture},
+          {
+            ...fixture.options,
+            filterOptions: invalid,
+          },
+        ),
+      (err) => err.code === 'PUGNEUM:INVALID_FILTER_OPTIONS',
+    );
+  }
+
+  const invalidEntries = [null, 'characters', [], new Set()];
+  for (const invalid of invalidEntries) {
+    const fixture = singleFilterAst('capture');
+    const capture = {type: 'html', filter: (text) => text};
+    assert.throws(
+      () =>
+        filter(
+          fixture.ast,
+          {capture},
+          {
+            ...fixture.options,
+            filterOptions: {capture: invalid},
+          },
+        ),
+      (err) => err.code === 'PUGNEUM:INVALID_FILTER_OPTIONS',
+    );
+  }
+});
+
+test('per-filter options copy only own enumerable properties', () => {
+  const fixture = singleFilterAst('capture');
+  const inheritedMapEntry = Object.create({ignored: 'map prototype'});
+  const optionBag = Object.create({ignored: 'entry prototype'});
+  optionBag.kept = 'own value';
+  inheritedMapEntry.capture = optionBag;
+  let received;
+  const capture = {
+    type: 'html',
+    filter: (text, attrs) => {
+      received = attrs;
+      return text;
+    },
+  };
+
+  filter(
+    fixture.ast,
+    {capture},
+    {
+      ...fixture.options,
+      filterOptions: inheritedMapEntry,
+    },
+  );
+
+  assert.strictEqual(received.kept, 'own value');
+  assert.strictEqual(received.ignored, undefined);
+  assert.strictEqual(received.filename, filename);
+
+  const inheritedOnly = Object.create({capture: {leaked: true}});
+  const second = singleFilterAst('capture');
+  filter(
+    second.ast,
+    {capture},
+    {
+      ...second.options,
+      filterOptions: inheritedOnly,
+    },
+  );
+  assert.strictEqual(received.leaked, undefined);
+});
+
+test('a throwing per-filter option getter becomes a coded diagnostic', () => {
+  const fixture = singleFilterAst('capture');
+  const optionBag = new Proxy(
+    {},
+    {
+      ownKeys() {
+        throw new Error('option trap');
+      },
+    },
+  );
+  const capture = {type: 'html', filter: (text) => text};
+
+  assert.throws(
+    () =>
+      filter(
+        fixture.ast,
+        {capture},
+        {
+          ...fixture.options,
+          filterOptions: {capture: optionBag},
+        },
+      ),
+    (err) =>
+      err.code === 'PUGNEUM:INVALID_FILTER_OPTIONS' &&
+      /option trap/.test(err.message),
+  );
+});
+
 test('verbatim filter passes text through unchanged', () => {
   const source = `
 p
@@ -376,6 +654,20 @@ p
       err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
       /must return a string/.test(err.message),
   );
+});
+
+test('text and html filters reject non-string output with exact context', () => {
+  for (const type of ['text', 'html']) {
+    const fixture = singleFilterAst('badString');
+    const badString = {type, filter: () => 42};
+    assert.throws(
+      () => filter(fixture.ast, {badString}, fixture.options),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
+        err.msg === `Filter 'badString' (type ${type}) must return a string` &&
+        /^index\.test\.js:1:1\n/.test(err.message),
+    );
+  }
 });
 
 test('syntax output rejects malformed graphs before mutating the invocation', () => {
@@ -980,6 +1272,29 @@ test('single html-type include filter passes file content through raw', () => {
   const node = output.nodes[0];
   assert.strictEqual(node.type, 'Text');
   assert.strictEqual(node.val, '<b>a & b</b>');
+});
+
+test('an include filter descriptor is snapshotted once before execution', () => {
+  const reads = {type: 0, filter: 0, binary: 0};
+  const descriptor = {
+    get type() {
+      reads.type++;
+      return 'html';
+    },
+    get filter() {
+      reads.filter++;
+      return (text) => text;
+    },
+    get binary() {
+      reads.binary++;
+      return false;
+    },
+  };
+  const ast = rawIncludeAst([{name: 'snapshot', attrs: []}], 'content');
+
+  filter(ast, {snapshot: descriptor});
+
+  assert.deepStrictEqual(reads, {type: 1, filter: 1, binary: 1});
 });
 
 ['first\nsecond\n', 'first\r\nsecond\r\n', 'first\rsecond\r'].forEach(

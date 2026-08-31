@@ -154,18 +154,128 @@ function nodeLocation(node, options) {
   };
 }
 
+function thrownCode(value) {
+  try {
+    return value && typeof value.code === 'string' ? value.code : undefined;
+  } catch (_) {
+    return undefined;
+  }
+}
+
+function thrownDetail(value) {
+  try {
+    if (value && typeof value.message === 'string') return value.message;
+  } catch (_) {
+    // Fall through to the general coercion path.
+  }
+  try {
+    return String(value);
+  } catch (_) {
+    return '[unprintable thrown value]';
+  }
+}
+
+function attachCause(diagnostic, cause) {
+  Object.defineProperty(diagnostic, 'cause', {
+    configurable: true,
+    value: cause,
+    writable: true,
+  });
+  return diagnostic;
+}
+
+function descriptorError(name, message, node, options, cause) {
+  const diagnostic = error(
+    'INVALID_FILTER_DESCRIPTOR',
+    `Filter '${name}' ${message}`,
+    nodeLocation(node, options),
+  );
+  return cause === undefined ? diagnostic : attachCause(diagnostic, cause);
+}
+
+function normalizeFilterDescriptor(candidate, name, node, options) {
+  let objectLike;
+  try {
+    objectLike =
+      candidate !== null &&
+      typeof candidate === 'object' &&
+      !Array.isArray(candidate) &&
+      Object.prototype.toString.call(candidate) === '[object Object]';
+  } catch (cause) {
+    throw descriptorError(
+      name,
+      `descriptor could not be inspected: ${thrownDetail(cause)}`,
+      node,
+      options,
+      cause,
+    );
+  }
+  if (!objectLike) {
+    throw descriptorError(
+      name,
+      'must resolve to an object-like descriptor',
+      node,
+      options,
+    );
+  }
+
+  let type;
+  let filter;
+  let binary;
+  try {
+    type = candidate.type;
+    filter = candidate.filter;
+    binary = candidate.binary;
+  } catch (cause) {
+    throw descriptorError(
+      name,
+      `descriptor could not be read: ${thrownDetail(cause)}`,
+      node,
+      options,
+      cause,
+    );
+  }
+  if (typeof filter !== 'function') {
+    throw descriptorError(
+      name,
+      'must provide a callable filter function',
+      node,
+      options,
+    );
+  }
+  if (binary !== undefined && typeof binary !== 'boolean') {
+    throw descriptorError(
+      name,
+      'must declare binary as a boolean when provided',
+      node,
+      options,
+    );
+  }
+
+  return {type, filter, binary, receiver: candidate};
+}
+
 function validateFilterType(resolved, name, node, options) {
-  if (!resolved.type) {
+  if (
+    resolved.type === undefined ||
+    resolved.type === null ||
+    resolved.type === ''
+  ) {
     throw error(
       'MISSING_FILTER_TYPE',
       `Filter '${name}' must declare a type (text, html, pugneum, or syntax)`,
       nodeLocation(node, options),
     );
   }
-  if (!validFilterTypes.has(resolved.type)) {
+  if (
+    typeof resolved.type !== 'string' ||
+    !validFilterTypes.has(resolved.type)
+  ) {
     throw error(
       'INVALID_FILTER_TYPE',
-      `Filter '${name}' has unknown type '${resolved.type}' (must be text, html, pugneum, or syntax)`,
+      `Filter '${name}' has unknown type '${thrownDetail(
+        resolved.type,
+      )}' (must be text, html, pugneum, or syntax)`,
       nodeLocation(node, options),
     );
   }
@@ -388,7 +498,14 @@ function applyFilters(ast, filters, options, context) {
         attrs.filename = node.filename;
         const resolved = resolveFilter(node.name, filters, node, options);
         validateFilterType(resolved, node.name, node, options);
-        const result = runFilter(resolved, node.name, text, attrs, node);
+        const result = runFilter(
+          resolved,
+          node.name,
+          text,
+          attrs,
+          node,
+          options,
+        );
         applyFilterResult(
           node,
           resolved.type,
@@ -402,20 +519,30 @@ function applyFilters(ast, filters, options, context) {
         // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
         // file content, then b, then a (outermost), matching nested `:` order.
         const chain = node.filters.slice().reverse();
+        const resolvedChain = chain.map((invocation) => ({
+          invocation,
+          descriptor: resolveFilter(invocation.name, filters, node, options),
+        }));
         // The innermost filter reads the file; its `binary` flag chooses raw
         // bytes vs decoded text. Each later filter consumes the previous result.
-        const innermost = resolveFilter(chain[0].name, filters, node, options);
+        const innermost = resolvedChain[0].descriptor;
         let result = innermost.binary
           ? node.file.raw
           : normalizeTextNewlines(node.file.str);
         let lastName;
         let lastType;
-        chain.forEach(function (f) {
+        resolvedChain.forEach(function ({invocation: f, descriptor: resolved}) {
           const filterAttrs = getAttributes(f, options);
           filterAttrs.filename = node.file.fullPath;
-          const resolved = resolveFilter(f.name, filters, node, options);
           validateIncludeFilterType(resolved, f.name, node, options);
-          result = runFilter(resolved, f.name, result, filterAttrs, node);
+          result = runFilter(
+            resolved,
+            f.name,
+            result,
+            filterAttrs,
+            node,
+            options,
+          );
           // Validate every stage's output, not just the final one, so a
           // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
           // naming the stage that failed rather than silent garbage downstream.
@@ -465,20 +592,22 @@ function validateIncludeFilterType(resolved, name, node, options) {
   }
 }
 
-function runFilter(resolved, name, input, attrs, node) {
+function runFilter(resolved, name, input, attrs, node, options) {
   try {
-    return resolved.filter(input, attrs);
+    return resolved.filter.call(resolved.receiver, input, attrs);
   } catch (ex) {
     // A PUGNEUM:-coded error from a pugneum-type re-lex/parse is already a
     // proper diagnostic; re-throw it unchanged rather than double-wrapping.
     // Guard ex defensively: a filter may `throw null`/`throw 42`, which has no
     // `.code`/`.message`.
-    if (ex && ex.code && ex.code.startsWith('PUGNEUM:')) throw ex;
-    const detail = ex && ex.message ? ex.message : String(ex);
-    throw error(
-      'FILTER_ERROR',
-      `Filter '${name}' failed: ${detail}`,
-      nodeLocation(node),
+    if ((thrownCode(ex) || '').startsWith('PUGNEUM:')) throw ex;
+    throw attachCause(
+      error(
+        'FILTER_ERROR',
+        `Filter '${name}' failed: ${thrownDetail(ex)}`,
+        nodeLocation(node, options),
+      ),
+      ex,
     );
   }
 }
@@ -512,45 +641,152 @@ function getAttributes(node, options) {
     attrs[attr.name] = attr.val;
   });
   const filterOptions = options && options.filterOptions;
-  const opts =
-    filterOptions &&
-    Object.prototype.hasOwnProperty.call(filterOptions, node.name)
-      ? filterOptions[node.name]
-      : {};
-  Object.assign(attrs, opts);
+  if (filterOptions === undefined) return attrs;
+
+  let mapIsObject;
+  try {
+    mapIsObject =
+      filterOptions !== null &&
+      typeof filterOptions === 'object' &&
+      !Array.isArray(filterOptions) &&
+      Object.prototype.toString.call(filterOptions) === '[object Object]';
+  } catch (cause) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      `could not inspect filterOptions: ${thrownDetail(cause)}`,
+      cause,
+    );
+  }
+  if (!mapIsObject) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      'filterOptions must be an object-like map',
+    );
+  }
+
+  let hasOptions;
+  let selected;
+  try {
+    hasOptions = Object.prototype.hasOwnProperty.call(filterOptions, node.name);
+    if (hasOptions) selected = filterOptions[node.name];
+  } catch (cause) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      `could not read options for '${node.name}': ${thrownDetail(cause)}`,
+      cause,
+    );
+  }
+  if (!hasOptions) return attrs;
+
+  let optionsAreObject;
+  try {
+    optionsAreObject =
+      selected !== null &&
+      typeof selected === 'object' &&
+      !Array.isArray(selected) &&
+      Object.prototype.toString.call(selected) === '[object Object]';
+  } catch (cause) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      `could not inspect options for '${node.name}': ${thrownDetail(cause)}`,
+      cause,
+    );
+  }
+  if (!optionsAreObject) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      `options for '${node.name}' must be an object-like option bag`,
+    );
+  }
+
+  try {
+    Object.assign(attrs, selected);
+  } catch (cause) {
+    throw invalidFilterOptions(
+      node,
+      options,
+      `could not copy options for '${node.name}': ${thrownDetail(cause)}`,
+      cause,
+    );
+  }
   return attrs;
+}
+
+function invalidFilterOptions(node, options, message, cause) {
+  const diagnostic = error(
+    'INVALID_FILTER_OPTIONS',
+    message,
+    nodeLocation(node, options),
+  );
+  return cause === undefined ? diagnostic : attachCause(diagnostic, cause);
 }
 
 const builtinFilters = Object.create(null);
 builtinFilters.verbatim = {type: 'html', filter: (text) => text};
 
 function resolveFilter(name, filters, node, options) {
+  let candidate;
   if (filters && Object.prototype.hasOwnProperty.call(filters, name)) {
-    return filters[name];
-  }
-  if (name in builtinFilters) {
-    return builtinFilters[name];
-  }
-
-  // Validate filter name before require() — only allow safe package name characters
-  if (!/^[\w][\w\-.]*$/.test(name)) {
-    throw error(
-      'INVALID_FILTER_NAME',
-      `Invalid filter name '${name}'`,
-      nodeLocation(node, options),
-    );
-  }
-
-  try {
-    return require(packagePrefix + name);
-  } catch (ex) {
-    if (ex.code === 'MODULE_NOT_FOUND') {
+    candidate = filters[name];
+  } else if (name in builtinFilters) {
+    candidate = builtinFilters[name];
+  } else {
+    // Validate filter name before require() — only allow safe package name
+    // characters.
+    if (!/^[\w][\w\-.]*$/.test(name)) {
       throw error(
-        'UNKNOWN_FILTER',
-        `Unknown filter '${name}'`,
+        'INVALID_FILTER_NAME',
+        `Invalid filter name '${name}'`,
         nodeLocation(node, options),
       );
     }
-    throw ex;
+
+    const specifier = packagePrefix + name;
+    let resolvedFilename;
+    try {
+      // Keep the optional-package absence probe separate from module loading.
+      // A MODULE_NOT_FOUND raised after this point belongs to a present
+      // package (usually one of its transitive dependencies) and must retain
+      // its identity rather than becoming UNKNOWN_FILTER.
+      resolvedFilename = require.resolve(specifier);
+    } catch (ex) {
+      if (thrownCode(ex) === 'MODULE_NOT_FOUND') {
+        throw error(
+          'UNKNOWN_FILTER',
+          `Unknown filter '${name}'`,
+          nodeLocation(node, options),
+        );
+      }
+      if (ex instanceof Error) throw ex;
+      throw attachCause(
+        error(
+          'FILTER_LOAD_ERROR',
+          `Filter '${name}' failed to resolve: ${thrownDetail(ex)}`,
+          nodeLocation(node, options),
+        ),
+        ex,
+      );
+    }
+
+    try {
+      candidate = require(resolvedFilename);
+    } catch (ex) {
+      if (ex instanceof Error) throw ex;
+      throw attachCause(
+        error(
+          'FILTER_LOAD_ERROR',
+          `Filter '${name}' failed to load: ${thrownDetail(ex)}`,
+          nodeLocation(node, options),
+        ),
+        ex,
+      );
+    }
   }
+
+  return normalizeFilterDescriptor(candidate, name, node, options);
 }

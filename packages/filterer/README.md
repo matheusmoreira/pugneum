@@ -32,7 +32,10 @@ var ast = applyFilters(ast, filters, {filterOptions: {custom: {opt: 'x'}}});
 `options` is an optional object. Per-filter options are read from
 `options.filterOptions`, an object whose keys are filter names and
 whose values are objects merged into the attributes passed to that
-filter. (Top-level option keys are never passed to filters.) The
+filter. Only each option object's own enumerable properties are copied;
+arrays, primitives, `null`, and collection objects are rejected with
+`INVALID_FILTER_OPTIONS` instead of being coerced into attributes.
+(Top-level option keys are never passed to filters.) The
 `options.warnings` array, if provided, collects warnings raised while
 re-lexing `pugneum`-type filter output.
 
@@ -53,6 +56,9 @@ re-lexing `pugneum`-type filter output.
 
 `custom` is the name of the filter as written in the pugneum template.
 Every key maps a name to an object describing the filter of that name.
+Descriptors are read once before execution. `filter` must be callable and
+`binary`, when present, must be a boolean; malformed or accessor-throwing
+descriptors fail with `INVALID_FILTER_DESCRIPTOR` at the invocation.
 
 Every filter must declare a `type` property:
 
@@ -98,7 +104,14 @@ When a filter is used in a pugneum template but is not present
 in the custom filters map or built-in filters, the filterer will
 require a package named `pugneum-filter-${name}` which is expected
 to return the filter descriptor object. If not found, the result
-is an error.
+is `UNKNOWN_FILTER`. Resolution is probed separately from loading: if the
+package is present but one of its dependencies is missing, or its initialization
+throws, that load error is preserved rather than being mislabeled as absence.
+
+A callback-thrown diagnostic whose code begins with `PUGNEUM:` is preserved.
+Other callback failures, including primitive and otherwise unprintable thrown
+values, become `FILTER_ERROR` diagnostics with the invocation's filename,
+source frame, and original value as `cause`.
 
 ## License
 

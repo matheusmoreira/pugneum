@@ -61,7 +61,9 @@ errors.
   violating this is an error.
 - **Row attributes**: a `tr(attrs)` prefix before the first pipe on a row applies
   attributes to that `<tr>`. The attribute group is required, so a bare first
-  cell in `tr | value |` remains the text `tr`.
+  cell in `tr | value |` remains the text `tr`. Separator rows cannot carry row
+  attributes because they do not emit a `<tr>`; doing so is an error instead of
+  silently discarding the attributes.
 - **Tagged cells**: a cell beginning with `th` or `td` followed by an optional
   balanced `(attrs)` group and then whitespace or end of cell is emitted verbatim,
   letting you set per-cell attributes (`td(colspan="2") x`). Header cells in
@@ -92,6 +94,18 @@ pugneum inline content**:
   pugneum text, `<`, `>`, and `&` in cell text are emitted as-is (not
   HTML-escaped). If you splice externally-sourced data into a `:table` block, treat
   cell content as pugneum source, not opaque data.
+
+## Diagnostics
+
+Expected table failures use stable `PUGNEUM:` codes. Empty input and tables
+without rows report `EMPTY_TABLE` and `TABLE_WITHOUT_ROWS`; malformed separator
+or section structure reports `MIXED_TABLE_SEPARATOR`,
+`INVALID_TABLE_SEPARATOR_ATTRIBUTES`, `INVALID_TABLE_SECTION_ORDER`,
+`DUPLICATE_TABLE_SECTION`, or `EMPTY_TABLE_SECTION`. Generated attribute
+problems report `INVALID_TABLE_ATTRIBUTE_NAME`, `DUPLICATE_TABLE_ATTRIBUTE`, or
+`INTERPOLATION_IN_TABLE_HEAD`. When invoked through `pugneum-filterer`, these
+diagnostics retain the caller filename, authored table line and column, and
+source frame rather than pointing at generated output.
 
 ## License
 

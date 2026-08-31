@@ -1,3 +1,5 @@
+const error = require('pugneum-error');
+
 // Find the index just past a balanced, quote-aware (...) group that begins at
 // `start` (where str[start] must be '('). Quotes ("..."/'...') are treated as
 // opaque so a ')' inside a quoted attribute value does not close the group, and
@@ -243,12 +245,14 @@ function classifyCell(cell, defaultTag) {
 }
 
 // Parse optional caption from the first non-empty line.
-// Returns {caption: {attrStr, text} | null, rest: string[]} where attrStr is the
-// balanced (attrs) group (or '') and text is the raw caption text; generate.js
-// assembles and escapes the Pugneum line. rest is the remaining lines.
+// Returns {caption: {attrStr, text, location} | null, rest: record[]} where
+// attrStr is the balanced (attrs) group (or '') and text is the raw caption
+// text; generate.js assembles and escapes the Pugneum line. rest is the
+// remaining located line records.
 function parseCaption(lines) {
   if (lines.length === 0) return {caption: null, rest: lines};
-  const first = lines[0];
+  const firstRecord = lines[0];
+  const first = firstRecord.text;
   // Match: caption(attrs) text  OR  caption text. The (attrs) group is scanned
   // with balanced parens so a ')' inside an attribute value does not truncate
   // it (the old /\([^)]*\)/ silently dropped such captions).
@@ -260,7 +264,11 @@ function parseCaption(lines) {
   if (!sep) return {caption: null, rest: lines};
   const text = group.rest.slice(sep[0].length);
   return {
-    caption: {attrStr: group.attrs, text: text},
+    caption: {
+      attrStr: group.attrs,
+      text: text,
+      location: firstRecord.location,
+    },
     rest: lines.slice(1),
   };
 }
@@ -279,8 +287,10 @@ function parseSectionMarker(line) {
   return {tag: tag, attrStr: group.attrs};
 }
 
-// Parse an array of trimmed non-empty lines into a table structure.
-// Returns {caption, sections, colgroups, hasSeparatorOrMarker}.
+// Parse an array of located, trimmed, non-empty line records into a table
+// structure. Every authored construct retains its caller location so both
+// parser and generator diagnostics can point back through the filter boundary.
+// Returns {caption, sections, colgroups, hasSeparatorOrMarker, lastLocation}.
 //   caption: {attrStr, text} | null
 //   sections: [{tag, attrStr, rows}]
 //   colgroups: array of colgroup descriptors from the first dash-sep, or null
@@ -296,34 +306,66 @@ function parse(lines) {
   // Each event carries its payload.
   const events = [];
   for (let li = 0; li < dataLines.length; li++) {
-    const line = dataLines[li];
+    const record = dataLines[li];
+    const line = record.text;
+    const location = record.location;
 
     // Check for section marker (thead/tbody/tfoot on its own line)
     const marker = parseSectionMarker(line);
     if (marker) {
-      events.push({type: 'marker', tag: marker.tag, attrStr: marker.attrStr});
+      events.push({
+        type: 'marker',
+        tag: marker.tag,
+        attrStr: marker.attrStr,
+        location,
+      });
       continue;
     }
 
     // Check for pipe row
     const row = parseRow(line);
     if (row === null) continue; // non-pipe, non-marker line: skip
+    row.location = location;
 
     // Classify the row
     const sepType = classifySeparatorRow(row);
     if (sepType === 'mixed') {
-      throw new Error('Mixed separator: a row cannot mix --- and === segments');
+      throw error(
+        'MIXED_TABLE_SEPARATOR',
+        'Mixed separator: a row cannot mix --- and === segments',
+        location,
+      );
     } else if (sepType === 'dash') {
+      if (row.trAttrs !== null) {
+        throw error(
+          'INVALID_TABLE_SEPARATOR_ATTRIBUTES',
+          'row attributes are not allowed on a --- separator',
+          location,
+        );
+      }
       // Capture colgroup info from the post-prefix separator line. parseRow
       // already extracted the tr-prefix once and surfaced the remainder as
       // `row.rest` (with `||` colgroup boundaries intact), so there is one
       // decomposition rather than a second parseTrPrefix pass.
       const colgroups = parseSeparatorLine(row.rest);
-      events.push({type: 'dash-sep', colgroups: colgroups});
+      colgroups.forEach(function (colgroup) {
+        colgroup.location = location;
+        colgroup.segs.forEach(function (segment) {
+          segment.location = location;
+        });
+      });
+      events.push({type: 'dash-sep', colgroups: colgroups, location});
     } else if (sepType === 'equals') {
-      events.push({type: 'equals-sep'});
+      if (row.trAttrs !== null) {
+        throw error(
+          'INVALID_TABLE_SEPARATOR_ATTRIBUTES',
+          'row attributes are not allowed on an === separator',
+          location,
+        );
+      }
+      events.push({type: 'equals-sep', location});
     } else {
-      events.push({type: 'row', row: row});
+      events.push({type: 'row', row: row, location});
     }
   }
 
@@ -343,6 +385,7 @@ function parse(lines) {
   let currentRows = [];
   let currentTag = null; // null = implicit, 'thead'/'tbody'/'tfoot' = explicit via marker
   let currentAttrs = '';
+  let currentLocation = null;
   let seenFirstDashSep = false;
   let seenEqualsSep = false; // an === separator has been consumed
   // Section-uniqueness state. HTML permits at most one <thead> and one <tfoot>;
@@ -358,35 +401,54 @@ function parse(lines) {
 
   const sectionRank = {thead: 0, tbody: 1, tfoot: 2};
 
-  function assertSectionCanFollow(tag) {
+  function assertSectionCanFollow(tag, location) {
     const rank = sectionRank[tag];
     if (rank < lastSectionRank) {
-      throw new Error(tag + ' cannot appear after a ' + lastSectionTag);
+      throw error(
+        'INVALID_TABLE_SECTION_ORDER',
+        tag + ' cannot appear after a ' + lastSectionTag,
+        location,
+      );
     }
   }
 
-  function pushSection(tag, attrStr, rows) {
-    assertSectionCanFollow(tag);
+  function pushSection(tag, attrStr, rows, location) {
+    assertSectionCanFollow(tag, location);
     if (tag === 'thead') {
       if (seenThead) {
-        throw new Error('a table may have only one thead');
+        throw error(
+          'DUPLICATE_TABLE_SECTION',
+          'a table may have only one thead',
+          location,
+        );
       }
       seenThead = true;
     } else if (tag === 'tfoot') {
       if (seenTfoot) {
-        throw new Error('a table may have only one tfoot');
+        throw error(
+          'DUPLICATE_TABLE_SECTION',
+          'a table may have only one tfoot',
+          location,
+        );
       }
       seenTfoot = true;
     }
-    sections.push({tag: tag, attrStr: attrStr, rows: rows.slice()});
+    sections.push({
+      tag: tag,
+      attrStr: attrStr,
+      rows: rows.slice(),
+      location,
+    });
     lastSectionRank = sectionRank[tag];
     lastSectionTag = tag;
   }
 
-  function assertNoPendingEmptySection(boundary) {
+  function assertNoPendingEmptySection(boundary, location) {
     if (currentTag !== null && currentRows.length === 0) {
-      throw new Error(
+      throw error(
+        'EMPTY_TABLE_SECTION',
         boundary + ' cannot replace an empty pending ' + currentTag,
+        location,
       );
     }
   }
@@ -398,10 +460,12 @@ function parse(lines) {
     if (currentRows.length > 0) {
       const tag = currentTag !== null ? currentTag : defaultTag;
       const attrStr = currentTag !== null ? currentAttrs : '';
-      pushSection(tag, attrStr, currentRows);
+      const location = currentLocation || currentRows[0].location;
+      pushSection(tag, attrStr, currentRows, location);
       currentRows = [];
       currentTag = null;
       currentAttrs = '';
+      currentLocation = null;
     }
   }
 
@@ -410,24 +474,33 @@ function parse(lines) {
 
     if (ev.type === 'marker') {
       hasSeparatorOrMarker = true;
-      assertNoPendingEmptySection(ev.tag + ' marker');
+      assertNoPendingEmptySection(ev.tag + ' marker', ev.location);
       // Flush accumulated rows with the implicit tbody tag, then adopt the
       // marker's tag for the rows that follow.
       flushCurrentRows('tbody');
-      assertSectionCanFollow(ev.tag);
+      assertSectionCanFollow(ev.tag, ev.location);
       currentTag = ev.tag;
       currentAttrs = ev.attrStr;
+      currentLocation = ev.location;
     } else if (ev.type === 'dash-sep') {
       hasSeparatorOrMarker = true;
-      assertNoPendingEmptySection('--- separator');
+      assertNoPendingEmptySection('--- separator', ev.location);
       if (seenEqualsSep) {
-        throw new Error('--- separator cannot appear after ===');
+        throw error(
+          'INVALID_TABLE_SECTION_ORDER',
+          '--- separator cannot appear after ===',
+          ev.location,
+        );
       }
       // seenTfoot covers an already-emitted tfoot; currentTag covers a tfoot
       // marker whose rows are still pending. Either way a header/body separator
       // after the foot is structurally wrong.
       if (seenTfoot || currentTag === 'tfoot') {
-        throw new Error('--- separator cannot follow a tfoot marker');
+        throw error(
+          'INVALID_TABLE_SECTION_ORDER',
+          '--- separator cannot follow a tfoot marker',
+          ev.location,
+        );
       }
       if (!seenFirstDashSep) {
         // First dash-sep: flush current rows as thead
@@ -440,13 +513,21 @@ function parse(lines) {
       }
     } else if (ev.type === 'equals-sep') {
       hasSeparatorOrMarker = true;
-      assertNoPendingEmptySection('=== separator');
+      assertNoPendingEmptySection('=== separator', ev.location);
       if (seenEqualsSep) {
-        throw new Error('=== separator can only appear once in a table');
+        throw error(
+          'DUPLICATE_TABLE_SECTION',
+          '=== separator can only appear once in a table',
+          ev.location,
+        );
       }
       if (seenTfoot || currentTag === 'tfoot') {
         // A tfoot marker already opened the foot region.
-        throw new Error('=== separator cannot follow a tfoot marker');
+        throw error(
+          'INVALID_TABLE_SECTION_ORDER',
+          '=== separator cannot follow a tfoot marker',
+          ev.location,
+        );
       }
       seenEqualsSep = true;
       // Flush current rows as tbody (the dash-sep already emitted any thead).
@@ -454,6 +535,7 @@ function parse(lines) {
       // Next rows will go into tfoot (set currentTag to 'tfoot')
       currentTag = 'tfoot';
       currentAttrs = '';
+      currentLocation = ev.location;
     } else if (ev.type === 'row') {
       currentRows.push(ev.row);
     }
@@ -464,9 +546,18 @@ function parse(lines) {
   if (currentRows.length > 0) {
     const finalTag =
       currentTag !== null ? currentTag : seenEqualsSep ? 'tfoot' : 'tbody';
-    pushSection(finalTag, currentAttrs, currentRows);
+    pushSection(
+      finalTag,
+      currentAttrs,
+      currentRows,
+      currentLocation || currentRows[0].location,
+    );
   } else if (currentTag !== null) {
-    throw new Error('pending ' + currentTag + ' has no rows');
+    throw error(
+      'EMPTY_TABLE_SECTION',
+      'pending ' + currentTag + ' has no rows',
+      currentLocation,
+    );
   }
 
   return {
@@ -474,6 +565,7 @@ function parse(lines) {
     sections: sections,
     colgroups: colgroups,
     hasSeparatorOrMarker: hasSeparatorOrMarker,
+    lastLocation: lines[lines.length - 1].location,
   };
 }
 

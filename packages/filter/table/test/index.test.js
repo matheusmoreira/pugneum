@@ -42,15 +42,22 @@ function collectNodes(root, type, result) {
   return result;
 }
 
-function applyTableThroughFilterer(attrs) {
-  var source = ':table\n  | a |\n  | --- |\n  | b |';
+function applyTableSource(source, attrs, filename) {
   var options = {
-    filename: 'table-option.pg',
+    filename: filename || 'table-option.pg',
     source,
-    filterOptions: {table: attrs},
   };
+  if (attrs !== undefined) options.filterOptions = {table: attrs};
   var ast = parse(lex(source, options), options);
   return applyFilters(ast, {table: tableFilter}, options);
+}
+
+function applyTableThroughFilterer(attrs) {
+  return applyTableSource(
+    ':table\n  | a |\n  | --- |\n  | b |',
+    attrs,
+    'table-option.pg',
+  );
 }
 
 describe('table filter', () => {
@@ -523,21 +530,188 @@ describe('errors', () => {
   test('empty filter body', () => {
     assert.throws(
       () => tableFilter.filter('', {}),
-      /empty|no.*rows|no.*cells/i,
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:EMPTY_TABLE');
+        assert.strictEqual(err.line, 1);
+        assert.strictEqual(err.column, 1);
+        return true;
+      },
     );
   });
 
   test('whitespace-only body', () => {
     assert.throws(
       () => tableFilter.filter('   \n   \n', {}),
-      /empty|no.*rows|no.*cells/i,
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:EMPTY_TABLE');
+        assert.strictEqual(err.line, 1);
+        assert.strictEqual(err.column, 1);
+        return true;
+      },
     );
   });
 
   test('separator-only table throws error', () => {
     assert.throws(
       () => tableFilter.filter('| --- | --- |', {}),
-      /no.*data.*rows/i,
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:TABLE_WITHOUT_ROWS');
+        assert.strictEqual(err.line, 1);
+        assert.strictEqual(err.column, 1);
+        return true;
+      },
+    );
+  });
+
+  test('grammar failures retain exact caller lines and source frames', () => {
+    var cases = [
+      {
+        body: '| head |\n| --- | === |\n| body |',
+        code: 'PUGNEUM:MIXED_TABLE_SEPARATOR',
+        bodyLine: 2,
+      },
+      {
+        body: '| a |\n| --- |\n| b |\n| === |\n| c |\n| === |\n| d |',
+        code: 'PUGNEUM:DUPLICATE_TABLE_SECTION',
+        bodyLine: 6,
+      },
+      {
+        body: '| a |\n| === |\n| b |\n| --- |\n| c |',
+        code: 'PUGNEUM:INVALID_TABLE_SECTION_ORDER',
+        bodyLine: 4,
+      },
+      {
+        body: 'tfoot\n| foot |\nthead\n| head |',
+        code: 'PUGNEUM:INVALID_TABLE_SECTION_ORDER',
+        bodyLine: 3,
+      },
+      {
+        body: 'tfoot\n| foot |\n| --- |\n| body |',
+        code: 'PUGNEUM:INVALID_TABLE_SECTION_ORDER',
+        bodyLine: 3,
+      },
+      {
+        body: 'tfoot\n| foot |\n| === |\n| body |',
+        code: 'PUGNEUM:INVALID_TABLE_SECTION_ORDER',
+        bodyLine: 3,
+      },
+      {
+        body: 'thead\n| head |\nthead\n| head 2 |',
+        code: 'PUGNEUM:DUPLICATE_TABLE_SECTION',
+        bodyLine: 3,
+      },
+      {
+        body: 'tfoot\n| foot |\ntfoot\n| foot 2 |',
+        code: 'PUGNEUM:DUPLICATE_TABLE_SECTION',
+        bodyLine: 3,
+      },
+      {
+        body: 'thead\ntbody\n| body |',
+        code: 'PUGNEUM:EMPTY_TABLE_SECTION',
+        bodyLine: 2,
+      },
+      {
+        body: '| body |\n| === |',
+        code: 'PUGNEUM:EMPTY_TABLE_SECTION',
+        bodyLine: 2,
+      },
+      {
+        body: '| body |\n| === |\nthead\n| head |',
+        code: 'PUGNEUM:EMPTY_TABLE_SECTION',
+        bodyLine: 3,
+      },
+      {
+        body: '| --- |',
+        code: 'PUGNEUM:TABLE_WITHOUT_ROWS',
+        bodyLine: 1,
+      },
+      {
+        body: 'tr(class="lost") | --- |',
+        code: 'PUGNEUM:INVALID_TABLE_SEPARATOR_ATTRIBUTES',
+        bodyLine: 1,
+      },
+      {
+        body: 'tr(class="lost") | === |',
+        code: 'PUGNEUM:INVALID_TABLE_SEPARATOR_ATTRIBUTES',
+        bodyLine: 1,
+      },
+      {
+        body: '| head |\n| --- |\n| td(title="#{q}") value |',
+        code: 'PUGNEUM:INTERPOLATION_IN_TABLE_HEAD',
+        bodyLine: 3,
+      },
+      {
+        body: '| head |\n| :---(style="a" style="b")---: |\n| body |',
+        code: 'PUGNEUM:DUPLICATE_TABLE_ATTRIBUTE',
+        bodyLine: 2,
+      },
+    ];
+
+    cases.forEach((fixture) => {
+      var source =
+        'main\n  :table\n' +
+        fixture.body
+          .split('\n')
+          .map((line) => '    ' + line)
+          .join('\n');
+      var expectedLine = fixture.bodyLine + 2;
+      assert.throws(
+        () => applyTableSource(source, undefined, 'located-table.pg'),
+        (err) => {
+          assert.strictEqual(err.code, fixture.code);
+          assert.strictEqual(err.filename, 'located-table.pg');
+          assert.strictEqual(err.line, expectedLine);
+          assert.strictEqual(err.column, 5);
+          assert.strictEqual(err.source, source);
+          assert.match(err.message, new RegExp('>\\s*' + expectedLine + '\\|'));
+          return true;
+        },
+      );
+    });
+  });
+
+  test('a blockless table error points at its invocation', () => {
+    var source = 'main\n  :table';
+    assert.throws(
+      () => applyTableSource(source, undefined, 'located-table.pg'),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:EMPTY_TABLE');
+        assert.strictEqual(err.filename, 'located-table.pg');
+        assert.strictEqual(err.line, 2);
+        assert.strictEqual(err.column, 3);
+        assert.strictEqual(err.source, source);
+        return true;
+      },
+    );
+  });
+
+  test('blank lines and retained indentation map to physical coordinates', () => {
+    var source = 'main\n  :table\n\n    | head |\n\n      | --- | === |';
+    assert.throws(
+      () => applyTableSource(source, undefined, 'located-table.pg'),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:MIXED_TABLE_SEPARATOR');
+        assert.strictEqual(err.filename, 'located-table.pg');
+        assert.strictEqual(err.line, 6);
+        assert.strictEqual(err.column, 7);
+        assert.strictEqual(err.source, source);
+        return true;
+      },
+    );
+  });
+
+  test('programmatic table attributes fail at the invocation location', () => {
+    var source = 'main\n  :table\n    | a |';
+    assert.throws(
+      () => applyTableSource(source, {'x/y': true}, 'located-table.pg'),
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:INVALID_TABLE_ATTRIBUTE_NAME');
+        assert.strictEqual(err.filename, 'located-table.pg');
+        assert.strictEqual(err.line, 2);
+        assert.strictEqual(err.column, 3);
+        assert.strictEqual(err.source, source);
+        return true;
+      },
     );
   });
 });
@@ -640,7 +814,11 @@ describe('formatAttrs serialization', () => {
     assert.throws(
       () =>
         tableFilter.filter('| a |\n| --- |\n| b |', {'x) tr.injected(': true}),
-      /invalid table filter attribute name/i,
+      (err) => {
+        assert.strictEqual(err.code, 'PUGNEUM:INVALID_TABLE_ATTRIBUTE_NAME');
+        assert.match(err.msg, /invalid table filter attribute name/i);
+        return true;
+      },
     );
   });
 
@@ -649,11 +827,10 @@ describe('formatAttrs serialization', () => {
       assert.throws(
         () => applyTableThroughFilterer({[key]: 'value'}),
         (err) => {
-          assert.strictEqual(err.code, 'PUGNEUM:FILTER_ERROR');
+          assert.strictEqual(err.code, 'PUGNEUM:INVALID_TABLE_ATTRIBUTE_NAME');
           assert.strictEqual(
             err.msg,
-            "Filter 'table' failed: invalid table filter attribute name: " +
-              JSON.stringify(key),
+            'invalid table filter attribute name: ' + JSON.stringify(key),
           );
           assert.strictEqual(err.filename, 'table-option.pg');
           assert.strictEqual(err.line, 1);

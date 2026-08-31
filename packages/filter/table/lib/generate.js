@@ -40,7 +40,7 @@ const LIVE_INTERPOLATION = /(?<!\\)#\{/;
 // author never wrote. Detect it here and throw a clean, located, coded error
 // naming the offending construct instead. `what` describes the construct (e.g.
 // "table cell head") and `source` is the verbatim string for the message.
-function assertNoInterpolation(source, what) {
+function assertNoInterpolation(source, what, location) {
   if (LIVE_INTERPOLATION.test(source)) {
     throw error(
       'INTERPOLATION_IN_TABLE_HEAD',
@@ -49,7 +49,7 @@ function assertNoInterpolation(source, what) {
         " (it is re-lexed verbatim and would crash); escape it as '\\#{' or " +
         'remove it: ' +
         source,
-      {},
+      location,
     );
   }
 }
@@ -160,13 +160,17 @@ function renderCol(seg, indent) {
   const attrs = seg.attrs || '';
   // The separator's (attrs) are emitted verbatim into a col(...) group; a live
   // `#{` would crash the re-lex.
-  assertNoInterpolation(attrs, 'separator column attribute group');
+  assertNoInterpolation(
+    attrs,
+    'separator column attribute group',
+    seg.location,
+  );
   // Alignment is emitted as style="text-align:...". If the user's col attrs
   // also carry a `style`, merging into two `style="..."` tokens would make the
   // re-lex throw PUGNEUM:DUPLICATE_ATTRIBUTE, so fold the alignment declaration
   // into the user's style value instead of emitting a second attribute.
   if (alignStyle) {
-    const merged = mergeAlignmentIntoStyle(attrs, alignStyle);
+    const merged = mergeAlignmentIntoStyle(attrs, alignStyle, seg.location);
     if (merged !== null) {
       // Alignment was folded into an existing style="..."; emit attrs alone.
       return indent + 'col(' + merged + ')';
@@ -190,13 +194,17 @@ function renderCol(seg, indent) {
 // Returns null when there is no style attribute (the caller emits a separate
 // style token). A boolean style is replaced by the alignment declaration rather
 // than duplicated; duplicate style attributes remain an explicit error.
-function mergeAlignmentIntoStyle(attrs, alignStyle) {
+function mergeAlignmentIntoStyle(attrs, alignStyle, location) {
   const styles = scanRawAttributes(attrs).filter(
     (attr) => attr.name.toLowerCase() === 'style',
   );
   if (styles.length === 0) return null;
   if (styles.length > 1) {
-    throw new Error('duplicate style attribute in table separator');
+    throw error(
+      'DUPLICATE_TABLE_ATTRIBUTE',
+      'duplicate style attribute in table separator',
+      location,
+    );
   }
 
   const style = styles[0];
@@ -247,7 +255,7 @@ function addScopeColToThHead(head) {
 
 // Format filter attributes (excluding filename) as a Pugneum attribute string.
 // Returns '' if no relevant attrs, or '(key="value" ...)' otherwise.
-function formatAttrs(attrs) {
+function formatAttrs(attrs, location) {
   const pairs = [];
   Object.keys(attrs).forEach(function (key) {
     if (key === 'filename') return;
@@ -256,8 +264,10 @@ function formatAttrs(attrs) {
     // would break out of the attribute group and inject Pugneum. Reject it
     // rather than emit un-lexable source.
     if (!isValidGeneratedAttributeName(key)) {
-      throw new Error(
+      throw error(
+        'INVALID_TABLE_ATTRIBUTE_NAME',
         'invalid table filter attribute name: ' + JSON.stringify(key),
+        location,
       );
     }
     const val = attrs[key];
@@ -268,7 +278,11 @@ function formatAttrs(attrs) {
       // The value is emitted verbatim into the table(...) attribute group; a
       // live `#{` (reachable via programmatic filterOptions) would crash the
       // re-lex (PUGNEUM:CALL_STACK_UNDERFLOW) — reject it cleanly.
-      assertNoInterpolation(escaped, 'filter attribute value for ' + key);
+      assertNoInterpolation(
+        escaped,
+        'filter attribute value for ' + key,
+        location,
+      );
       pairs.push(key + '="' + escaped + '"');
     }
   });
@@ -326,18 +340,24 @@ function renderSection(
   defaultCellTag,
   indent,
   sectionAttrs,
+  sectionLocation,
 ) {
   // The section's (attrs) marker group is emitted verbatim; a live `#{` crashes.
   assertNoInterpolation(
     sectionAttrs || '',
     sectionTag + ' marker attribute group',
+    sectionLocation,
   );
   lines.push(indent + sectionTag + (sectionAttrs || ''));
   rows.forEach(function (row) {
     let trLine = indent + '  tr';
     if (row.trAttrs !== null && row.trAttrs !== '') {
       // The tr(attrs) prefix group is emitted verbatim; a live `#{` crashes.
-      assertNoInterpolation(row.trAttrs, 'tr prefix attribute group');
+      assertNoInterpolation(
+        row.trAttrs,
+        'tr prefix attribute group',
+        row.location,
+      );
       trLine = indent + '  tr' + row.trAttrs;
     }
     lines.push(trLine);
@@ -351,7 +371,11 @@ function renderSection(
         // space, or is '' when the cell is head-only). A live `#{` in the head's
         // attribute group is NOT cell text — reject it cleanly rather than let
         // the re-lex crash.
-        assertNoInterpolation(classified.verbatim, 'table cell head');
+        assertNoInterpolation(
+          classified.verbatim,
+          'table cell head',
+          row.location,
+        );
         // An explicit `th` head in a thead still gets scope="col" (the README
         // contract: header cells in a thead are scoped automatically) — but only
         // when the author did not already set scope, else the re-lex would throw
@@ -380,13 +404,13 @@ function renderSection(
 // Generate a Pugneum source string from the parsed table structure and filter attrs.
 // parsed is {caption, sections, colgroups, hasSeparatorOrMarker}.
 // attrs is the raw filter attributes object.
-function generate(parsed, attrs) {
+function generate(parsed, attrs, invocationLocation) {
   const caption = parsed.caption;
   const sections = parsed.sections;
   const colgroups = parsed.colgroups;
   const hasSeparatorOrMarker = parsed.hasSeparatorOrMarker;
 
-  const attrStr = formatAttrs(attrs);
+  const attrStr = formatAttrs(attrs, invocationLocation);
   const lines = [];
   lines.push('table' + attrStr);
 
@@ -394,7 +418,11 @@ function generate(parsed, attrs) {
   // there crashes the re-lex); the text is re-lexed as inline content, so a
   // literal `#{` in the text is neutralized.
   if (caption !== null) {
-    assertNoInterpolation(caption.attrStr, 'caption attribute group');
+    assertNoInterpolation(
+      caption.attrStr,
+      'caption attribute group',
+      caption.location,
+    );
     lines.push(
       '  caption' + caption.attrStr + ' ' + escapeCellText(caption.text),
     );
@@ -403,7 +431,15 @@ function generate(parsed, attrs) {
   if (!hasSeparatorOrMarker) {
     // No separators or markers: all rows go in tbody with td.
     const allRows = sections.length > 0 ? sections[0].rows : [];
-    renderSection(lines, 'tbody', allRows, 'td', '  ', '');
+    renderSection(
+      lines,
+      'tbody',
+      allRows,
+      'td',
+      '  ',
+      '',
+      allRows[0] && allRows[0].location,
+    );
   } else {
     // Emit colgroups (from first dash-sep, if any).
     if (colgroups !== null) {
@@ -426,6 +462,7 @@ function generate(parsed, attrs) {
         defaultCellTag,
         '  ',
         section.attrStr,
+        section.location,
       );
     });
   }

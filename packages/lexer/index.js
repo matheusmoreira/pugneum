@@ -678,9 +678,7 @@ class Lexer {
     this.input = str.replace(/\r\n|\r/g, '\n');
     this.generatedInput = this.input;
     this.originalInput =
-      options.originalInput === undefined
-        ? this.input
-        : options.originalInput.replace(/\r\n|\r/g, '\n');
+      options.originalInput === undefined ? str : options.originalInput;
     // Mapped child lexers scan normalized or generated input while publishing
     // locations and diagnostics in the root source coordinate space. Each
     // entry maps one generated string boundary, including the final boundary.

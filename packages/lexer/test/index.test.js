@@ -385,27 +385,256 @@ fs.readdirSync(lexerDir).forEach(function (testCase) {
 });
 
 var edir = __dirname + '/errors/';
+
+function captureLexerError(source, filename) {
+  try {
+    lex(source, {filename});
+  } catch (error) {
+    if (
+      !error ||
+      typeof error.code !== 'string' ||
+      !error.code.startsWith('PUGNEUM:')
+    ) {
+      throw error;
+    }
+    return error;
+  }
+  assert.fail('Expected ' + filename + ' to throw a PUGNEUM error.');
+}
+
+function assertLexerErrorEnvelope(error, source, filename) {
+  var json = {
+    code: error.code,
+    msg: error.msg,
+    line: error.line,
+    column: error.column,
+    filename,
+  };
+
+  assert.ok(error instanceof Error);
+  assert.strictEqual(error.filename, filename);
+  assert.strictEqual(error.source, source);
+  assert.deepStrictEqual(error.toJSON(), json);
+  assert.strictEqual(JSON.stringify(error), JSON.stringify(json));
+  assert.ok(
+    error.message.startsWith(
+      filename + ':' + error.line + ':' + error.column + '\n',
+    ),
+  );
+  assert.ok(
+    error.message
+      .split('\n')
+      .some((line) => line.includes('> ' + error.line + '|')),
+  );
+  assert.ok(error.message.split('\n').some((line) => line.endsWith('^')));
+  assert.ok(error.message.endsWith('\n\n' + error.msg));
+}
+
+function assertLexerDiagnostic(source, expected) {
+  var filename = expected.filename || 'diagnostic.pg';
+  var error = captureLexerError(source, filename);
+
+  assertLexerErrorEnvelope(error, source, filename);
+  assert.deepStrictEqual(
+    {
+      code: error.code,
+      msg: error.msg,
+      line: error.line,
+      column: error.column,
+    },
+    {
+      code: 'PUGNEUM:' + expected.code,
+      msg: expected.msg,
+      line: expected.line,
+      column: expected.column,
+    },
+  );
+  return error;
+}
+
 fs.readdirSync(edir).forEach(function (testCase) {
   if (/\.pg$/.test(testCase)) {
     test(testCase, (t) => {
-      var actual;
-      try {
-        lex(fs.readFileSync(edir + testCase, 'utf8'), {
-          filename: testCase,
-        });
-        throw new Error('Expected ' + testCase + ' to throw an exception.');
-      } catch (ex) {
-        if (!ex || !ex.code || ex.code.indexOf('PUGNEUM:') !== 0) throw ex;
-        actual = {
-          msg: ex.msg,
-          code: ex.code,
-          line: ex.line,
-          column: ex.column,
-        };
-      }
+      var source = fs.readFileSync(edir + testCase, 'utf8');
+      var error = captureLexerError(source, testCase);
+      assertLexerErrorEnvelope(error, source, testCase);
+      var actual = {
+        msg: error.msg,
+        code: error.code,
+        line: error.line,
+        column: error.column,
+      };
       t.assert.snapshot(actual);
     });
   }
+});
+
+describe('complete diagnostic contract', () => {
+  test('one public error has an independently pinned full message', () => {
+    var error = assertLexerDiagnostic('#ä', {
+      filename: 'invalid-id.pg',
+      code: 'INVALID_ID',
+      msg: '"ä" is not a valid ID.',
+      line: 1,
+      column: 1,
+    });
+
+    assert.strictEqual(
+      error.message,
+      'invalid-id.pg:1:1\n  > 1| #ä\n-------^\n\n"ä" is not a valid ID.',
+    );
+  });
+
+  [
+    {
+      name: 'mismatched attribute nesting',
+      source: 'div(foo=[bar})',
+      code: 'INCORRECT_NESTING',
+      msg: 'Nesting must match on expression `foo=[bar}`',
+      line: 1,
+      column: 5,
+    },
+    {
+      name: 'mixed indentation',
+      source: 'ul\n  li one\n \tli two',
+      code: 'INVALID_INDENTATION',
+      msg: 'Invalid indentation, you can use tabs or spaces but not both',
+      line: 3,
+      column: 1,
+    },
+    {
+      name: 'text after a quoted attribute value',
+      source: 'div(foo="bar"x)',
+      code: 'MALFORMED_ATTRIBUTE',
+      msg: 'Invalid code point after attribute value: `x`',
+      line: 1,
+      column: 14,
+    },
+    {
+      name: 'attribute-shaped extends syntax',
+      source: 'extends(foo)',
+      code: 'MALFORMED_EXTENDS',
+      msg: 'malformed extends',
+      line: 1,
+      column: 8,
+    },
+    {
+      name: 'reference definition missing its URL',
+      source: 'references\n  docs',
+      code: 'INVALID_REF_DEF',
+      msg: 'Reference definition requires both a name and a URL: docs',
+      line: 2,
+      column: 3,
+    },
+    {
+      name: 'reference definition with an empty quoted URL',
+      source: 'references\n  docs ""',
+      code: 'INVALID_REF_DEF',
+      msg: 'Reference definition requires a non-empty URL: docs ""',
+      line: 2,
+      column: 3,
+    },
+    {
+      name: 'unclosed tag attributes',
+      source: 'div(foo=bar',
+      code: 'NO_END_BRACKET',
+      msg: 'The end of the string reached with no closing bracket ) found.',
+      line: 1,
+      column: 12,
+    },
+    {
+      name: 'unclosed link shorthand',
+      source: 'p @(url',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ) for @() link shorthand.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed image shorthand',
+      source: 'p !(url',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ) for !() image shorthand.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed image attributes',
+      source: 'p !(url)(class=x',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ) for !() image attributes.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed simple inline shorthand',
+      source: 'p *(text',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ) for *() strong shorthand.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed code shorthand',
+      source: 'p `(text',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ) for `() code shorthand.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed reference link',
+      source: 'p @[docs',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ] for @[] reference link.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed reference image',
+      source: 'p ![logo',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ] for ![] reference image.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed footnote reference',
+      source: 'p ^[note',
+      code: 'NO_END_BRACKET',
+      msg: 'End of line reached with no closing ] for ^[] footnote reference.',
+      line: 1,
+      column: 3,
+    },
+    {
+      name: 'unclosed reference-link attributes',
+      source: 'p @[docs](class=x',
+      code: 'NO_END_BRACKET',
+      msg: 'The end of the string reached with no closing bracket ) found.',
+      line: 1,
+      column: 18,
+    },
+    {
+      name: 'unclosed reference-image attributes',
+      source: 'p ![logo](class=x',
+      code: 'NO_END_BRACKET',
+      msg: 'The end of the string reached with no closing bracket ) found.',
+      line: 1,
+      column: 18,
+    },
+    {
+      name: 'unclosed mixin call arguments',
+      source: '+thing(arg',
+      code: 'NO_END_BRACKET',
+      msg: 'End of source reached with no closing ) for mixin call arguments.',
+      line: 1,
+      column: 11,
+    },
+  ].forEach((diagnostic) => {
+    test(diagnostic.name, () => {
+      assertLexerDiagnostic(diagnostic.source, diagnostic);
+    });
+  });
 });
 
 test('inline shorthand reserves one depth level for its container', () => {

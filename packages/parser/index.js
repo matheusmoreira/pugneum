@@ -243,9 +243,31 @@ class Parser {
     };
   }
 
+  withLocation(tok, value) {
+    value.line = tok.loc.start.line;
+    value.column = tok.loc.start.column;
+    value.filename = this.filename;
+    return value;
+  }
+
+  node(type, tok, properties) {
+    return this.withLocation(tok, Object.assign({type: type}, properties));
+  }
+
   appendText(nodes, tok, val) {
     const text = val !== undefined ? val : tok.val;
     if (text !== '') nodes.push(this.textNode(tok, text));
+  }
+
+  appendParsed(nodes, value) {
+    if (!value) return;
+    if (value.type === 'Block') {
+      for (let i = 0; i < value.nodes.length; i++) {
+        nodes.push(value.nodes[i]);
+      }
+    } else {
+      nodes.push(value);
+    }
   }
 
   error(code, message, token) {
@@ -279,16 +301,7 @@ class Parser {
       if ('newline' === this.peek().type) {
         this.advance();
       } else {
-        const expr = this.parseExpr();
-        if (expr) {
-          if (expr.type === 'Block') {
-            for (let ni = 0; ni < expr.nodes.length; ni++) {
-              block.nodes.push(expr.nodes[ni]);
-            }
-          } else {
-            block.nodes.push(expr);
-          }
-        }
+        this.appendParsed(block.nodes, this.parseExpr());
       }
     }
 
@@ -506,43 +519,25 @@ class Parser {
     const tok = this.expect('comment');
     let block;
     if ((block = this.parseTextBlock())) {
-      return {
-        type: 'BlockComment',
+      return this.node('BlockComment', tok, {
         val: tok.val,
         block: block,
         buffer: tok.buffer,
-        line: tok.loc.start.line,
-        column: tok.loc.start.column,
-        filename: this.filename,
-      };
+      });
     } else {
-      return {
-        type: 'Comment',
+      return this.node('Comment', tok, {
         val: tok.val,
         buffer: tok.buffer,
-        line: tok.loc.start.line,
-        column: tok.loc.start.column,
-        filename: this.filename,
-      };
+      });
     }
   }
 
   parseIncludeFilter() {
     const tok = this.expect('filter');
-    let attrs = [];
-
-    if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs(new Set(), filterOptionPolicy);
-    }
-
-    return {
-      type: 'IncludeFilter',
+    return this.node('IncludeFilter', tok, {
       name: tok.val,
-      attrs: attrs,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+      attrs: this.parseOptionalAttrs(new Set(), filterOptionPolicy),
+    });
   }
 
   /**
@@ -551,12 +546,8 @@ class Parser {
 
   parseFilter() {
     const tok = this.expect('filter');
-    let block,
-      attrs = [];
-
-    if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs(new Set(), filterOptionPolicy);
-    }
+    let block;
+    const attrs = this.parseOptionalAttrs(new Set(), filterOptionPolicy);
 
     if (this.peek().type === 'text') {
       const textToken = this.advance();
@@ -568,15 +559,11 @@ class Parser {
       block = this.parseTextBlock() || this.emptyBlock(tok.loc.start.line);
     }
 
-    return {
-      type: 'Filter',
+    return this.node('Filter', tok, {
       name: tok.val,
       block: block,
       attrs: attrs,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
   }
 
   /**
@@ -586,19 +573,11 @@ class Parser {
   parseExtends() {
     const tok = this.expect('extends');
     const path = this.expect('path');
-    return {
-      type: 'Extends',
-      file: {
-        type: 'FileReference',
+    return this.node('Extends', tok, {
+      file: this.node('FileReference', path, {
         path: path.val.trim(),
-        line: path.loc.start.line,
-        column: path.loc.start.column,
-        filename: this.filename,
-      },
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+      }),
+    });
   }
 
   /**
@@ -615,10 +594,7 @@ class Parser {
     node.type = 'NamedBlock';
     node.name = tok.val.trim();
     node.mode = tok.mode;
-    node.line = tok.loc.start.line;
-    node.column = tok.loc.start.column;
-
-    return node;
+    return this.withLocation(tok, node);
   }
 
   parseMixinBlock() {
@@ -630,12 +606,7 @@ class Parser {
         tok,
       );
     }
-    return {
-      type: 'MixinBlock',
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    return this.node('MixinBlock', tok);
   }
 
   parseGiven() {
@@ -655,18 +626,13 @@ class Parser {
         tok,
       );
     }
-    const node = {
-      type: 'Given',
+    return this.node('Given', tok, {
       name: tok.val,
       block:
         'indent' === this.peek().type
           ? this.block()
           : this.emptyBlock(tok.loc.start.line),
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
-    return node;
+    });
   }
 
   parseVariable() {
@@ -678,23 +644,14 @@ class Parser {
         tok,
       );
     }
-    return {
-      type: 'Variable',
+    return this.node('Variable', tok, {
       name: tok.val,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
   }
 
   parseYield() {
     const tok = this.expect('yield');
-    return {
-      type: 'YieldBlock',
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    return this.node('YieldBlock', tok);
   }
 
   parseReferences() {
@@ -703,23 +660,19 @@ class Parser {
     while (this.peek().type === 'ref-def') {
       const def = this.advance();
       definitions.push(
-        copyAttributeInterpolationSource(def, {
-          name: def.name,
-          url: def.url,
-          defaultText: def.defaultText || null,
-          line: def.loc.start.line,
-          column: def.loc.start.column,
-          filename: this.filename,
-        }),
+        copyAttributeInterpolationSource(
+          def,
+          this.withLocation(def, {
+            name: def.name,
+            url: def.url,
+            defaultText: def.defaultText || null,
+          }),
+        ),
       );
     }
-    return {
-      type: 'References',
+    return this.node('References', tok, {
       definitions: definitions,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
   }
 
   parseRefLink() {
@@ -753,20 +706,11 @@ class Parser {
     this.expect('end-ref-link');
 
     // Collect optional (attrs) after ]
-    let attrs = [];
-    if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs(new Set(['href']));
-    }
-
-    return {
-      type: 'ReferenceLink',
+    return this.node('ReferenceLink', tok, {
       name: name,
       block: block,
-      attrs: attrs,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+      attrs: this.parseOptionalAttrs(new Set(['href'])),
+    });
   }
 
   parseRefImage() {
@@ -799,20 +743,11 @@ class Parser {
     }
     this.expect('end-ref-image');
 
-    let attrs = [];
-    if (this.peek().type === 'start-attributes') {
-      attrs = this.attrs(new Set(['src', 'alt']));
-    }
-
-    return {
-      type: 'ReferenceImage',
+    return this.node('ReferenceImage', tok, {
       name: name,
       block: block,
-      attrs: attrs,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+      attrs: this.parseOptionalAttrs(new Set(['src', 'alt'])),
+    });
   }
 
   parseFootnoteRef() {
@@ -823,23 +758,14 @@ class Parser {
   parseFootnoteRefContent(tok) {
     const name = tok.val;
     this.expect('end-footnote-ref');
-    return {
-      type: 'FootnoteRef',
+    return this.node('FootnoteRef', tok, {
       name: name,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
   }
 
   parseToc() {
     const tok = this.expect('toc');
-    return {
-      type: 'Toc',
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    return this.node('Toc', tok);
   }
 
   parseFootnotes() {
@@ -912,22 +838,17 @@ class Parser {
       }
       this.expect('footnote-def-end');
 
-      definitions.push({
-        name: name,
-        block: block,
-        line: defTok.loc.start.line,
-        column: defTok.loc.start.column,
-        filename: this.filename,
-      });
+      definitions.push(
+        this.withLocation(defTok, {
+          name: name,
+          block: block,
+        }),
+      );
     }
 
-    return {
-      type: 'Footnotes',
+    return this.node('Footnotes', tok, {
       definitions: definitions,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
   }
 
   /**
@@ -939,25 +860,16 @@ class Parser {
 
   parseInclude() {
     const tok = this.expect('include');
-    const node = {
-      type: 'Include',
-      file: {
-        type: 'FileReference',
-        filename: this.filename,
-      },
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    const file = {type: 'FileReference', filename: this.filename};
+    const node = this.node('Include', tok, {file: file});
     const filters = [];
     while (this.peek().type === 'filter') {
       filters.push(this.parseIncludeFilter());
     }
     const path = this.expect('path');
 
-    node.file.path = path.val.trim();
-    node.file.line = path.loc.start.line;
-    node.file.column = path.loc.start.column;
+    file.path = path.val.trim();
+    this.withLocation(path, file);
 
     if (/\.pg$/.test(node.file.path) && !filters.length) {
       node.block =
@@ -986,18 +898,14 @@ class Parser {
     const tok = this.expect('call');
     const name = tok.val;
     const args = tok.args;
-    const mixin = {
-      type: 'Mixin',
+    const mixin = this.node('Mixin', tok, {
       name: name,
       args: args,
       block: this.emptyBlock(tok.loc.start.line),
       call: true,
       attrs: [],
       attributeBlocks: [],
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
 
     this.mixinCtx.push('call');
     try {
@@ -1043,18 +951,14 @@ class Parser {
 
       const slotFlags = mixinSlotFlags(block);
 
-      return {
-        type: 'Mixin',
+      return this.node('Mixin', tok, {
         name: name,
         args: args,
         block: block,
         call: false,
         usesNamedBlocks: slotFlags.usesNamedBlocks,
         usesUnnamedBlock: slotFlags.usesUnnamedBlock,
-        line: tok.loc.start.line,
-        column: tok.loc.start.column,
-        filename: this.filename,
-      };
+      });
     } else {
       this.error(
         'MIXIN_WITHOUT_BODY',
@@ -1123,14 +1027,7 @@ class Parser {
       if ('newline' === this.peek().type) {
         this.advance();
       } else {
-        const expr = this.parseExpr();
-        if (expr.type === 'Block') {
-          for (let i = 0; i < expr.nodes.length; ++i) {
-            block.nodes.push(expr.nodes[i]);
-          }
-        } else {
-          block.nodes.push(expr);
-        }
+        this.appendParsed(block.nodes, this.parseExpr());
       }
     }
     this.expect('outdent');
@@ -1144,17 +1041,13 @@ class Parser {
 
   parseInterpolation() {
     const tok = this.advance();
-    const tag = {
-      type: 'InterpolatedTag',
+    const tag = this.node('InterpolatedTag', tok, {
       expr: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
       isInline: false,
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
 
     return this.tag(tag);
   }
@@ -1165,17 +1058,13 @@ class Parser {
 
   parseTag() {
     const tok = this.advance();
-    const tag = {
-      type: 'Tag',
+    const tag = this.node('Tag', tok, {
       name: tok.val,
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
       isInline: inlineTags.has(asciiLowerCase(tok.val)),
-      line: tok.loc.start.line,
-      column: tok.loc.start.column,
-      filename: this.filename,
-    };
+    });
 
     return this.tag(tag);
   }
@@ -1200,13 +1089,12 @@ class Parser {
             }
             attributeNames.add('id');
           }
-          tag.attrs.push({
-            name: tok.type,
-            val: tok.val,
-            line: tok.loc.start.line,
-            column: tok.loc.start.column,
-            filename: this.filename,
-          });
+          tag.attrs.push(
+            this.withLocation(tok, {
+              name: tok.type,
+              val: tok.val,
+            }),
+          );
           continue;
         case 'start-attributes':
           if (seenAttrs) {
@@ -1239,17 +1127,9 @@ class Parser {
       case 'start-ref-image':
       case 'start-footnote-ref':
         const text = this.parseText();
-        if (text.type === 'Block') {
-          // In-place push rather than push.apply(...spread): a single line
-          // packed with inline shorthands can collect more nodes than V8's
-          // apply argument-spread limit, which would throw a raw RangeError
-          // (no PUGNEUM code) instead of parsing or aborting honestly.
-          for (let i = 0; i < text.nodes.length; ++i) {
-            tag.block.nodes.push(text.nodes[i]);
-          }
-        } else {
-          tag.block.nodes.push(text);
-        }
+        // appendParsed uses bounded in-place pushes rather than argument
+        // spreading, so a line with many inline shorthands remains safe.
+        this.appendParsed(tag.block.nodes, text);
         break;
       case ':':
         this.advance();
@@ -1281,10 +1161,7 @@ class Parser {
     if (tag.textOnly) {
       tag.block = this.parseTextBlock() || this.emptyBlock(tag.line);
     } else if ('indent' === this.peek().type) {
-      const block = this.block();
-      for (let i = 0, len = block.nodes.length; i < len; ++i) {
-        tag.block.nodes.push(block.nodes[i]);
-      }
+      this.appendParsed(tag.block.nodes, this.block());
     }
 
     return tag;
@@ -1325,18 +1202,23 @@ class Parser {
         attributeNames.add(name);
       }
       attrs.push(
-        copyAttributeInterpolationSource(tok, {
-          name: mergeClass ? 'class' : tok.name,
-          val: tok.val,
-          line: tok.loc.start.line,
-          column: tok.loc.start.column,
-          filename: this.filename,
-        }),
+        copyAttributeInterpolationSource(
+          tok,
+          this.withLocation(tok, {
+            name: mergeClass ? 'class' : tok.name,
+            val: tok.val,
+          }),
+        ),
       );
       tok = this.advance();
     }
     this.tokens.defer(tok);
     this.expect('end-attributes');
     return attrs;
+  }
+
+  parseOptionalAttrs(attributeNames, policy) {
+    if (this.peek().type !== 'start-attributes') return [];
+    return this.attrs(attributeNames, policy);
   }
 }

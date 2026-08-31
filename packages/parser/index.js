@@ -236,6 +236,12 @@ class Parser {
     throw err;
   }
 
+  duplicateAttribute(name, token) {
+    const message = 'Duplicate attribute "' + name + '" is not allowed.';
+    if (name === 'id') this.error('DUPLICATE_ID', message, token);
+    this.error('DUPLICATE_ATTRIBUTE', message, token);
+  }
+
   advance() {
     return this.tokens.advance();
   }
@@ -1170,11 +1176,7 @@ class Parser {
           const tok = this.advance();
           if (tok.type === 'id') {
             if (attributeNames.has('id')) {
-              this.error(
-                'DUPLICATE_ID',
-                'Duplicate attribute "id" is not allowed.',
-                tok,
-              );
+              this.duplicateAttribute('id', tok);
             }
             attributeNames.add('id');
           }
@@ -1296,11 +1298,7 @@ class Parser {
               tok,
             );
           } else {
-            this.error(
-              'DUPLICATE_ATTRIBUTE',
-              'Duplicate attribute "' + tok.name + '" is not allowed.',
-              tok,
-            );
+            this.duplicateAttribute(tok.name, tok);
           }
         }
         attributeNames.add(tok.name);

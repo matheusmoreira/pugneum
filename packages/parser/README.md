@@ -192,9 +192,9 @@ Their `code` values and conditions are:
 | Code | Condition |
 | --- | --- |
 | `PUGNEUM:BLOCK_OUTSIDE_MIXIN` | An anonymous mixin block appears outside a mixin. |
-| `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class attribute name is repeated. |
+| `PUGNEUM:DUPLICATE_ATTRIBUTE` | A non-class, non-`id` attribute name is repeated. |
 | `PUGNEUM:DUPLICATE_FILTER_OPTION` | A block or include filter repeats an exact option name. |
-| `PUGNEUM:DUPLICATE_ID` | An `id` shorthand repeats an existing `id`. |
+| `PUGNEUM:DUPLICATE_ID` | An `id` is repeated, using shorthand, a parenthesized attribute, or both. |
 | `PUGNEUM:DUPLICATE_MIXIN_PARAMETER` | A mixin declaration repeats an exact parameter name. |
 | `PUGNEUM:GIVEN_OUTSIDE_MIXIN` | `given` is outside a mixin definition or inside a mixin call body. |
 | `PUGNEUM:INVALID_TOKEN` | A well-formed token is not valid in the current grammar position. |

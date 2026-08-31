@@ -112,17 +112,35 @@ describe('error paths', () => {
     );
   });
 
-  test('DUPLICATE_ID when tag has two id shorthands', () => {
-    assert.throws(
-      () => parseSource('#a#b'),
-      (err) => err.code === 'PUGNEUM:DUPLICATE_ID',
-    );
+  test('DUPLICATE_ID is independent of id syntax and ordering', () => {
+    var cases = [
+      ['#a#b', 3],
+      ['div(id=a id=b)', 10],
+      ['div#a(id=b)', 7],
+      ['div(id=a)#b', 10],
+    ];
+
+    cases.forEach(([source, column]) => {
+      assert.throws(
+        () => parseSource(source),
+        (err) =>
+          err.code === 'PUGNEUM:DUPLICATE_ID' &&
+          err.msg === 'Duplicate attribute "id" is not allowed.' &&
+          err.line === 1 &&
+          err.column === column &&
+          err.filename === 'test.pg',
+        source,
+      );
+    });
   });
 
   test('DUPLICATE_ATTRIBUTE when same attribute appears twice', () => {
     assert.throws(
-      () => parseSource('div(id="a" id="b")'),
-      (err) => err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE',
+      () => parseSource('div(title="a" title="b")'),
+      (err) =>
+        err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE' &&
+        err.msg === 'Duplicate attribute "title" is not allowed.' &&
+        err.column === 15,
     );
   });
 

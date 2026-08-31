@@ -88,7 +88,7 @@ test('shared nested doctype parses as canonical leading text', () => {
 describe('error paths', () => {
   function parseSource(src) {
     var tokens = lex(src, {filename: 'test.pg'});
-    return parse(tokens, {filename: 'test.pg'});
+    return parse(tokens, {filename: 'test.pg', source: src});
   }
 
   test('BLOCK_OUTSIDE_MIXIN when block keyword used outside mixin', () => {
@@ -141,6 +141,46 @@ describe('error paths', () => {
         err.code === 'PUGNEUM:DUPLICATE_ATTRIBUTE' &&
         err.msg === 'Duplicate attribute "title" is not allowed.' &&
         err.column === 15,
+    );
+  });
+
+  test('grammar diagnostics expose complete source and formatted location', () => {
+    const source = 'p before\ndiv(title=a title=b)\np after';
+    assert.throws(
+      () => parseSource(source),
+      (err) => {
+        assert.deepStrictEqual(
+          {
+            code: err.code,
+            msg: err.msg,
+            line: err.line,
+            column: err.column,
+            filename: err.filename,
+            source: err.source,
+          },
+          {
+            code: 'PUGNEUM:DUPLICATE_ATTRIBUTE',
+            msg: 'Duplicate attribute "title" is not allowed.',
+            line: 2,
+            column: 13,
+            filename: 'test.pg',
+            source,
+          },
+        );
+        assert.strictEqual(
+          err.message,
+          [
+            'test.pg:2:13',
+            '    1| p before',
+            '  > 2| div(title=a title=b)',
+            '-------------------^',
+            '    3| p after',
+            '',
+            'Duplicate attribute "title" is not allowed.',
+          ].join('\n'),
+        );
+        return true;
+      },
     );
   });
 
@@ -341,14 +381,22 @@ describe('error paths', () => {
         );
       });
 
+      const source = nestedIndentedSource(head, 257);
       assert.throws(
-        () => parseSource(nestedIndentedSource(head, 257)),
+        () => parseSource(source),
         (err) => {
           assert.strictEqual(err.code, 'PUGNEUM:NESTING_TOO_DEEP');
           assert.deepStrictEqual(
-            {line: err.line, column: err.column, filename: err.filename},
-            {line: 257, column: 513, filename: 'test.pg'},
+            {
+              line: err.line,
+              column: err.column,
+              filename: err.filename,
+              source: err.source,
+            },
+            {line: 257, column: 513, filename: 'test.pg', source},
           );
+          assert.match(err.message, /^test\.pg:257:513\n/);
+          assert.match(err.message, /\n  > 257\| /);
           return true;
         },
       );

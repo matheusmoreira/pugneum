@@ -266,6 +266,47 @@ function nodeLocation(node, options) {
   };
 }
 
+function firstBodyLocation(node) {
+  const block = node && node.block;
+  if (!block || !Array.isArray(block.nodes)) return undefined;
+  for (const child of block.nodes) {
+    if (
+      child &&
+      typeof child === 'object' &&
+      Number.isSafeInteger(child.line) &&
+      child.line >= 1 &&
+      Number.isSafeInteger(child.column) &&
+      child.column >= 1 &&
+      (child.type !== 'Text' || /[^\r\n]/.test(child.val || ''))
+    ) {
+      return {line: child.line, column: child.column};
+    }
+  }
+  return undefined;
+}
+
+// The third callback argument carries source identity without adding reserved
+// enumerable keys to the filter's attribute bag. `invocation` identifies the
+// :filter token; `body` identifies line 1 / column 1 of the callback's string
+// input when it came from an indented block. Both snapshots are immutable so a
+// plugin cannot alter diagnostics observed by a later stage.
+function createFilterContext(node, options) {
+  const invocation = Object.freeze(nodeLocation(node, options));
+  let body;
+  if (node && node.block) {
+    const start = firstBodyLocation(node);
+    if (start !== undefined) {
+      body = Object.freeze({
+        filename: invocation.filename,
+        line: start.line,
+        column: start.column,
+        source: invocation.source,
+      });
+    }
+  }
+  return Object.freeze({invocation, body});
+}
+
 function thrownCode(value) {
   try {
     return value && typeof value.code === 'string' ? value.code : undefined;
@@ -654,6 +695,7 @@ function applyFilters(ast, filters, options, context) {
           const text = getBodyAsText(node, options);
           const attrs = getAttributes(node, options);
           attrs.filename = node.filename;
+          const filterContext = createFilterContext(node, options);
           const resolved = resolveFilter(node.name, filters, node, options);
           validateFilterType(resolved, node.name, node, options);
           const result = runFilter(
@@ -663,6 +705,7 @@ function applyFilters(ast, filters, options, context) {
             attrs,
             node,
             options,
+            filterContext,
           );
           applyFilterResult(
             node,
@@ -707,6 +750,7 @@ function applyFilters(ast, filters, options, context) {
               filterAttrs,
               node,
               options,
+              createFilterContext(node, options),
             );
             // Validate every stage's output, not just the final one, so a
             // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
@@ -763,9 +807,9 @@ function validateIncludeFilterType(resolved, name, node, options) {
   }
 }
 
-function runFilter(resolved, name, input, attrs, node, options) {
+function runFilter(resolved, name, input, attrs, node, options, context) {
   try {
-    return resolved.filter.call(resolved.receiver, input, attrs);
+    return resolved.filter.call(resolved.receiver, input, attrs, context);
   } catch (ex) {
     // A PUGNEUM:-coded diagnostic thrown directly by plugin code already has
     // its intended identity; re-throw it unchanged rather than double-wrapping.

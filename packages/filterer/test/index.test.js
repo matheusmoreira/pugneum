@@ -473,6 +473,42 @@ test('per-filter options copy only own enumerable properties', () => {
   assert.strictEqual(received.leaked, undefined);
 });
 
+test('filter callbacks receive immutable invocation and body locations', () => {
+  const source = 'main\n  :capture\n    first\n    second';
+  const options = {filename: 'context.pg', source};
+  const ast = parseSource(source, options);
+  let receivedAttrs;
+  let receivedContext;
+  const capture = {
+    type: 'html',
+    filter(text, attrs, context) {
+      assert.strictEqual(text, 'first\nsecond');
+      receivedAttrs = attrs;
+      receivedContext = context;
+      return text;
+    },
+  };
+
+  filter(ast, {capture}, options);
+
+  assert.deepStrictEqual(Object.keys(receivedAttrs), ['filename']);
+  assert.deepStrictEqual(receivedContext.invocation, {
+    filename: 'context.pg',
+    line: 2,
+    column: 3,
+    source,
+  });
+  assert.deepStrictEqual(receivedContext.body, {
+    filename: 'context.pg',
+    line: 3,
+    column: 5,
+    source,
+  });
+  assert.ok(Object.isFrozen(receivedContext));
+  assert.ok(Object.isFrozen(receivedContext.invocation));
+  assert.ok(Object.isFrozen(receivedContext.body));
+});
+
 test('a throwing per-filter option getter becomes a coded diagnostic', () => {
   const fixture = singleFilterAst('capture');
   const optionBag = new Proxy(

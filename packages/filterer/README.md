@@ -74,6 +74,13 @@ field. For a block filter, `filename` is the invocation's source filename. For
 an include filter, it is the included file's full path. User attributes and
 per-filter options cannot override this reserved value.
 
+The optional third callback argument is an immutable source-context object.
+Its `invocation` member identifies the filter token with `filename`, `line`,
+`column`, and `source`. For an indented block filter, `body` carries the same
+fields for the first line and column of the callback's string input. Context is
+kept separate from the attributes object, so existing enumeration and option
+precedence remain unchanged.
+
 `filters` is an object mapping names to filter descriptor objects:
 
 ```js

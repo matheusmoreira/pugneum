@@ -1566,7 +1566,8 @@ describe('test-cases/', () => {
 });
 
 describe('attribute value quoting', () => {
-  // Regression for the BUG.txt report: the three quote forms must be equivalent.
+  // Attribute values must normalize identically across bare, single-quoted,
+  // and double-quoted source forms.
   it('treats unquoted, single-quoted, and double-quoted values identically', () => {
     var url = '/articles/babys-second-garbage-collector';
     var expected = '<a href="' + url + '">T</a>';
@@ -1645,6 +1646,19 @@ describe('warnings', () => {
       process.stderr.write = original;
     }
     return output;
+  }
+
+  function warning(overrides) {
+    return Object.assign(
+      {
+        code: 'PUGNEUM:X',
+        message: 'f.pg:1:1\n\nm',
+        filename: 'f.pg',
+        line: 1,
+        column: 1,
+      },
+      overrides,
+    );
   }
 
   it('collects typographic-quote warnings into a provided array and keeps the value literal', () => {
@@ -1740,13 +1754,10 @@ describe('warnings', () => {
   });
 
   it('emitWarnings collapses duplicate warnings to a single line', () => {
-    var dup = {
+    var dup = warning({
       code: 'PUGNEUM:DUP',
       message: 'f.pg:1:1\n\nmsg',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
+    });
     var out = captureStderr(function () {
       pg.emitWarnings([Object.assign({}, dup), Object.assign({}, dup)]);
     });
@@ -1754,20 +1765,11 @@ describe('warnings', () => {
   });
 
   it('emitWarnings keeps warnings that differ in location', () => {
-    var a = {
-      code: 'PUGNEUM:X',
-      message: 'f.pg:1:1\n\nm',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
-    var b = {
-      code: 'PUGNEUM:X',
+    var a = warning();
+    var b = warning({
       message: 'f.pg:2:1\n\nm',
-      filename: 'f.pg',
       line: 2,
-      column: 1,
-    };
+    });
     var out = captureStderr(function () {
       pg.emitWarnings([a, b]);
     });
@@ -1778,20 +1780,12 @@ describe('warnings', () => {
     // The dedup key now includes the message, so two diagnostics at the same
     // code+location but with different detail are both emitted instead of one
     // silently swallowing the other.
-    var a = {
-      code: 'PUGNEUM:X',
+    var a = warning({
       message: 'f.pg:1:1\n\ndetail A',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
-    var b = {
-      code: 'PUGNEUM:X',
+    });
+    var b = warning({
       message: 'f.pg:1:1\n\ndetail B',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
+    });
     var out = captureStderr(function () {
       pg.emitWarnings([a, b]);
     });
@@ -1803,13 +1797,10 @@ describe('warnings', () => {
   it('emitWarnings strips the internal PUGNEUM: prefix from the header', () => {
     // The error path treats PUGNEUM: as an internal routing token never shown
     // to users; the warning header must match that convention.
-    var w = {
+    var w = warning({
       code: 'PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER',
       message: 'f.pg:1:1\n\nmsg',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
+    });
     var out = captureStderr(function () {
       pg.emitWarnings([w]);
     });
@@ -1818,13 +1809,7 @@ describe('warnings', () => {
   });
 
   it('emitWarnings validates the entire batch before writing', () => {
-    var w = {
-      code: 'PUGNEUM:X',
-      message: 'f.pg:1:1\n\nm',
-      filename: 'f.pg',
-      line: 1,
-      column: 1,
-    };
+    var w = warning();
     var out = captureStderr(function () {
       assert.throws(function () {
         pg.emitWarnings([null, w]);

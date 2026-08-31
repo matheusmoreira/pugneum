@@ -286,6 +286,15 @@ describe('void elements', () => {
       (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
     );
   });
+
+  test('mixed-case HTML void names preserve spelling and void semantics', () => {
+    assert.strictEqual(render(block([tag('BR')])), '<BR>');
+    assert.strictEqual(render(block([tag('iMg')])), '<iMg>');
+    assert.throws(
+      () => render(block([tag('Br', [], [text('content')])])),
+      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
+    );
+  });
 });
 
 describe('SVG void elements', () => {

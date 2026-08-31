@@ -61,6 +61,9 @@ only appears when the source contains an explicit `doctype html`
 line, which the lexer pre-renders into a text token the renderer
 buffers verbatim.
 
+HTML void-element identity is ASCII-case-insensitive, while output retains the
+tag name's authored spelling. SVG self-closing names remain case-sensitive.
+
 ### `options`
 
 - `warnings` — an array the caller supplies to collect compiler

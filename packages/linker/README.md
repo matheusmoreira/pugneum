@@ -52,6 +52,10 @@ and pushes the following non-fatal warnings into `options.warnings`:
  - `UNUSED_FOOTNOTE` — a `footnotes` entry is defined but never referenced.
  - `EMPTY_TOC` — a `toc` produced nothing (no headings with an explicit `id`).
 
+HTML tag and attribute names used by these lints and by table-of-contents
+discovery have ASCII-case-insensitive identity. Their authored spelling in the
+AST is preserved.
+
 The linker also resolves:
 
  - **Reference links/images** — `@[name]` and `![name]` nodes are

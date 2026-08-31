@@ -315,6 +315,11 @@ describe('warnings', () => {
       const w = codes(warningsFor('p#dup a\np#dup b'), 'DUPLICATE_ID');
       assert.strictEqual(w[0].line, 2);
     });
+
+    test('id attribute identity is ASCII-case-insensitive', () => {
+      const w = warningsFor('p(ID="dup") a\np(id="dup") b');
+      assert.strictEqual(codes(w, 'DUPLICATE_ID').length, 1);
+    });
   });
 
   describe('unused references and footnotes', () => {
@@ -359,6 +364,11 @@ describe('warnings', () => {
       const w = warningsFor('h2 No id\np text');
       assert.strictEqual(codes(w, 'EMPTY_TOC').length, 0);
     });
+
+    test('mixed-case HTML headings populate the toc', () => {
+      const w = warningsFor('toc\nH2#intro Introduction');
+      assert.strictEqual(codes(w, 'EMPTY_TOC').length, 0);
+    });
   });
 
   describe('img without alt', () => {
@@ -380,6 +390,13 @@ describe('warnings', () => {
     test('a reference image (which always emits alt) does not warn', () => {
       const w = warningsFor('references\n  pic /x.png\n\np ![pic a cat]');
       assert.strictEqual(codes(w, 'IMG_WITHOUT_ALT').length, 0);
+    });
+
+    test('mixed-case img and alt names use HTML identity', () => {
+      const missing = warningsFor('IMG(src=/x.png)');
+      const present = warningsFor('iMg(src=/x.png ALT="a cat")');
+      assert.strictEqual(codes(missing, 'IMG_WITHOUT_ALT').length, 1);
+      assert.strictEqual(codes(present, 'IMG_WITHOUT_ALT').length, 0);
     });
   });
 

@@ -181,11 +181,12 @@ A `Mixin` definition has `name: string`, `args: MixinParameter[]`,
 `null` when it has no body or inline content.
 
 `attributeBlocks` is a reserved downstream compatibility slot and is always an
-empty array at the parser boundary. `isInline` is the parser's fixed tag-name
-classification. `textOnly` is absent unless immediate dot/pipeless syntax sets
-it to `true`. The two `uses*Block` flags inspect a mixin definition's own body
-and stop at nested mixins. The parser does not emit downstream fields such as
-`selfClosing` or a loaded `FileReference.ast`.
+empty array at the parser boundary. `isInline` is the parser's fixed HTML
+tag-name classification, using ASCII-case-insensitive identity while `name`
+retains its authored spelling. `textOnly` is absent unless immediate
+dot/pipeless syntax sets it to `true`. The two `uses*Block` flags inspect a
+mixin definition's own body and stop at nested mixins. The parser does not emit
+downstream fields such as `selfClosing` or a loaded `FileReference.ast`.
 
 The only parser-emitted `null` values are an empty mixin call's `block` and a
 reference definition without `defaultText`. Optional fields are absent rather

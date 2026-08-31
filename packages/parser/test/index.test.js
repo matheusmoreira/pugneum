@@ -714,6 +714,22 @@ describe('given keyword', () => {
 });
 
 describe('blind sweep fixes', () => {
+  test('HTML inline classification is ASCII-case-insensitive without rewriting names', () => {
+    const source = 'SPAN text\nDiv block';
+    const ast = parse(lex(source, {filename: 'case.pg'}), {
+      filename: 'case.pg',
+      source,
+    });
+
+    assert.deepStrictEqual(
+      ast.nodes.map((node) => ({name: node.name, isInline: node.isInline})),
+      [
+        {name: 'SPAN', isInline: true},
+        {name: 'Div', isInline: false},
+      ],
+    );
+  });
+
   test('zero-length lexer padding is not materialized as Text nodes', () => {
     for (const filename of testCases) {
       const source = read(filename);

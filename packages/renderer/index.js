@@ -46,10 +46,9 @@ function requiredStage(node) {
 // Tag and attribute names are validated by the lexer against the HTML
 // spec regex and are safe by construction.
 //
-// Void / self-closing elements: the selfClosing table below, together with
-// a node's own selfClosing flag, is the other HTML-correctness mechanism in
-// this file. Such elements are emitted with a trailing self-closing slash
-// and reject substantive content (VOID_ELEMENT_WITH_CONTENT).
+// Void / self-closing elements: the HTML and SVG tables below, together with a
+// node's own selfClosing flag, are the other HTML-correctness mechanism in this
+// file. Such elements reject substantive content (VOID_ELEMENT_WITH_CONTENT).
 //
 // Value contract: the renderer expects attribute values (attr.val) to be
 // either a string or the boolean true (a valueless/boolean attribute), and
@@ -69,6 +68,12 @@ function sanitizeCommentContent(str) {
   return result;
 }
 
+function asciiLowerCase(value) {
+  return value.replace(/[A-Z]/g, function (character) {
+    return String.fromCharCode(character.charCodeAt(0) + 32);
+  });
+}
+
 function nameSet(names) {
   return names.split(', ').reduce(function (set, element) {
     set[element] = true;
@@ -86,13 +91,6 @@ const htmlVoid = nameSet(
 const svgSelfClosing = nameSet(
   'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
     'animate, animateMotion, animateTransform, set',
-);
-
-// Any element that takes no substantive content (the content-rejection guard).
-const selfClosing = Object.assign(
-  Object.create(null),
-  htmlVoid,
-  svgSelfClosing,
 );
 
 module.exports = compileToHTML;
@@ -333,11 +331,14 @@ class Compiler {
   }
 
   visitTag(tag) {
+    const isHtmlVoid = htmlVoid[asciiLowerCase(tag.name)];
+    const isSvgSelfClosing = svgSelfClosing[tag.name];
+
     this.buffer('<');
     this.buffer(tag.name);
     this.visitAttributes(tag.attrs);
 
-    if (tag.selfClosing || selfClosing[tag.name]) {
+    if (tag.selfClosing || isHtmlVoid || isSvgSelfClosing) {
       // Void elements may carry whitespace-only content (formatting) but not
       // substantive content. Each child is a node, not necessarily a Tag.
       if (
@@ -359,7 +360,7 @@ class Compiler {
       // HTML void elements get a bare '>' (HTML5 forbids the trailing slash);
       // SVG foreign-content elements REQUIRE ' />' or the start tag stays open
       // and parses its following siblings as children, misnesting the shapes.
-      this.buffer(svgSelfClosing[tag.name] ? ' />' : '>');
+      this.buffer(isSvgSelfClosing ? ' />' : '>');
     } else {
       this.buffer('>');
       this.visit(tag.block, tag);

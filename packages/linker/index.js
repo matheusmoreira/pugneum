@@ -21,6 +21,12 @@ function warn(code, message, node, sources, warnings) {
   warnings.push(makeError.warning(code, message, locContext(node, sources)));
 }
 
+function asciiLowerCase(value) {
+  return value.replace(/[A-Z]/g, function (character) {
+    return String.fromCharCode(character.charCodeAt(0) + 32);
+  });
+}
+
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
 function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
@@ -28,7 +34,7 @@ function lintDocument(ast, sources, warnings) {
     if (node.type !== 'Tag') return;
     const attrs = node.attrs || [];
     for (const attr of attrs) {
-      if (attr.name === 'id' && typeof attr.val === 'string') {
+      if (asciiLowerCase(attr.name) === 'id' && typeof attr.val === 'string') {
         const loc = attr.line != null ? attr : node;
         if (seenIds[attr.val]) {
           warn(
@@ -43,7 +49,10 @@ function lintDocument(ast, sources, warnings) {
         }
       }
     }
-    if (node.name === 'img' && !attrs.some((a) => a.name === 'alt')) {
+    if (
+      asciiLowerCase(node.name) === 'img' &&
+      !attrs.some((a) => asciiLowerCase(a.name) === 'alt')
+    ) {
       warn(
         'IMG_WITHOUT_ALT',
         'img has no alt attribute (use alt="" for purely decorative images)',
@@ -972,11 +981,13 @@ function resolveToc(ast, sources, warnings) {
 
   // Pass 1: collect headings with IDs
   walk(ast, function (node) {
-    if (node.type === 'Tag' && /^h[1-6]$/.test(node.name)) {
+    if (node.type === 'Tag') {
+      const headingName = asciiLowerCase(node.name);
+      if (!/^h[1-6]$/.test(headingName)) return;
       const idAttr =
         node.attrs &&
         node.attrs.find(function (a) {
-          return a.name === 'id';
+          return asciiLowerCase(a.name) === 'id';
         });
       // Match lintDocument's id contract: a valueless/boolean id (val === true)
       // is not a usable anchor target, so skip it rather than emit href="#true".
@@ -988,7 +999,7 @@ function resolveToc(ast, sources, warnings) {
       }
 
       headings.push({
-        level: parseInt(node.name[1], 10),
+        level: parseInt(headingName[1], 10),
         id: idAttr.val,
         text: text || idAttr.val,
       });

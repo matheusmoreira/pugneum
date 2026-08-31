@@ -1274,6 +1274,21 @@ describe('table of contents', () => {
     assert.match(result, /<a href="#sec">Section<\/a>/);
     assert.match(result, /\[1\]<\/a><\/sup>/);
   });
+
+  it('applies HTML semantics case-insensitively while preserving tag spelling', () => {
+    const warnings = [];
+    const result = pg.render(
+      'toc\n\nH2#intro Introduction\nBR\nIMG(src=/x.png ALT="")',
+      {filename: 'case.pg', warnings},
+    );
+
+    assert.match(result, /<a href="#intro">Introduction<\/a>/);
+    assert.match(result, /<H2 id="intro">Introduction<\/H2>/);
+    assert.match(result, /<BR>/);
+    assert.match(result, /<IMG src="\/x\.png" ALT="">/);
+    assert.doesNotMatch(result, /<\/(?:BR|IMG)>/);
+    assert.deepStrictEqual(warnings, []);
+  });
 });
 
 describe('abbr shorthand', () => {

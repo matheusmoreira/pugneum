@@ -1149,7 +1149,7 @@ class Parser {
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
-      isInline: inlineTags.has(tok.val),
+      isInline: inlineTags.has(asciiLowerCase(tok.val)),
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,

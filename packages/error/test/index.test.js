@@ -1,6 +1,47 @@
 var assert = require('node:assert/strict');
+var fs = require('node:fs');
+var path = require('node:path');
 var {describe, test} = require('node:test');
 var error = require('../');
+var packageRoot = path.resolve(__dirname, '..');
+var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
+var manifest = require('../package.json');
+
+describe('public documentation', function () {
+  test('documents both factories and caller-owned warning collection', function () {
+    assert.match(readme, /### `error\(code, message, options\)`/);
+    assert.match(readme, /### `error\.warning\(code, message, options\)`/);
+    assert.match(readme, /plain\s+object, not an `Error` instance/);
+    assert.match(readme, /factory neither\s+throws nor logs it/);
+    assert.match(readme, /warnings\.push\(/);
+  });
+
+  test('documents the exact lossy JSON boundary', function () {
+    for (const key of ['code', 'msg', 'line', 'column', 'filename']) {
+      assert.match(readme, new RegExp('  ' + key + ': diagnostic\\.' + key));
+    }
+    for (const omission of [
+      '`source`',
+      'formatted `message`',
+      'error `stack`',
+      'error-versus-warning',
+    ]) {
+      assert.match(readme, new RegExp(omission));
+    }
+    assert.match(readme, /cannot reproduce the display message byte for byte/);
+  });
+
+  test('package metadata and prose name both diagnostic kinds', function () {
+    assert.strictEqual(
+      manifest.description,
+      'Pugneum error and warning diagnostic factories',
+    );
+    assert.ok(manifest.keywords.includes('error'));
+    assert.ok(manifest.keywords.includes('warning'));
+    assert.ok(manifest.keywords.includes('diagnostic'));
+    assert.doesNotMatch(readme, /\buseby\b/i);
+  });
+});
 
 describe('with a source', function () {
   test('and a filename', function () {

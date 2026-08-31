@@ -85,8 +85,9 @@ function formatMessage(message, options) {
 
 function toJSON() {
   // source and the formatted message are intentionally excluded: source would
-  // dump whole files into serialized logs, and message is reconstructible from
-  // msg/line/column.
+  // dump whole files into serialized logs. Without source, the formatted
+  // message is not byte-reconstructible; callers needing display-ready output
+  // must retain it separately from this deliberately restricted record.
   return {
     code: this.code,
     msg: this.msg,

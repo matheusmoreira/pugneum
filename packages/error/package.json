@@ -1,10 +1,12 @@
 {
   "name": "pugneum-error",
   "version": "1.1.0",
-  "description": "Pugneum error object factory",
+  "description": "Pugneum error and warning diagnostic factories",
   "keywords": [
     "pugneum",
-    "error"
+    "error",
+    "warning",
+    "diagnostic"
   ],
   "files": [
     "index.js"

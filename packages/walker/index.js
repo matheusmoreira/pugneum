@@ -49,11 +49,13 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  *   walkAST(ast, before, after, options)
  *   walkAST(ast, before, options)        // 3-arg form: `after` omitted
  *
- *   `before(node, replace)` runs before a node's children are walked.
- *   `after(node, replace)`  runs after a node's children have been walked.
+ *   `before(node, replace, control)` runs before a node's children are walked.
+ *   `after(node, replace, control)`  runs after a node's children are walked.
  *   Either hook may be omitted (pass null/undefined). The return value of
  *   `after` is always ignored; `before` returning exactly `false` skips the
  *   node's children (and the `after` call) for that node.
+ *   `control.stop()` ends the whole traversal; its read-only `stopped` getter
+ *   reports whether a hook has already requested that stop.
  *   Invalid hook values are rejected before traversal or options mutation.
  *
  * The `replace` callback substitutes the current node. Passing a single node
@@ -97,6 +99,8 @@ function walkAST(ast, before, after, options) {
   options = normalizeOptions(options);
   assertRootNode(ast);
   const context = createWalkContext(options);
+  context.stopped = false;
+  context.control = createTraversalControl(context);
   validateAST(ast, {
     maxDepth: context.maxDepth,
     [validateDependencyASTs]: context.includeDependencies,
@@ -112,6 +116,8 @@ function walkAST(ast, before, after, options) {
 }
 
 function walkNode(ast, before, after, context) {
+  if (context.stopped) return ast;
+
   const parents = context.parents;
   const currentDepth = Math.max(0, parents.length - context.parentSeedLength);
   const parent = context.parentsAreNearestFirst
@@ -156,7 +162,8 @@ function walkNode(ast, before, after, context) {
   });
 
   if (before) {
-    const result = before(ast, replace);
+    const result = before(ast, replace, context.control);
+    if (context.stopped) return ast;
     if (result === false) {
       // Children are skipped. If `before` replaced the node with an array, it
       // is spliced into the parent by the caller's walkAndMergeNodes but is NOT
@@ -258,7 +265,7 @@ function walkNode(ast, before, after, context) {
     else parents.pop();
   }
 
-  after && after(ast, replace);
+  if (after && !context.stopped) after(ast, replace, context.control);
   return ast;
 
   function walkAndMergeNodes(nodes) {
@@ -277,9 +284,32 @@ function walkNode(ast, before, after, context) {
         merged = nodes.slice(0, index);
         merged.push(result);
       }
+      if (context.stopped) {
+        if (merged) {
+          for (let rest = index + 1; rest < nodes.length; rest++) {
+            merged.push(nodes[rest]);
+          }
+        }
+        break;
+      }
     }
     return merged || nodes;
   }
+}
+
+function createTraversalControl(context) {
+  const control = {
+    stop() {
+      context.stopped = true;
+    },
+  };
+  Object.defineProperty(control, 'stopped', {
+    enumerable: true,
+    get() {
+      return context.stopped;
+    },
+  });
+  return Object.freeze(control);
 }
 
 function assertHook(name, hook) {

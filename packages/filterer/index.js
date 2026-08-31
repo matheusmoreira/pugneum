@@ -35,8 +35,7 @@ function firstUnsupportedGeneratedNode(ast) {
   let hit = null;
   walk(
     root,
-    function (node) {
-      if (hit) return false;
+    function (node, replace, control) {
       const mixinAncestors = parents.filter(
         (parent) => parent.type === 'Mixin',
       );
@@ -55,7 +54,7 @@ function firstUnsupportedGeneratedNode(ast) {
           !insideMixinDefinition)
       ) {
         hit = node;
-        return false;
+        control.stop();
       }
     },
     {parents},

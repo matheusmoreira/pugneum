@@ -36,7 +36,7 @@ The supported call forms are:
 - `walk(ast, before, options)` (the three-argument options overload)
 
 `before` and `after` must each be a function with the signature
-`(node, replace)`, or exactly `null`/`undefined` when omitted.
+`(node, replace, control)`, or exactly `null`/`undefined` when omitted.
 `before` is called when a node is first seen
 while `after` is called after the children of the node
 have already been traversed, if any.
@@ -75,6 +75,14 @@ The matching `after` hook is also skipped for that node; traversal continues
 normally with its siblings and ancestors.
 Otherwise, the returned value of `before` is ignored.
 The returned value of `after` is always ignored.
+
+The same frozen `control` object is passed to every hook in one walk. Calling
+`control.stop()` ends the whole traversal: no remaining descendants, siblings,
+or unfinished ancestor `after` hooks run. A replacement requested by the hook
+that stops traversal is still committed. The read-only boolean
+`control.stopped` reports whether a hook has requested a stop. Complete graph
+validation still happens before the first hook, so stopping affects traversal,
+not schema preflight.
 
 Whether the nodes of an array replacement are themselves
 traversed depends on where and how `replace` is called.

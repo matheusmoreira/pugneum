@@ -236,6 +236,76 @@ test('before returning false prunes only that node and suppresses its after', fu
   assert(visited.includes('after Tag:span'));
 });
 
+test('control.stop ends the whole walk and restores traversal state', function () {
+  var first = {type: 'Text', val: 'first'};
+  var target = {type: 'Text', val: 'target'};
+  var replacement = {type: 'Text', val: 'replacement'};
+  var last = {type: 'Text', val: 'last'};
+  var nodes = [first, target, last];
+  var ast = {type: 'Block', nodes};
+  var parents = [];
+  var events = [];
+
+  assert.strictEqual(
+    walk(
+      ast,
+      function before(node, replace, control) {
+        events.push('before ' + (node.val || node.type));
+        assert(Object.isFrozen(control));
+        if (node === target) {
+          assert.strictEqual(control.stopped, false);
+          replace(replacement);
+          control.stop();
+          assert.strictEqual(control.stopped, true);
+        }
+      },
+      function after(node) {
+        events.push('after ' + (node.val || node.type));
+      },
+      {parents},
+    ),
+    ast,
+  );
+
+  assert.deepStrictEqual(events, [
+    'before Block',
+    'before first',
+    'after first',
+    'before target',
+  ]);
+  assert.notStrictEqual(ast.nodes, nodes);
+  assert.deepStrictEqual(ast.nodes, [first, replacement, last]);
+  assert.deepStrictEqual(parents, []);
+});
+
+test('control.stop from after suppresses later siblings and ancestor after', function () {
+  var ast = {
+    type: 'Block',
+    nodes: [
+      {type: 'Text', val: 'first'},
+      {type: 'Text', val: 'last'},
+    ],
+  };
+  var events = [];
+
+  walk(
+    ast,
+    function before(node) {
+      events.push('before ' + (node.val || node.type));
+    },
+    function after(node, replace, control) {
+      events.push('after ' + (node.val || node.type));
+      if (node.val === 'first') control.stop();
+    },
+  );
+
+  assert.deepStrictEqual(events, [
+    'before Block',
+    'before first',
+    'after first',
+  ]);
+});
+
 test('all non-false before returns and every after return are ignored', function () {
   [undefined, null, true, 0, '', {}, []].forEach(function (beforeReturn) {
     var ast = {type: 'Block', nodes: [{type: 'Text', val: 'x'}]};

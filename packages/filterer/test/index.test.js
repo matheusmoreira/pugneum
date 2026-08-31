@@ -478,6 +478,30 @@ test('syntax output rejects every construct that requires an earlier pipeline ph
   }
 });
 
+test('generated-node validation reports the first unsupported construct', () => {
+  const fixture = singleFilterAst('lateSyntax');
+  const file = (path) => ({type: 'FileReference', path});
+  const lateSyntax = {
+    type: 'syntax',
+    filter: () => [
+      {
+        type: 'Include',
+        block: {type: 'Block', nodes: []},
+        file: file('first.pg'),
+      },
+      {type: 'Extends', file: file('second.pg')},
+    ],
+  };
+
+  assert.throws(
+    () => filter(fixture.ast, {lateSyntax}, fixture.options),
+    (err) =>
+      err.code === 'PUGNEUM:UNSUPPORTED_FILTER_CONSTRUCT' &&
+      err.message.includes('Include') &&
+      !err.message.includes('Extends'),
+  );
+});
+
 test('syntax output depth is bounded from the document root', () => {
   function nestedBlocks(count) {
     var generated = {type: 'Text', val: 'end'};

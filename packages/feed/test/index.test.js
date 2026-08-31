@@ -106,6 +106,36 @@ function assertInvalidOptions(options, field) {
   );
 }
 
+function failPublicationRename(t, destinationName) {
+  var originalRenameSync = fs.renameSync;
+  var failed = false;
+  fs.renameSync = function (source, destination) {
+    if (
+      !failed &&
+      path.basename(destination) === destinationName &&
+      path.basename(source).endsWith('.temporary')
+    ) {
+      failed = true;
+      var error = new Error('injected publication failure');
+      error.code = 'EIO';
+      throw error;
+    }
+    return Reflect.apply(originalRenameSync, this, arguments);
+  };
+  t.after(() => {
+    fs.renameSync = originalRenameSync;
+  });
+  return () => failed;
+}
+
+function assertFeedWriteFailed(fn, outputName) {
+  assert.throws(fn, (error) => {
+    assert.strictEqual(error.code, 'PUGNEUM:FEED_WRITE_FAILED');
+    assert.ok(error.message.includes(outputName));
+    return true;
+  });
+}
+
 describe('extract.indexPage robustness', () => {
   function writeTemp(content) {
     var p = path.join(
@@ -503,6 +533,42 @@ describe('end-to-end feed generation', () => {
         '<lastBuildDate>Thu, 01 Jan 2026 00:00:00 GMT</lastBuildDate>',
       ),
     );
+  });
+});
+
+describe('transactional feed publication', () => {
+  test('a later commit failure removes both fresh outputs', (t) => {
+    var fixture = boundaryFixture(t);
+    var didFail = failPublicationRename(t, 'rss.xml');
+
+    assertFeedWriteFailed(() => fixture.generate(), 'rss.xml');
+
+    assert.ok(didFail());
+    assertNoGeneratedFeeds(fixture);
+    assert.deepStrictEqual(fs.readdirSync(fixture.output), []);
+  });
+
+  test('a later commit failure restores both prior outputs', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(path.join(fixture.output, 'atom.xml'), 'old atom');
+    fs.writeFileSync(path.join(fixture.output, 'rss.xml'), 'old rss');
+    var didFail = failPublicationRename(t, 'rss.xml');
+
+    assertFeedWriteFailed(() => fixture.generate(), 'rss.xml');
+
+    assert.ok(didFail());
+    assert.strictEqual(
+      fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8'),
+      'old atom',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(fixture.output, 'rss.xml'), 'utf8'),
+      'old rss',
+    );
+    assert.deepStrictEqual(fs.readdirSync(fixture.output).sort(), [
+      'atom.xml',
+      'rss.xml',
+    ]);
   });
 });
 

@@ -9,6 +9,10 @@ const files = rootedFilesystem('site');
 const index = files.readFile('index.html', 'utf8');
 files.ensureDirectory('feeds/archive');
 files.writeFileAtomic('atom.xml', xml, 'utf8');
+files.writeFilesTransaction([
+  {path: 'atom.xml', data: atomXml, options: 'utf8'},
+  {path: 'rss.xml', data: rssXml, options: 'utf8'},
+]);
 ```
 
 The returned frozen object exposes:
@@ -19,12 +23,16 @@ The returned frozen object exposes:
 - `ensureDirectory(relative)`, which creates checked descendant directories;
 - `assertWritableFile(relative)`, which validates a destination without
   publishing; and
-- `writeFileAtomic(relative, data, options)`, which publishes one regular file.
+- `writeFileAtomic(relative, data, options)`, which publishes one regular file;
+  and
+- `writeFilesTransaction(files)`, which stages and publishes a set of distinct
+  regular files with rollback on failure.
 
 The module also exports `ERROR_CODES` and `RootedFilesystemError`. Callers
 should route failures by the stable codes `PATH_ESCAPE`, `NOT_REGULAR_FILE`,
-and `NOT_DIRECTORY`; error-message text and the canonical `root` string are not
-containment APIs.
+`NOT_DIRECTORY`, and `WRITE_FAILED`; error-message text and the canonical
+`root` string are not containment APIs. Transaction write/commit failures use
+`WRITE_FAILED` and expose the affected requested path as `error.path`.
 
 The configured root is a trusted boundary and may itself be a symlink. Its
 canonical identity is recorded and verified for every operation. Requested
@@ -50,6 +58,13 @@ existing hard-linked file changes only the destination name; it does not
 truncate the other link's inode. `assertWritableFile` performs the same static
 destination checks without publishing.
 
+`writeFilesTransaction` validates every distinct destination before creating a
+temporary file, then writes and syncs all temporary siblings before changing a
+final name. Existing destinations are preserved with private same-directory
+rollback links. If a later final rename fails, already-published fresh files
+are removed and prior files are restored before the error returns. Known
+temporary and rollback names are cleaned up on both success and failure.
+
 ## Concurrency and platform boundary
 
 Linux and other systems with a descriptor pathname namespace resolve temporary
@@ -63,8 +78,13 @@ an attacker continuously swapping ancestor directories during the operation.
 Callers needing that hostile-concurrent-mutation guarantee must isolate the
 build root with operating-system permissions or a sandbox.
 
-The operation is atomic per file. Coordinating multiple output files as one
-transaction is the caller's responsibility.
+Each final rename is atomic. No portable filesystem primitive swaps multiple
+independent names at the same instant, so a reader racing a successful
+multi-file commit can observe the short transition between renames. The
+transaction guarantee is that a failed call restores the prior complete set
+(or removes every fresh destination); it never returns with a knowingly mixed
+set. An unrecoverable rollback failure is reported as `WRITE_FAILED`, retains
+any surviving rollback link for manual recovery, and names the affected path.
 
 Regular hard links are allowed for reads because a filesystem inode has no
 portable canonical "original pathname." The configured root and permission to

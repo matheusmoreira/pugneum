@@ -51,6 +51,36 @@ function assertNotDirectory(fn) {
   });
 }
 
+function assertWriteFailed(fn, requestedPath) {
+  assert.throws(fn, (error) => {
+    assert.strictEqual(error.code, 'PUGNEUM:FILESYSTEM_WRITE_FAILED');
+    assert.strictEqual(error.path, requestedPath);
+    return true;
+  });
+}
+
+function failPublicationRename(t, destinationName) {
+  const originalRenameSync = fs.renameSync;
+  let failed = false;
+  fs.renameSync = function (source, destination) {
+    if (
+      !failed &&
+      path.basename(destination) === destinationName &&
+      path.basename(source).endsWith('.temporary')
+    ) {
+      failed = true;
+      const error = new Error('injected publication failure');
+      error.code = 'EIO';
+      throw error;
+    }
+    return Reflect.apply(originalRenameSync, this, arguments);
+  };
+  t.after(() => {
+    fs.renameSync = originalRenameSync;
+  });
+  return () => failed;
+}
+
 describe('rooted regular-file reads', () => {
   test('requires a directory as the configured root', (t) => {
     const sandbox = temporaryRoot(t);
@@ -526,5 +556,166 @@ describe('rooted atomic publication', () => {
     } finally {
       fs.openSync = originalOpenSync;
     }
+  });
+});
+
+describe('rooted transactional publication', () => {
+  test('rejects normalized duplicate destinations before publication', (t) => {
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+
+    assert.throws(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'feeds/../feed.xml', data: 'atom'},
+          {path: 'feed.xml', data: 'rss'},
+        ]),
+      /duplicate destination/,
+    );
+
+    assert.deepStrictEqual(fs.readdirSync(root), []);
+  });
+
+  test('publishes a complete set and removes transaction artifacts', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'atom.xml'), 'old atom');
+    const files = createRootedFilesystem(root);
+
+    files.writeFilesTransaction([
+      {path: 'atom.xml', data: 'new atom', options: 'utf8'},
+      {path: 'rss.xml', data: 'new rss', options: 'utf8'},
+    ]);
+
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'atom.xml'), 'utf8'),
+      'new atom',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'),
+      'new rss',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'atom.xml',
+      'rss.xml',
+    ]);
+  });
+
+  test('syncs both staged files before committing directory metadata', (t) => {
+    if (process.platform === 'win32') {
+      t.skip('Node does not expose writable Windows directory handles');
+      return;
+    }
+
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+    const originalFsyncSync = fs.fsyncSync;
+    const stages = [];
+    fs.fsyncSync = function (fd) {
+      const stat = fs.fstatSync(fd);
+      stages.push(stat.isDirectory() ? 'directory' : 'file');
+    };
+    t.after(() => {
+      fs.fsyncSync = originalFsyncSync;
+    });
+
+    files.writeFilesTransaction([
+      {path: 'atom.xml', data: 'new atom'},
+      {path: 'rss.xml', data: 'new rss'},
+    ]);
+
+    assert.deepStrictEqual(stages, ['file', 'file', 'directory', 'directory']);
+  });
+
+  test('a staging failure preserves all prior destinations', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'atom.xml'), 'old atom');
+    fs.writeFileSync(path.join(root, 'rss.xml'), 'old rss');
+    const files = createRootedFilesystem(root);
+
+    assertWriteFailed(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'atom.xml', data: 'new atom'},
+          {path: 'rss.xml', data: Symbol('invalid')},
+        ]),
+      'rss.xml',
+    );
+
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'atom.xml'), 'utf8'),
+      'old atom',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'),
+      'old rss',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'atom.xml',
+      'rss.xml',
+    ]);
+  });
+
+  test('a later commit failure removes every fresh destination', (t) => {
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+    const didFail = failPublicationRename(t, 'rss.xml');
+
+    assertWriteFailed(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'atom.xml', data: 'new atom'},
+          {path: 'rss.xml', data: 'new rss'},
+        ]),
+      'rss.xml',
+    );
+
+    assert.ok(didFail());
+    assert.deepStrictEqual(fs.readdirSync(root), []);
+  });
+
+  test('a later commit failure restores every prior destination', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'atom.xml'), 'old atom');
+    fs.writeFileSync(path.join(root, 'rss.xml'), 'old rss');
+    const files = createRootedFilesystem(root);
+    const didFail = failPublicationRename(t, 'rss.xml');
+
+    assertWriteFailed(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'atom.xml', data: 'new atom'},
+          {path: 'rss.xml', data: 'new rss'},
+        ]),
+      'rss.xml',
+    );
+
+    assert.ok(didFail());
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'atom.xml'), 'utf8'),
+      'old atom',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'),
+      'old rss',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'atom.xml',
+      'rss.xml',
+    ]);
+  });
+
+  test('preflights every destination before creating a temporary file', (t) => {
+    const root = temporaryRoot(t);
+    fs.mkdirSync(path.join(root, 'rss.xml'));
+    const files = createRootedFilesystem(root);
+
+    assertNotRegular(() =>
+      files.writeFilesTransaction([
+        {path: 'atom.xml', data: 'new atom'},
+        {path: 'rss.xml', data: 'new rss'},
+      ]),
+    );
+
+    assert.deepStrictEqual(fs.readdirSync(root), ['rss.xml']);
   });
 });

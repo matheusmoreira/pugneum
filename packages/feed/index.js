@@ -127,13 +127,17 @@ function validateOptions(options) {
   };
 }
 
-function rethrowFilesystemBoundary(error, message, includeNonRegular) {
-  if (
+function isFilesystemBoundary(error, includeNonRegular) {
+  return (
     error.code === filesystemErrors.PATH_ESCAPE ||
     (includeNonRegular &&
       (error.code === filesystemErrors.NOT_REGULAR_FILE ||
         error.code === filesystemErrors.NOT_DIRECTORY))
-  ) {
+  );
+}
+
+function rethrowFilesystemBoundary(error, message, includeNonRegular) {
+  if (isFilesystemBoundary(error, includeNonRegular)) {
     throw feedError('FEED_PATH_TRAVERSAL', message);
   }
   throw error;
@@ -432,23 +436,34 @@ module.exports = function generateFeeds(options) {
   const atom = generateAtom(feed);
   const rss = generateRss(feed);
 
-  fs.mkdirSync(writeDir, {recursive: true});
-  const outputFiles = createRootedFilesystem(writeDir);
   try {
-    // Create each contained parent chain without following symlinks. Validate
-    // both names before publishing either file, then repeat the same checks
-    // inside each atomic write to close static check/use gaps.
+    fs.mkdirSync(writeDir, {recursive: true});
+    const outputFiles = createRootedFilesystem(writeDir);
+
+    // Create each contained parent chain without following symlinks. The batch
+    // writer then preflights both final names, stages and syncs both documents,
+    // and keeps rollback links until every final rename has committed.
     outputFiles.ensureDirectory(path.dirname(atomPath));
     outputFiles.ensureDirectory(path.dirname(rssPath));
-    outputFiles.assertWritableFile(atomPath);
-    outputFiles.assertWritableFile(rssPath);
-    outputFiles.writeFileAtomic(atomPath, atom, {encoding: 'utf8'});
-    outputFiles.writeFileAtomic(rssPath, rss, {encoding: 'utf8'});
+    outputFiles.writeFilesTransaction([
+      {path: atomPath, data: atom, options: {encoding: 'utf8'}},
+      {path: rssPath, data: rss, options: {encoding: 'utf8'}},
+    ]);
   } catch (error) {
-    rethrowFilesystemBoundary(
-      error,
-      'Feed output path escapes write directory or is not a regular file',
-      true,
+    if (isFilesystemBoundary(error, true)) {
+      rethrowFilesystemBoundary(
+        error,
+        'Feed output path escapes write directory or is not a regular file',
+        true,
+      );
+    }
+    const failedOutput =
+      error.code === filesystemErrors.WRITE_FAILED && error.path
+        ? error.path
+        : writeDir;
+    throw feedError(
+      'FEED_WRITE_FAILED',
+      'Could not publish feed output: ' + failedOutput,
     );
   }
 };

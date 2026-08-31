@@ -8,6 +8,7 @@ const ERROR_CODES = Object.freeze({
   PATH_ESCAPE: 'PUGNEUM:FILESYSTEM_PATH_ESCAPE',
   NOT_REGULAR_FILE: 'PUGNEUM:FILESYSTEM_NOT_REGULAR_FILE',
   NOT_DIRECTORY: 'PUGNEUM:FILESYSTEM_NOT_DIRECTORY',
+  WRITE_FAILED: 'PUGNEUM:FILESYSTEM_WRITE_FAILED',
 });
 
 class RootedFilesystemError extends Error {
@@ -45,6 +46,15 @@ function notDirectory(requestedPath) {
     ERROR_CODES.NOT_DIRECTORY,
     `Expected a directory: ${requestedPath}`,
     requestedPath,
+  );
+}
+
+function writeFailed(requestedPath, cause, detail) {
+  return rootedError(
+    ERROR_CODES.WRITE_FAILED,
+    detail || `Could not publish file transaction at: ${requestedPath}`,
+    requestedPath,
+    cause,
   );
 }
 
@@ -593,12 +603,377 @@ module.exports = function createRootedFilesystem(root) {
     }
   }
 
+  function transactionFiles(files) {
+    if (!Array.isArray(files) || files.length === 0) {
+      throw new TypeError('files must be a non-empty array');
+    }
+
+    const destinations = new Set();
+    return files.map((file, index) => {
+      if (file === null || typeof file !== 'object' || Array.isArray(file)) {
+        throw new TypeError(`files[${index}] must be an object`);
+      }
+
+      const requestedPath = file.path;
+      const data = file.data;
+      const options = file.options;
+      const resolved = resolveRequest(requestedPath);
+      const destinationKey =
+        process.platform === 'win32'
+          ? resolved.relative.toLowerCase()
+          : resolved.relative;
+      if (destinations.has(destinationKey)) {
+        throw new TypeError(
+          `files[${index}].path resolves to a duplicate destination`,
+        );
+      }
+      destinations.add(destinationKey);
+
+      return {
+        requestedPath,
+        data,
+        options,
+        resolved,
+        rootHandle: undefined,
+        parent: undefined,
+        handle: undefined,
+        targetPath: undefined,
+        existing: undefined,
+        tempFd: undefined,
+        tempPath: undefined,
+        backupPath: undefined,
+        backupStat: undefined,
+        published: false,
+        keepBackup: false,
+      };
+    });
+  }
+
+  function asWriteFailure(error, record) {
+    if (error instanceof RootedFilesystemError) return error;
+    return writeFailed(record.requestedPath, error);
+  }
+
+  function runTransactionOperation(record, operation) {
+    try {
+      return operation();
+    } catch (error) {
+      throw asWriteFailure(error, record);
+    }
+  }
+
+  function changedDestination() {
+    const error = new Error('Destination changed during file transaction');
+    error.code = 'EBUSY';
+    return error;
+  }
+
+  function prepareTransactionFile(record) {
+    runTransactionOperation(record, () => {
+      record.rootHandle = openRoot(record.requestedPath);
+      record.parent = prepareParent(record.resolved, record.rootHandle);
+      record.handle = openParent(
+        record.resolved,
+        record.parent,
+        record.rootHandle,
+      );
+      record.targetPath = path.join(
+        record.handle.basePath,
+        path.basename(record.resolved.relative),
+      );
+      record.existing = destinationStat(record.resolved, record.targetPath);
+      if (!record.handle.descriptorBacked) {
+        verifyParentByName(record.resolved, record.parent, record.rootHandle);
+      }
+    });
+  }
+
+  function stageTransactionFile(record) {
+    runTransactionOperation(record, () => {
+      const basename = path.basename(record.resolved.relative);
+      const tempName = `.${basename}.${
+        process.pid
+      }.${crypto.randomUUID()}.temporary`;
+      const tempPath = path.join(record.handle.basePath, tempName);
+      const mode = record.existing ? record.existing.mode & 0o777 : 0o666;
+      const tempFd = fs.openSync(
+        tempPath,
+        openFlags(fs.constants.O_WRONLY, [
+          fs.constants.O_CREAT,
+          fs.constants.O_EXCL,
+          fs.constants.O_NOFOLLOW,
+        ]),
+        mode,
+      );
+      record.tempPath = tempPath;
+      record.tempFd = tempFd;
+      if (!fs.fstatSync(tempFd).isFile()) {
+        throw notRegularFile(record.requestedPath);
+      }
+      fs.writeFileSync(tempFd, record.data, record.options);
+      fs.fsyncSync(tempFd);
+      fs.closeSync(tempFd);
+      record.tempFd = undefined;
+      record.data = undefined;
+
+      if (!record.handle.descriptorBacked) {
+        verifyParentByName(record.resolved, record.parent, record.rootHandle);
+      }
+    });
+  }
+
+  function verifyTransactionDestination(record) {
+    runTransactionOperation(record, () => {
+      if (!record.handle.descriptorBacked) {
+        verifyParentByName(record.resolved, record.parent, record.rootHandle);
+      }
+      const current = destinationStat(record.resolved, record.targetPath);
+      if (record.existing === null) {
+        if (current !== null) throw changedDestination();
+        return;
+      }
+      if (current === null || !sameIdentity(current, record.existing)) {
+        throw changedDestination();
+      }
+    });
+  }
+
+  function backupTransactionFile(record) {
+    verifyTransactionDestination(record);
+    if (record.existing === null) return;
+
+    runTransactionOperation(record, () => {
+      const basename = path.basename(record.resolved.relative);
+      const backupName = `.${basename}.${
+        process.pid
+      }.${crypto.randomUUID()}.rollback`;
+      const backupPath = path.join(record.handle.basePath, backupName);
+      fs.linkSync(record.targetPath, backupPath);
+      record.backupPath = backupPath;
+      record.backupStat = fs.lstatSync(backupPath);
+      if (
+        !record.backupStat.isFile() ||
+        !sameIdentity(record.existing, record.backupStat)
+      ) {
+        throw changedDestination();
+      }
+    });
+  }
+
+  function publishTransactionFile(record) {
+    verifyTransactionDestination(record);
+    runTransactionOperation(record, () => {
+      fs.renameSync(record.tempPath, record.targetPath);
+      record.tempPath = undefined;
+      record.published = true;
+    });
+  }
+
+  function syncTransactionDirectories(records) {
+    const synced = new Set();
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      if (!record.handle || !record.rootHandle || !record.parent) continue;
+      const directoryFd =
+        record.handle.fd !== undefined
+          ? record.handle.fd
+          : record.rootHandle.fd;
+      if (directoryFd === undefined) continue;
+
+      const key = `${record.parent.expectedStat.dev}:${record.parent.expectedStat.ino}`;
+      if (synced.has(key)) continue;
+      synced.add(key);
+      runTransactionOperation(record, () => {
+        try {
+          fs.fsyncSync(directoryFd);
+        } catch (error) {
+          if (!['EBADF', 'EINVAL', 'ENOTSUP'].includes(error.code)) throw error;
+        }
+      });
+    }
+  }
+
+  function mergeTransactionFailures(primary, secondary) {
+    if (!secondary) return primary;
+    if (!primary) return secondary;
+    const requestedPath = primary.path || secondary.path;
+    return writeFailed(
+      requestedPath,
+      new AggregateError(
+        [primary, secondary],
+        'File transaction and recovery both failed',
+      ),
+      `File transaction failed and recovery was incomplete at: ${requestedPath}`,
+    );
+  }
+
+  function rollbackTransaction(records) {
+    let failure;
+    for (let i = records.length - 1; i >= 0; i--) {
+      const record = records[i];
+      if (!record.published) continue;
+
+      try {
+        runTransactionOperation(record, () => {
+          if (record.existing !== null) {
+            if (!record.backupPath) throw changedDestination();
+            fs.renameSync(record.backupPath, record.targetPath);
+            record.backupPath = undefined;
+          } else {
+            fs.unlinkSync(record.targetPath);
+          }
+          record.published = false;
+        });
+      } catch (error) {
+        record.keepBackup = Boolean(record.backupPath);
+        failure = mergeTransactionFailures(failure, error);
+      }
+    }
+    return failure;
+  }
+
+  function cleanupTransactionArtifacts(records) {
+    let failure;
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+
+      if (record.tempFd !== undefined) {
+        try {
+          fs.closeSync(record.tempFd);
+          record.tempFd = undefined;
+        } catch (error) {
+          failure = mergeTransactionFailures(
+            failure,
+            asWriteFailure(error, record),
+          );
+        }
+      }
+
+      if (record.tempPath !== undefined) {
+        try {
+          fs.unlinkSync(record.tempPath);
+          record.tempPath = undefined;
+        } catch (error) {
+          if (error.code !== 'ENOENT') {
+            failure = mergeTransactionFailures(
+              failure,
+              asWriteFailure(error, record),
+            );
+          } else {
+            record.tempPath = undefined;
+          }
+        }
+      }
+
+      if (record.backupPath !== undefined && !record.keepBackup) {
+        try {
+          fs.unlinkSync(record.backupPath);
+          record.backupPath = undefined;
+        } catch (error) {
+          if (error.code !== 'ENOENT') {
+            failure = mergeTransactionFailures(
+              failure,
+              asWriteFailure(error, record),
+            );
+          } else {
+            record.backupPath = undefined;
+          }
+        }
+      }
+    }
+    return failure;
+  }
+
+  function closeTransactionHandles(records) {
+    let failure;
+    for (let i = records.length - 1; i >= 0; i--) {
+      const record = records[i];
+      if (record.handle) {
+        try {
+          closeParent(record.handle);
+        } catch (error) {
+          failure = mergeTransactionFailures(
+            failure,
+            asWriteFailure(error, record),
+          );
+        }
+        record.handle = undefined;
+      }
+      if (record.rootHandle) {
+        try {
+          closeRoot(record.rootHandle);
+        } catch (error) {
+          failure = mergeTransactionFailures(
+            failure,
+            asWriteFailure(error, record),
+          );
+        }
+        record.rootHandle = undefined;
+      }
+    }
+    return failure;
+  }
+
+  function writeFilesTransaction(files) {
+    const records = transactionFiles(files);
+    let publicationComplete = false;
+    let failure;
+
+    try {
+      for (let i = 0; i < records.length; i++) {
+        prepareTransactionFile(records[i]);
+      }
+      for (let i = 0; i < records.length; i++) {
+        stageTransactionFile(records[i]);
+      }
+      for (let i = 0; i < records.length; i++) {
+        backupTransactionFile(records[i]);
+      }
+      for (let i = 0; i < records.length; i++) {
+        publishTransactionFile(records[i]);
+      }
+
+      // Keep rollback links until every rename is durable. Once this sync
+      // succeeds, the complete new set is the committed state.
+      syncTransactionDirectories(records);
+      publicationComplete = true;
+
+      const cleanupFailure = cleanupTransactionArtifacts(records);
+      if (cleanupFailure) throw cleanupFailure;
+      syncTransactionDirectories(records);
+    } catch (error) {
+      failure = error;
+    }
+
+    if (failure && !publicationComplete) {
+      failure = mergeTransactionFailures(failure, rollbackTransaction(records));
+    }
+    failure = mergeTransactionFailures(
+      failure,
+      cleanupTransactionArtifacts(records),
+    );
+    if (failure && !publicationComplete) {
+      try {
+        syncTransactionDirectories(records);
+      } catch (error) {
+        failure = mergeTransactionFailures(failure, error);
+      }
+    }
+    failure = mergeTransactionFailures(
+      failure,
+      closeTransactionHandles(records),
+    );
+
+    if (failure) throw failure;
+  }
+
   return Object.freeze({
     root: realRoot,
     readFile,
     ensureDirectory,
     assertWritableFile,
     writeFileAtomic,
+    writeFilesTransaction,
   });
 };
 

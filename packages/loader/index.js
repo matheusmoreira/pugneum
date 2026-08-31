@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const walk = require('pugneum-walker');
@@ -11,6 +13,7 @@ module.exports.resolve = resolve;
 // (non-cyclic) include chain aborts with a coded PUGNEUM error instead of
 // overflowing the native call stack with an uncatchable RangeError.
 const DEFAULT_MAX_LOAD_DEPTH = 256;
+const loadState = Symbol('pugneumLoaderState');
 
 // Resolve/resolveLibrary throw before they have access to the AST node, so
 // they cannot supply a real source location. load()'s catch re-stamps the
@@ -18,7 +21,75 @@ const DEFAULT_MAX_LOAD_DEPTH = 256;
 // the placeholder location below is only ever seen by direct callers of the
 // exported resolve() helper, which the README documents as taking no node.
 function zeroLoc() {
-  return {line: 0, column: 0, filename: ''};
+  return {};
+}
+
+function locationFor(options, node) {
+  return {
+    line: node.line,
+    column: node.column,
+    filename: node.filename || options.filename,
+    source: sourceFor(options, node),
+  };
+}
+
+function attachCause(diagnostic, cause) {
+  Object.defineProperty(diagnostic, 'cause', {
+    configurable: true,
+    value: cause,
+  });
+  return diagnostic;
+}
+
+function thrownProperty(thrown, key) {
+  if (
+    thrown == null ||
+    (typeof thrown !== 'object' && typeof thrown !== 'function')
+  ) {
+    return undefined;
+  }
+  try {
+    return thrown[key];
+  } catch (_error) {
+    return undefined;
+  }
+}
+
+function thrownDetail(thrown) {
+  const msg = thrownProperty(thrown, 'msg');
+  if (msg !== undefined) return safeString(msg);
+  const message = thrownProperty(thrown, 'message');
+  if (message !== undefined) return safeString(message);
+  return safeString(thrown);
+}
+
+function safeString(value) {
+  try {
+    return String(value);
+  } catch (_error) {
+    return '[unprintable thrown value]';
+  }
+}
+
+function wrapLoadFailure(failure, options, node) {
+  const failureCode = thrownProperty(failure, 'code');
+  const code =
+    typeof failureCode === 'string' && failureCode.startsWith('PUGNEUM:')
+      ? failureCode.slice('PUGNEUM:'.length)
+      : 'LOAD_ERROR';
+  return attachCause(
+    makeError(code, thrownDetail(failure), locationFor(options, node)),
+    failure,
+  );
+}
+
+function registerSource(sources, filename, source) {
+  Object.defineProperty(sources, filename, {
+    configurable: true,
+    enumerable: true,
+    value: source,
+    writable: true,
+  });
 }
 
 function load(ast, options) {
@@ -33,123 +104,183 @@ function load(ast, options) {
   // object on purpose so the orchestrator can thread one options bag through
   // load -> link -> render. getOptions() then layers the resolve/read defaults
   // onto a copy that shares this same sources reference.
-  if (!options.sources) {
+  if (options.sources === undefined) {
     options.sources = Object.create(null);
-    if (options.filename && options.source) {
-      options.sources[options.filename] = options.source;
-    }
+  }
+  if (options.filename !== undefined && options.source !== undefined) {
+    registerSource(options.sources, options.filename, options.source);
   }
   options = getOptions(options);
   // Clone the caller's AST once: walk() mutates nodes in place, and the input
   // tree belongs to the caller. Recursive loads work on freshly-parsed,
   // single-owner ASTs and are not cloned again (see loadAST).
   ast = structuredClone(ast);
-  return loadAST(ast, options, new Set(), 0);
+  const state = options[loadState];
+  const entryFilename = options.filename || ast.filename;
+  if (entryFilename) {
+    try {
+      state.visiting.add(canonicalIdentity(entryFilename, options));
+    } catch (failure) {
+      throw wrapLoadFailure(failure, options, ast);
+    }
+  }
+  try {
+    return loadAST(ast, options, 0);
+  } catch (failure) {
+    if (thrownProperty(failure, 'code') !== 'INVALID_AST') throw failure;
+    const failureNode = thrownProperty(failure, 'node') || ast;
+    throw attachCause(
+      makeError('INVALID_AST', thrownDetail(failure), {
+        line: thrownProperty(failure, 'line'),
+        column: thrownProperty(failure, 'column'),
+        filename: thrownProperty(failure, 'filename') || options.filename,
+        source: sourceFor(options, failureNode),
+      }),
+      failure,
+    );
+  }
 }
 
-function loadAST(ast, options, visiting, depth) {
+function loadAST(ast, options, depth) {
   return walk(ast, function (node) {
+    if (!node.filename && options.filename) node.filename = options.filename;
     if (
       node.type === 'Include' ||
       node.type === 'RawInclude' ||
       node.type === 'Extends'
     ) {
       const file = node.file;
-      if (file.type !== 'FileReference') {
+      if (
+        file == null ||
+        typeof file !== 'object' ||
+        Array.isArray(file) ||
+        file.type !== 'FileReference'
+      ) {
         throw makeError(
           'INVALID_AST',
           'Expected file.type to be "FileReference"',
-          {
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-            source: sourceFor(options, node),
-          },
+          locationFor(options, node),
         );
       }
-      let filePath, str, raw;
-      try {
-        filePath = options.resolve(file.path, file.filename, options);
-        file.fullPath = filePath;
-        raw = options.read(filePath, options);
-        // Normalize to a Buffer so file.raw is always genuine bytes (the
-        // filterer hands file.raw to binary filters) and so str decodes
-        // correctly even when a custom read returns a string or when a prior
-        // structuredClone downgraded a Buffer to a Uint8Array.
-        if (!Buffer.isBuffer(raw)) {
-          raw = Buffer.from(raw);
-        }
-        str = raw.toString('utf8');
-      } catch (ex) {
-        const code =
-          typeof ex.code === 'string' && ex.code.startsWith('PUGNEUM:')
-            ? ex.code.slice('PUGNEUM:'.length)
-            : 'LOAD_ERROR';
-        throw makeError(code, ex.msg || ex.message, {
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-          source: sourceFor(options, node),
-        });
+      const structured = node.type === 'Extends' || node.type === 'Include';
+      const maxDepth = options.maxLoadDepth;
+      if (structured && depth >= maxDepth) {
+        throw makeError(
+          'LOAD_DEPTH_EXCEEDED',
+          'Include/extends chain exceeds maximum depth of ' + maxDepth,
+          locationFor(options, node),
+        );
       }
-      file.str = str;
-      file.raw = raw;
-      options.sources[filePath] = str;
-      if (node.type === 'Extends' || node.type === 'Include') {
-        // Canonicalize via realpath so the same physical file reached through
-        // different spellings (including symlinks) is recognized as a cycle.
-        // Fall back to lexical resolution when realpath fails (e.g. a custom
-        // read serving a virtual path that does not exist on disk).
-        let canonical;
-        try {
-          canonical = fs.realpathSync(filePath);
-        } catch (e) {
-          canonical = path.resolve(filePath);
-        }
-        if (visiting.has(canonical)) {
-          throw makeError(
-            'CIRCULAR_DEPENDENCY',
-            'Circular dependency detected: ' +
-              canonical +
-              ' is already being loaded',
-            {
-              line: node.line,
-              column: node.column,
-              filename: node.filename,
-              source: sourceFor(options, node),
-            },
+
+      const fromFilename = file.filename || node.filename || options.filename;
+      if (!file.filename && fromFilename) file.filename = fromFilename;
+      let filePath;
+      let canonical;
+      try {
+        filePath = validateResolvedPath(
+          options.resolve(file.path, fromFilename, options),
+        );
+        // `basedir` remains the filesystem boundary even when a caller
+        // supplies a custom resolver. Library references deliberately select
+        // an installed package outside that project boundary and are checked
+        // against their package root by the default resolver instead.
+        if (
+          options.resolve !== resolve &&
+          options.basedir &&
+          file.path[0] !== '@'
+        ) {
+          filePath = assertWithin(
+            filePath,
+            options.basedir,
+            'Include path escapes project root: ' + filePath,
+            options,
           );
         }
-        const maxDepth =
-          options.maxLoadDepth != null
-            ? options.maxLoadDepth
-            : DEFAULT_MAX_LOAD_DEPTH;
-        if (depth >= maxDepth) {
-          throw makeError(
-            'LOAD_DEPTH_EXCEEDED',
-            'Include/extends chain exceeds maximum depth of ' + maxDepth,
-            {
-              line: node.line,
-              column: node.column,
-              filename: node.filename,
-              source: sourceFor(options, node),
-            },
-          );
-        }
-        visiting.add(canonical);
+        if (structured) canonical = canonicalIdentity(filePath, options);
+      } catch (ex) {
+        throw wrapLoadFailure(ex, options, node);
+      }
+
+      const visiting = options[loadState].visiting;
+      if (structured && visiting.has(canonical)) {
+        throw makeError(
+          'CIRCULAR_DEPENDENCY',
+          'Circular dependency detected: ' +
+            canonical +
+            ' is already being loaded',
+          locationFor(options, node),
+        );
+      }
+
+      if (structured) visiting.add(canonical);
+      try {
+        let raw;
         try {
+          raw = normalizeReadResult(options.read(filePath, options));
+        } catch (ex) {
+          throw wrapLoadFailure(ex, options, node);
+        }
+        file.fullPath = filePath;
+        if (node.type === 'RawInclude' && node.filters.length > 0) {
+          attachLazyText(file, filePath, options.sources);
+          file.raw = raw;
+        } else {
+          const str = raw.toString('utf8');
+          file.str = str;
+          file.raw = raw;
+          registerSource(options.sources, filePath, str);
+        }
+
+        if (structured) {
+          const str = file.str;
           const opts = Object.assign({}, options, {
             filename: filePath,
             source: str,
           });
+          Object.defineProperty(opts, loadState, {
+            value: options[loadState],
+          });
           const tokens = options.lex(str, opts);
           const fileAst = options.parse(tokens, opts);
-          file.ast = loadAST(fileAst, opts, visiting, depth + 1);
-        } finally {
-          visiting.delete(canonical);
+          file.ast = loadAST(fileAst, opts, depth + 1);
         }
+      } finally {
+        if (structured) visiting.delete(canonical);
       }
     }
+  });
+}
+
+function validateResolvedPath(filePath) {
+  if (typeof filePath !== 'string' || filePath.length === 0) {
+    throw new TypeError('resolve must return a non-empty string');
+  }
+  return filePath;
+}
+
+function normalizeReadResult(raw) {
+  if (Buffer.isBuffer(raw)) return raw;
+  if (typeof raw === 'string' || raw instanceof Uint8Array) {
+    return Buffer.from(raw);
+  }
+  throw new TypeError('read must return a Buffer, Uint8Array, or string');
+}
+
+function attachLazyText(file, filePath, sources) {
+  Object.defineProperty(file, 'str', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      const str = this.raw.toString('utf8');
+      Object.defineProperty(this, 'str', {
+        configurable: true,
+        enumerable: true,
+        value: str,
+        writable: true,
+      });
+      registerSource(sources, filePath, str);
+      return str;
+    },
   });
 }
 
@@ -157,15 +288,27 @@ function loadAST(ast, options, visiting, depth) {
 // per-file `sources` map (keyed on the node's own filename, as the linker and
 // renderer do) and falling back to the scalar current source.
 function sourceFor(options, node) {
-  if (options.sources && node.filename && options.sources[node.filename]) {
-    return options.sources[node.filename];
+  const sources = options && options.sources;
+  const filename = node.filename || options.filename;
+  if (
+    sources &&
+    filename &&
+    Object.prototype.hasOwnProperty.call(sources, filename)
+  ) {
+    return sources[filename];
   }
   return options.source;
 }
 
 // Is `resolved` contained within `base` (equal to it or a descendant)?
 function isWithin(resolved, base) {
-  return resolved === base || resolved.startsWith(base + path.sep);
+  const relative = path.relative(base, resolved);
+  return (
+    relative === '' ||
+    (relative !== '..' &&
+      !relative.startsWith('..' + path.sep) &&
+      !path.isAbsolute(relative))
+  );
 }
 
 // Canonicalize a candidate path for containment checking. The target may not
@@ -173,18 +316,32 @@ function isWithin(resolved, base) {
 // longest existing prefix and re-append the missing tail. This resolves any
 // symlink inside the boundary — a symlink within the root that points outside
 // it can no longer escape the containment check.
-function realpathBoundary(candidate) {
+function realpathBoundary(candidate, options) {
+  const cache = options && options[loadState] && options[loadState].realpaths;
+  const cacheKey = path.resolve(candidate);
+  if (cache && cache.has(cacheKey)) return cache.get(cacheKey);
+
   let current = path.resolve(candidate);
   const tail = [];
   for (;;) {
     try {
-      return path.join(fs.realpathSync(current), ...tail.reverse());
+      const resolved = path.join(fs.realpathSync(current), ...tail.reverse());
+      if (cache) {
+        cache.set(cacheKey, resolved);
+        // Default resolution returns the checked canonical path. Cache that
+        // spelling too so cycle identity does not immediately realpath the
+        // same target a second time.
+        cache.set(resolved, resolved);
+      }
+      return resolved;
     } catch (e) {
       const parent = path.dirname(current);
       if (parent === current) {
         // Reached the filesystem root without finding an existing prefix;
         // fall back to the lexically-resolved path.
-        return path.resolve(candidate);
+        const resolved = path.resolve(candidate);
+        if (cache) cache.set(cacheKey, resolved);
+        return resolved;
       }
       tail.push(path.basename(current));
       current = parent;
@@ -195,19 +352,24 @@ function realpathBoundary(candidate) {
 // Throw PUGNEUM:PATH_ESCAPE if `candidate` resolves outside `baseDir`.
 // Containment is checked against real (symlink-resolved) paths so a symlink
 // inside the boundary cannot be used to escape it.
-function assertWithin(candidate, baseDir, message) {
-  const resolved = realpathBoundary(candidate);
-  const base = realpathBoundary(baseDir);
+function assertWithin(candidate, baseDir, message, options) {
+  const resolved = realpathBoundary(candidate, options);
+  const base = realpathBoundary(baseDir, options);
   if (!isWithin(resolved, base)) {
     throw makeError('PATH_ESCAPE', message, zeroLoc());
   }
+  return resolved;
 }
 
 function resolve(filename, source, options) {
+  if (typeof filename !== 'string') {
+    throw new TypeError('filename must be a string');
+  }
+  options = options || {};
   filename = filename.trim();
 
   if (filename[0] === '@') {
-    return resolveLibrary(filename);
+    return resolveLibrary(filename, source, options);
   }
 
   if (filename[0] !== '/' && !source)
@@ -225,8 +387,12 @@ function resolve(filename, source, options) {
     );
 
   const isAbsolute = filename[0] === '/';
-  const baseDir = isAbsolute ? options.basedir : path.dirname(source.trim());
-  filename = path.join(baseDir, filename);
+  const baseDir = isAbsolute
+    ? path.resolve(options.basedir)
+    : path.dirname(path.resolve(source.trim()));
+  const resolved = isAbsolute
+    ? path.resolve(baseDir, '.' + filename)
+    : path.resolve(baseDir, filename);
 
   // Default-deny containment: include/extends must stay within basedir (the
   // project root — baseDirectory in the CLI config, which defaults to
@@ -237,17 +403,18 @@ function resolve(filename, source, options) {
   // render with no build root), there is nothing to contain against, so the
   // relative include simply resolves against the including file's directory.
   if (options.basedir) {
-    assertWithin(
-      filename,
+    return assertWithin(
+      resolved,
       options.basedir,
-      'Include path escapes project root: ' + filename,
+      'Include path escapes project root: ' + resolved,
+      options,
     );
   }
 
-  return filename;
+  return resolved;
 }
 
-function resolveLibrary(filename) {
+function resolveLibrary(filename, source, options) {
   // Leading @ is the library-mode trigger; the rest is the npm path verbatim.
   // Unscoped: @pkg/file.pg        → pkg/file.pg
   // Scoped:   @@scope/pkg/file.pg  → @scope/pkg/file.pg
@@ -261,30 +428,21 @@ function resolveLibrary(filename) {
     );
   }
 
-  let pkgEnd;
-  if (rest[0] === '@') {
-    const firstSlash = rest.indexOf('/');
-    pkgEnd = firstSlash === -1 ? -1 : rest.indexOf('/', firstSlash + 1);
-  } else {
-    pkgEnd = rest.indexOf('/');
-  }
+  const parts = rest.split('/');
+  const scoped = rest[0] === '@';
+  const pkg = scoped ? parts.slice(0, 2).join('/') : parts[0];
+  const subpath = parts.slice(scoped ? 2 : 1).join('/');
 
-  let pkg = pkgEnd === -1 ? rest : rest.slice(0, pkgEnd);
-  const subpath = pkgEnd === -1 ? '' : rest.slice(pkgEnd + 1);
-
-  // Reject degenerate package names (empty, a bare scope like "@scope/", or a
-  // "/"-led path) so they surface as INVALID_LIBRARY_PATH instead of being fed
-  // to require.resolve and emerging as a blank-named PACKAGE_NOT_FOUND.
-  const scopedPkg = /^@[^/]+\/[^/]+$/.test(pkg);
-  const unscopedPkg = pkg !== '' && pkg[0] !== '@' && pkg.indexOf('/') === -1;
-  if (!scopedPkg && !unscopedPkg) {
-    // Build a clean suggestion with the trailing slash (if any) stripped.
-    const suggestion = pkg.replace(/\/+$/, '');
+  if (!validPackageName(pkg)) {
+    const bareScope = scoped && validPackagePart(parts[0].slice(1));
+    const suggestion = bareScope
+      ? filename.replace(/\/+$/, '') + '/pkg/file.pg'
+      : '';
     throw makeError(
       'INVALID_LIBRARY_PATH',
       'Library include has an invalid package name: ' +
         filename +
-        (suggestion ? '\n    Use: @' + suggestion + '/file.pg' : ''),
+        (suggestion ? '\n    Use: ' + suggestion : ''),
       zeroLoc(),
     );
   }
@@ -301,25 +459,148 @@ function resolveLibrary(filename) {
     );
   }
 
-  let pkgJson;
-  try {
-    pkgJson = require.resolve(pkg + '/package.json');
-  } catch (e) {
+  const normalizedSubpath = path.normalize(subpath);
+  if (
+    normalizedSubpath === '..' ||
+    normalizedSubpath.startsWith('..' + path.sep) ||
+    path.isAbsolute(normalizedSubpath)
+  ) {
     throw makeError(
-      'PACKAGE_NOT_FOUND',
-      'Package not found: ' + pkg + '\n    Install it with: npm install ' + pkg,
+      'PATH_ESCAPE',
+      'Library path escapes package directory: ' + filename,
       zeroLoc(),
     );
   }
 
-  const pkgDir = path.dirname(pkgJson);
-  assertWithin(
-    path.join(pkgDir, subpath),
+  const lookupRoots = libraryLookupRoots(source, options);
+  const request = pkg + '/' + subpath;
+  let target;
+  try {
+    target = require.resolve(request, {paths: lookupRoots});
+  } catch (failure) {
+    const installedRoot = findInstalledPackageRoot(pkg, lookupRoots);
+    if (installedRoot) {
+      throw attachCause(
+        makeError(
+          'LIBRARY_PATH_UNAVAILABLE',
+          'Could not resolve library path ' +
+            request +
+            ': ' +
+            thrownDetail(failure),
+          zeroLoc(),
+        ),
+        failure,
+      );
+    }
+    throw attachCause(
+      makeError(
+        'PACKAGE_NOT_FOUND',
+        'Package not found: ' +
+          pkg +
+          '\n    Install it with: npm install ' +
+          pkg,
+        zeroLoc(),
+      ),
+      failure,
+    );
+  }
+
+  const pkgDir =
+    findOwningPackageRoot(target, pkg) ||
+    findInstalledPackageRoot(pkg, lookupRoots);
+  if (!pkgDir) {
+    throw makeError(
+      'LIBRARY_PATH_UNAVAILABLE',
+      'Could not establish package boundary for: ' + request,
+      zeroLoc(),
+    );
+  }
+  return assertWithin(
+    target,
     pkgDir,
     'Library path escapes package directory: ' + filename,
+    options,
   );
+}
 
-  return path.join(pkgDir, subpath);
+function validPackagePart(part) {
+  return (
+    typeof part === 'string' &&
+    part.length > 0 &&
+    part.length <= 214 &&
+    !part.startsWith('.') &&
+    !part.startsWith('_') &&
+    /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(part)
+  );
+}
+
+function validPackageName(pkg) {
+  if (pkg.length > 214) return false;
+  if (pkg[0] !== '@') return validPackagePart(pkg);
+  const parts = pkg.slice(1).split('/');
+  return parts.length === 2 && parts.every(validPackagePart);
+}
+
+function libraryLookupRoots(source, options) {
+  const roots = [];
+  if (typeof source === 'string' && source.trim()) {
+    roots.push(path.dirname(path.resolve(source.trim())));
+  }
+  if (typeof options.basedir === 'string' && options.basedir) {
+    roots.push(path.resolve(options.basedir));
+  }
+  roots.push(process.cwd(), __dirname);
+  return [...new Set(roots)];
+}
+
+function readPackageName(directory) {
+  try {
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(directory, 'package.json'), 'utf8'),
+    );
+    return manifest && manifest.name;
+  } catch (_error) {
+    return undefined;
+  }
+}
+
+function findOwningPackageRoot(target, pkg) {
+  let current = path.dirname(target);
+  for (;;) {
+    if (readPackageName(current) === pkg) return current;
+    const parent = path.dirname(current);
+    if (parent === current) return undefined;
+    current = parent;
+  }
+}
+
+function findInstalledPackageRoot(pkg, roots) {
+  const packageSegments = pkg.split('/');
+  const checked = new Set();
+  for (const root of roots) {
+    let current = path.resolve(root);
+    for (;;) {
+      const candidate = path.join(current, 'node_modules', ...packageSegments);
+      if (!checked.has(candidate)) {
+        checked.add(candidate);
+        try {
+          const real = fs.realpathSync(candidate);
+          if (
+            fs.statSync(real).isDirectory() &&
+            readPackageName(real) === pkg
+          ) {
+            return real;
+          }
+        } catch (_error) {
+          // Keep searching the caller-rooted module path.
+        }
+      }
+      const parent = path.dirname(current);
+      if (parent === current) break;
+      current = parent;
+    }
+  }
+  return undefined;
 }
 
 function read(filename) {
@@ -329,9 +610,29 @@ function read(filename) {
   return fs.readFileSync(filename);
 }
 
+function canonicalizeFilesystem(filename, options) {
+  return realpathBoundary(filename, options);
+}
+
+function canonicalizeOpaque(filename) {
+  return filename;
+}
+
+function canonicalIdentity(filename, options) {
+  const identity = options.canonicalize(filename, options);
+  if (typeof identity !== 'string' || identity.length === 0) {
+    throw new TypeError('canonicalize must return a non-empty string');
+  }
+  return identity;
+}
+
 function validateOptions(options) {
-  if (typeof options !== 'object') {
-    throw new TypeError('options must be an object');
+  if (
+    options === null ||
+    typeof options !== 'object' ||
+    Array.isArray(options)
+  ) {
+    throw new TypeError('options must be an object (non-null and non-array)');
   }
   if (typeof options.lex !== 'function') {
     throw new TypeError('options.lex must be a function');
@@ -339,21 +640,65 @@ function validateOptions(options) {
   if (typeof options.parse !== 'function') {
     throw new TypeError('options.parse must be a function');
   }
-  if (options.resolve && typeof options.resolve !== 'function') {
+  if (options.resolve !== undefined && typeof options.resolve !== 'function') {
     throw new TypeError('options.resolve must be a function');
   }
-  if (options.read && typeof options.read !== 'function') {
+  if (options.read !== undefined && typeof options.read !== 'function') {
     throw new TypeError('options.read must be a function');
+  }
+  if (
+    options.canonicalize !== undefined &&
+    typeof options.canonicalize !== 'function'
+  ) {
+    throw new TypeError('options.canonicalize must be a function');
+  }
+  if (
+    options.maxLoadDepth !== undefined &&
+    (!Number.isSafeInteger(options.maxLoadDepth) ||
+      options.maxLoadDepth < 0 ||
+      options.maxLoadDepth > DEFAULT_MAX_LOAD_DEPTH)
+  ) {
+    throw new TypeError(
+      'options.maxLoadDepth must be an integer from 0 through ' +
+        DEFAULT_MAX_LOAD_DEPTH,
+    );
+  }
+  for (const name of ['basedir', 'filename', 'source']) {
+    if (options[name] !== undefined && typeof options[name] !== 'string') {
+      throw new TypeError('options.' + name + ' must be a string');
+    }
+  }
+  if (
+    options.sources !== undefined &&
+    (options.sources === null ||
+      typeof options.sources !== 'object' ||
+      Array.isArray(options.sources))
+  ) {
+    throw new TypeError('options.sources must be a non-null, non-array object');
+  }
+  if (options.sources !== undefined && !Object.isExtensible(options.sources)) {
+    throw new TypeError('options.sources must be extensible');
+  }
+  if (options.sources === undefined && !Object.isExtensible(options)) {
+    throw new TypeError('options must permit the sources output property');
   }
 }
 
 function getOptions(options) {
-  validateOptions(options);
-  return Object.assign(
-    {
-      resolve: resolve,
-      read: read,
-    },
-    options,
-  );
+  const normalized = Object.assign({}, options);
+  if (normalized.resolve === undefined) normalized.resolve = resolve;
+  if (normalized.read === undefined) normalized.read = read;
+  if (normalized.maxLoadDepth === undefined) {
+    normalized.maxLoadDepth = DEFAULT_MAX_LOAD_DEPTH;
+  }
+  if (normalized.canonicalize === undefined) {
+    normalized.canonicalize =
+      normalized.resolve === resolve || normalized.basedir
+        ? canonicalizeFilesystem
+        : canonicalizeOpaque;
+  }
+  Object.defineProperty(normalized, loadState, {
+    value: {realpaths: new Map(), visiting: new Set()},
+  });
+  return normalized;
 }

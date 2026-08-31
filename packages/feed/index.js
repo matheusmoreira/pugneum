@@ -31,26 +31,130 @@ function rethrowFilesystemBoundary(error, message, includeNonRegular) {
   throw error;
 }
 
-function articleFilesystemPath(href) {
-  // An href beginning with / is URL-root-relative, not an absolute host
-  // filesystem path. Preserve that historical mapping beneath outputDirectory,
-  // but never reinterpret a protocol-relative URL's authority as a local
-  // directory. Query/fragment/percent-decoding separation belongs to D-02's
-  // wider URL/path identity change.
-  if (/^[/\\]{2}/.test(href)) {
-    throw feedError(
-      'FEED_PATH_TRAVERSAL',
-      'Article href is not a local output path: ' + href,
-    );
+const URL_SCHEME = /^[A-Za-z][A-Za-z0-9+.-]*:/;
+const ABSOLUTE_URL_PREFIX = /^[A-Za-z][A-Za-z0-9+.-]*:\/\//;
+const LOCAL_ARTICLE_BASE = new URL('https://pugneum.invalid/');
+
+// An article href has two identities: its canonical public URL and the compiled
+// HTML file used to enrich that entry. Resolve them together so URL-only search
+// and hash components can never leak into filesystem lookup.
+function resolveArticleLocation(href, baseUrl) {
+  if (typeof href !== 'string') {
+    throwInvalidArticleUrl(href, 'href must be a string');
   }
-  const articlePath = href.replace(/^[/\\]/, '');
+
+  let publicUrl;
+  try {
+    publicUrl = new URL(href, baseUrl);
+  } catch (error) {
+    throwInvalidArticleUrl(href, 'href is not a valid URL reference');
+  }
+
+  if (
+    publicUrl.protocol !== baseUrl.protocol ||
+    publicUrl.host !== baseUrl.host ||
+    publicUrl.username !== baseUrl.username ||
+    publicUrl.password !== baseUrl.password
+  ) {
+    throwInvalidArticleUrl(href, 'href must resolve to the configured site');
+  }
+
+  const rawPath = rawArticlePath(href);
+  validateArticlePathSegments(rawPath, href);
+
+  // Document-relative paths keep the historical output-root mapping even when
+  // the public site is deployed below a base pathname. Root-relative and
+  // same-site absolute references map their URL pathname below that same root.
+  let localUrl = publicUrl;
+  if (
+    !URL_SCHEME.test(href) &&
+    !href.startsWith('//') &&
+    !href.startsWith('/')
+  ) {
+    localUrl = new URL(href, LOCAL_ARTICLE_BASE);
+  }
+
+  const articlePath = decodeArticlePath(localUrl.pathname, href);
   if (articlePath === '') {
     throw feedError(
       'FEED_ARTICLE_NOT_FOUND',
       'Article path is not a file: ' + href,
     );
   }
-  return articlePath;
+
+  return {path: articlePath, url: publicUrl.href};
+}
+
+function rawArticlePath(href) {
+  const componentEnd = href.search(/[?#]/);
+  const locator = componentEnd === -1 ? href : href.slice(0, componentEnd);
+
+  if (URL_SCHEME.test(locator)) {
+    if (!ABSOLUTE_URL_PREFIX.test(locator)) {
+      throwInvalidArticleUrl(
+        href,
+        'an explicit scheme must use an absolute URL',
+      );
+    }
+    const authorityStart = locator.indexOf('//') + 2;
+    const pathStart = locator.indexOf('/', authorityStart);
+    return pathStart === -1 ? '' : locator.slice(pathStart);
+  }
+
+  if (locator.startsWith('//')) {
+    const pathStart = locator.indexOf('/', 2);
+    return pathStart === -1 ? '' : locator.slice(pathStart);
+  }
+
+  return locator;
+}
+
+function validateArticlePathSegments(rawPath, href) {
+  if (rawPath.includes('\\')) {
+    throwArticlePathTraversal(href);
+  }
+
+  const segments = rawPath.split('/');
+  for (let i = 0; i < segments.length; i++) {
+    let decoded;
+    try {
+      decoded = decodeURIComponent(segments[i]);
+    } catch (error) {
+      throwInvalidArticleUrl(href, 'path contains malformed percent encoding');
+    }
+    if (decoded === '..' || decoded.includes('/') || decoded.includes('\\')) {
+      throwArticlePathTraversal(href);
+    }
+    if (decoded.includes('\0')) {
+      throwInvalidArticleUrl(href, 'path contains a null byte');
+    }
+  }
+}
+
+function decodeArticlePath(pathname, href) {
+  try {
+    return pathname
+      .split('/')
+      .map((segment) => decodeURIComponent(segment))
+      .join('/')
+      .replace(/^\/+/, '');
+  } catch (error) {
+    throwInvalidArticleUrl(href, 'path contains malformed percent encoding');
+  }
+}
+
+function throwInvalidArticleUrl(href, reason) {
+  throw feedError(
+    'FEED_INVALID_ARTICLE_URL',
+    'Article href is not a supported local URL: ' + href + '\n    ' + reason,
+  );
+}
+
+function throwArticlePathTraversal(href) {
+  throw feedError(
+    'FEED_PATH_TRAVERSAL',
+    'Article href contains an unsafe path: ' + href,
+  );
 }
 
 module.exports = function generateFeeds(options) {
@@ -128,7 +232,8 @@ module.exports = function generateFeeds(options) {
   const entries = [];
   for (let i = 0; i < indexData.entries.length; i++) {
     const entry = indexData.entries[i];
-    let articlePath = articleFilesystemPath(entry.href);
+    const articleLocation = resolveArticleLocation(entry.href, baseUrl);
+    let articlePath = articleLocation.path;
     let articleData;
     try {
       articleData = extract.articlePage(
@@ -185,7 +290,7 @@ module.exports = function generateFeeds(options) {
     }
 
     entries.push({
-      url: new URL(entry.href, url).href,
+      url: articleLocation.url,
       title: articleData.title || entry.title,
       published: entry.published,
       publishedEpoch: entry.publishedEpoch,

@@ -110,7 +110,9 @@ Each piece of metadata follows the same pattern: use JSON config if present, fal
 
 For each discovered entry:
 
-1. Resolve the `href` to a file path in the output directory
+1. Resolve the `href` once into a canonical same-site public URL and a separate
+   file path in the output directory. The public URL retains query/fragment;
+   only its decoded, validated pathname participates in file lookup.
 2. Read and parse the article HTML
 3. Extract from `<meta>` tags: `description`, `author`, `keywords`
 4. Extract innerHTML of `<article>` element (or configured selector) for full content

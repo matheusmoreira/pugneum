@@ -93,6 +93,14 @@ entries are ordered by their UTC instant regardless of authored offset; equal
 instants retain document order, and invalid values remain stable after valid
 entries.
 
+Article `href` values must resolve to the configured site's scheme, host, and
+credentials. Document-relative paths map directly beneath `outputDirectory`;
+root-relative and same-site absolute URLs map their pathname beneath that root.
+The pathname is percent-decoded for file lookup, while its query and fragment
+remain only in the canonical public entry URL. External origins, non-local
+schemes, malformed escapes, parent segments, backslashes, and encoded path
+separators are rejected before filesystem access.
+
 ### Article pages
 
 Each article page provides per-entry metadata via `<meta>` tags.

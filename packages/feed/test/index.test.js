@@ -477,6 +477,87 @@ describe('end-to-end URL resolution', () => {
   });
 });
 
+describe('article URL to filesystem mapping', () => {
+  test('decodes only the path for lookup and preserves query and fragment', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.unlinkSync(path.join(fixture.input, 'articles', 'post.html'));
+    fs.writeFileSync(
+      path.join(fixture.input, 'articles', 'my post.html'),
+      feedArticle('decoded filename sentinel'),
+    );
+    fs.writeFileSync(
+      path.join(fixture.input, 'index.html'),
+      feedIndex('articles/my%20post.html?view=full#top'),
+    );
+
+    fixture.generate({url: 'https://example.com/blog/'});
+
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    var rss = fs.readFileSync(path.join(fixture.output, 'rss.xml'), 'utf8');
+    var publicUrl =
+      'https://example.com/blog/articles/my%20post.html?view=full#top';
+    assert.match(atom, /decoded filename sentinel/);
+    assert.ok(
+      atom.includes('<link href="' + publicUrl + '" rel="alternate"/>'),
+    );
+    assert.ok(
+      rss.includes('<guid isPermaLink="true">' + publicUrl + '</guid>'),
+    );
+  });
+
+  test('accepts an absolute same-origin article URL', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(
+      path.join(fixture.input, 'index.html'),
+      feedIndex('https://example.com/articles/post.html'),
+    );
+
+    fixture.generate();
+
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    assert.match(atom, /inside content/);
+    assert.ok(
+      atom.includes(
+        '<link href="https://example.com/articles/post.html" rel="alternate"/>',
+      ),
+    );
+  });
+
+  [
+    ['an external origin', 'https://other.example/articles/post.html'],
+    ['an unsupported scheme', 'mailto:author@example.com'],
+    ['malformed percent encoding', 'articles/post%ZZ.html'],
+  ].forEach(([label, href]) => {
+    test('rejects ' + label + ' with an article-URL error', (t) => {
+      var fixture = boundaryFixture(t);
+      fs.writeFileSync(path.join(fixture.input, 'index.html'), feedIndex(href));
+
+      assert.throws(
+        () => fixture.generate(),
+        (error) => {
+          assert.strictEqual(error.code, 'PUGNEUM:FEED_INVALID_ARTICLE_URL');
+          return true;
+        },
+      );
+      assertNoGeneratedFeeds(fixture);
+    });
+  });
+
+  [
+    ['an encoded parent segment', 'articles/%2e%2e/post.html'],
+    ['an encoded forward slash', 'articles%2fpost.html'],
+    ['an encoded backslash', 'articles%5cpost.html'],
+  ].forEach(([label, href]) => {
+    test('rejects ' + label + ' before filesystem lookup', (t) => {
+      var fixture = boundaryFixture(t);
+      fs.writeFileSync(path.join(fixture.input, 'index.html'), feedIndex(href));
+
+      assertFeedTraversal(() => fixture.generate());
+      assertNoGeneratedFeeds(fixture);
+    });
+  });
+});
+
 describe('error handling', () => {
   test('throws FEED_INVALID_URL for a path-only base href', () => {
     var dir = path.join(__dirname, 'fixtures-relbase');
@@ -783,7 +864,10 @@ describe('feed filesystem boundary', () => {
       feedIndex('//cdn.example.com/post.html'),
     );
 
-    assertFeedTraversal(() => fixture.generate());
+    assert.throws(
+      () => fixture.generate(),
+      (error) => error.code === 'PUGNEUM:FEED_INVALID_ARTICLE_URL',
+    );
     assertNoGeneratedFeeds(fixture);
   });
 

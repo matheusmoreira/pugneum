@@ -116,25 +116,33 @@ function copyAttributeInterpolationSource(source, target) {
   return target;
 }
 
-// Used to compute a mixin's usesNamedBlocks / usesUnnamedBlock flags by
-// searching its body for NamedBlock / MixinBlock / Given nodes. The stop at
-// nested Mixin nodes is load-bearing: a mixin's block flags must reflect only
-// its OWN body, so an inner mixin definition's (or call's) named/unnamed blocks
-// must not leak onto the outer mixin's flags. Do not reuse this as a generic
-// "subtree contains X" walker without accounting for that boundary.
-function containsNodeType(node, type) {
-  if (!node) return false;
-  if (node.type === type) return true;
-  if (node.type === 'Mixin') return false;
-  if (node.nodes) {
-    for (let i = 0; i < node.nodes.length; ++i) {
-      if (containsNodeType(node.nodes[i], type)) return true;
+// Preserve the legacy parser flags in one bounded traversal. The stop at a
+// nested Mixin is load-bearing: each declaration owns its own slot protocol,
+// so nested definitions and calls cannot contribute to the enclosing flags.
+function mixinSlotFlags(block) {
+  const flags = {usesNamedBlocks: false, usesUnnamedBlock: false};
+  const pending = [block];
+
+  while (pending.length > 0) {
+    const node = pending.pop();
+    if (!node) continue;
+    if (node.type === 'Mixin') continue;
+
+    if (node.type === 'MixinBlock') flags.usesUnnamedBlock = true;
+    if (node.type === 'NamedBlock' || node.type === 'Given') {
+      flags.usesNamedBlocks = true;
     }
+    if (flags.usesNamedBlocks && flags.usesUnnamedBlock) return flags;
+
+    if (node.nodes) {
+      for (let i = node.nodes.length - 1; i >= 0; i--) {
+        pending.push(node.nodes[i]);
+      }
+    }
+    if (node.block) pending.push(node.block);
   }
-  if (node.block) {
-    return containsNodeType(node.block, type);
-  }
-  return false;
+
+  return flags;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
@@ -1033,9 +1041,7 @@ class Parser {
         this.inMixin--;
       }
 
-      const hasMixinBlock = containsNodeType(block, 'MixinBlock');
-      const hasNamedBlock = containsNodeType(block, 'NamedBlock');
-      const hasGiven = containsNodeType(block, 'Given');
+      const slotFlags = mixinSlotFlags(block);
 
       return {
         type: 'Mixin',
@@ -1043,8 +1049,8 @@ class Parser {
         args: args,
         block: block,
         call: false,
-        usesNamedBlocks: hasNamedBlock || hasGiven,
-        usesUnnamedBlock: hasMixinBlock,
+        usesNamedBlocks: slotFlags.usesNamedBlocks,
+        usesUnnamedBlock: slotFlags.usesUnnamedBlock,
         line: tok.loc.start.line,
         column: tok.loc.start.column,
         filename: this.filename,

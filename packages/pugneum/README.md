@@ -6,6 +6,9 @@ Clean HTML templates for static sites.
 
     npm install pugneum
 
+Pugneum requires Node.js 22 or newer. Contributors running this repository's
+test and release tooling need Node.js 22.5 or newer and npm 10.9.9.
+
 ## Syntax
 
 Pugneum is a clean, whitespace sensitive syntax for writing HTML.
@@ -51,10 +54,11 @@ That code compiles to:
 </html>
 ```
 
-> The HTML output blocks throughout this document are indented and
-> wrapped for readability. Pugneum actually emits compact, single-line
-> HTML with no inter-element whitespace; the tags, attributes, escaping,
-> and ordering shown are exact, but the formatting is not byte-for-byte.
+> The HTML output blocks throughout this document are indented and wrapped for
+> readability. Pugneum does not add indentation or whitespace between elements,
+> but it preserves newlines that are part of authored text, raw includes, and
+> filter output. The tags, attributes, escaping, and ordering shown are exact;
+> presentation-only indentation and wrapping are not byte-for-byte.
 
 Pugneum is a variant of [pug],
 modified to be fully static.
@@ -108,7 +112,7 @@ script(type='text/javascript').
 }</script>
 ```
 
-## Tag interpolation
+## Inline tag shorthand
 
 Use `#(tag content)` to insert tags inline within text:
 
@@ -121,6 +125,10 @@ p Click #(a(href="/help") here) for help.
 <p>This is <strong>very</strong> important.</p>
 <p>Click <a href="/help">here</a> for help.</p>
 ```
+
+The first word is the tag name and the rest is its content. Attributes are
+supported, as in `#(a(href="/help") click here)`, and a mixin call can be
+inserted with `#(+mixin(args))`. Escape `#(` as `\#(` for literal output.
 
 ## Comments
 
@@ -206,6 +214,43 @@ with a command line tool:
 ```shell
 pugneum
 ```
+
+All configured paths are interpreted relative to the directory where the
+command runs. `inputDirectory` and `outputDirectory` are required non-empty
+strings. `baseDirectory` is optional; an omitted or empty value defaults to
+`inputDirectory`. A `feeds` object enables feed generation unless its
+`enabled` property is `false`; this requires the optional `pugneum-feed`
+package.
+
+The command recursively visits the input tree in deterministic name order and
+compiles files whose names end in the case-sensitive `.pg` extension. It
+mirrors their relative directories under `outputDirectory` and changes the
+extension to `.html`. Nested symlink entries are skipped, as are files without
+the `.pg` extension. A configured symlinked input root itself is followed. If
+the output directory is inside the input tree, that output subtree is excluded
+from traversal. A `.pg` entry must be a regular file; a special file such as a
+FIFO is rejected without being opened. Existing regular output files are
+replaced atomically; stale files for removed templates are not deleted.
+
+`pugneum --help` (or `-h`) prints usage, and `pugneum --version` (or `-v`)
+prints the installed version. Successful compilation is silent except for
+warnings. Warnings and errors go to stderr; warnings collected from earlier
+files are still emitted if a later file fails. When feeds are configured but
+`pugneum-feed` is not installed, the CLI warns, skips feed generation, and
+still succeeds.
+
+The CLI uses these exit statuses:
+
+| Status | Meaning |
+| ---: | --- |
+| `0` | Successful build, help, or version output |
+| `1` | Invalid argument, configuration, or input/output boundary |
+| `2` | Path not found |
+| `3` | Permission denied |
+| `4` | A directory was required |
+| `5` | A file was required |
+| `6` | Pugneum template error |
+| `7` | Feed generation error |
 
 ## Link shorthand
 
@@ -429,25 +474,6 @@ p Press %(Ctrl+C) to copy.
 
 Escape with `\%(` to output a literal `%(`.
 
-## Inline tag shorthand
-
-The `#()` shorthand wraps text in any tag:
-
-```pugneum
-p Click the #(button Start) to begin.
-p This is #(mark highlighted) text.
-```
-
-```html
-<p>Click the <button>Start</button> to begin.</p>
-<p>This is <mark>highlighted</mark> text.</p>
-```
-
-The first word is the tag name, the rest is content.
-Attributes are supported: `#(a(href="/help") click here)`.
-Mixin calls work too: `#(+mixin(args))`.
-Escape with `\#(` for literal output.
-
 ## Footnotes
 
 Define footnotes in a `footnotes` block and reference them
@@ -479,6 +505,11 @@ footnotes
 Multi-line definitions use indented content:
 
 ```pugneum
+references
+  mccarthy https://example.com/mccarthy McCarthy's paper
+
+p Details^[gc-tricolor] and history^[gc-history].
+
 footnotes
   gc-tricolor Short note.
   gc-history
@@ -504,7 +535,8 @@ attributes, captions, colgroups, and structural sections:
   | write |    50 | Write to fd     |
 ```
 
-See the table filter package for full syntax documentation.
+Install it with `npm install pugneum-filter-table`. See the table filter package
+for full syntax documentation.
 
 ## Table of contents
 
@@ -537,9 +569,10 @@ h2#design Design
 </nav>
 ```
 
-The ToC appears where the `toc` keyword is placed.
-Only headings with `#id` are included — you control
-exactly which sections appear.
+The ToC appears where the `toc` keyword is placed. A heading is included when
+it has an explicit, usable string `id`, whether written with `#id` shorthand or
+an `id="..."` attribute. Empty IDs and IDs made only of ASCII whitespace are
+excluded.
 
 ## Template inheritance
 
@@ -561,7 +594,6 @@ html
 A page extends it and fills the blocks:
 
 ```pugneum
-//- page.pg
 extends layout.pg
 
 block title
@@ -592,7 +624,7 @@ Blocks can be appended or prepended instead of replaced:
 ```pugneum
 extends layout.pg
 
-append title
+block append title
   meta(name="description" content="My page")
 
 block content
@@ -619,6 +651,24 @@ Non-`.pg` files are included as raw text.
 Textual raw includes normalize LF, CRLF, and CR line endings to LF before
 insertion or non-binary filtering; binary include filters receive exact bytes.
 
+An included Pugneum template can use `yield` to choose where a block supplied
+by the caller is inserted:
+
+```pugneum
+//- wrapper.pg
+article
+  yield
+```
+
+```pugneum
+include wrapper.pg
+  p Included content.
+```
+
+Supplying a block to a template with no `yield` is an error. If the included
+template has several `yield` sites, each receives an independent copy of the
+caller block.
+
 Include with a filter to transform the content:
 
 ```pugneum
@@ -626,6 +676,13 @@ head
   style
     include:verbatim styles.css
 ```
+
+Include filters may have only `text` or `html` output types and must return a
+string. Chained include filters such as `include:outer:inner file.txt` run from
+right to left. If the innermost descriptor declares `binary: true`, it receives
+the exact file `Buffer`; every outer filter receives the preceding string
+result. Ordinary block filters additionally support `pugneum` and `syntax`
+output types.
 
 Paths starting with `/` are resolved from `basedir`.
 Relative paths resolve from the including file's directory and, when
@@ -646,6 +703,8 @@ include @pugneum-mixins/quote.pg
 ```
 
 Install the package first: `npm install pugneum-mixins`.
+The spelling `@pkg/file.pg` addresses an unscoped package; use a doubled prefix
+for a scoped package, as in `@@scope/pkg/file.pg` for `@scope/pkg`.
 Lookup begins in the including project's `node_modules`. If the package has an
 `exports` map, the requested `.pg` subpath must be exported; the package
 manifest itself does not need to be exported. The resolved target is contained
@@ -663,17 +722,21 @@ Apply a filter with `:filtername`:
   }
 ```
 
-Built-in filters:
+Only `:verbatim` is bundled with Pugneum. The other filters in this table are
+optional packages:
 
-| Filter | Package | Description |
+| Filter | Availability | Description |
 |---|---|---|
 | `:highlight.js` | `pugneum-filter-highlight.js` | Syntax highlighting via highlight.js |
 | `:prismjs` | `pugneum-filter-prismjs` | Syntax highlighting via Prism |
 | `:table` | `pugneum-filter-table` | Pipe-delimited table syntax |
-| `:verbatim` | built-in | Pass-through, no transformation |
+| `:verbatim` | bundled | Pass-through, no transformation |
 
-Install filter packages separately:
-`npm install pugneum-filter-highlight.js`
+Install the optional filter packages you use, for example:
+
+```shell
+npm install pugneum-filter-highlight.js pugneum-filter-prismjs pugneum-filter-table
+```
 
 Custom filters can be registered via the `filters` option
 in the programming interface.
@@ -703,6 +766,12 @@ mixin's arguments. Outside a mixin there is no variable scope, so
 Mixins can be called inline within text using `#(+mixin(args))`:
 
 ```pugneum
+mixin icon(name)
+  span(class="icon icon-#{name}" aria-hidden="true")
+
+mixin b(text)
+  strong #{text}
+
 p Click the #(+icon(settings)) button to open preferences.
 p I am #(+b(very)) #(+b(happy)) today.
 ```
@@ -799,9 +868,10 @@ mixin nav
 
 ### Conditional rendering with `given`
 
-`given name` renders its subtree only if the caller provides
-content for the named block. This enables wrapper elements
-that disappear when a slot is unused:
+`given name` renders its subtree only if the caller provides a block with that
+name. Presence is what matters: an explicitly provided but empty `block name`
+still counts. This enables wrapper elements that disappear when a slot is
+omitted:
 
 ```pugneum
 mixin quote(url?)
@@ -898,19 +968,81 @@ Tag names that collide with keywords can be escaped:
 ```js
 const pg = require('pugneum');
 
-let html = pg.render('h1 Hello, world!');
-let html = pg.renderFile('page.pg');
+const html = pg.render('h1 Hello, world!');
+const fileHtml = pg.renderFile('page.pg');
 ```
+
+`render(source, options)` and `renderFile(filename, options)` synchronously
+return an HTML string. `renderFile` reads the entry file as UTF-8 and supplies
+its absolute filename to the compiler. Compiler failures use coded Pugneum
+errors, invalid public argument types use `TypeError`, and an entry-file read
+retains its Node.js filesystem error.
 
 ### Options
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `filename` | | Path to source file, required for includes and extends |
-| `basedir` | | Confinement root for absolute and relative include/extends paths; strongly recommended for programmatic builds |
+| `filename` | | Entry source path, used for diagnostics and required by the default resolver for relative includes and extends; `renderFile` sets it automatically |
+| `basedir` | | Confinement root for absolute and relative filesystem includes/extends; required for absolute paths and strongly recommended for programmatic builds |
 | `filters` | | Object mapping filter names to filter objects `{type, filter}`, where `type` is one of `text`/`html`/`pugneum`/`syntax` and `filter(input, attrs)` returns the transformed output |
 | `filterOptions` | | Per-filter options object, keyed by filter name |
-| `warnings` | | Array to collect non-fatal diagnostics into. If provided, the caller owns emission (nothing is written to stderr); if omitted, diagnostics are deduplicated and printed to stderr |
+| `resolve` | Default filesystem/package resolver | Synchronous hook `(requestedPath, includingFilename, options) => resolvedPath` for dependency resolution |
+| `read` | `fs.readFileSync` | Synchronous hook `(resolvedPath, options) => Buffer \| Uint8Array \| string` for dependency reads |
+| `canonicalize` | Real path or resolved virtual name | Hook `(resolvedPath, options) => identity` that gives aliases a stable identity for cycle detection |
+| `maxLoadDepth` | `256` | Maximum include/extends dependency depth; an integer from `0` through `256` |
+| `maxLinkDepth` | `256` | Maximum linker composition depth; an integer from `0` through `256` |
+| `warnings` | Automatic stderr emission | Mutable array to collect non-fatal diagnostics. If supplied, the caller owns emission and Pugneum does not write warnings to stderr |
+
+Relative filesystem dependencies first resolve from the including file and,
+when `basedir` is set, must remain within that root. Without `basedir`, relative
+paths are unconfined and may traverse above the entry directory, so that mode is
+appropriate only for trusted templates. Absolute dependencies require
+`basedir`. Installed `@`-prefixed library includes use package resolution and do
+not require an entry filename; their targets are confined to the package root.
+
+### Diagnostics
+
+Template and compiler failures are thrown with a `PUGNEUM:`-prefixed `code` and
+a formatted `message`. When source information is available, diagnostics also
+expose `filename`, `line`, `column`, the plain `msg`, and `source`; `toJSON()`
+returns their serializable fields. Public boundary violations instead use
+`TypeError`, and direct entry-file I/O retains standard Node.js error codes.
+
+When `warnings` is omitted, `render` and `renderFile` collect warnings, remove
+duplicates, and print them to stderr automatically. They also print warnings
+collected before a later hard failure. Supplying a mutable array transfers
+ownership to the caller and keeps the library silent:
+
+```js
+const pg = require('pugneum');
+const warnings = [];
+
+const html = pg.render('a(href=‘/docs’) Docs', {
+  filename: 'page.pg',
+  warnings,
+});
+
+pg.emitWarnings(warnings);
+```
+
+`emitWarnings(warnings)` is the stable formatter used by the CLI. It validates
+the complete array before writing anything, deduplicates records by `code`,
+`filename`, `line`, `column`, and formatted `message`, and writes each distinct
+warning to stderr. It removes a leading `PUGNEUM:` from the displayed header,
+but does not mutate the records. A record requires non-empty string `code` and
+string `message` fields; `filename`, `line`, and `column` are optional.
+
+Compiler warnings currently use these codes:
+
+| Code | Meaning |
+| --- | --- |
+| `PUGNEUM:TYPOGRAPHIC_QUOTE_DELIMITER` | A typographic quote was used literally where an ASCII attribute quote was likely intended |
+| `PUGNEUM:DUPLICATE_ID` | The final document contains the same string ID more than once |
+| `PUGNEUM:IMG_WITHOUT_ALT` | An `img` element has no `alt` attribute |
+| `PUGNEUM:UNUSED_REFERENCE` | A reference definition is not used |
+| `PUGNEUM:UNUSED_FOOTNOTE` | A footnote definition is not referenced |
+| `PUGNEUM:EMPTY_TOC` | A `toc` has no eligible headings |
+| `PUGNEUM:UNUSED_MIXIN` | An entry-file mixin is never called |
 
 ## License
 

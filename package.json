@@ -10,6 +10,8 @@
     "url": "git+https://github.com/matheusmoreira/pugneum.git"
   },
   "scripts": {
+    "docs:check": "node scripts/sync-root-readme.js --check",
+    "docs:sync": "node scripts/sync-root-readme.js --write",
     "prettier:check": "prettier --ignore-path .gitignore --list-different \"./**/*.js\"",
     "format": "prettier --ignore-path .gitignore --write \"./**/*.js\"",
     "release:check": "node scripts/check-release-packages.js",

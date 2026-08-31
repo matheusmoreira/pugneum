@@ -1,2 +1,5 @@
 *   text=auto eol=lf
 test-cases/** -text -whitespace
+# One executable Pugneum example uses trailing spaces as literal pipeless text.
+README.md -whitespace
+packages/pugneum/README.md -whitespace

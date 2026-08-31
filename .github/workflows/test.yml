@@ -34,6 +34,9 @@ jobs:
       - name: Check formatting
         run: npx --yes npm@10.9.9 run prettier:check
 
+      - name: Check documentation synchronization
+        run: npx --yes npm@10.9.9 run docs:check
+
   test:
     name: Test (${{ matrix.os }}, Node.js ${{ matrix.node-version }})
     runs-on: ${{ matrix.os }}

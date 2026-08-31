@@ -7,6 +7,7 @@ const vm = require('node:vm');
 const {describe, test} = require('node:test');
 
 const pg = require('../');
+const {checkRootReadme} = require('../../../scripts/sync-root-readme');
 
 const readmePath = path.join(__dirname, '..', 'README.md');
 const readme = fs.readFileSync(readmePath, 'utf8');
@@ -91,6 +92,10 @@ function renderExample(example) {
 }
 
 describe('README examples', () => {
+  test('the repository manual is a synchronized regular file', () => {
+    assert.doesNotThrow(checkRootReadme);
+  });
+
   test('every Pugneum fence compiles', () => {
     assert.strictEqual(pugneumExamples.length, 41);
     for (const example of pugneumExamples) {

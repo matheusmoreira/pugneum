@@ -508,7 +508,8 @@ test('syntax output depth is bounded from the document root', () => {
     () => filter(overLimit.ast, {overLimit: rejected}, overLimit.options),
     (err) =>
       err.code === 'PUGNEUM:INVALID_FILTER_OUTPUT' &&
-      /depth|deep/i.test(err.message),
+      /depth|deep/i.test(err.msg) &&
+      /^index\.test\.js:1:1\n/.test(err.message),
   );
   assert.strictEqual(overLimit.invocation.type, 'Filter');
 });

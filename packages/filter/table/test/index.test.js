@@ -12,14 +12,8 @@ var render = require('pugneum-renderer');
 // The table filter is type:'pugneum' — the filterer re-lexes/re-parses its
 // output. Round-trip the generated source through the real lexer+parser so a
 // future change that emits subtly invalid Pugneum fails here rather than at
-// build time. Returns the parsed AST (throws if the source does not re-lex).
+// build time. Every caller receives the same source, AST, and rendered HTML.
 function roundTrip(input, attrs) {
-  var src = tableFilter.filter(input, attrs || {});
-  var options = {filename: 'gen.pg', source: src};
-  return parse(lex(src, options), options);
-}
-
-function renderRoundTrip(input, attrs) {
   var src = tableFilter.filter(input, attrs || {});
   var options = {filename: 'gen.pg', source: src, warnings: []};
   var ast = parse(lex(src, options), options);
@@ -236,7 +230,7 @@ describe('alignment', () => {
 
   test('mixed alignment across columns', () => {
     var input = '| a | b | c |\n| :--- | ---: | :---: |\n| 1 | 2 | 3 |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     assert.match(result.src, /col\(style="text-align:left"\)/);
     assert.match(result.src, /col\(style="text-align:right"\)/);
     assert.match(result.src, /col\(style="text-align:center"\)/);
@@ -255,7 +249,7 @@ describe('alignment', () => {
       '| th(style="color:red") Heading |\n' +
       '| :---: |\n' +
       '| td(style="font-weight:bold") value |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(
       result.html,
@@ -272,7 +266,7 @@ describe('alignment', () => {
       '| a | b | c |\n' +
       '| :--- | ---: | :---: |\n' +
       '| td(colspan="2") merged | tail |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(
       result.html,
@@ -318,7 +312,7 @@ describe('ragged row widths', () => {
       '| :--- | ---: |\n' +
       '| short |\n' +
       '| one | two | excess |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(
       result.html,
@@ -337,7 +331,7 @@ describe('ragged row widths', () => {
       '| first body |\n' +
       '| ---: | :---: |\n' +
       '| left | excess |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.strictEqual((result.html.match(/<col(?=[ >])/g) || []).length, 1);
     assert.match(
@@ -419,7 +413,7 @@ describe('box drawing normalization', () => {
   test('box glyphs inside ASCII-delimited cells remain literal payload', () => {
     var input =
       '| Glyphs |\n| --- |\n| vertical │ horizontal ─═ junctions ┼╬ corners ┌┘ |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(
       result.html,
@@ -435,7 +429,7 @@ describe('box drawing normalization', () => {
   test('a backslash preserves an ambiguous delimiter inside a box row', () => {
     var input =
       '┌───────────┐\n│ Glyph     │\n├───────────┤\n│ left \\│ right │\n└───────────┘';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(result.html, /<td>left │ right<\/td>/);
     assert.doesNotMatch(result.html, /\\│/);
@@ -450,7 +444,7 @@ describe('box drawing normalization', () => {
     var input =
       'caption(title="│ ─ ═ ┼ ╬ ┌ ┘") Glyphs ┬ ┴\n' +
       '| td(title="│ ─ ═ ┼ ╬ ┌ ┘") value |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(result.src, /caption\(title="│ ─ ═ ┼ ╬ ┌ ┘"\) Glyphs ┬ ┴/);
     assert.match(result.src, /td\(title="│ ─ ═ ┼ ╬ ┌ ┘"\) value/);
@@ -462,7 +456,7 @@ describe('box drawing normalization', () => {
   });
 
   test('an escaped double vertical stays data in a mixed ASCII row', () => {
-    var result = renderRoundTrip('| --- |\n| left \\║ right |');
+    var result = roundTrip('| --- |\n| left \\║ right |');
 
     assert.match(result.html, /<td>left ║ right<\/td>/);
     assert.strictEqual(
@@ -618,7 +612,7 @@ describe('edge cases', () => {
   });
 
   test('an HTML character reference supplies a rendered literal pipe', () => {
-    var result = renderRoundTrip('| left&#124;right |');
+    var result = roundTrip('| left&#124;right |');
     assert.match(result.html, /<td>left&#124;right<\/td>/);
   });
 });
@@ -879,7 +873,7 @@ describe('errors', () => {
 describe('balanced parens in attribute groups', () => {
   test('an unquoted backslash cannot hide the lexer closing paren', () => {
     var input = '| --- |\n| td(title=x\\)) value |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
 
     assert.match(result.src, /^\s+td td\(title=x\\\)\) value$/m);
     assert.match(result.html, /<td>td\(title=x\\\)\) value<\/td>/);
@@ -947,7 +941,7 @@ describe('formatAttrs serialization', () => {
 
   test('a value with backslash-quote re-lexes', () => {
     var attrs = {title: 'a\\"b'};
-    var result = renderRoundTrip('| a |\n| --- |\n| b |', attrs);
+    var result = roundTrip('| a |\n| --- |\n| b |', attrs);
     var table = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'table',
     );
@@ -963,7 +957,7 @@ describe('formatAttrs serialization', () => {
   });
 
   test('a boolean compact option survives source, AST, and HTML', () => {
-    var result = renderRoundTrip('| a |\n| --- |\n| b |', {compact: true});
+    var result = roundTrip('| a |\n| --- |\n| b |', {compact: true});
     var table = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'table',
     );
@@ -1010,7 +1004,7 @@ describe('formatAttrs serialization', () => {
 describe('grammar-boundary value preservation', () => {
   test('an unquoted value with nested parentheses round-trips exactly', () => {
     var input = '| a |\n| ---(style=width:calc(1px))--- |\n| b |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var col = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'col',
     );
@@ -1028,7 +1022,7 @@ describe('grammar-boundary value preservation', () => {
       [3, 'path \\#{x}'],
     ].forEach(([count, expected]) => {
       var input = '| --- |\n| path ' + '\\'.repeat(count) + '#{x} |';
-      var result = renderRoundTrip(input);
+      var result = roundTrip(input);
       var text = collectNodes(result.ast, 'Text').find((node) =>
         node.val.startsWith('path'),
       );
@@ -1080,7 +1074,7 @@ describe('alignment + explicit style attr', () => {
 
   test('single-quoted, spaced style merges as one semantic attribute', () => {
     var input = "| a |\n| :---(style = 'color:red')---: |\n| b |";
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var col = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'col',
     );
@@ -1094,7 +1088,7 @@ describe('alignment + explicit style attr', () => {
 
   test('style-like text inside another value is not rewritten', () => {
     var input = '| a |\n| :---(title=\'mentions style="x"\')---: |\n| b |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var col = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'col',
     );
@@ -1113,7 +1107,7 @@ describe('alignment + explicit style attr', () => {
 
   test('boolean style is replaced rather than duplicated', () => {
     var input = '| a |\n| :---(style)---: |\n| b |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var col = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'col',
     );
@@ -1454,7 +1448,7 @@ describe('explicit th cells in thead get scope="col"', () => {
 
   test('a spaced scope assignment is detected and preserves its value', () => {
     var input = '| th(scope = "row") Name |\n| --- |\n| a |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var header = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'th',
     );
@@ -1468,7 +1462,7 @@ describe('explicit th cells in thead get scope="col"', () => {
 
   test('a boolean scope is detected and not duplicated', () => {
     var input = '| th(scope) Name |\n| --- |\n| a |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var header = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'th',
     );
@@ -1481,7 +1475,7 @@ describe('explicit th cells in thead get scope="col"', () => {
 
   test('scope-like text inside another value still gets scope="col"', () => {
     var input = '| th(title="mentions scope=x") Name |\n| --- |\n| a |';
-    var result = renderRoundTrip(input);
+    var result = roundTrip(input);
     var header = collectNodes(result.ast, 'Tag').find(
       (node) => node.name === 'th',
     );

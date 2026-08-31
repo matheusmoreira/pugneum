@@ -60,43 +60,36 @@ function parseRow(line) {
   return {trAttrs: parsed.trAttrs, cells: cells, rest: rowLine};
 }
 
-// Parse a separator line (the raw line after tr-prefix extraction) into
-// an array of colgroup descriptors: [{segs: [{align, attrs}, ...]}, ...].
-// || marks colgroup boundaries; | separates cols within a colgroup.
-function parseSeparatorLine(rowLine) {
-  // Split on || first to get colgroup chunks
-  const cgChunks = rowLine.split('||');
-  return cgChunks
-    .map(function (chunk) {
-      // Each chunk is a pipe-delimited list of separator segments
-      const segs = splitPipeCells(chunk).map(parseSepSegment);
-      return {segs: segs};
-    })
-    .filter(function (cg) {
-      return cg.segs.length > 0;
-    });
-}
-
 // A separator segment is dashes with optional leading/trailing colons
 // and an optional (attrs) group between dashes.
 // Examples: ---, :---, ---:, :---:, ---(class="x")---, :---(class="x")---:
-function isDashSepSegment(cell) {
-  // Strip leading colon
+// Returns its typed {align, attrs} descriptor, or null when the cell is not a
+// dash separator. Validation and extraction deliberately happen together so a
+// separator cannot be accepted by one grammar pass and interpreted by another.
+function parseDashSeparatorSegment(cell) {
   let s = cell;
-  if (s[0] === ':') s = s.slice(1);
-  // Strip trailing colon
-  if (s[s.length - 1] === ':') s = s.slice(0, -1);
+  const left = s[0] === ':';
+  const right = s[s.length - 1] === ':';
+  if (left) s = s.slice(1);
+  if (right) s = s.slice(0, -1);
+
   // Remove an optional balanced (attrs) group wherever it sits between dashes.
   // Quote-aware scanning (not `[^)]*`) so a ')' inside calc(...)/url(...) does
   // not end the group early — and a long run of unbalanced '(' cannot trigger
   // quadratic backtracking.
+  let attrs = '';
   const open = s.indexOf('(');
   if (open !== -1) {
     const close = scanParenGroup(s, open);
-    if (close !== -1) s = s.slice(0, open) + s.slice(close);
+    if (close === -1) return null;
+    attrs = s.slice(open + 1, close - 1);
+    s = s.slice(0, open) + s.slice(close);
   }
+
   // Remaining must be the documented separator width: at least three dashes.
-  return /^-{3,}$/.test(s);
+  if (!/^-{3,}$/.test(s)) return null;
+  const align = left && right ? 'center' : left ? 'left' : right ? 'right' : '';
+  return {align: align, attrs: attrs};
 }
 
 // An equals separator segment is at least three equals signs.
@@ -104,55 +97,54 @@ function isEqualsSepSegment(cell) {
   return /^={3,}$/.test(cell);
 }
 
-// Classify a pipe-delimited row by its separator type:
-// Returns 'dash' if its cells are dash-separator segments,
-// 'equals' if its cells are equals-separator segments,
-// 'mixed' if some are dash and some are equals,
-// or null if it is not a separator row at all.
+// Parse a pipe-delimited row into one typed separator descriptor:
+// {type: 'dash'|'equals'|'mixed', colgroups}. `||` marks colgroup boundaries;
+// `|` separates columns within a group. Returns null for an ordinary data row.
 // An empty cell (e.g. a blank middle column, or a `||` colgroup edge) is a
 // no-alignment column: it neither disqualifies the row nor decides its type, so
 // `| --- |  | --- |` is still a separator rather than silently demoting to data.
-// Each cell is classified once in a single pass (the old some/some/every form
-// re-ran isDashSepSegment up to 3x per cell, each call allocating + scanning).
-function classifySeparatorRow(row) {
-  if (row.cells.length === 0) return null;
+// Each segment is validated and converted to its final descriptor in one pass.
+function describeSeparatorRow(row) {
+  const colgroups = [];
   let hasDash = false;
   let hasEquals = false;
-  for (const cell of row.cells) {
-    if (cell === '') continue; // empty column: allowed, type-neutral
-    if (isDashSepSegment(cell)) hasDash = true;
-    else if (isEqualsSepSegment(cell)) hasEquals = true;
-    else return null; // a non-separator, non-empty cell: this is a data row
+
+  for (const chunk of row.rest.split('||')) {
+    const cells = splitPipeCells(chunk);
+    if (cells.length === 0) continue;
+
+    const segs = [];
+    for (const cell of cells) {
+      if (cell === '') {
+        segs.push({align: '', attrs: ''});
+        continue;
+      }
+
+      const dash = parseDashSeparatorSegment(cell);
+      if (dash !== null) {
+        hasDash = true;
+        segs.push(dash);
+      } else if (isEqualsSepSegment(cell)) {
+        hasEquals = true;
+        segs.push({align: '', attrs: ''});
+      } else {
+        return null;
+      }
+    }
+    colgroups.push({segs: segs});
   }
-  if (hasDash && hasEquals) return 'mixed';
-  if (hasDash) return 'dash';
-  if (hasEquals) return 'equals';
+
+  if (hasDash && hasEquals) return {type: 'mixed', colgroups};
+  if (hasDash) return {type: 'dash', colgroups};
+  if (hasEquals) return {type: 'equals', colgroups};
   return null; // all cells empty: not a separator
 }
 
 function classifySeparatorLine(line) {
   const row = parseRow(line);
-  return row === null ? null : classifySeparatorRow(row);
-}
-
-// Parse a separator segment into {align, attrs}.
-// align is '' | 'left' | 'right' | 'center'
-// attrs is the raw content inside parens, or ''
-function parseSepSegment(seg) {
-  seg = seg.trim();
-  const left = seg[0] === ':';
-  const right = seg[seg.length - 1] === ':';
-  // Extract the inside of a balanced (attrs) group (quote-aware, so a ')' in a
-  // value such as style="calc(1px)" survives). `attrs` is the content between
-  // the outer parens, matching the old /\(([^)]*)\)/ capture for simple values.
-  let attrs = '';
-  const open = seg.indexOf('(');
-  if (open !== -1) {
-    const close = scanParenGroup(seg, open);
-    if (close !== -1) attrs = seg.slice(open + 1, close - 1);
-  }
-  const align = left && right ? 'center' : left ? 'left' : right ? 'right' : '';
-  return {align: align, attrs: attrs};
+  if (row === null) return null;
+  const descriptor = describeSeparatorRow(row);
+  return descriptor === null ? null : descriptor.type;
 }
 
 // Decide whether `cell` is an explicit tagged cell (th/td emitted verbatim so
@@ -295,8 +287,9 @@ function parse(lines) {
     }
     row.location = location;
 
-    // Classify the row
-    const sepType = classifySeparatorRow(row);
+    // Parse separator grammar once into the descriptor the generator consumes.
+    const separator = describeSeparatorRow(row);
+    const sepType = separator === null ? null : separator.type;
     if (sepType === 'mixed') {
       throw error(
         'MIXED_TABLE_SEPARATOR',
@@ -311,11 +304,7 @@ function parse(lines) {
           location,
         );
       }
-      // Capture colgroup info from the post-prefix separator line. parseRow
-      // already extracted the tr-prefix once and surfaced the remainder as
-      // `row.rest` (with `||` colgroup boundaries intact), so there is one
-      // decomposition rather than a second parseTrPrefix pass.
-      const colgroups = parseSeparatorLine(row.rest);
+      const colgroups = separator.colgroups;
       colgroups.forEach(function (colgroup) {
         colgroup.location = location;
         colgroup.segs.forEach(function (segment) {

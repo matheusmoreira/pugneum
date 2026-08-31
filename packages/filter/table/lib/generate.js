@@ -376,6 +376,26 @@ function escapeCellText(text) {
   return pieces.join('');
 }
 
+// Build one cell source line regardless of whether its head was authored
+// explicitly or supplied by the section. Alignment and header scope therefore
+// have one ordering and duplicate-attribute policy for both forms.
+function renderCell(classified, sectionTag, align, location) {
+  const isVerbatim = classified.verbatim !== undefined;
+  let head = isVerbatim ? classified.verbatim : classified.tag;
+
+  if (isVerbatim) {
+    // Tagged-cell heads are handed back to the real lexer. Reject live
+    // interpolation here; only the trailing text is cell-escaped.
+    assertNoInterpolation(head, 'table cell head', location);
+  }
+
+  head = addAlignmentToCellHead(head, align, location);
+  if (sectionTag === 'thead') head = addScopeColToThHead(head);
+
+  const textPrefix = !isVerbatim && classified.text !== '' ? ' ' : '';
+  return head + textPrefix + escapeCellText(classified.text);
+}
+
 // Append indented Pugneum lines for a section (thead, tbody, or tfoot) directly
 // to the caller-owned accumulator, with the given default cell tag (th or td).
 // rows is an array of {trAttrs, cells} objects.
@@ -414,48 +434,8 @@ function renderSection(
       const classified = classifyCell(cell, defaultCellTag);
       const align = columnAlignments[columnIndex] || '';
       columnIndex += cellColumnSpan(classified.verbatim);
-      let cellLine;
-      if (classified.verbatim !== undefined) {
-        // Tagged cell: the head (tag + attrs) is verbatim Pugneum the real lexer
-        // parses; only the trailing text is re-lexed as inline content, so
-        // neutralize a literal `#{` there (classified.text keeps its leading
-        // space, or is '' when the cell is head-only). A live `#{` in the head's
-        // attribute group is NOT cell text — reject it cleanly rather than let
-        // the re-lex crash.
-        assertNoInterpolation(
-          classified.verbatim,
-          'table cell head',
-          row.location,
-        );
-        // An explicit `th` head in a thead still gets scope="col" (the README
-        // contract: header cells in a thead are scoped automatically) — but only
-        // when the author did not already set scope, else the re-lex would throw
-        // DUPLICATE_ATTRIBUTE.
-        const alignedHead = addAlignmentToCellHead(
-          classified.verbatim,
-          align,
-          row.location,
-        );
-        const head =
-          sectionTag === 'thead'
-            ? addScopeColToThHead(alignedHead)
-            : alignedHead;
-        cellLine = indent + '    ' + head + escapeCellText(classified.text);
-      } else {
-        cellLine = indent + '    ' + classified.tag;
-        const cellAttrs = [];
-        if (classified.tag === 'th' && sectionTag === 'thead') {
-          cellAttrs.push('scope="col"');
-        }
-        if (align) cellAttrs.push('style="text-align:' + align + '"');
-        if (cellAttrs.length > 0) cellLine += '(' + cellAttrs.join(' ') + ')';
-        if (classified.text !== '') {
-          // Bare-cell text is re-lexed as Pugneum inline content; neutralize a
-          // literal `#{` so tabular data does not crash the build.
-          cellLine += ' ' + escapeCellText(classified.text);
-        }
-      }
-      lines.push(cellLine);
+      const source = renderCell(classified, sectionTag, align, row.location);
+      lines.push(indent + '    ' + source);
     });
   });
 }

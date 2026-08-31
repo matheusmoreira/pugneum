@@ -19,6 +19,13 @@ function fixturePath(filename) {
   return path.relative(testCasesDir, absolute).split(path.sep).join('/');
 }
 
+function renderFixturePaths(name) {
+  return {
+    source: path.join(testCasesDir, name + '.pg'),
+    oracle: path.join(testCasesDir, name + '.html'),
+  };
+}
+
 function listFixtureFiles(directory) {
   var files = [];
   fs.readdirSync(directory, {withFileTypes: true}).forEach((entry) => {
@@ -1438,12 +1445,18 @@ describe('test-case manifest', () => {
 describe('test-cases/', () => {
   var cases = fixtureManifest.render;
 
+  it('pairs a basename containing .pg only at its final suffix', () => {
+    assert.deepStrictEqual(renderFixturePaths('oracle.pg.segment'), {
+      source: path.join(testCasesDir, 'oracle.pg.segment.pg'),
+      oracle: path.join(testCasesDir, 'oracle.pg.segment.html'),
+    });
+  });
+
   cases.forEach((name) => {
-    var htmlPath = path.join(testCasesDir, name + '.html');
+    var fixture = renderFixturePaths(name);
 
     it(name, () => {
-      var pgPath = path.join(testCasesDir, name + '.pg');
-      var expected = fs.readFileSync(htmlPath, 'utf8');
+      var expected = fs.readFileSync(fixture.oracle, 'utf8');
       var warningOracle = fixtureManifest.warningOracles[name];
       var expectedWarnings = warningOracle
         ? JSON.parse(
@@ -1453,8 +1466,12 @@ describe('test-cases/', () => {
       var warnings = [];
       // test-cases/ is the build root; layout cases reach their layouts via
       // the in-tree absolute path /fixtures/... Default-deny contains here.
-      var options = {filename: pgPath, basedir: testCasesDir, warnings};
-      var actual = renderAndTraceDependencies(pgPath, options);
+      var options = {
+        filename: fixture.source,
+        basedir: testCasesDir,
+        warnings,
+      };
+      var actual = renderAndTraceDependencies(fixture.source, options);
       assert.strictEqual(actual, expected);
       assert.deepStrictEqual(warnings.map(serializeWarning), expectedWarnings);
     });

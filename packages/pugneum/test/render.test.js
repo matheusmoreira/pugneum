@@ -656,7 +656,7 @@ describe('variables in attributes', () => {
   it('should error on #{var} outside mixin', () => {
     assert.throws(
       () => pg.render('div(data-x="#{oops}")'),
-      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
+      (err) => err.code === 'PUGNEUM:VARIABLE_OUTSIDE_MIXIN',
     );
   });
 

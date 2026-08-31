@@ -858,7 +858,7 @@ describe('mixin errors', () => {
 });
 
 describe('variable errors', () => {
-  test('variable outside mixin throws CALL_STACK_UNDERFLOW', () => {
+  test('variable outside mixin throws VARIABLE_OUTSIDE_MIXIN', () => {
     var variable = {
       type: 'Variable',
       name: 'x',
@@ -868,7 +868,7 @@ describe('variable errors', () => {
     };
     assert.throws(
       () => render(block([variable])),
-      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
+      (err) => err.code === 'PUGNEUM:VARIABLE_OUTSIDE_MIXIN',
     );
   });
 
@@ -1057,7 +1057,7 @@ describe('variables in attributes', () => {
     );
   });
 
-  test('#{var} outside mixin throws CALL_STACK_UNDERFLOW', () => {
+  test('#{var} outside mixin throws VARIABLE_OUTSIDE_MIXIN', () => {
     assert.throws(
       () =>
         render(
@@ -1072,7 +1072,7 @@ describe('variables in attributes', () => {
             ]),
           ]),
         ),
-      (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',
+      (err) => err.code === 'PUGNEUM:VARIABLE_OUTSIDE_MIXIN',
     );
   });
 

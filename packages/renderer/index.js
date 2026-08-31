@@ -449,7 +449,7 @@ class Compiler {
   resolveVariable(name, node) {
     if (this.callStack.length === 0) {
       this.error(
-        'CALL_STACK_UNDERFLOW',
+        'VARIABLE_OUTSIDE_MIXIN',
         `Variable '${name}' used outside mixin`,
         node,
       );

@@ -21,6 +21,15 @@ function read(filename) {
   return fs.readFileSync(path.join(testCasesDir, filename), 'utf8');
 }
 
+function parseSource(source, filename) {
+  filename = filename || 'test.pg';
+  return parse(lex(source, {filename}), {filename, source});
+}
+
+function parseFixture(filename) {
+  return parseSource(read(filename), filename);
+}
+
 function nestedIndentedSource(head, depth) {
   return Array.from(
     {length: depth},
@@ -57,17 +66,13 @@ function typedNodes(root) {
 
 testCases.forEach(function (filename) {
   test(filename, (t) => {
-    let input = read(filename),
-      tokens = lex(input, {filename: filename}),
-      ast = parse(tokens, {filename: filename});
-
-    t.assert.snapshot(ast);
+    t.assert.snapshot(parseFixture(filename));
   });
 });
 
 test('shared nested empty source parses as an empty root block', () => {
   var filename = 'fixtures/empty.pg';
-  var ast = parse(lex(read(filename), {filename}), {filename});
+  var ast = parseFixture(filename);
   assert.strictEqual(ast.type, 'Block');
   assert.deepStrictEqual(ast.nodes, []);
   assert.strictEqual(ast.filename, filename);
@@ -75,7 +80,7 @@ test('shared nested empty source parses as an empty root block', () => {
 
 test('shared nested doctype parses as canonical leading text', () => {
   var filename = 'auxiliary/blocks-in-blocks-layout.pg';
-  var ast = parse(lex(read(filename), {filename}), {filename});
+  var ast = parseFixture(filename);
   assert.deepStrictEqual(ast.nodes[0], {
     type: 'Text',
     line: 1,
@@ -86,11 +91,6 @@ test('shared nested doctype parses as canonical leading text', () => {
 });
 
 describe('error paths', () => {
-  function parseSource(src) {
-    var tokens = lex(src, {filename: 'test.pg'});
-    return parse(tokens, {filename: 'test.pg', source: src});
-  }
-
   test('BLOCK_OUTSIDE_MIXIN when block keyword used outside mixin', () => {
     assert.throws(
       () => parseSource('p hello\nblock'),
@@ -537,8 +537,7 @@ describe('error paths', () => {
 
   test('mixin with both unnamed and named blocks sets both flags', (t) => {
     const source = 'mixin both\n  block name\n  block';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     assert.strictEqual(mixin.usesNamedBlocks, true);
     assert.strictEqual(mixin.usesUnnamedBlock, true);
@@ -546,8 +545,7 @@ describe('error paths', () => {
 
   test('mixin with only unnamed block sets usesUnnamedBlock only', (t) => {
     const source = 'mixin simple\n  div\n    block';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     assert.strictEqual(mixin.usesNamedBlocks, false);
     assert.strictEqual(mixin.usesUnnamedBlock, true);
@@ -555,8 +553,7 @@ describe('error paths', () => {
 
   test('mixin with only named blocks sets usesNamedBlocks only', (t) => {
     const source = 'mixin named\n  block header\n  block body';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     assert.strictEqual(mixin.usesNamedBlocks, true);
     assert.strictEqual(mixin.usesUnnamedBlock, false);
@@ -565,8 +562,7 @@ describe('error paths', () => {
   test('unnamed block mixin with nested named-block call does not set usesNamedBlocks', (t) => {
     const source =
       'mixin outer\n  block\n  +inner\n    block slot\n      | content';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     assert.strictEqual(mixin.usesNamedBlocks, false);
     assert.strictEqual(mixin.usesUnnamedBlock, true);
@@ -577,9 +573,7 @@ test('preserves private attribute interpolation provenance', () => {
   const interpolationSource = Symbol.for(
     'pugneum.attributeInterpolationSource',
   );
-  const ast = parse(lex('div(data-x="\\\\#{x}")', {filename: 'test.pg'}), {
-    filename: 'test.pg',
-  });
+  const ast = parseSource('div(data-x="\\\\#{x}")');
   const attr = ast.nodes[0].attrs[0];
 
   assert.strictEqual(attr.val, '\\#{x}');
@@ -613,10 +607,7 @@ describe('direct variable continuations', () => {
       '    p#{x}*(bold)',
       '  #{x}tail',
     ].join('\n');
-    const ast = parse(lex(source, {filename: 'variables.pg'}), {
-      filename: 'variables.pg',
-      source,
-    });
+    const ast = parseSource(source, 'variables.pg');
     const mixin = ast.nodes[0];
     const container = mixin.block.nodes[0];
 
@@ -665,8 +656,7 @@ describe('direct variable continuations', () => {
 describe('given keyword', () => {
   test('given produces Given node with name and block', (t) => {
     const source = 'mixin card\n  given header\n    h1 Title';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     const givenNode = mixin.block.nodes[0];
     assert.strictEqual(givenNode.type, 'Given');
@@ -678,17 +668,15 @@ describe('given keyword', () => {
 
   test('given outside mixin throws GIVEN_OUTSIDE_MIXIN', (t) => {
     const source = 'given header\n  h1 Title';
-    const tokens = lex(source, {filename: 'test'});
     assert.throws(
-      () => parse(tokens, {filename: 'test', source}),
+      () => parseSource(source, 'test'),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
     );
   });
 
   test('given sets usesNamedBlocks on containing mixin', (t) => {
     const source = 'mixin card\n  block\n  given footer\n    p foot';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const mixin = ast.nodes[0];
     assert.strictEqual(mixin.usesNamedBlocks, true);
     assert.strictEqual(mixin.usesUnnamedBlock, true);
@@ -696,9 +684,8 @@ describe('given keyword', () => {
 
   test('given inside mixin call block throws GIVEN_OUTSIDE_MIXIN', (t) => {
     const source = 'mixin outer\n  +inner\n    given slot\n      p hi';
-    const tokens = lex(source, {filename: 'test'});
     assert.throws(
-      () => parse(tokens, {filename: 'test', source}),
+      () => parseSource(source, 'test'),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
     );
   });
@@ -710,8 +697,7 @@ describe('given keyword', () => {
     // Both a call and a definition are open, but the definition is innermost.
     const source =
       'mixin host\n  block\n+host\n  mixin nested\n    given slot\n      p y';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const call = ast.nodes.find((n) => n.type === 'Mixin' && n.call);
     const nested = call.block.nodes.find((n) => n.type === 'Mixin');
     const given = nested.block.nodes.find((n) => n.type === 'Given');
@@ -722,21 +708,17 @@ describe('given keyword', () => {
   test('given lexically inside a call block (with more defs than calls stacked) throws', (t) => {
     // Two definitions are open, but the call is innermost.
     const source = 'mixin a\n  mixin b\n    +c\n      given slot\n        p hi';
-    const tokens = lex(source, {filename: 'test'});
     assert.throws(
-      () => parse(tokens, {filename: 'test', source}),
+      () => parseSource(source, 'test'),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
     );
   });
 });
 
-describe('blind sweep fixes', () => {
+describe('parser structure and boundary regressions', () => {
   test('HTML inline classification is ASCII-case-insensitive without rewriting names', () => {
     const source = 'SPAN text\nDiv block';
-    const ast = parse(lex(source, {filename: 'case.pg'}), {
-      filename: 'case.pg',
-      source,
-    });
+    const ast = parseSource(source, 'case.pg');
 
     assert.deepStrictEqual(
       ast.nodes.map((node) => ({name: node.name, isInline: node.isInline})),
@@ -750,7 +732,7 @@ describe('blind sweep fixes', () => {
   test('zero-length lexer padding is not materialized as Text nodes', () => {
     for (const filename of testCases) {
       const source = read(filename);
-      const ast = parse(lex(source, {filename}), {filename, source});
+      const ast = parseSource(source, filename);
       const emptyText = typedNodes(ast).filter(
         (node) => node.type === 'Text' && node.val === '',
       );
@@ -765,10 +747,7 @@ describe('blind sweep fixes', () => {
   test('adjacent inline shorthands scale to one meaningful child each', () => {
     const count = 1000;
     const source = 'p ' + '*(x)'.repeat(count);
-    const ast = parse(lex(source, {filename: 'adjacent.pg'}), {
-      filename: 'adjacent.pg',
-      source,
-    });
+    const ast = parseSource(source, 'adjacent.pg');
     const paragraph = ast.nodes[0];
 
     assert.strictEqual(paragraph.block.nodes.length, count);
@@ -795,8 +774,7 @@ describe('blind sweep fixes', () => {
     // 'text' alone dropped the separator before an interpolation, gluing the
     // two lines' words together (e.g. <p>alphaVALUE beta</p>).
     const source = 'mixin m(x)\n  p\n    | alpha\n    | #{x} beta';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const p = ast.nodes[0].block.nodes.find(
       (n) => n.type === 'Tag' && n.name === 'p',
     );
@@ -810,8 +788,7 @@ describe('blind sweep fixes', () => {
     // The new gate must still suppress the separator when nothing inline
     // follows the newline (outdent/eos), so no spurious trailing '\n' appears.
     const source = 'mixin m(x)\n  p\n    | alpha\n    | beta\n  div';
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const p = ast.nodes[0].block.nodes.find(
       (n) => n.type === 'Tag' && n.name === 'p',
     );
@@ -850,8 +827,7 @@ describe('blind sweep fixes', () => {
       '    one',
       '    two',
     ].join('\n');
-    const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const ast = parseSource(source, 'test');
     const def = ast.nodes.find((n) => n.type === 'Footnotes').definitions[0];
     assert.strictEqual(def.block.isFootnoteBody, true);
     const vals = def.block.nodes
@@ -875,10 +851,7 @@ describe('blind sweep fixes', () => {
       '    Continue ^[two].',
       '  two Next.',
     ].join('\n');
-    const ast = parse(lex(source, {filename: 'footnotes.pg'}), {
-      filename: 'footnotes.pg',
-      source,
-    });
+    const ast = parseSource(source, 'footnotes.pg');
     const footnotes = ast.nodes.find((node) => node.type === 'Footnotes');
     const nodes = footnotes.definitions[0].block.nodes;
 
@@ -959,10 +932,7 @@ describe('blind sweep fixes', () => {
       'footnotes',
       '  note Note.',
     ].join('\n');
-    const ast = parse(lex(source, {filename: 'pipeless.pg'}), {
-      filename: 'pipeless.pg',
-      source,
-    });
+    const ast = parseSource(source, 'pipeless.pg');
     const paragraph = ast.nodes.find(
       (node) => node.type === 'Tag' && node.name === 'p',
     );
@@ -1009,10 +979,7 @@ describe('blind sweep fixes', () => {
     const source = ['p ^[n] z', '', 'footnotes', '  n first', '    '].join(
       '\n',
     );
-    const ast = parse(lex(source, {filename: 'test'}), {
-      filename: 'test',
-      source,
-    });
+    const ast = parseSource(source, 'test');
     const def = ast.nodes.find((n) => n.type === 'Footnotes').definitions[0];
 
     assert.strictEqual(def.block.isFootnoteBody, true);

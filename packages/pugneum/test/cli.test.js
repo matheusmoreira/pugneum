@@ -148,6 +148,93 @@ function writeFeedResolutionBlocker(directory) {
   return preload;
 }
 
+function writeFeedLoadFailure(directory) {
+  const preload = path.join(directory, 'break-pugneum-feed.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const Module = require('node:module');",
+      'const originalLoad = Module._load;',
+      'Module._load = function (request) {',
+      "  if (request === 'pugneum-feed') {",
+      '    const error = new Error("Cannot find module \'feed-transitive-dependency\'");',
+      "    error.code = 'MODULE_NOT_FOUND';",
+      '    throw error;',
+      '  }',
+      '  return Reflect.apply(originalLoad, this, arguments);',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
+function writeDescendingDirectoryOrder(directory) {
+  const preload = path.join(directory, 'reverse-directory-order.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const fs = require('node:fs');",
+      'const originalReadDirectory = fs.readdirSync;',
+      'fs.readdirSync = function (directory, options) {',
+      '  const entries = Reflect.apply(originalReadDirectory, this, arguments);',
+      '  if (options && options.withFileTypes && /[/\\\\]src$/.test(directory)) {',
+      '    entries.sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0));',
+      '  }',
+      '  return entries;',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
+function writeAscendingDirectoryOrder(directory) {
+  const preload = path.join(directory, 'ascending-directory-order.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const fs = require('node:fs');",
+      'const originalReadDirectory = fs.readdirSync;',
+      'fs.readdirSync = function (directory, options) {',
+      '  const entries = Reflect.apply(originalReadDirectory, this, arguments);',
+      '  if (options && options.withFileTypes && /[/\\\\]src$/.test(directory)) {',
+      '    entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));',
+      '  }',
+      '  return entries;',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
+function writeAliasedDirectoryIdentity(directory) {
+  const preload = path.join(directory, 'alias-directory-identity.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const fs = require('node:fs');",
+      "const path = require('node:path');",
+      'const originalLstat = fs.lstatSync;',
+      'fs.lstatSync = function (filename) {',
+      '  const stat = Reflect.apply(originalLstat, this, arguments);',
+      '  const parent = path.basename(path.dirname(filename));',
+      '  const name = path.basename(filename);',
+      "  if (parent === 'src' && (name === 'a' || name === 'b')) {",
+      '    return new Proxy(stat, {',
+      '      get(target, property) {',
+      "        if (property === 'dev') return 12345;",
+      "        if (property === 'ino') return 67890;",
+      '        const value = Reflect.get(target, property, target);',
+      "        return typeof value === 'function' ? value.bind(target) : value;",
+      '      },',
+      '    });',
+      '  }',
+      '  return stat;',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
 function parseXmlFile(filename, expectedRoot) {
   const source = fs.readFileSync(filename, 'utf8');
   const document = htmlparser2.parseDocument(source, {xmlMode: true});
@@ -173,6 +260,20 @@ describe('CLI', () => {
     const out = run(['--version']);
     assert.strictEqual(out.trim(), pkg.version);
   });
+
+  for (const arguments_ of [['--typo'], ['page.pg'], ['--help', '--typo']]) {
+    test('rejects unsupported arguments ' + arguments_.join(' '), () => {
+      const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+      try {
+        const result = runExpectFail(arguments_, {cwd: tmp});
+        assert.strictEqual(result.status, 1);
+        assert.match(result.stderr, /Unknown argument/);
+        assert.ok(!fs.existsSync(path.join(tmp, 'out')));
+      } finally {
+        fs.rmSync(tmp, {recursive: true});
+      }
+    });
+  }
 
   test('exits with error when pugneum.json is missing', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
@@ -292,6 +393,81 @@ describe('CLI', () => {
       const html = fs.readFileSync(path.join(tmp, 'out', 'real.html'), 'utf8');
       assert.strictEqual(html, '<p>ok</p>');
       assert.ok(!fs.existsSync(path.join(tmp, 'out', 'loop')));
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('processes templates in stable name order', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'src', 'a.pg'), 'div(>="x")');
+      fs.writeFileSync(path.join(tmp, 'src', 'z.pg'), 'p rendered too early');
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+      const preload = writeDescendingDirectoryOrder(tmp);
+
+      const result = spawnCli([], {cwd: tmp, preload});
+
+      assert.strictEqual(result.status, 6);
+      assert.match(result.stderr, /a\.pg/);
+      assert.ok(!fs.existsSync(path.join(tmp, 'out', 'z.html')));
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('does not traverse a nested output directory as source', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src', 'out'), {recursive: true});
+      fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p page');
+      fs.writeFileSync(path.join(tmp, 'src', 'out', 'stale.pg'), 'p stale');
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'src/out'}),
+      );
+
+      run([], {cwd: tmp});
+
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'src', 'out', 'page.html'), 'utf8'),
+        '<p>page</p>',
+      );
+      assert.ok(!fs.existsSync(path.join(tmp, 'src', 'out', 'out')));
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('directory identity suppresses only active recursion cycles', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src', 'a'), {recursive: true});
+      fs.mkdirSync(path.join(tmp, 'src', 'b'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'src', 'a', 'one.pg'), 'p one');
+      fs.writeFileSync(path.join(tmp, 'src', 'b', 'two.pg'), 'p two');
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+      const preload = writeAliasedDirectoryIdentity(tmp);
+
+      run([], {cwd: tmp, preload});
+
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'out', 'a', 'one.html'), 'utf8'),
+        '<p>one</p>',
+      );
+      assert.strictEqual(
+        fs.readFileSync(path.join(tmp, 'out', 'b', 'two.html'), 'utf8'),
+        '<p>two</p>',
+      );
     } finally {
       fs.rmSync(tmp, {recursive: true});
     }
@@ -558,6 +734,41 @@ describe('CLI', () => {
     }
   });
 
+  test('rejects a FIFO output without blocking', (t) => {
+    if (process.platform === 'win32') {
+      t.skip('Windows named pipes are not filesystem FIFO entries');
+      return;
+    }
+
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(path.join(tmp, 'src', 'special.pg'), 'p replacement');
+      const fifo = path.join(tmp, 'out', 'special.html');
+      const mkfifo = spawnSync('mkfifo', [fifo], {encoding: 'utf8'});
+      if (mkfifo.error && mkfifo.error.code === 'ENOENT') {
+        t.skip('mkfifo is unavailable on this runner');
+        return;
+      }
+      assert.ifError(mkfifo.error);
+      assert.strictEqual(mkfifo.status, 0, mkfifo.stderr);
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+
+      const result = spawnCli([], {cwd: tmp, timeout: 2000});
+
+      assert.ifError(result.error);
+      assert.strictEqual(result.status, 1);
+      assert.match(result.stderr, /Output path escapes output directory/);
+      assert.ok(fs.lstatSync(fifo).isFIFO());
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
   test('a feed-generation error exits cleanly with the feed exit code', () => {
     // With feeds configured and pugneum-feed present, a genuine feed failure
     // (here: index page has no base URL) must surface as a clean, coded message
@@ -647,6 +858,24 @@ describe('CLI', () => {
       );
       assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
       assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    } finally {
+      fs.rmSync(project.tmp, {recursive: true});
+    }
+  });
+
+  test('reports an installed feed package load failure as a feed error', () => {
+    const project = makeFeedProject({url: 'https://example.test/'});
+    try {
+      const preload = writeFeedLoadFailure(project.tmp);
+      const result = spawnCli([], {cwd: project.tmp, preload});
+
+      assert.strictEqual(result.status, 7);
+      assert.match(
+        result.stderr,
+        /Feed generation failed: Cannot find module 'feed-transitive-dependency'/,
+      );
+      assert.doesNotMatch(result.stderr, /pugneum-feed is not installed/);
+      assert.doesNotMatch(result.stderr, /\n\s+at /);
     } finally {
       fs.rmSync(project.tmp, {recursive: true});
     }
@@ -797,6 +1026,46 @@ describe('CLI', () => {
       const count = (result.stderr.match(/TYPOGRAPHIC_QUOTE_DELIMITER/g) || [])
         .length;
       assert.strictEqual(count, 1);
+    } finally {
+      fs.rmSync(tmp, {recursive: true});
+    }
+  });
+
+  test('emits earlier warnings when a later output boundary fails', (t) => {
+    if (process.platform === 'win32') {
+      t.skip('Windows named pipes are not filesystem FIFO entries');
+      return;
+    }
+
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pg-cli-'));
+    try {
+      fs.mkdirSync(path.join(tmp, 'src'));
+      fs.mkdirSync(path.join(tmp, 'out'));
+      fs.writeFileSync(
+        path.join(tmp, 'src', 'a.pg'),
+        'a(href=‘/warning’) warning link',
+      );
+      fs.writeFileSync(path.join(tmp, 'src', 'z.pg'), 'p blocked');
+      const fifo = path.join(tmp, 'out', 'z.html');
+      const mkfifo = spawnSync('mkfifo', [fifo], {encoding: 'utf8'});
+      if (mkfifo.error && mkfifo.error.code === 'ENOENT') {
+        t.skip('mkfifo is unavailable on this runner');
+        return;
+      }
+      assert.ifError(mkfifo.error);
+      assert.strictEqual(mkfifo.status, 0, mkfifo.stderr);
+      fs.writeFileSync(
+        path.join(tmp, 'pugneum.json'),
+        JSON.stringify({inputDirectory: 'src', outputDirectory: 'out'}),
+      );
+      const preload = writeAscendingDirectoryOrder(tmp);
+
+      const result = spawnCli([], {cwd: tmp, preload});
+
+      assert.strictEqual(result.status, 1);
+      assert.match(result.stderr, /TYPOGRAPHIC_QUOTE_DELIMITER/);
+      assert.match(result.stderr, /Output path escapes output directory/);
+      assert.doesNotMatch(result.stderr, /\n\s+at /);
     } finally {
       fs.rmSync(tmp, {recursive: true});
     }

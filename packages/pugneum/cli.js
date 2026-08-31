@@ -34,9 +34,19 @@ const fs = require('fs');
 
 const pkg = require('./package.json');
 
+const EXIT_CODES = {
+  INVALID_INPUT: 1,
+  NOT_FOUND: 2,
+  PERMISSION_DENIED: 3,
+  NOT_DIRECTORY: 4,
+  NOT_FILE: 5,
+  TEMPLATE_ERROR: 6,
+  FEED_ERROR: 7,
+};
+
 const args = process.argv.slice(2);
 
-if (args.includes('--help') || args.includes('-h')) {
+if (args.length === 1 && (args[0] === '--help' || args[0] === '-h')) {
   console.log(`pugneum v${pkg.version} — ${pkg.description}
 
 Usage: pugneum [options]
@@ -50,20 +60,17 @@ Options:
   process.exit(0);
 }
 
-if (args.includes('--version') || args.includes('-v')) {
+if (args.length === 1 && (args[0] === '--version' || args[0] === '-v')) {
   console.log(pkg.version);
   process.exit(0);
 }
 
-const EXIT_CODES = {
-  INVALID_INPUT: 1,
-  NOT_FOUND: 2,
-  PERMISSION_DENIED: 3,
-  NOT_DIRECTORY: 4,
-  NOT_FILE: 5,
-  TEMPLATE_ERROR: 6,
-  FEED_ERROR: 7,
-};
+if (args.length > 0) {
+  console.error(
+    `Unknown argument${args.length === 1 ? '' : 's'}: ${args.join(' ')}`,
+  );
+  process.exit(EXIT_CODES.INVALID_INPUT);
+}
 
 function readAndValidateInput(filename) {
   const input = fs.readFileSync(filename, 'utf8');
@@ -121,35 +128,52 @@ function isPugneum(file) {
   return pgExtension.test(file);
 }
 
-function processDirectory(directory, f, visited) {
-  visited = visited || new Set();
+function processDirectory(directory, f, activeDirectories, excludedDirectory) {
+  if (directory === excludedDirectory) return;
+
+  activeDirectories = activeDirectories || new Set();
   const stat = fs.lstatSync(directory);
   if (stat.isSymbolicLink()) return;
   // Inode (dev:ino) loop guard: defence-in-depth against directory cycles that
   // the per-entry symlink skip would not catch (e.g. hardlinked dirs / bind
   // mounts). On ordinary filesystems the symlink skips already prevent cycles.
   const inode = stat.dev + ':' + stat.ino;
-  if (visited.has(inode)) return;
-  visited.add(inode);
+  if (activeDirectories.has(inode)) return;
+  activeDirectories.add(inode);
 
-  // withFileTypes reads each entry's type from the same getdents the listing
-  // already performs, so no extra per-entry stat is needed. Dirent type checks
-  // use lstat semantics (a symlink reports isSymbolicLink, never the target's
-  // type), matching the per-entry skip the old code did with fs.lstatSync.
-  const entries = fs.readdirSync(directory, {withFileTypes: true});
+  try {
+    // withFileTypes reads each entry's type from the same getdents the listing
+    // already performs, so no extra per-entry stat is needed. Dirent type
+    // checks use lstat semantics (a symlink reports isSymbolicLink, never the
+    // target's type), matching the per-entry skip the old code did with
+    // fs.lstatSync. Sort by code unit so failure and output order do not depend
+    // on the filesystem's directory enumeration order or process locale.
+    const entries = fs
+      .readdirSync(directory, {withFileTypes: true})
+      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
-  for (let i = 0; i < entries.length; ++i) {
-    const entry = entries[i];
+    for (let i = 0; i < entries.length; ++i) {
+      const entry = entries[i];
 
-    if (entry.isSymbolicLink()) continue;
+      if (entry.isSymbolicLink()) continue;
 
-    if (entry.isDirectory()) {
-      processDirectory(path.join(directory, entry.name), f, visited);
-    } else {
-      if (isPugneum(entry.name)) {
-        f(path.join(directory, entry.name));
+      if (entry.isDirectory()) {
+        processDirectory(
+          path.join(directory, entry.name),
+          f,
+          activeDirectories,
+          excludedDirectory,
+        );
+      } else {
+        if (isPugneum(entry.name)) {
+          f(path.join(directory, entry.name));
+        }
       }
     }
+  } finally {
+    // The inode is a recursion-stack guard, not a global de-duplication key:
+    // separate directory entries can legitimately expose the same identity.
+    activeDirectories.delete(inode);
   }
 }
 
@@ -217,6 +241,28 @@ function rethrowInputBoundary(error, relative) {
   throw error;
 }
 
+function errorMessage(error) {
+  if (error && typeof error.message === 'string') return error.message;
+  try {
+    return String(error);
+  } catch (_) {
+    return 'Unknown error';
+  }
+}
+
+function exitWithFeedError(error) {
+  if (
+    error &&
+    typeof error.code === 'string' &&
+    error.code.startsWith('PUGNEUM:')
+  ) {
+    console.error(errorMessage(error));
+  } else {
+    console.error(`Feed generation failed: ${errorMessage(error)}`);
+  }
+  process.exit(EXIT_CODES.FEED_ERROR);
+}
+
 // Declared outside the try so the catch can still surface diagnostics
 // collected from earlier files before a later file's hard error aborts.
 const pgOptions = {basedir: undefined, warnings: []};
@@ -240,78 +286,79 @@ try {
   const resolvedOutputDir = path.resolve(outputDirectory);
   fs.mkdirSync(resolvedOutputDir, {recursive: true});
   const outputFiles = createRootedFilesystem(resolvedOutputDir);
-  processDirectory(resolvedInputDir, function compilePugneumAndSave(input) {
-    // Compute the relative path against the SAME base the walk uses
-    // (resolvedInputDir, the realpath). Using the raw inputDirectory here would
-    // diverge whenever the input dir is a symlink (or has a symlinked parent
-    // component): path.relative resolves it lexically against cwd while every
-    // walked input is symlink-resolved, yielding a spurious ../-laden path that
-    // trips the output-escape guard below and aborts the whole build.
-    const relative = path.relative(resolvedInputDir, input);
-    const outputPath = relative.replace(pgExtension, '.html');
-    let source;
-    try {
-      source = inputFiles.readFile(relative, 'utf8');
-    } catch (error) {
-      rethrowInputBoundary(error, relative);
-    }
-    const output = pg.render(
-      source,
-      Object.assign({}, pgOptions, {filename: input}),
-    );
-    try {
-      outputFiles.ensureDirectory(path.dirname(outputPath));
-      outputFiles.writeFileAtomic(outputPath, output, {encoding: 'utf8'});
-    } catch (error) {
-      rethrowOutputBoundary(error, relative);
-    }
-  });
+  const realOutputDir = fs.realpathSync(resolvedOutputDir);
+  const outputRelativeToInput = path.relative(resolvedInputDir, realOutputDir);
+  const nestedOutputDir =
+    outputRelativeToInput &&
+    !path.isAbsolute(outputRelativeToInput) &&
+    outputRelativeToInput !== '..' &&
+    !outputRelativeToInput.startsWith('..' + path.sep)
+      ? realOutputDir
+      : undefined;
+  processDirectory(
+    resolvedInputDir,
+    function compilePugneumAndSave(input) {
+      // Compute the relative path against the SAME base the walk uses
+      // (resolvedInputDir, the realpath). Using the raw inputDirectory here would
+      // diverge whenever the input dir is a symlink (or has a symlinked parent
+      // component): path.relative resolves it lexically against cwd while every
+      // walked input is symlink-resolved, yielding a spurious ../-laden path that
+      // trips the output-escape guard below and aborts the whole build.
+      const relative = path.relative(resolvedInputDir, input);
+      const outputPath = relative.replace(pgExtension, '.html');
+      let source;
+      try {
+        source = inputFiles.readFile(relative, 'utf8');
+      } catch (error) {
+        rethrowInputBoundary(error, relative);
+      }
+      const output = pg.render(
+        source,
+        Object.assign({}, pgOptions, {filename: input}),
+      );
+      try {
+        outputFiles.ensureDirectory(path.dirname(outputPath));
+        outputFiles.writeFileAtomic(outputPath, output, {encoding: 'utf8'});
+      } catch (error) {
+        rethrowOutputBoundary(error, relative);
+      }
+    },
+    undefined,
+    nestedOutputDir,
+  );
 
   // Surface non-fatal diagnostics collected across the whole build once.
   flushWarnings();
 
   if (feeds && feeds.enabled !== false) {
-    // pugneum-feed is an optional peer dependency. Detect its absence by
-    // resolving the exact specifier in its own try: only a failure to resolve
-    // 'pugneum-feed' itself means "not installed". A MODULE_NOT_FOUND raised by
-    // a require *inside* a present-but-broken pugneum-feed must NOT be mistaken
-    // for absence, so generateFeeds() is invoked OUTSIDE this guard where its
-    // own failures propagate to handleError.
-    let generateFeeds;
+    // pugneum-feed is an optional peer dependency. Detect its absence with an
+    // isolated resolution probe: only failure here means "not installed". A
+    // MODULE_NOT_FOUND raised while loading a present package can instead name
+    // one of its transitive dependencies and is handled as a feed failure.
+    let feedAvailable = true;
     try {
       require.resolve('pugneum-feed');
-      generateFeeds = require('pugneum-feed');
     } catch (resolveError) {
-      if (
-        resolveError.code === 'MODULE_NOT_FOUND' &&
-        /Cannot find module '(\.{0,2}\/)?pugneum-feed'/.test(
-          resolveError.message,
-        )
-      ) {
+      if (resolveError && resolveError.code === 'MODULE_NOT_FOUND') {
+        feedAvailable = false;
         console.warn('pugneum-feed is not installed, skipping feed generation');
       } else {
         throw resolveError;
       }
     }
 
-    if (generateFeeds) {
+    if (feedAvailable) {
       try {
+        const generateFeeds = require('pugneum-feed');
         generateFeeds({
           outputDirectory: outputDirectory,
           feeds: feeds,
         });
       } catch (feedError) {
-        // A present feed generator's own failure: report it cleanly rather than
-        // letting it escape handleError's default branch as a raw stack trace.
-        if (
-          typeof feedError.code === 'string' &&
-          feedError.code.startsWith('PUGNEUM:')
-        ) {
-          console.error(feedError.message);
-        } else {
-          console.error(`Feed generation failed: ${feedError.message}`);
-        }
-        process.exit(EXIT_CODES.FEED_ERROR);
+        // Loading a present package can fail on initialization or a transitive
+        // dependency just as invocation can. Both are feed failures, while
+        // only the resolution probe above represents an absent optional peer.
+        exitWithFeedError(feedError);
       }
     }
   }

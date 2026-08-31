@@ -184,19 +184,30 @@ describe('replace([])', function () {
     );
   });
 
-  test('fails when parent is not Block', function () {
-    walk(parse(lex('p content')), function (node, replace) {
-      if (
-        node.type === 'Block' &&
-        node.nodes[0] &&
-        node.nodes[0].type === 'Text'
-      ) {
-        assert(!replace.arrayAllowed, 'replace.arrayAllowed set wrongly');
-        assert.throws(function () {
+  test('rejects an array in a non-list child without mutating it', function () {
+    var text = {type: 'Text', val: 'content'};
+    var block = {type: 'Block', nodes: [text]};
+    var tag = {type: 'Tag', name: 'p', attrs: [], block: block};
+    var callbackHits = 0;
+
+    assert.throws(
+      function () {
+        walk(tag, function (node, replace) {
+          if (node !== block) return;
+          callbackHits++;
+          assert.strictEqual(replace.arrayAllowed, false);
           replace([]);
         });
-      }
-    });
+      },
+      {
+        name: 'Error',
+        message:
+          'replace() can only be called with an array if the last parent is a Block or NamedBlock',
+      },
+    );
+    assert.strictEqual(callbackHits, 1);
+    assert.strictEqual(tag.block, block);
+    assert.strictEqual(block.nodes[0], text);
   });
 });
 
@@ -402,6 +413,146 @@ test('includeDependencies follows only a preloaded FileReference.ast', function 
   assert.strictEqual(sawDependency, true);
   assert.ok(!Object.hasOwn(unloaded, 'ast'));
   assert.deepStrictEqual(options.parents, []);
+});
+
+describe('child dispatch coverage', function () {
+  function text(value) {
+    return {type: 'Text', val: value};
+  }
+
+  function block(value) {
+    return {type: 'Block', nodes: [text(value)]};
+  }
+
+  function label(node) {
+    if (node.val) return node.type + ':' + node.val;
+    if (node.name) return node.type + ':' + node.name;
+    return node.type;
+  }
+
+  var cases = [
+    {
+      name: 'ReferenceLink.block',
+      node: {
+        type: 'ReferenceLink',
+        name: 'docs',
+        attrs: [],
+        block: block('link text'),
+      },
+      events: [
+        'before ReferenceLink:docs',
+        'before Block',
+        'before Text:link text',
+        'after Text:link text',
+        'after Block',
+        'after ReferenceLink:docs',
+      ],
+    },
+    {
+      name: 'ReferenceImage.block',
+      node: {
+        type: 'ReferenceImage',
+        name: 'logo',
+        attrs: [],
+        block: block('alt text'),
+      },
+      events: [
+        'before ReferenceImage:logo',
+        'before Block',
+        'before Text:alt text',
+        'after Text:alt text',
+        'after Block',
+        'after ReferenceImage:logo',
+      ],
+    },
+    {
+      name: 'FootnoteRef.block when present',
+      node: {type: 'FootnoteRef', name: 'note', block: block('fallback')},
+      events: [
+        'before FootnoteRef:note',
+        'before Block',
+        'before Text:fallback',
+        'after Text:fallback',
+        'after Block',
+        'after FootnoteRef:note',
+      ],
+    },
+    {
+      name: 'FootnoteRef.block when absent',
+      node: {type: 'FootnoteRef', name: 'note'},
+      events: ['before FootnoteRef:note', 'after FootnoteRef:note'],
+    },
+    {
+      name: 'Footnotes definition blocks in source order',
+      node: {
+        type: 'Footnotes',
+        definitions: [
+          {name: 'one', block: block('first')},
+          {name: 'two', block: block('second')},
+        ],
+      },
+      events: [
+        'before Footnotes',
+        'before Block',
+        'before Text:first',
+        'after Text:first',
+        'after Block',
+        'before Block',
+        'before Text:second',
+        'after Text:second',
+        'after Block',
+        'after Footnotes',
+      ],
+    },
+    {
+      name: 'Given.block',
+      node: {type: 'Given', name: 'sidebar', block: block('given text')},
+      events: [
+        'before Given:sidebar',
+        'before Block',
+        'before Text:given text',
+        'after Text:given text',
+        'after Block',
+        'after Given:sidebar',
+      ],
+    },
+  ];
+
+  cases.forEach(function (testCase) {
+    test(testCase.name, function () {
+      var events = [];
+      var childBlocks = [];
+      if (testCase.node.block) childBlocks.push(testCase.node.block);
+      if (testCase.node.definitions) {
+        childBlocks.push(
+          ...testCase.node.definitions.map(function (definition) {
+            return definition.block;
+          }),
+        );
+      }
+
+      var result = walk(
+        testCase.node,
+        function before(node) {
+          events.push('before ' + label(node));
+        },
+        function after(node) {
+          events.push('after ' + label(node));
+        },
+      );
+
+      assert.strictEqual(result, testCase.node);
+      assert.deepStrictEqual(events, testCase.events);
+      if (testCase.node.block) {
+        assert.strictEqual(testCase.node.block, childBlocks[0]);
+      }
+      if (testCase.node.definitions) {
+        testCase.node.definitions.forEach(function (definition, index) {
+          assert.strictEqual(definition.block, childBlocks[index]);
+        });
+      }
+    });
+  });
 });
 
 test('parents array is cleaned up when before hook throws', (t) => {
@@ -1185,27 +1336,34 @@ describe('array replacement re-walk fates (documented contract)', function () {
   });
 
   test('replace([...]) in after inserts nodes but does NOT re-walk them', function () {
+    var original = {type: 'Text', val: 'x'};
+    var first = {type: 'Text', val: 'y'};
+    var second = {type: 'Text', val: 'z'};
+    var ast = {type: 'Block', nodes: [original]};
     var seen = [];
-    walk(
-      {type: 'Block', nodes: [{type: 'Text', val: 'x'}]},
+    var result = walk(
+      ast,
       function before(node) {
         seen.push('before ' + (node.val || node.type));
       },
       function after(node, replace) {
         seen.push('after ' + (node.val || node.type));
         if (node.val === 'x') {
-          replace([
-            {type: 'Text', val: 'y'},
-            {type: 'Text', val: 'z'},
-          ]);
+          replace([first, second]);
         }
       },
     );
-    // y and z are spliced in but never visited by before/after.
-    assert(
-      !seen.includes('before y') && !seen.includes('before z'),
-      'after-inserted nodes must not be re-walked: ' + JSON.stringify(seen),
-    );
+
+    assert.strictEqual(result, ast);
+    assert.deepStrictEqual(ast.nodes, [first, second]);
+    assert.strictEqual(ast.nodes[0], first);
+    assert.strictEqual(ast.nodes[1], second);
+    assert.deepStrictEqual(seen, [
+      'before Block',
+      'before x',
+      'after x',
+      'after Block',
+    ]);
   });
 
   test('replace([...]) in before followed by return false inserts nodes un-walked', function () {

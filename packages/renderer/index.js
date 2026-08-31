@@ -120,6 +120,7 @@ class Compiler {
     }
     this.node = node;
     this.mixins = Object.create(null);
+    this.mixinSlots = new WeakMap();
     this.usedMixins = new Set();
     this.warnings = options.warnings === undefined ? [] : options.warnings;
     this.callStack = [];
@@ -506,6 +507,7 @@ class Compiler {
         this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
       this.usedMixins.add(mixin.name);
+      const slots = this.mixinSlots.get(declared);
 
       // Class/id/attribute shorthand on a call (e.g. +box.highlight, +box#main)
       // is parsed onto mixin.attrs but has no defined target element, so it
@@ -571,7 +573,7 @@ class Compiler {
 
       let namedBlocks = null;
       let unnamedBlock = null;
-      if (declared.usesNamedBlocks) {
+      if (slots.usesNamedBlocks) {
         namedBlocks = Object.create(null);
         const unnamedNodes = [];
         if (block && block.nodes) {
@@ -582,7 +584,7 @@ class Compiler {
                 namedBlocks[node.name] = [];
               }
               namedBlocks[node.name].push(node);
-            } else if (declared.usesUnnamedBlock) {
+            } else if (slots.usesUnnamedBlock) {
               unnamedNodes.push(node);
             } else {
               this.error(
@@ -602,7 +604,7 @@ class Compiler {
             filename: unnamedNodes[0].filename,
           };
         }
-        this.validateNamedBlocks(declared, namedBlocks, mixin);
+        this.validateNamedBlocks(declared, namedBlocks, slots.namedBlockNames);
       }
 
       this.callStack.push({
@@ -619,6 +621,10 @@ class Compiler {
       }
     } else {
       this.mixins[mixin.name] = mixin;
+      // Parser flags describe the declaration when it was first parsed, but
+      // includes and structured filters can replace its body before render.
+      // Cache capabilities from the final declaration shape instead.
+      this.mixinSlots.set(mixin, this.inspectMixinSlots(mixin.block));
     }
   }
 
@@ -662,9 +668,7 @@ class Compiler {
     }
   }
 
-  validateNamedBlocks(declared, callerBlocks, callNode) {
-    const declaredNames = new Set();
-    this.collectNamedBlockNames(declared.block, declaredNames);
+  validateNamedBlocks(declared, callerBlocks, declaredNames) {
     for (const name of Object.keys(callerBlocks)) {
       if (!declaredNames.has(name)) {
         this.error(
@@ -676,6 +680,32 @@ class Compiler {
     }
   }
 
+  inspectMixinSlots(block) {
+    const namedBlockNames = new Set();
+    this.collectNamedBlockNames(block, namedBlockNames);
+    return {
+      namedBlockNames,
+      usesNamedBlocks: namedBlockNames.size > 0,
+      usesUnnamedBlock: this.containsUnnamedSlot(block),
+    };
+  }
+
+  containsUnnamedSlot(node) {
+    if (!node) return false;
+    if (node.type === 'MixinBlock') return true;
+    // A nested declaration owns its own slots. A nested call remains in the
+    // enclosing lexical scope, so its caller block may deliberately forward
+    // the enclosing unnamed slot through one or more helper calls.
+    if (node.type === 'Mixin' && node.call === false) return false;
+    if (node.nodes) {
+      for (let i = 0; i < node.nodes.length; ++i) {
+        if (this.containsUnnamedSlot(node.nodes[i])) return true;
+      }
+    }
+    if (node.block) return this.containsUnnamedSlot(node.block);
+    return false;
+  }
+
   collectNamedBlockNames(node, names) {
     if (!node) return;
     // NamedBlock declares a fillable slot; Given declares a presence name a
@@ -683,8 +713,10 @@ class Compiler {
     if (node.type === 'NamedBlock' || node.type === 'Given') {
       names.add(node.name);
     }
-    // Stop at nested mixin declarations: their named blocks belong to that
-    // mixin, not this one.
+    // Stop at nested mixins: declarations own their slots, while named blocks
+    // in a call block are arguments to that callee rather than declarations on
+    // the enclosing mixin. Unnamed forwarding through calls is scanned by the
+    // separate containsUnnamedSlot path above.
     if (node.type === 'Mixin') return;
     if (node.nodes) {
       for (let i = 0; i < node.nodes.length; ++i) {

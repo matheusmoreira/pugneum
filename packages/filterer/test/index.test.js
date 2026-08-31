@@ -630,6 +630,31 @@ p
   assert.strictEqual(block.nodes[0].name, 'em');
 });
 
+test('rendering derives mixin slots after syntax filters rewrite the body', () => {
+  const generatedSource = [
+    'mixin layout',
+    '  header',
+    '    block title',
+    '  main',
+    '    block',
+    '+layout',
+    '  block title',
+    '    h1 Title',
+    '  p Body',
+  ].join('\n');
+  const generated = parseSource(generatedSource, {
+    filename: 'generated.pg',
+  });
+  generated.nodes[0].usesNamedBlocks = false;
+  generated.nodes[0].usesUnnamedBlock = false;
+  const slots = {type: 'syntax', filter: () => generated.nodes};
+
+  assert.strictEqual(
+    renderPipeline(':slots\n  ignored', {slots}),
+    '<header><h1>Title</h1></header><main><p>Body</p></main>',
+  );
+});
+
 test('MISSING_FILTER_TYPE when filter has no type', () => {
   const untyped = {
     filter: function (str) {

@@ -137,6 +137,26 @@ describe('render()', () => {
     assert.strictEqual(pg.render(source), 'inner|caller:outer');
   });
 
+  it('forwards an unnamed slot through nested mixin calls', () => {
+    var source = [
+      'mixin leaf',
+      '  block',
+      'mixin relay',
+      '  +leaf',
+      '    block',
+      'mixin page',
+      '  block title',
+      '  +relay',
+      '    block',
+      '+page',
+      '  block title',
+      '    h1 Title',
+      '  p Body',
+    ].join('\n');
+
+    assert.strictEqual(pg.render(source), '<h1>Title</h1><p>Body</p>');
+  });
+
   it('preserves NBSP in rendered text', () => {
     assert.strictEqual(
       pg.render('p hello\u00a0world'),

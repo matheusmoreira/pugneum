@@ -57,6 +57,10 @@ function namedBlock(name, mode, nodes) {
   };
 }
 
+function mixinBlock() {
+  return {type: 'MixinBlock', line: 1, column: 1, filename: 'test'};
+}
+
 // Helper: Mixin definition node
 function mixinDef(name, args, body, opts) {
   return Object.assign(
@@ -1814,6 +1818,70 @@ describe('named mixin blocks', () => {
       render(block([inner, outer, call])),
       'inner|caller:outer',
     );
+  });
+
+  test('final declaration shape overrides stale slot capability flags', () => {
+    const decl = mixinDef(
+      'layout',
+      [],
+      [
+        tag('header', [], [namedBlock('title', 'replace', [text('default')])]),
+        tag('main', [], [mixinBlock()]),
+      ],
+      {usesNamedBlocks: false, usesUnnamedBlock: false},
+    );
+    const call = mixinCallOpts(
+      'layout',
+      [],
+      [namedBlock('title', 'replace', [text('Title')]), text('Body')],
+    );
+
+    assert.strictEqual(
+      render(block([decl, call])),
+      '<header>Title</header><main>Body</main>',
+    );
+  });
+
+  test('removed slots are not retained by stale capability flags', () => {
+    const decl = mixinDef('fixed', [], [text('fixed')], {
+      usesNamedBlocks: true,
+      usesUnnamedBlock: true,
+    });
+    const call = mixinCallOpts(
+      'fixed',
+      [],
+      [namedBlock('removed', 'replace', [text('ignored')])],
+    );
+
+    assert.strictEqual(render(block([decl, call])), 'fixed');
+  });
+
+  test('multi-hop nested calls forward an enclosing unnamed slot', () => {
+    const leaf = mixinDef('leaf', [], [mixinBlock()], {
+      usesUnnamedBlock: true,
+    });
+    const relay = mixinDef(
+      'relay',
+      [],
+      [mixinCallOpts('leaf', [], [mixinBlock()])],
+      {usesUnnamedBlock: false},
+    );
+    const page = mixinDef(
+      'page',
+      [],
+      [
+        namedBlock('title', 'replace', [text('default')]),
+        mixinCallOpts('relay', [], [mixinBlock()]),
+      ],
+      {usesNamedBlocks: true, usesUnnamedBlock: false},
+    );
+    const call = mixinCallOpts(
+      'page',
+      [],
+      [namedBlock('title', 'replace', [text('Title')]), text('Body')],
+    );
+
+    assert.strictEqual(render(block([leaf, relay, page, call])), 'TitleBody');
   });
 
   test('named blocks with variables', () => {

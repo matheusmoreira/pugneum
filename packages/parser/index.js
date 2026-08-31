@@ -205,19 +205,14 @@ class Parser {
     this.depth = 0;
   }
 
-  node(type, tok, props) {
-    const n = {
-      type: type,
+  textNode(tok, val) {
+    return {
+      type: 'Text',
       line: tok.loc.start.line,
       column: tok.loc.start.column,
       filename: this.filename,
+      val: val !== undefined ? val : tok.val,
     };
-    if (props) Object.assign(n, props);
-    return n;
-  }
-
-  textNode(tok, val) {
-    return this.node('Text', tok, {val: val !== undefined ? val : tok.val});
   }
 
   appendText(nodes, tok, val) {

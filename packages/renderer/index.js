@@ -401,7 +401,7 @@ class Compiler {
     const classes = [];
     const others = [];
     for (const attr of attrs) {
-      if (attr.name === 'class') {
+      if (asciiLowerCase(attr.name) === 'class') {
         classes.push(attr);
       } else {
         others.push(attr);
@@ -409,8 +409,12 @@ class Compiler {
     }
     if (classes.length > 0) {
       const resolved = [];
+      let hasValuelessClass = false;
       for (const attr of classes) {
-        if (attr.val === true) continue;
+        if (attr.val === true) {
+          hasValuelessClass = true;
+          continue;
+        }
         const val = this.resolveAttrValue(String(attr.val), attr);
         if (val !== null) resolved.push(val);
       }
@@ -418,6 +422,8 @@ class Compiler {
         this.buffer(' class="');
         this.buffer(escapeAttrValue(resolved.join(' ')));
         this.buffer('"');
+      } else if (hasValuelessClass) {
+        this.buffer(' class');
       }
     }
     for (const attr of others) {

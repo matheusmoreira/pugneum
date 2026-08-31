@@ -238,6 +238,23 @@ describe('attributes', () => {
     );
   });
 
+  test('a valueless class attribute is preserved', () => {
+    var attrs = [{name: 'class', val: true, line: 1, column: 1}];
+    assert.strictEqual(render(block([tag('div', attrs)])), '<div class></div>');
+  });
+
+  test('class coalescing uses ASCII-case-insensitive HTML identity', () => {
+    var attrs = [
+      {name: 'CLASS', val: 'a', line: 1, column: 1},
+      {name: 'Class', val: true, line: 1, column: 1},
+      {name: 'class', val: 'b', line: 1, column: 1},
+    ];
+    assert.strictEqual(
+      render(block([tag('div', attrs)])),
+      '<div class="a b"></div>',
+    );
+  });
+
   test('quotes in attribute values are escaped', () => {
     var attrs = [
       {

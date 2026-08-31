@@ -133,6 +133,10 @@ describe('render()', () => {
     assert.strictEqual(pg.render('input(disabled)'), '<input disabled>');
   });
 
+  it('should preserve a valueless class attribute', () => {
+    assert.strictEqual(pg.render('div(class)'), '<div class></div>');
+  });
+
   it('keeps direct mixin-variable suffixes in their source container', () => {
     var input = [
       'mixin show(x)',

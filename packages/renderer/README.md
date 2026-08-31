@@ -63,6 +63,9 @@ buffers verbatim.
 
 HTML void-element identity is ASCII-case-insensitive, while output retains the
 tag name's authored spelling. SVG self-closing names remain case-sensitive.
+Class attributes are coalesced with the same HTML identity: string
+contributions are space-joined into one canonical `class="..."`, and a lone
+valueless contribution is preserved as `class`.
 
 ### `options`
 

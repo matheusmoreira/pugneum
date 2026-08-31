@@ -4,11 +4,10 @@ var path = require('path');
 var assert = require('node:assert/strict');
 var {test} = require('node:test');
 
-var lex = require('pugneum-lexer');
-var parse = require('pugneum-parser');
 var link = require('pugneum-linker');
 var render = require('pugneum-renderer');
 var filter = require('../');
+var {inlineTagNode, parseSource} = require('./helpers');
 
 var filename = path.basename(__filename);
 
@@ -20,7 +19,7 @@ var filename = path.basename(__filename);
 // document — including definitions that live in the OUTER document.
 function renderPipeline(source, filters, opts) {
   const options = Object.assign({filename, source, warnings: []}, opts);
-  const ast = parse(lex(source, options), options);
+  const ast = parseSource(source, options);
   const assembled = link.assemble(ast, options);
   const filtered = filter(assembled, filters, options);
   const resolved = link.resolve(filtered, options);
@@ -30,7 +29,7 @@ function renderPipeline(source, filters, opts) {
 function singleFilterAst(name) {
   const source = ':' + name + '\n  input\n';
   const options = {filename, source, warnings: []};
-  const ast = parse(lex(source, options), options);
+  const ast = parseSource(source, options);
   return {ast, invocation: ast.nodes[0], options};
 }
 
@@ -58,7 +57,7 @@ p
     Filters can be used.
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
 
   const output = filter(ast, customFilters);
   t.assert.snapshot(output);
@@ -96,7 +95,7 @@ test('filtering returns the same root and mutates invocation nodes in place', ()
 
 test('a filter-free pass preserves every existing child-list identity', () => {
   const source = 'main\n  section\n    p unchanged\n';
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const rootNodes = ast.nodes;
   const mainNodes = ast.nodes[0].block.nodes;
   const sectionNodes = ast.nodes[0].block.nodes[0].block.nodes;
@@ -121,7 +120,7 @@ test('a failed pass restores the caller AST and generated-source side channel', 
     sources: {[filename]: source},
     warnings: [],
   };
-  const ast = parse(lex(source, options), options);
+  const ast = parseSource(source, options);
   const before = structuredClone(ast);
   const root = ast;
   const goodInvocation = ast.nodes[0];
@@ -173,7 +172,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   filter(ast, {inspecting});
   assert.strictEqual(calls, 1);
   assert.strictEqual(Object.getPrototypeOf(receivedOptions), null);
@@ -194,7 +193,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast),
     (err) =>
@@ -217,7 +216,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {exploding}),
     (err) => err.code === 'PUGNEUM:FILTER_ERROR' && /kaboom/.test(err.message),
@@ -509,7 +508,7 @@ p
     <strong>raw html</strong>
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {});
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -526,7 +525,7 @@ p
     They're just strings.
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
 
   const output = filter(ast, customFilters);
 
@@ -552,7 +551,7 @@ p
     input
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {textFilter});
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -577,7 +576,7 @@ p
     bold text
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {htmlFilter});
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -599,7 +598,7 @@ p
     ignored input
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {pugneumFilter});
 
   const block = output.nodes[0].block.nodes[0];
@@ -612,32 +611,7 @@ test('syntax type filter inserts AST nodes directly', () => {
   const syntaxFilter = {
     type: 'syntax',
     filter: function (str) {
-      return [
-        {
-          type: 'Tag',
-          name: 'em',
-          attrs: [],
-          attributeBlocks: [],
-          isInline: true,
-          block: {
-            type: 'Block',
-            nodes: [
-              {
-                type: 'Text',
-                val: 'direct',
-                line: 1,
-                column: 1,
-                filename: '',
-              },
-            ],
-            line: 1,
-            filename: '',
-          },
-          line: 1,
-          column: 1,
-          filename: '',
-        },
-      ];
+      return [inlineTagNode('em', 'direct')];
     },
   };
 
@@ -647,7 +621,7 @@ p
     ignored
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {syntaxFilter});
 
   const block = output.nodes[0].block.nodes[0];
@@ -669,7 +643,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {untyped}),
     (err) =>
@@ -692,7 +666,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {badType}),
     (err) =>
@@ -715,7 +689,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {badSyntax}),
     (err) =>
@@ -738,7 +712,7 @@ p
     test
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {badPugneum}),
     (err) =>
@@ -924,7 +898,7 @@ test('syntax output depth is bounded from the document root', () => {
 test('syntax output cannot reuse a node already inserted by another invocation', () => {
   const source = ':shared\n  first\n:shared\n  second\n';
   const options = {filename, source, warnings: []};
-  const ast = parse(lex(source, options), options);
+  const ast = parseSource(source, options);
   const before = structuredClone(ast);
   const firstInvocation = ast.nodes[0];
   const secondInvocation = ast.nodes[1];
@@ -993,7 +967,7 @@ div
     ignored
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, {pugneumFilter});
 
   const block = output.nodes[0].block.nodes[0];
@@ -1015,26 +989,10 @@ test('INVALID_FILTER_TYPE when include uses pugneum type filter', () => {
     },
   };
 
-  const ast = {
-    type: 'Block',
-    nodes: [
-      {
-        type: 'RawInclude',
-        filters: [{type: 'IncludeFilter', name: 'pugneumInclude', attrs: []}],
-        file: {
-          type: 'FileReference',
-          path: 'test.txt',
-          fullPath: 'test.txt',
-          str: 'test content',
-        },
-        line: 1,
-        column: 1,
-        filename: filename,
-      },
-    ],
-    line: 1,
-    filename: filename,
-  };
+  const ast = rawIncludeAst(
+    [{name: 'pugneumInclude', attrs: []}],
+    'test content',
+  );
 
   assert.throws(
     () => filter(ast, {pugneumInclude}),
@@ -1055,7 +1013,7 @@ test('warnings from pugneum-type filter output reach the shared collector', () =
     },
   };
   const source = 'div\n  :smart\n    ignored';
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const warnings = [];
 
   filter(ast, smartFilters, {warnings});
@@ -1082,7 +1040,7 @@ p
   :outer:innerpug
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, filters);
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -1096,24 +1054,7 @@ test('html outer filter consumes a nested syntax inner filter (was silently drop
     outer: {type: 'html', filter: (str) => '[OUTER:' + str + ']'},
     innersyn: {
       type: 'syntax',
-      filter: () => [
-        {
-          type: 'Tag',
-          name: 'em',
-          attrs: [],
-          attributeBlocks: [],
-          isInline: true,
-          block: {
-            type: 'Block',
-            nodes: [{type: 'Text', val: 'syn', line: 1, column: 1, filename}],
-            line: 1,
-            filename,
-          },
-          line: 1,
-          column: 1,
-          filename,
-        },
-      ],
+      filter: () => [inlineTagNode('em', 'syn', filename)],
     },
   };
   const source = `
@@ -1121,7 +1062,7 @@ p
   :outer:innersyn
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, filters);
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -1139,7 +1080,7 @@ p
   :txt:innerpug
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, filters);
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -1153,24 +1094,7 @@ test('text outer filter escapes the HTML of a nested syntax inner filter', () =>
     txt: {type: 'text', filter: (str) => str},
     innersyn: {
       type: 'syntax',
-      filter: () => [
-        {
-          type: 'Tag',
-          name: 'em',
-          attrs: [],
-          attributeBlocks: [],
-          isInline: true,
-          block: {
-            type: 'Block',
-            nodes: [{type: 'Text', val: 'x', line: 1, column: 1, filename}],
-            line: 1,
-            filename,
-          },
-          line: 1,
-          column: 1,
-          filename,
-        },
-      ],
+      filter: () => [inlineTagNode('em', 'x', filename)],
     },
   };
   const source = `
@@ -1178,7 +1102,7 @@ p
   :txt:innersyn
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, filters);
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -1194,7 +1118,7 @@ test('nested early rendering retains generated warning provenance', () => {
   };
   const source = ':outer:inner\n  caller-only body';
   const options = {filename: 'nested-entry.pg', source, warnings: []};
-  const ast = parse(lex(source, options), options);
+  const ast = parseSource(source, options);
 
   filter(ast, filters, options);
 
@@ -1216,7 +1140,7 @@ p
   :bogusfilter
     test
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {}, {source}),
     (err) =>
@@ -1270,7 +1194,7 @@ test('downstream diagnostics pair generated coordinates with generated source', 
       sources: {[origin]: source},
       warnings: [],
     };
-    const ast = parse(lex(source, options), options);
+    const ast = parseSource(source, options);
     const assembled = link.assemble(ast, options);
     const filtered = filter(assembled, filters, options);
 
@@ -1309,7 +1233,7 @@ p
   :exploding
     test
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   assert.throws(
     () => filter(ast, {exploding}),
     (err) => err.code === 'PUGNEUM:FILTER_ERROR',
@@ -1322,7 +1246,7 @@ p
   :custom
     body
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, customFilters);
 
   const textNode = output.nodes[0].block.nodes[0];
@@ -1353,7 +1277,7 @@ p
   :outer
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const output = filter(ast, filters);
 
   assert.deepStrictEqual(calls, {outer: ['ignored'], inner: ['']});
@@ -1385,7 +1309,7 @@ p
   :outer
     ignored
 `;
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
   const filters = {
     outer: {
       type: 'syntax',
@@ -1791,10 +1715,7 @@ test('filter() leaves the Toc node unresolved; link.resolve resolves it', () => 
   };
   const source = 'div\n  :t\n    ignored';
   const options = {filename, source, warnings: []};
-  const assembled = link.assemble(
-    parse(lex(source, options), options),
-    options,
-  );
+  const assembled = link.assemble(parseSource(source, options), options);
   const filtered = filter(assembled, filters, options);
 
   function typesIn(tree) {

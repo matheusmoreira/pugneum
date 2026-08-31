@@ -4,14 +4,13 @@ var Module = require('node:module');
 var {test} = require('node:test');
 var filename = path.basename(__filename);
 
-var lex = require('pugneum-lexer');
-var parse = require('pugneum-parser');
 var filter = require('../');
+var {parseSource} = require('./helpers');
 
 function installedFilterAst() {
   const source = ':highlight.js(language=ruby)\n  puts "hello"\n';
   const options = {filename, source};
-  return {ast: parse(lex(source, options), options), options};
+  return {ast: parseSource(source, options), options};
 }
 
 function interceptInstalledFilterLoad(t, thrown) {
@@ -47,8 +46,7 @@ pre
       puts 'This should be', :syntax_highlighted
 `;
 
-  const tokens = lex(source, {filename});
-  const ast = parse(tokens, {filename, source});
+  const ast = parseSource(source, {filename});
   const filtered = filter(ast);
 
   t.assert.snapshot(filtered);

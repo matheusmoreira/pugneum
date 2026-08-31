@@ -1,7 +1,6 @@
 var {test} = require('node:test');
-var lex = require('pugneum-lexer');
-var parse = require('pugneum-parser');
 var filter = require('../');
+var {parseSource} = require('./helpers');
 
 var filename = require('path').basename(__filename);
 
@@ -31,7 +30,7 @@ p
     Neighbor stays unwrapped.
 `;
 
-  const ast = parse(lex(source, {filename}), {filename, source});
+  const ast = parseSource(source, {filename});
 
   const options = {
     filterOptions: {

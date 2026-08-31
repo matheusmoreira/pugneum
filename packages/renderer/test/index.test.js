@@ -1200,20 +1200,70 @@ describe('error handling', () => {
     );
   });
 
-  test('unsupported node type throws TypeError', () => {
-    var node = {type: 'Filter', name: 'x', line: 1, filename: 'test'};
-    assert.throws(
-      () => render(block([node])),
-      (err) => err instanceof TypeError && /pugneum-filterer/.test(err.message),
-    );
+  test('upstream-only nodes name the required pipeline stage', () => {
+    var cases = [
+      ['Extends', 'load -> link.assemble'],
+      ['Include', 'load -> link.assemble'],
+      ['FileReference', 'load -> link.assemble'],
+      ['RawInclude', 'load -> link.assemble', {filters: []}],
+      ['Filter', 'filter'],
+      ['IncludeFilter', 'filter'],
+      ['RawInclude', 'filter', {filters: [{type: 'IncludeFilter'}]}],
+      ['References', 'link.resolve'],
+      ['ReferenceLink', 'link.resolve'],
+      ['ReferenceImage', 'link.resolve'],
+      ['Footnotes', 'link.resolve'],
+      ['FootnoteRef', 'link.resolve'],
+      ['Toc', 'link.resolve'],
+    ];
+    var source = 'first\nunresolved\nthird';
+
+    cases.forEach(([type, stage, fields]) => {
+      var node = Object.assign(
+        {
+          type,
+          line: 2,
+          column: 3,
+          filename: 'dependency.pg',
+        },
+        fields,
+      );
+
+      assert.throws(
+        () => render(block([node]), {sources: {'dependency.pg': source}}),
+        (err) =>
+          err.code === 'PUGNEUM:UNRESOLVED_AST_NODE' &&
+          err.msg ===
+            `AST node type '${type}' requires ${stage} before render` &&
+          err.line === 2 &&
+          err.column === 3 &&
+          err.filename === 'dependency.pg' &&
+          err.source === source &&
+          /dependency\.pg:2:3/.test(err.message) &&
+          /\n  > 2\| unresolved\n/.test(err.message),
+        `${type} should require ${stage}`,
+      );
+    });
   });
 
-  test('unsupported Extends node suggests pugneum-linker', () => {
-    var node = {type: 'Extends', line: 1, filename: 'test'};
-    assert.throws(
-      () => render(block([node])),
-      (err) => err instanceof TypeError && /pugneum-linker/.test(err.message),
-    );
+  test('unknown extension node remains an unsupported-type TypeError', () => {
+    ['PluginWidget', 'toString'].forEach((type) => {
+      var node = {
+        type,
+        line: 1,
+        column: 1,
+        filename: 'test',
+      };
+      assert.throws(
+        () => render(block([node])),
+        (err) =>
+          err instanceof TypeError &&
+          err.code === undefined &&
+          new RegExp(`type ${type}`).test(err.message) &&
+          /not supported by the pugneum compiler/.test(err.message),
+        type,
+      );
+    });
   });
 
   test('recursive mixin throws RECURSIVE_MIXIN', () => {

@@ -2,6 +2,31 @@ const makeError = require('pugneum-error');
 
 const MAX_MIXIN_DEPTH = 256;
 
+const upstreamNodeStages = Object.freeze(
+  Object.assign(Object.create(null), {
+    Extends: 'load -> link.assemble',
+    Include: 'load -> link.assemble',
+    FileReference: 'load -> link.assemble',
+    Filter: 'filter',
+    IncludeFilter: 'filter',
+    References: 'link.resolve',
+    ReferenceLink: 'link.resolve',
+    ReferenceImage: 'link.resolve',
+    Footnotes: 'link.resolve',
+    FootnoteRef: 'link.resolve',
+    Toc: 'link.resolve',
+  }),
+);
+
+function requiredStage(node) {
+  if (node.type === 'RawInclude') {
+    return Array.isArray(node.filters) && node.filters.length > 0
+      ? 'filter'
+      : 'load -> link.assemble';
+  }
+  return upstreamNodeStages[node.type];
+}
+
 // HTML output context escaping.
 //
 // Pugneum templates are trusted source — the template author IS the HTML
@@ -172,6 +197,15 @@ class Compiler {
     }
 
     if (!this['visit' + node.type]) {
+      const stage = requiredStage(node);
+      if (stage) {
+        this.error(
+          'UNRESOLVED_AST_NODE',
+          `AST node type '${node.type}' requires ${stage} before render`,
+          node,
+        );
+      }
+
       let msg;
       if (parent) {
         msg = 'A child of ' + parent.type;
@@ -187,16 +221,6 @@ class Compiler {
         node.type +
         ',' +
         ' which is not supported by the pugneum compiler';
-      switch (node.type) {
-        case 'Filter':
-          msg += '; use pugneum-filterer';
-          break;
-        case 'Extends':
-        case 'Include':
-        case 'FileReference':
-          msg += '; use pugneum-linker';
-          break;
-      }
       throw new TypeError(msg);
     }
 

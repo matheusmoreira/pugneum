@@ -8,8 +8,33 @@ Code for processing filters in pugneum templates
 
 ## Usage
 
-```
-var filter = require('pugneum-filterer');
+<!-- executable-quick-start -->
+
+```js
+var applyFilters = require('pugneum-filterer');
+
+var ast = {
+  type: 'Block',
+  nodes: [
+    {
+      type: 'Filter',
+      name: 'custom',
+      attrs: [],
+      block: {type: 'Block', nodes: [{type: 'Text', val: 'hello'}]},
+    },
+  ],
+};
+var filters = {
+  custom: {
+    type: 'html',
+    filter: function (text) {
+      return '<strong>' + text + '</strong>';
+    },
+  },
+};
+
+var output = applyFilters(ast, filters);
+console.log(output.nodes[0].val); // <strong>hello</strong>
 ```
 
 ### `applyFilters(ast, filters, options)`
@@ -25,8 +50,8 @@ place and also returning it. Two kinds of node are processed:
   the rightmost filter (`b`) wraps the file contents first, then `a`
   wraps that result.
 
-```
-var ast = applyFilters(ast, filters, {filterOptions: {custom: {opt: 'x'}}});
+```js
+output = applyFilters(ast, filters, {filterOptions: {custom: {opt: 'x'}}});
 ```
 
 `options` is an optional object. Per-filter options are read from
@@ -39,9 +64,15 @@ arrays, primitives, `null`, and collection objects are rejected with
 `options.warnings` array, if provided, collects warnings raised while
 re-lexing `pugneum`-type filter output.
 
+The callback's second argument is assembled in a fixed precedence order:
+template attributes, then `filterOptions[name]`, then the reserved `filename`
+field. For a block filter, `filename` is the invocation's source filename. For
+an include filter, it is the included file's full path. User attributes and
+per-filter options cannot override this reserved value.
+
 `filters` is an object mapping names to filter descriptor objects:
 
-```
+```js
 {
   custom: {
     type: 'html',
@@ -79,7 +110,7 @@ earlier phase is reported as `UNSUPPORTED_FILTER_CONSTRUCT`. Missing
 node/attribute/definition locations in `syntax` output inherit the filter
 invocation's filename, line, and column.
 
-```
+```js
 {
   custom: {
     type: 'html',
@@ -90,12 +121,46 @@ invocation's filename, line, and column.
 }
 ```
 
-If `binary` is specified as true, an include filter (`include:name`)
-receives the raw file contents as a `Buffer` (`file.raw`) instead of decoded
-text. Non-binary include input normalizes LF, CRLF, and CR line endings to LF
-before the innermost filter runs. The `binary` flag is only consulted on the
-include path; it has no effect on `:name` block filters, whose input is always
-the filter body text.
+### Pipeline phase and nested filters
+
+The normal facade runs the relevant phases in this order:
+
+```text
+load and assemble -> apply filters -> resolve links/footnotes/TOC -> render
+```
+
+A top-level `pugneum` or `syntax` result stays structured, so references,
+footnotes, and TOC nodes it emits participate in the later document-wide
+resolution pass. Loading and template assembly have already finished, which is
+why generated include, extends, raw-include, file-reference, include-filter,
+and yield nodes are rejected at the filter invocation.
+
+Nested block filters such as `:outer:inner` run from the inside out. When an
+inner `pugneum` or `syntax` filter feeds a string-consuming `text` or `html`
+outer filter, the inner subtree is serialized to HTML before the outer callback
+runs. That early serialization precedes document-wide resolution, so the inner
+result cannot depend on references, footnotes, or TOC facts defined elsewhere
+in the document. Keep document-global constructs in a structured result that
+remains in the AST until the later resolve phase.
+
+If `binary` is specified as true on the rightmost (innermost) include filter,
+that callback receives the exact raw file `Buffer` (`file.raw`) instead of
+decoded text. Non-binary initial input normalizes LF, CRLF, and CR line endings
+to LF. Every include filter must return a string, including the binary filter;
+each outer filter consumes that preceding string result. A `binary` flag on an
+outer filter does not select the file bytes again. The flag is ignored for
+`:name` block filters, whose input is always the filter body text.
+
+```js
+var binaryFilter = {
+  type: 'html',
+  binary: true,
+  filter: function (raw) {
+    if (!Buffer.isBuffer(raw)) throw new TypeError('expected file bytes');
+    return raw.toString('base64');
+  },
+};
+```
 
 The built-in `verbatim` filter passes text through unchanged.
 It is always available without any configuration.

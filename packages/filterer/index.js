@@ -12,10 +12,10 @@ const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
 // this stage. NamedBlock is handled contextually below because it is too late
 // for a template override but still valid as a renderer-owned mixin slot.
 //
-// Reference/footnote/toc constructs a filter emits need NO special handling
-// here: the document-level resolution pass (pugneum-linker's `resolve`) runs
-// AFTER the filterer over the whole assembled tree (see packages/pugneum), so
-// they resolve there alongside the rest of the document.
+// Reference/footnote/toc constructs in a structured result remain available to
+// the later document-level resolve pass when that result stays structured.
+// getBodyAsText documents the earlier serialization boundary for a structured
+// inner filter nested under a string-consuming outer filter.
 const earlierPhaseTypes = new Set([
   'Include',
   'Extends',
@@ -393,11 +393,12 @@ function applyFilterResult(
 // they reach the loader's re-lex of included files. lexer/parser are required
 // lazily so a build using no pugneum/syntax filters never loads them.
 //
-// Reference/footnote/toc constructs in the output need nothing here: the
-// document-level resolution pass runs AFTER the filterer (see packages/pugneum),
-// so they resolve over the whole assembled tree. A loader construct
-// (include/extends/raw-include) CANNOT be resolved downstream — the loader ran
-// before the filterer, so the target was never read. Both this parsed tree and
+// When this structured result remains in the AST, reference/footnote/toc nodes
+// reach the document-level resolve pass that runs after filtering. A structured
+// inner result nested under a text/html outer filter is instead serialized by
+// getBodyAsText before that pass and cannot depend on document-global
+// resolution. A loader construct (include/extends/raw-include) cannot be
+// resolved downstream because loading already ran. Both this parsed tree and
 // direct syntax output pass through validateGeneratedAst before insertion.
 function parsePugneum(result, node, options) {
   const lex = require('pugneum-lexer');
@@ -596,8 +597,8 @@ function runFilter(resolved, name, input, attrs, node, options) {
   try {
     return resolved.filter.call(resolved.receiver, input, attrs);
   } catch (ex) {
-    // A PUGNEUM:-coded error from a pugneum-type re-lex/parse is already a
-    // proper diagnostic; re-throw it unchanged rather than double-wrapping.
+    // A PUGNEUM:-coded diagnostic thrown directly by plugin code already has
+    // its intended identity; re-throw it unchanged rather than double-wrapping.
     // Guard ex defensively: a filter may `throw null`/`throw 42`, which has no
     // `.code`/`.message`.
     if ((thrownCode(ex) || '').startsWith('PUGNEUM:')) throw ex;

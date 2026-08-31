@@ -64,6 +64,36 @@ p
   t.assert.snapshot(output);
 });
 
+test('filtering returns the same root and mutates invocation nodes in place', () => {
+  const successful = singleFilterAst('identity');
+  const originalRoot = successful.ast;
+  const originalInvocation = successful.invocation;
+  const identity = {type: 'html', filter: (text) => text};
+
+  const returned = filter(successful.ast, {identity}, successful.options);
+
+  assert.strictEqual(returned, originalRoot);
+  assert.strictEqual(returned.nodes[0], originalInvocation);
+  assert.strictEqual(originalInvocation.type, 'Text');
+
+  const failing = singleFilterAst('failureIdentity');
+  const failingRoot = failing.ast;
+  const failingInvocation = failing.invocation;
+  const failureIdentity = {
+    type: 'html',
+    filter() {
+      throw new Error('identity failure');
+    },
+  };
+  assert.throws(
+    () => filter(failing.ast, {failureIdentity}, failing.options),
+    (err) => err.code === 'PUGNEUM:FILTER_ERROR',
+  );
+  assert.strictEqual(failing.ast, failingRoot);
+  assert.strictEqual(failing.ast.nodes[0], failingInvocation);
+  assert.strictEqual(failingInvocation.type, 'Filter');
+});
+
 test('__proto__ attribute does not pollute Object.prototype', () => {
   var calls = 0;
   var receivedOptions;
@@ -906,6 +936,10 @@ div
   const pTag = block.nodes[0];
   assert.strictEqual(pTag.type, 'Tag');
   assert.strictEqual(pTag.name, 'p');
+  assert.strictEqual(
+    render(output),
+    '<div><p>This is <strong>bold</strong> and <em>italic</em> text.</p></div>',
+  );
 });
 
 test('INVALID_FILTER_TYPE when include uses pugneum type filter', () => {
@@ -1240,7 +1274,7 @@ p
 
 // --- Positive include-filter coverage (the RawInclude chain path) ---
 
-function rawIncludeAst(filters, str) {
+function rawIncludeAst(filters, str, raw) {
   return {
     type: 'Block',
     nodes: [
@@ -1254,6 +1288,7 @@ function rawIncludeAst(filters, str) {
           path: 'data.txt',
           fullPath: 'data.txt',
           str: str,
+          raw: raw === undefined ? Buffer.from(str) : raw,
         },
         line: 1,
         column: 1,
@@ -1264,6 +1299,68 @@ function rawIncludeAst(filters, str) {
     filename,
   };
 }
+
+test('only the innermost include filter selects the initial byte representation', () => {
+  const raw = Buffer.from([0xff, 0x00, 0xc3, 0x28]);
+  const decoded = 'decoded\r\ntext';
+
+  for (const innerBinary of [false, true]) {
+    for (const outerBinary of [false, true]) {
+      const label = `inner=${innerBinary} outer=${outerBinary}`;
+      let innerCalls = 0;
+      let outerCalls = 0;
+      const filters = {
+        outer: {
+          type: 'html',
+          binary: outerBinary,
+          filter(input) {
+            outerCalls++;
+            assert.strictEqual(typeof input, 'string', label);
+            assert.strictEqual(
+              input,
+              innerBinary ? 'inner(bytes)' : 'inner(decoded)',
+              label,
+            );
+            return 'outer(' + input + ')';
+          },
+        },
+        inner: {
+          type: 'html',
+          binary: innerBinary,
+          filter(input) {
+            innerCalls++;
+            if (innerBinary) {
+              assert.strictEqual(input, raw, label);
+              assert.ok(Buffer.isBuffer(input), label);
+              return 'inner(bytes)';
+            }
+            assert.strictEqual(input, 'decoded\ntext', label);
+            assert.strictEqual(Buffer.isBuffer(input), false, label);
+            return 'inner(decoded)';
+          },
+        },
+      };
+      const ast = rawIncludeAst(
+        [
+          {name: 'outer', attrs: []},
+          {name: 'inner', attrs: []},
+        ],
+        decoded,
+        raw,
+      );
+
+      const output = filter(ast, filters);
+
+      assert.strictEqual(
+        output.nodes[0].val,
+        innerBinary ? 'outer(inner(bytes))' : 'outer(inner(decoded))',
+        label,
+      );
+      assert.strictEqual(innerCalls, 1, label);
+      assert.strictEqual(outerCalls, 1, label);
+    }
+  }
+});
 
 test('single html-type include filter passes file content through raw', () => {
   const wrap = {type: 'html', filter: (s) => '<b>' + s + '</b>'};

@@ -115,8 +115,10 @@ For each discovered entry:
    only its decoded, validated pathname participates in file lookup.
 2. Read and parse the article HTML
 3. Extract from `<meta>` tags: `description`, `author`, `keywords`
-4. Extract innerHTML of `<article>` element (or configured selector) for full content
-5. Extract `<title>` as authoritative title (falling back to link text from index)
+4. Resolve relative URLs on the selected subtree against the first article
+   `<base href>` when usable, falling back to the canonical entry URL
+5. Extract innerHTML of `<article>` element (or configured selector) for full content
+6. Extract `<title>` as authoritative title (falling back to link text from index)
 
 ### Extracted Entry Data Structure
 

@@ -111,14 +111,17 @@ the same name appears more than once, the first element supplies the value.
 `<meta name="keywords">` (a comma-separated list) is emitted as feed
 categories: `<category term="...">` in Atom and `<category>` in RSS.
 
-Root-relative URLs (`/path`) in entry content are rewritten to absolute URLs
-against the feed base, so `href`/`src`/`poster`/`srcset` on
-`a`/`img`/`source`/`video`/`audio`/`iframe` resolve in a reader. Already-absolute
-(`https://…`) and protocol-relative (`//host/…`) URLs are left unchanged;
-document-relative URLs (`path` with no leading slash) are not rewritten.
+Relative URLs in entry content are rewritten to absolute URLs against the
+article's effective document base: the first `<base href>` in that page when
+usable, or its canonical public entry URL otherwise. This keeps root-relative,
+document-relative, parent-relative, and query-only `href`/`src`/`poster`/`srcset`
+values on `a`/`img`/`source`/`video`/`audio`/`iframe` meaningful in a feed reader.
+Fragment-only, already-absolute, protocol-relative, and explicit-scheme values
+are left unchanged. An invalid or non-hierarchical article base falls back to
+the entry URL.
 `srcset` candidate tokenization preserves comma-bearing data URLs and paths,
-empty candidates, descriptors, and spacing; only root-relative URL tokens are
-rewritten.
+empty candidates, descriptors, and spacing; only relative URL tokens are
+rewritten according to the same relative-URL policy.
 
 ```html
 <!DOCTYPE html>

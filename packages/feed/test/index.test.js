@@ -6,6 +6,7 @@ var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var generateFeeds = require('../');
 var extract = require('../lib/extract');
+var {resolveRelativeUrls} = require('../lib/urls');
 
 var fixturesDir = path.join(__dirname, 'fixtures');
 var outputDir = path.join(__dirname, 'output');
@@ -180,7 +181,9 @@ describe('extract.indexPage robustness', () => {
 });
 
 describe('resolveRelativeUrls', () => {
-  var resolveRelativeUrls = generateFeeds.resolveRelativeUrls;
+  test('the test helper is not exposed from the package root', () => {
+    assert.strictEqual(generateFeeds.resolveRelativeUrls, undefined);
+  });
 
   test('/path is resolved to absolute URL', () => {
     var html = '<a href="/articles/post.html">link</a>';
@@ -327,6 +330,54 @@ describe('resolveRelativeUrls', () => {
       '<p>a &amp; b &lt; c</p><a href="https://example.com/z">t</a>',
     );
   });
+
+  test('document-relative attributes resolve against the article URL', () => {
+    var html =
+      '<a href="next.html">next</a>' +
+      '<img src="../images/p.png">' +
+      '<video poster="?poster=1" src="./v.mp4"></video>' +
+      '<audio src="audio.mp3"></audio>' +
+      '<iframe src="../../frame.html"></iframe>';
+    var result = resolveRelativeUrls(
+      html,
+      'https://example.com/blog/articles/post.html?view=full#top',
+    );
+    assert.strictEqual(
+      result,
+      '<a href="https://example.com/blog/articles/next.html">next</a>' +
+        '<img src="https://example.com/blog/images/p.png">' +
+        '<video poster="https://example.com/blog/articles/post.html?poster=1" src="https://example.com/blog/articles/v.mp4"></video>' +
+        '<audio src="https://example.com/blog/articles/audio.mp3"></audio>' +
+        '<iframe src="https://example.com/frame.html"></iframe>',
+    );
+  });
+
+  test('fragment-only, protocol-relative, and explicit schemes stay unchanged', () => {
+    var html =
+      '<a href="#part">part</a>' +
+      '<a href="mailto:a@example.com">mail</a>' +
+      '<img src="data:image/png;base64,AAAA">' +
+      '<img src="//cdn.example.com/p.png">' +
+      '<iframe src="https://other.example/frame"></iframe>';
+    var result = resolveRelativeUrls(
+      html,
+      'https://example.com/articles/post.html',
+    );
+    assert.strictEqual(result, html);
+  });
+
+  test('document-relative srcset candidates use the article URL', () => {
+    var html =
+      '<img srcset="small.png 1x, ../large.png 2x, data:image/png;base64,AAAA 3x">';
+    var result = resolveRelativeUrls(
+      html,
+      'https://example.com/blog/articles/post.html',
+    );
+    assert.strictEqual(
+      result,
+      '<img srcset="https://example.com/blog/articles/small.png 1x, https://example.com/blog/large.png 2x, data:image/png;base64,AAAA 3x">',
+    );
+  });
 });
 
 describe('end-to-end feed generation', () => {
@@ -471,7 +522,7 @@ describe('config overrides', () => {
 });
 
 describe('end-to-end URL resolution', () => {
-  test('root-relative URLs in article content are absolutized in the feed', () => {
+  test('article content keeps its original URL semantics in the feed', () => {
     var dir = path.join(__dirname, 'fixtures-urls');
     fs.mkdirSync(path.join(dir, 'articles'), {recursive: true});
     fs.writeFileSync(
@@ -489,8 +540,15 @@ describe('end-to-end URL resolution', () => {
       path.join(dir, 'articles', 'post.html'),
       '<!DOCTYPE html><html><head><title>Post</title>' +
         '<meta name="description" content="s"></head><body><article>' +
-        '<a href="/other.html">link</a>' +
-        '<img src="/img.png" srcset="/a.png 1x, /b.png 2x">' +
+        '<a href="/other.html">root</a>' +
+        '<a href="next.html">relative</a>' +
+        '<a href="?print=1">query</a>' +
+        '<a href="#local">fragment</a>' +
+        '<a href="mailto:a@example.com">mail</a>' +
+        '<img src="hero.png" srcset="small.png 1x, ../large.png 2x">' +
+        '<video poster="poster.png" src="/video.mp4"></video>' +
+        '<audio src="audio.mp3"></audio>' +
+        '<iframe src="../frame.html"></iframe>' +
         '<a data-href="/keep">keep</a>' +
         '</article></body></html>',
     );
@@ -504,9 +562,19 @@ describe('end-to-end URL resolution', () => {
       var atom = fs.readFileSync(path.join(dir, 'atom.xml'), 'utf8');
       // Root-relative href/src/srcset are absolutized...
       assert.ok(atom.includes('https://example.com/other.html'));
-      assert.ok(atom.includes('https://example.com/img.png'));
-      assert.ok(atom.includes('https://example.com/a.png 1x'));
-      assert.ok(atom.includes('https://example.com/b.png 2x'));
+      assert.ok(atom.includes('https://example.com/articles/next.html'));
+      assert.ok(
+        atom.includes('https://example.com/articles/post.html?print=1'),
+      );
+      assert.ok(atom.includes('href=&quot;#local&quot;'));
+      assert.ok(atom.includes('href=&quot;mailto:a@example.com&quot;'));
+      assert.ok(atom.includes('https://example.com/articles/hero.png'));
+      assert.ok(atom.includes('https://example.com/articles/small.png 1x'));
+      assert.ok(atom.includes('https://example.com/large.png 2x'));
+      assert.ok(atom.includes('https://example.com/articles/poster.png'));
+      assert.ok(atom.includes('https://example.com/video.mp4'));
+      assert.ok(atom.includes('https://example.com/articles/audio.mp3'));
+      assert.ok(atom.includes('https://example.com/frame.html'));
       // ...but data-href is left exactly as authored.
       assert.ok(atom.includes('data-href=&quot;/keep&quot;'));
     } finally {

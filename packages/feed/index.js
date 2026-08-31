@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const htmlparser2 = require('htmlparser2');
-const DomUtils = htmlparser2.DomUtils;
 const makeError = require('pugneum-error');
 const createRootedFilesystem = require('pugneum-filesystem');
 const filesystemErrors = createRootedFilesystem.ERROR_CODES;
@@ -240,6 +238,7 @@ module.exports = function generateFeeds(options) {
         articlePath,
         tagName,
         inputFiles.readFile,
+        articleLocation.url,
       );
     } catch (error) {
       if (error.code === filesystemErrors.PATH_ESCAPE) {
@@ -263,6 +262,7 @@ module.exports = function generateFeeds(options) {
           fallbackPath,
           tagName,
           inputFiles.readFile,
+          articleLocation.url,
         );
         articlePath = fallbackPath;
       } catch (fallbackError) {
@@ -296,7 +296,7 @@ module.exports = function generateFeeds(options) {
       publishedEpoch: entry.publishedEpoch,
       summary: articleData.description,
       author: articleData.author || author,
-      content: resolveRelativeUrls(articleData.content, url),
+      content: articleData.content,
       keywords: articleData.keywords,
     });
   }
@@ -342,8 +342,6 @@ module.exports = function generateFeeds(options) {
   }
 };
 
-module.exports.resolveRelativeUrls = resolveRelativeUrls;
-
 // Parse URLs with both a scheme and an authority (host). Path-only ("/blog/")
 // and protocol-relative ("//cdn/") values are rejected.
 function parseSiteBaseUrl(value) {
@@ -367,122 +365,4 @@ function publicFeedUrl(baseUrl, outputPath) {
     .join('/');
   publicUrl.pathname += encodedPath;
   return publicUrl.href;
-}
-
-// Attributes that carry a single resolvable URL, keyed by tag name. Mirrors the
-// previous regex allow-list, but applied to exact attribute names on the parsed
-// DOM so it cannot misfire on data-*/namespaced look-alikes.
-const URL_ATTRS = {
-  a: ['href'],
-  img: ['src', 'poster'],
-  source: ['src', 'poster'],
-  video: ['src', 'poster'],
-  audio: ['src', 'poster'],
-  iframe: ['src'],
-};
-// Elements whose srcset (comma-separated url+descriptor list) we also resolve.
-const SRCSET_TAGS = {img: true, source: true};
-
-// Rewrite root-relative URLs ("/path") in feed content to absolute URLs against
-// the feed base. Operates on the parsed DOM rather than the serialized string:
-// keying on exact attribute names avoids rewriting data-href/xlink:href, handles
-// single quotes and '>' in attribute values for free, resolves srcset, and has
-// no quadratic-backtracking failure mode. Protocol-relative ("//host"),
-// fragment, and already-absolute URLs are left untouched (only a leading single
-// '/' is rewritten), preserving the documented and tested contract.
-function resolveRelativeUrls(html, baseUrl) {
-  const dom = htmlparser2.parseDocument(html);
-  const elements = DomUtils.findAll((el) => el.attribs, dom);
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
-    const names = URL_ATTRS[el.name];
-    if (names) {
-      for (let j = 0; j < names.length; j++) {
-        const name = names[j];
-        const value = el.attribs[name];
-        if (isRootRelative(value)) {
-          el.attribs[name] = resolveAgainst(value, baseUrl);
-        }
-      }
-    }
-    if (SRCSET_TAGS[el.name] && el.attribs.srcset) {
-      el.attribs.srcset = resolveSrcset(el.attribs.srcset, baseUrl);
-    }
-  }
-  // encodeEntities:'utf8' keeps XML-significant characters (& < > ") escaped
-  // while leaving ordinary ASCII such as '$' verbatim, matching the previous
-  // string-replacement behavior (which never re-encoded the URL).
-  return DomUtils.getOuterHTML(dom.children, {encodeEntities: 'utf8'});
-}
-
-function isRootRelative(value) {
-  return typeof value === 'string' && value[0] === '/' && value[1] !== '/';
-}
-
-function resolveAgainst(value, baseUrl) {
-  return new URL(value, baseUrl).href;
-}
-
-// Follow srcset's URL-token and descriptor-state boundaries rather than treating
-// every comma as a separator. URL tokens may contain commas (notably data URLs),
-// while a descriptor-list comma separates candidates unless it is parenthesized.
-// Preserve every byte outside a root-relative URL token.
-function resolveSrcset(value, baseUrl) {
-  const output = [];
-  let position = 0;
-
-  while (position < value.length) {
-    const prefixStart = position;
-    while (
-      position < value.length &&
-      (isAsciiWhitespace(value[position]) || value[position] === ',')
-    ) {
-      position++;
-    }
-    output.push(value.slice(prefixStart, position));
-    if (position === value.length) break;
-
-    const urlStart = position;
-    while (position < value.length && !isAsciiWhitespace(value[position])) {
-      position++;
-    }
-
-    // A trailing comma belongs to candidate separation, not the URL token.
-    let urlEnd = position;
-    while (urlEnd > urlStart && value[urlEnd - 1] === ',') urlEnd--;
-    const urlToken = value.slice(urlStart, urlEnd);
-    output.push(
-      isRootRelative(urlToken) ? resolveAgainst(urlToken, baseUrl) : urlToken,
-      value.slice(urlEnd, position),
-    );
-
-    // Trailing URL commas already ended this candidate. Otherwise consume the
-    // descriptor list through its first non-parenthesized comma.
-    if (urlEnd !== position) continue;
-    const descriptorStart = position;
-    let parentheses = 0;
-    while (position < value.length) {
-      const character = value[position++];
-      if (character === '(') {
-        parentheses++;
-      } else if (character === ')' && parentheses > 0) {
-        parentheses--;
-      } else if (character === ',' && parentheses === 0) {
-        break;
-      }
-    }
-    output.push(value.slice(descriptorStart, position));
-  }
-
-  return output.join('');
-}
-
-function isAsciiWhitespace(character) {
-  return (
-    character === '\t' ||
-    character === '\n' ||
-    character === '\f' ||
-    character === '\r' ||
-    character === ' '
-  );
 }

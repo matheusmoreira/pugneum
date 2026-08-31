@@ -2,6 +2,7 @@ const fs = require('fs');
 const htmlparser2 = require('htmlparser2');
 const DomUtils = htmlparser2.DomUtils;
 const {parseAuthoredDate} = require('./date');
+const {resolveDocumentBase, rewriteRelativeUrls} = require('./urls');
 
 exports.indexPage = function indexPage(indexPath, readFile) {
   const html = (readFile || fs.readFileSync)(indexPath, 'utf8');
@@ -18,7 +19,12 @@ exports.indexPage = function indexPage(indexPath, readFile) {
   return {url, title, description, author, language, entries};
 };
 
-exports.articlePage = function articlePage(filePath, tagName, readFile) {
+exports.articlePage = function articlePage(
+  filePath,
+  tagName,
+  readFile,
+  articleUrl,
+) {
   const html = (readFile || fs.readFileSync)(filePath, 'utf8');
   const dom = htmlparser2.parseDocument(html);
   const metaMap = extractMetaMap(dom);
@@ -27,21 +33,26 @@ exports.articlePage = function articlePage(filePath, tagName, readFile) {
   const description = metaValue(metaMap, 'description');
   const author = metaValue(metaMap, 'author');
   const keywords = extractKeywords(metaMap);
-  const content = extractContent(dom, tagName);
+  const contentBase = articleUrl
+    ? resolveDocumentBase(extractBaseHref(dom), articleUrl)
+    : null;
+  const content = extractContent(dom, tagName, contentBase);
 
   return {title, description, author, keywords, content};
 };
 
-// These singletons live in <head>, so stop at the first match (limit=1) instead
-// of walking the whole document — extractTitle runs once per article.
+// The first base element carrying href establishes the document base; a prior
+// target-only base does not suppress it.
 function extractBaseHref(dom) {
-  const bases = DomUtils.getElementsByTagName('base', dom, true, 1);
-  if (bases.length > 0 && bases[0].attribs.href) {
-    return bases[0].attribs.href;
-  }
-  return null;
+  const base = DomUtils.findOne(
+    (element) => element.name === 'base' && element.attribs.href !== undefined,
+    dom,
+  );
+  return base ? base.attribs.href : null;
 }
 
+// Titles are singletons in <head>, so stop at the first match (limit=1) instead
+// of walking the whole document — extractTitle runs once per article.
 function extractTitle(dom) {
   const titles = DomUtils.getElementsByTagName('title', dom, true, 1);
   if (titles.length > 0) {
@@ -150,9 +161,10 @@ function extractKeywords(metaMap) {
     .filter((k) => k !== '');
 }
 
-function extractContent(dom, tagName) {
+function extractContent(dom, tagName, contentBase) {
   const elements = DomUtils.getElementsByTagName(tagName, dom, true, 1);
   if (elements.length > 0) {
+    if (contentBase) rewriteRelativeUrls(elements[0], contentBase);
     return DomUtils.getInnerHTML(elements[0]);
   }
   return '';

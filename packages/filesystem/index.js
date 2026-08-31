@@ -616,7 +616,18 @@ module.exports = function createRootedFilesystem(root) {
 
       const requestedPath = file.path;
       const data = file.data;
+      const chunks = file.chunks;
       const options = file.options;
+      if (chunks !== undefined) {
+        if (data !== undefined) {
+          throw new TypeError(
+            `files[${index}] must provide either data or chunks, not both`,
+          );
+        }
+        if (chunks === null || typeof chunks[Symbol.iterator] !== 'function') {
+          throw new TypeError(`files[${index}].chunks must be iterable`);
+        }
+      }
       const resolved = resolveRequest(requestedPath);
       const destinationKey =
         process.platform === 'win32'
@@ -632,6 +643,7 @@ module.exports = function createRootedFilesystem(root) {
       return {
         requestedPath,
         data,
+        chunks,
         options,
         resolved,
         rootHandle: undefined,
@@ -710,11 +722,18 @@ module.exports = function createRootedFilesystem(root) {
       if (!fs.fstatSync(tempFd).isFile()) {
         throw notRegularFile(record.requestedPath);
       }
-      fs.writeFileSync(tempFd, record.data, record.options);
+      if (record.chunks === undefined) {
+        fs.writeFileSync(tempFd, record.data, record.options);
+      } else {
+        for (const chunk of record.chunks) {
+          fs.writeFileSync(tempFd, chunk, record.options);
+        }
+      }
       fs.fsyncSync(tempFd);
       fs.closeSync(tempFd);
       record.tempFd = undefined;
       record.data = undefined;
+      record.chunks = undefined;
 
       if (!record.handle.descriptorBacked) {
         verifyParentByName(record.resolved, record.parent, record.rootHandle);

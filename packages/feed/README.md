@@ -57,11 +57,13 @@ Configured Atom/RSS output names remain literal filesystem paths, while
 URL-delimiter characters in those names are percent-encoded in public self
 links.
 
-Atom and RSS are published as one rollback-protected transaction. Both
-documents are serialized and staged before either final name changes. If a
-later write or rename fails, prior outputs are restored (or both fresh outputs
-are removed), temporary artifacts are cleaned up, and generation fails with
-`PUGNEUM:FEED_WRITE_FAILED` naming the affected output.
+Atom and RSS are published as one rollback-protected transaction. Serializer
+setup, including eager format validation, completes before output setup. Each
+document is then generated and staged in header/entry/footer chunks before
+either final name changes, so the two complete XML documents never need to
+coexist in memory. If a later write or rename fails, prior outputs are restored
+(or both fresh outputs are removed), temporary artifacts are cleaned up, and
+generation fails with `PUGNEUM:FEED_WRITE_FAILED` naming the affected output.
 
 ## HTML conventions
 

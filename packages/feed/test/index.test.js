@@ -2,10 +2,13 @@ var path = require('path');
 var fs = require('fs');
 var os = require('os');
 var crypto = require('crypto');
+var htmlparser2 = require('htmlparser2');
 var assert = require('node:assert/strict');
 var {describe, test} = require('node:test');
 var generateFeeds = require('../');
 var extract = require('../lib/extract');
+var generateAtom = require('../lib/atom');
+var generateRss = require('../lib/rss');
 var {resolveRelativeUrls} = require('../lib/urls');
 
 var fixturesDir = path.join(__dirname, 'fixtures');
@@ -568,6 +571,68 @@ describe('transactional feed publication', () => {
     assert.deepStrictEqual(fs.readdirSync(fixture.output).sort(), [
       'atom.xml',
       'rss.xml',
+    ]);
+  });
+});
+
+describe('feed generation work bounds', () => {
+  test('parses the index and each selected article only once', (t) => {
+    var fixture = boundaryFixture(t);
+    var originalParseDocument = htmlparser2.parseDocument;
+    var parseCount = 0;
+    htmlparser2.parseDocument = function () {
+      parseCount++;
+      return Reflect.apply(originalParseDocument, this, arguments);
+    };
+    t.after(() => {
+      htmlparser2.parseDocument = originalParseDocument;
+    });
+
+    fixture.generate();
+
+    assert.strictEqual(parseCount, 2);
+  });
+
+  test('creates and stages Atom and RSS chunk iterators sequentially', (t) => {
+    var fixture = boundaryFixture(t);
+    var originalAtomChunks = generateAtom.chunks;
+    var originalRssChunks = generateRss.chunks;
+    var events = [];
+
+    function tracedChunks(name, iterable) {
+      return {
+        *[Symbol.iterator]() {
+          events.push(name + ':start');
+          yield* iterable;
+          events.push(name + ':end');
+        },
+      };
+    }
+
+    generateAtom.chunks = function (feed) {
+      events.push('atom:create');
+      return tracedChunks('atom', originalAtomChunks(feed));
+    };
+    generateRss.chunks = function (feed) {
+      events.push('rss:create');
+      return tracedChunks('rss', originalRssChunks(feed));
+    };
+    t.after(() => {
+      if (originalAtomChunks === undefined) delete generateAtom.chunks;
+      else generateAtom.chunks = originalAtomChunks;
+      if (originalRssChunks === undefined) delete generateRss.chunks;
+      else generateRss.chunks = originalRssChunks;
+    });
+
+    fixture.generate();
+
+    assert.deepStrictEqual(events, [
+      'atom:create',
+      'rss:create',
+      'atom:start',
+      'atom:end',
+      'rss:start',
+      'rss:end',
     ]);
   });
 });

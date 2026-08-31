@@ -64,6 +64,10 @@ final name. Existing destinations are preserved with private same-directory
 rollback links. If a later final rename fails, already-published fresh files
 are removed and prior files are restored before the error returns. Known
 temporary and rollback names are cleaned up on both success and failure.
+Each file record supplies `path`, `options`, and either whole-file `data` or an
+iterable of `chunks`. Chunk iterables are consumed one file at a time, allowing
+large outputs to be staged without retaining every complete document in
+memory.
 
 ## Concurrency and platform boundary
 

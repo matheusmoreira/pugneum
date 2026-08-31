@@ -35,6 +35,50 @@ test('generates valid RSS feed', (t) => {
   t.assert.snapshot(xml);
 });
 
+test('chunked RSS serialization is byte-identical and item-bounded', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Test Site',
+    description: 'A test site',
+    author: 'Test Author',
+    entries: [
+      {
+        url: 'https://example.com/first',
+        title: 'First',
+        published: '2026-01-02',
+        author: 'A',
+        content: '<p>first</p>',
+      },
+      {
+        url: 'https://example.com/second',
+        title: 'Second',
+        published: '2026-01-01',
+        author: 'B',
+        content: '<p>second</p>',
+      },
+    ],
+    rssPath: 'rss.xml',
+    buildDate: '2026-01-03T00:00:00Z',
+  };
+
+  var chunks = Array.from(generateRss.chunks(feed));
+
+  assert.strictEqual(chunks.join(''), generateRss(feed));
+  assert.strictEqual(chunks.length, feed.entries.length + 2);
+  assert.ok(!chunks[0].includes('<item>'));
+  assert.ok(
+    chunks[1].includes(
+      '<guid isPermaLink="true">https://example.com/first</guid>',
+    ),
+  );
+  assert.ok(
+    chunks[2].includes(
+      '<guid isPermaLink="true">https://example.com/second</guid>',
+    ),
+  );
+  assert.strictEqual(chunks[3], '  </channel>\n</rss>\n');
+});
+
 test('entry keywords are emitted as RSS categories', () => {
   var feed = {
     url: 'https://example.com/',

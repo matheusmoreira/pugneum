@@ -432,9 +432,11 @@ module.exports = function generateFeeds(options) {
     buildDate: buildDate,
   };
 
-  // Generate and write feeds
-  const atom = generateAtom(feed);
-  const rss = generateRss(feed);
+  // Construct both serializers before filesystem work so their eager
+  // validation still fails before output setup. Their chunks are consumed one
+  // format at a time while the transaction stages its temporary siblings.
+  const atomChunks = generateAtom.chunks(feed);
+  const rssChunks = generateRss.chunks(feed);
 
   try {
     fs.mkdirSync(writeDir, {recursive: true});
@@ -446,8 +448,8 @@ module.exports = function generateFeeds(options) {
     outputFiles.ensureDirectory(path.dirname(atomPath));
     outputFiles.ensureDirectory(path.dirname(rssPath));
     outputFiles.writeFilesTransaction([
-      {path: atomPath, data: atom, options: {encoding: 'utf8'}},
-      {path: rssPath, data: rss, options: {encoding: 'utf8'}},
+      {path: atomPath, chunks: atomChunks, options: {encoding: 'utf8'}},
+      {path: rssPath, chunks: rssChunks, options: {encoding: 'utf8'}},
     ]);
   } catch (error) {
     if (isFilesystemBoundary(error, true)) {

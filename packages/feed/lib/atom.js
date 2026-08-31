@@ -1,33 +1,18 @@
 const {escapeXml} = require('./xml');
 const {parseDate, feedTimestamp} = require('./date');
 
-module.exports = function generateAtom(feed) {
-  const entries = feed.entries.map((entry) => {
-    const timestamp = toISO8601(
-      entry.publishedEpoch ?? entry.published,
-      feed.buildDate,
-    );
-    return [
-      '  <entry>',
-      '    <title>' + escapeXml(entry.title) + '</title>',
-      '    <link href="' + escapeXml(entry.url) + '" rel="alternate"/>',
-      '    <id>' + escapeXml(entry.url) + '</id>',
-      '    <published>' + escapeXml(timestamp) + '</published>',
-      '    <updated>' + escapeXml(timestamp) + '</updated>',
-      entry.summary
-        ? '    <summary>' + escapeXml(entry.summary) + '</summary>'
-        : null,
-      '    <content type="html">' + escapeXml(entry.content) + '</content>',
-      '    <author>',
-      '      <name>' + escapeXml(entry.author) + '</name>',
-      '    </author>',
-      categoryLines(entry.keywords, '    '),
-      '  </entry>',
-    ]
-      .filter((line) => line !== null)
-      .join('\n');
-  });
+function generateAtom(feed) {
+  return Array.from(atomChunks(feed)).join('');
+}
 
+generateAtom.chunks = atomChunks;
+module.exports = generateAtom;
+
+function atomChunks(feed) {
+  return serializeAtom(feed);
+}
+
+function* serializeAtom(feed) {
   // Carry the language as xml:lang on the root, mirroring RSS's <language>.
   const langAttr = feed.language
     ? ' xml:lang="' + escapeXml(feed.language) + '"'
@@ -56,14 +41,39 @@ module.exports = function generateAtom(feed) {
     '  <generator>pugneum-feed</generator>',
   );
 
-  for (let i = 0; i < entries.length; i++) {
-    lines.push(entries[i]);
+  yield lines.join('\n') + '\n';
+  for (let i = 0; i < feed.entries.length; i++) {
+    yield atomEntry(feed.entries[i], feed.buildDate) + '\n';
   }
+  yield '</feed>\n';
+}
 
-  lines.push('</feed>', '');
+function atomEntry(entry, buildDate) {
+  const timestamp = toISO8601(
+    entry.publishedEpoch ?? entry.published,
+    buildDate,
+  );
 
-  return lines.join('\n');
-};
+  return [
+    '  <entry>',
+    '    <title>' + escapeXml(entry.title) + '</title>',
+    '    <link href="' + escapeXml(entry.url) + '" rel="alternate"/>',
+    '    <id>' + escapeXml(entry.url) + '</id>',
+    '    <published>' + escapeXml(timestamp) + '</published>',
+    '    <updated>' + escapeXml(timestamp) + '</updated>',
+    entry.summary
+      ? '    <summary>' + escapeXml(entry.summary) + '</summary>'
+      : null,
+    '    <content type="html">' + escapeXml(entry.content) + '</content>',
+    '    <author>',
+    '      <name>' + escapeXml(entry.author) + '</name>',
+    '    </author>',
+    categoryLines(entry.keywords, '    '),
+    '  </entry>',
+  ]
+    .filter((line) => line !== null)
+    .join('\n');
+}
 
 function toISO8601(dateStr, fallback) {
   return parseDate(dateStr, fallback).toISOString();

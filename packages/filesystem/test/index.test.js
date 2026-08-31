@@ -626,6 +626,73 @@ describe('rooted transactional publication', () => {
     assert.deepStrictEqual(stages, ['file', 'file', 'directory', 'directory']);
   });
 
+  test('stages chunk iterables sequentially without whole-file data', (t) => {
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+    const events = [];
+
+    function* chunks(name) {
+      events.push(name + ':start');
+      yield name + ' one';
+      yield ' two';
+      events.push(name + ':end');
+    }
+
+    files.writeFilesTransaction([
+      {path: 'atom.xml', chunks: chunks('atom'), options: 'utf8'},
+      {path: 'rss.xml', chunks: chunks('rss'), options: 'utf8'},
+    ]);
+
+    assert.deepStrictEqual(events, [
+      'atom:start',
+      'atom:end',
+      'rss:start',
+      'rss:end',
+    ]);
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'atom.xml'), 'utf8'),
+      'atom one two',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'),
+      'rss one two',
+    );
+  });
+
+  test('a chunk producer failure leaves every final destination untouched', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'atom.xml'), 'old atom');
+    fs.writeFileSync(path.join(root, 'rss.xml'), 'old rss');
+    const files = createRootedFilesystem(root);
+
+    function* failedRss() {
+      yield 'partial rss';
+      throw new Error('serializer failed');
+    }
+
+    assertWriteFailed(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'atom.xml', chunks: ['new atom']},
+          {path: 'rss.xml', chunks: failedRss()},
+        ]),
+      'rss.xml',
+    );
+
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'atom.xml'), 'utf8'),
+      'old atom',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'),
+      'old rss',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'atom.xml',
+      'rss.xml',
+    ]);
+  });
+
   test('a staging failure preserves all prior destinations', (t) => {
     const root = temporaryRoot(t);
     fs.writeFileSync(path.join(root, 'atom.xml'), 'old atom');

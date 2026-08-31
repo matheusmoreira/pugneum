@@ -34,6 +34,42 @@ test('generates valid Atom feed', (t) => {
   t.assert.snapshot(xml);
 });
 
+test('chunked Atom serialization is byte-identical and entry-bounded', () => {
+  var feed = {
+    url: 'https://example.com/',
+    title: 'Test Site',
+    description: 'A test site',
+    author: 'Test Author',
+    entries: [
+      {
+        url: 'https://example.com/first',
+        title: 'First',
+        published: '2026-01-02',
+        author: 'A',
+        content: '<p>first</p>',
+      },
+      {
+        url: 'https://example.com/second',
+        title: 'Second',
+        published: '2026-01-01',
+        author: 'B',
+        content: '<p>second</p>',
+      },
+    ],
+    atomPath: 'atom.xml',
+    buildDate: '2026-01-03T00:00:00Z',
+  };
+
+  var chunks = Array.from(generateAtom.chunks(feed));
+
+  assert.strictEqual(chunks.join(''), generateAtom(feed));
+  assert.strictEqual(chunks.length, feed.entries.length + 2);
+  assert.ok(!chunks[0].includes('<entry>'));
+  assert.ok(chunks[1].includes('<id>https://example.com/first</id>'));
+  assert.ok(chunks[2].includes('<id>https://example.com/second</id>'));
+  assert.strictEqual(chunks[3], '</feed>\n');
+});
+
 test('date-only published is pinned to midnight UTC', () => {
   var feed = {
     url: 'https://example.com/',

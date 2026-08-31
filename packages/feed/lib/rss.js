@@ -2,7 +2,14 @@ const makeError = require('pugneum-error');
 const {escapeXml, escapeCdata} = require('./xml');
 const {parseDate, feedTimestamp} = require('./date');
 
-module.exports = function generateRss(feed) {
+function generateRss(feed) {
+  return Array.from(rssChunks(feed)).join('');
+}
+
+generateRss.chunks = rssChunks;
+module.exports = generateRss;
+
+function rssChunks(feed) {
   if (!feed.description) {
     // No source location (a config/HTML-metadata failure); passing line:0 would
     // prefix the message with a stray "0" header. See feedError in index.js.
@@ -12,32 +19,10 @@ module.exports = function generateRss(feed) {
       {},
     );
   }
+  return serializeRss(feed);
+}
 
-  const items = feed.entries.map((entry) => {
-    return [
-      '    <item>',
-      '      <title>' + escapeXml(entry.title) + '</title>',
-      '      <link>' + escapeXml(entry.url) + '</link>',
-      '      <guid isPermaLink="true">' + escapeXml(entry.url) + '</guid>',
-      '      <pubDate>' +
-        escapeXml(
-          toRFC822(entry.publishedEpoch ?? entry.published, feed.buildDate),
-        ) +
-        '</pubDate>',
-      entry.summary
-        ? '      <description>' + escapeXml(entry.summary) + '</description>'
-        : null,
-      '      <content:encoded><![CDATA[' +
-        escapeCdata(entry.content) +
-        ']]></content:encoded>',
-      '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
-      categoryLines(entry.keywords, '      '),
-      '    </item>',
-    ]
-      .filter((line) => line !== null)
-      .join('\n');
-  });
-
+function* serializeRss(feed) {
   const lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
     '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">',
@@ -61,14 +46,35 @@ module.exports = function generateRss(feed) {
       '" rel="self" type="application/rss+xml"/>',
   );
 
-  for (let i = 0; i < items.length; i++) {
-    lines.push(items[i]);
+  yield lines.join('\n') + '\n';
+  for (let i = 0; i < feed.entries.length; i++) {
+    yield rssItem(feed.entries[i], feed.buildDate) + '\n';
   }
+  yield '  </channel>\n</rss>\n';
+}
 
-  lines.push('  </channel>', '</rss>', '');
-
-  return lines.join('\n');
-};
+function rssItem(entry, buildDate) {
+  return [
+    '    <item>',
+    '      <title>' + escapeXml(entry.title) + '</title>',
+    '      <link>' + escapeXml(entry.url) + '</link>',
+    '      <guid isPermaLink="true">' + escapeXml(entry.url) + '</guid>',
+    '      <pubDate>' +
+      escapeXml(toRFC822(entry.publishedEpoch ?? entry.published, buildDate)) +
+      '</pubDate>',
+    entry.summary
+      ? '      <description>' + escapeXml(entry.summary) + '</description>'
+      : null,
+    '      <content:encoded><![CDATA[' +
+      escapeCdata(entry.content) +
+      ']]></content:encoded>',
+    '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
+    categoryLines(entry.keywords, '      '),
+    '    </item>',
+  ]
+    .filter((line) => line !== null)
+    .join('\n');
+}
 
 function toRFC822(dateStr, fallback) {
   return parseDate(dateStr, fallback).toUTCString();

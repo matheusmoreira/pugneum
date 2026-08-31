@@ -623,6 +623,27 @@ describe('grammar-boundary value preservation', () => {
   });
 });
 
+describe('cell-text interpolation escape scaling', () => {
+  test('preserves odd and even backslash parity before every marker', () => {
+    for (var count = 0; count <= 8; count++) {
+      var slashes = '\\'.repeat(count);
+      var result = tableFilter.filter('| ' + slashes + '#{x} |', {});
+      var expected = '\\'.repeat(count + (count % 2 === 0 ? 1 : 0)) + '#{x}';
+      assert.ok(result.endsWith('td ' + expected), 'slash count ' + count);
+    }
+  });
+
+  test('an unmatched backslash run is processed within a linear-work budget', () => {
+    var slashes = '\\'.repeat(50000);
+    var start = process.hrtime.bigint();
+    var result = tableFilter.filter('| ' + slashes + 'x |', {});
+    var elapsed = Number(process.hrtime.bigint() - start) / 1e6;
+
+    assert.ok(elapsed < 2000, 'escaping took ' + elapsed.toFixed(0) + 'ms');
+    assert.ok(result.endsWith('td ' + slashes + 'x'));
+  });
+});
+
 // Alignment is emitted as style="text-align:..."; combining it with an explicit
 // col `style` attr must merge, not emit two style attributes (DUPLICATE_ATTRIBUTE).
 describe('alignment + explicit style attr', () => {

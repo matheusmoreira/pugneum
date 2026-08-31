@@ -292,9 +292,27 @@ function formatAttrs(attrs) {
 // verbatim) attribute value is NOT neutralized here — that was the rejected
 // option; it is rejected with a coded error instead (assertNoInterpolation).
 function escapeCellText(text) {
-  return text.replace(/(\\*)(#\{)/g, function (match, slashes, hash) {
-    return slashes.length % 2 === 0 ? slashes + '\\' + hash : match;
-  });
+  const pieces = [];
+  let copiedThrough = 0;
+
+  for (;;) {
+    const marker = text.indexOf('#{', copiedThrough);
+    if (marker === -1) break;
+
+    let slashStart = marker;
+    while (slashStart > copiedThrough && text[slashStart - 1] === '\\') {
+      slashStart--;
+    }
+
+    pieces.push(text.slice(copiedThrough, marker));
+    if ((marker - slashStart) % 2 === 0) pieces.push('\\');
+    pieces.push('#{');
+    copiedThrough = marker + 2;
+  }
+
+  if (copiedThrough === 0) return text;
+  pieces.push(text.slice(copiedThrough));
+  return pieces.join('');
 }
 
 // Append indented Pugneum lines for a section (thead, tbody, or tfoot) directly

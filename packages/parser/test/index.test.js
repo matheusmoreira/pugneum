@@ -896,11 +896,11 @@ describe('blind sweep fixes', () => {
     );
   });
 
-  test('a block with many text children under one indent parses linearly to the right node count', (t) => {
+  test('a block with many text children has linear accumulation work and output', () => {
     // block() must accumulate Block-typed children with in-place push rather
-    // than reallocating via Array.concat (O(n^2)). This is a regression guard
-    // on the node count for the path that produced the quadratic blow-up:
-    // alternating a tag with a multi-inline piped line inside a mixin body.
+    // than repeatedly reallocating the growing destination with Array.concat.
+    // Count the elements copied by any concat during parsing so the old O(n^2)
+    // implementation cannot pass merely by producing the right final AST.
     const N = 400;
     const lines = ['mixin m(v)'];
     for (let i = 0; i < N; ++i) {
@@ -909,8 +909,28 @@ describe('blind sweep fixes', () => {
     }
     const source = lines.join('\n');
     const tokens = lex(source, {filename: 'test'});
-    const ast = parse(tokens, {filename: 'test', source});
+    const originalConcat = Array.prototype.concat;
+    let copiedElements = 0;
+    Array.prototype.concat = function (...items) {
+      copiedElements += this.length;
+      for (const item of items) {
+        copiedElements += Array.isArray(item) ? item.length : 1;
+      }
+      return originalConcat.apply(this, items);
+    };
+
+    let ast;
+    try {
+      ast = parse(tokens, {filename: 'test', source});
+    } finally {
+      Array.prototype.concat = originalConcat;
+    }
+
     // N `div` tags + N piped-text Blocks (each contributing 3 nodes) = 4N nodes.
     assert.strictEqual(ast.nodes[0].block.nodes.length, 4 * N);
+    assert.ok(
+      copiedElements <= 20 * N,
+      'parser copied ' + copiedElements + ' array elements for N=' + N,
+    );
   });
 });

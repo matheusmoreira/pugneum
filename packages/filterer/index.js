@@ -1,4 +1,5 @@
 const error = require('pugneum-error');
+const escapeFilterText = require('./escape-text');
 const walk = require('pugneum-walker');
 
 module.exports = applyFilters;
@@ -432,14 +433,6 @@ function validateFilterType(resolved, name, node, options) {
       nodeLocation(node, options),
     );
   }
-}
-
-function escapeFilterText(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 function normalizeTextNewlines(value) {

@@ -14,10 +14,16 @@ describe('prismjs filter', () => {
   });
 
   test('entry loading and escape-only filtering do not initialize Prism', () => {
-    var bundle = require.resolve('prism-minmaxed');
-    assert.strictEqual(require.cache[bundle], undefined);
+    var core = require.resolve('prismjs');
+    var components = require.resolve('prismjs/components/');
+    var registry = require.resolve('prismjs/components.json');
+    assert.strictEqual(require.cache[core], undefined);
+    assert.strictEqual(require.cache[components], undefined);
+    assert.strictEqual(require.cache[registry], undefined);
     assert.strictEqual(prism.filter('<code>', {}), '&lt;code&gt;');
-    assert.strictEqual(require.cache[bundle], undefined);
+    assert.strictEqual(require.cache[core], undefined);
+    assert.strictEqual(require.cache[components], undefined);
+    assert.strictEqual(require.cache[registry], undefined);
   });
 
   test('no language uses Pugneum full HTML escaping', () => {
@@ -31,10 +37,12 @@ describe('prismjs filter', () => {
   });
 
   test('unknown language throws', () => {
+    var core = require.resolve('prismjs');
     assert.throws(
       () => prism.filter('code', {language: 'definitelynotalang'}),
       /Unknown language/,
     );
+    assert.strictEqual(require.cache[core], undefined);
   });
 
   test('supplied language values must be nonempty strings', () => {
@@ -92,16 +100,11 @@ describe('prismjs filter', () => {
     assert.match(out, /class="token/);
   });
 
-  // The documented invocation name is :prismjs (auto-resolves to
-  // pugneum-filter-prismjs). Drive the real pipeline under that name so the
-  // documented name is actually exercised (the snapshot case uses `highlight`).
-  test('the documented :prismjs filter name works through the pipeline', () => {
-    var source =
-      'pre\n  code\n    :prismjs(language=javascript)\n      var x = 1;';
-    var options = {filename: 'inline.pg'};
-    var ast = parse(lex(source, options), options);
-    var filtered = filter(ast, {prismjs: prism});
-    assert.match(filtered.nodes[0].block.nodes[0].block.nodes[0].val, /token/);
+  test('registry aliases and component dependencies load on demand', () => {
+    assert.match(
+      prism.filter('const value: string = "ok";', {language: 'TS'}),
+      /token builtin/,
+    );
   });
 
   test('coded option errors retain the filter invocation location', () => {

@@ -1,29 +1,18 @@
-var path = require('path');
-var fs = require('fs');
-var {test} = require('node:test');
-
-var lex = require('pugneum-lexer');
-var parse = require('pugneum-parser');
-var filter = require('pugneum-filterer');
-
-var hljs = require('../');
-var customFilters = {highlight: hljs};
+var path = require('node:path');
+var {runFilterCases} = require('../../../../test/helpers/filter-plugin-case');
 
 var casesDirectory = path.join(__dirname, 'cases');
-var cases = fs.readdirSync(casesDirectory);
-
-function readCase(name) {
-  return fs.readFileSync(path.join(casesDirectory, name), 'utf8');
-}
-
-cases.forEach((filename) => {
-  test(filename, (t) => {
-    var options = {filename};
-    var source = readCase(filename);
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var filtered = filter(ast, customFilters);
-
-    t.assert.snapshot(filtered);
-  });
+runFilterCases(casesDirectory, {
+  'language-argument.pg': {
+    fragment: [/hljs-built_in/, /hljs-number/],
+    document: [/<code class="hljs language-scheme">/],
+  },
+  'language-subset-argument.pg': {
+    fragment: [/hljs-meta/, /hljs-string/],
+    document: [/<code class="hljs">/],
+  },
+  'syntax-highlighting-works.pg': {
+    fragment: [/hljs-keyword/, /hljs-attr/],
+    document: [/<code class="hljs">/],
+  },
 });

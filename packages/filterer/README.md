@@ -109,6 +109,21 @@ Every filter must declare a `type` property:
 - `pugneum` — Pugneum source output, re-lexed/re-parsed into AST nodes
 - `syntax` — direct AST node array, inserted into the tree
 
+### `require('pugneum-filterer/escape-text')`
+
+HTML-producing filters that need a literal-text fallback can use the same
+escaping boundary as `text` filters without loading the filterer pipeline:
+
+```js
+var escapeText = require('pugneum-filterer/escape-text');
+
+escapeText('<code title="example">&');
+// &lt;code title=&quot;example&quot;&gt;&amp;
+```
+
+The helper requires a string and escapes `&`, `<`, `>`, and `"`. It deliberately
+does not escape apostrophes, which are ordinary characters in HTML text nodes.
+
 Both structured forms pass through the versioned `pugneum-walker` AST schema
 before insertion. The graph must be a single-owner, acyclic tree, cannot reuse
 a node already owned by the surrounding document, and cannot make the complete

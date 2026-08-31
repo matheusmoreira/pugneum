@@ -46,6 +46,7 @@ const packages = Object.freeze([
   packagePolicy('packages/filterer', 'pugneum-filterer', '1.2.0', [
     'LICENSE.MIT',
     'README.md',
+    'escape-text.js',
     'index.js',
     'package.json',
   ]),
@@ -332,7 +333,7 @@ function exactExternalDependencies() {
   return {
     'highlight.js': '11.8.0',
     htmlparser2: '9.0.0',
-    'prism-minmaxed': '1.0.0',
+    prismjs: '1.30.0',
   };
 }
 
@@ -350,6 +351,14 @@ function scenarios(tarballs) {
   };
   const cohort = allCohortDependencies(tarballs);
   const core = coreCohortDependencies(tarballs);
+  const pluginRuntime = localDependencies(tarballs, [
+    'pugneum-error',
+    'pugneum-filterer',
+    'pugneum-lexer',
+    'pugneum-parser',
+    'pugneum-renderer',
+    'pugneum-walker',
+  ]);
 
   return [
     {
@@ -444,27 +453,27 @@ function scenarios(tarballs) {
       ],
     },
     {
-      name: 'plugins-peer-minimum',
+      name: 'plugins-current-peer',
       smoke: 'plugins',
       dependencies: {
         'highlight.js': '11.8.0',
-        'prism-minmaxed': '1.0.0',
-        'pugneum-error': '1.0.0',
+        prismjs: '1.30.0',
+        ...pluginRuntime,
         'pugneum-filter-highlight.js': localSpec(
           tarballs,
           'pugneum-filter-highlight.js',
         ),
         'pugneum-filter-prismjs': localSpec(tarballs, 'pugneum-filter-prismjs'),
-        'pugneum-filterer': '1.1.0',
-        'pugneum-lexer': '1.2.0',
-        'pugneum-parser': '1.1.0',
-        'pugneum-walker': '1.0.2',
       },
       resolutions: [
-        resolution('pugneum-filter-highlight.js', 'pugneum-filterer', '1.1.0'),
-        resolution('pugneum-filter-prismjs', 'pugneum-filterer', '1.1.0'),
+        ...cohortResolutions().filter(
+          (entry) =>
+            pluginRuntime[entry.from] && pluginRuntime[entry.dependency],
+        ),
+        localResolution('pugneum-filter-highlight.js', 'pugneum-filterer'),
+        localResolution('pugneum-filter-prismjs', 'pugneum-filterer'),
         resolution('pugneum-filter-highlight.js', 'highlight.js', '11.8.0'),
-        resolution('pugneum-filter-prismjs', 'prism-minmaxed', '1.0.0'),
+        resolution('pugneum-filter-prismjs', 'prismjs', '1.30.0'),
       ],
     },
     {
@@ -531,7 +540,7 @@ function scenarios(tarballs) {
       resolutions: [
         ...cohortResolutions(),
         resolution('pugneum-filter-highlight.js', 'highlight.js', '11.8.0'),
-        resolution('pugneum-filter-prismjs', 'prism-minmaxed', '1.0.0'),
+        resolution('pugneum-filter-prismjs', 'prismjs', '1.30.0'),
         resolution('pugneum-feed', 'htmlparser2', '9.0.0'),
       ],
     },
@@ -542,7 +551,7 @@ function scenarios(tarballs) {
       resolutions: cohortResolutions(),
       freshCache: true,
       preferOnline: true,
-      reportVersions: ['highlight.js', 'htmlparser2', 'prism-minmaxed'],
+      reportVersions: ['highlight.js', 'htmlparser2', 'prismjs'],
     },
   ];
 }

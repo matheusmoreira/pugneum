@@ -77,7 +77,7 @@ const expectedReleaseManifests = Object.freeze({
   'packages/filterer': {
     name: 'pugneum-filterer',
     version: '1.2.0',
-    files: ['index.js'],
+    files: ['index.js', 'escape-text.js'],
     dependencies: {
       'pugneum-error': '^1.0.0',
       'pugneum-lexer': '^1.2.0',
@@ -152,7 +152,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.1.1',
     files: ['index.js'],
     dependencies: {
-      'prism-minmaxed': '^1.0.0',
+      prismjs: '^1.30.0',
       'pugneum-error': '^1.0.0',
     },
     devDependencies: {
@@ -160,7 +160,7 @@ const expectedReleaseManifests = Object.freeze({
       'pugneum-lexer': '^1.2.1',
       'pugneum-parser': '^1.1.1',
     },
-    peerDependencies: {'pugneum-filterer': '^1.1.0'},
+    peerDependencies: {'pugneum-filterer': '^1.2.0'},
   },
   'packages/filter/table': {
     name: 'pugneum-filter-table',

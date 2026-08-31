@@ -21,11 +21,11 @@
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
   "license": "MIT",
   "dependencies": {
-    "prism-minmaxed": "^1.0.0",
+    "prismjs": "^1.30.0",
     "pugneum-error": "^1.0.0"
   },
   "peerDependencies": {
-    "pugneum-filterer": "^1.1.0"
+    "pugneum-filterer": "^1.2.0"
   },
   "devDependencies": {
     "pugneum-filterer": "^1.2.0",

@@ -432,7 +432,12 @@ function smokeFilterer() {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
   const filter = require('pugneum-filterer');
+  const escapeText = require('pugneum-filterer/escape-text');
   const render = require('pugneum-renderer');
+  assert.strictEqual(
+    escapeText('<literal> & "text"'),
+    '&lt;literal&gt; &amp; &quot;text&quot;',
+  );
   const filename = 'filters.pg';
   const source = [
     'div',
@@ -532,14 +537,14 @@ function smokePlugins() {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
   const filter = require('pugneum-filterer');
-  for (const [name, plugin, marker] of [
-    ['highlight', highlight, /hljs-/],
-    ['prism', prism, /token /],
+  for (const [name, invocation, marker] of [
+    ['highlight.js', ":'highlight.js'", /hljs-/],
+    ['prismjs', ':prismjs', /token /],
   ]) {
-    const source = `:${name}(language=javascript)\n  const value = 1;`;
+    const source = `${invocation}(language=javascript)\n  const value = 1;`;
     const options = {filename: `${name}.pg`, source};
     const ast = parse(lex(source, options), options);
-    const result = filter(ast, {[name]: plugin}, options);
+    const result = filter(ast, undefined, options);
     assert.match(result.nodes[0].val, marker);
   }
 }

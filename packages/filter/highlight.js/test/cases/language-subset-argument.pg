@@ -1,8 +1,8 @@
 html
   body
     pre
-      code
-        :highlight(languageSubset=c,c++)
+      code.hljs
+        :'highlight.js'(languageSubset=c,c++)
           #include <stdio.h>
 
           int main(int argc, char **argv) {

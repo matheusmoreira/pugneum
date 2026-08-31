@@ -1,8 +1,8 @@
 html
   body
     pre
-      code
-        :highlight
+      code.hljs
+        :'highlight.js'
           function thisShouldBeHighlighted(syntax) {
             return with('highlight', { extension: 'js' });
           }

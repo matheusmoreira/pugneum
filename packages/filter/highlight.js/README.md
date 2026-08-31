@@ -13,13 +13,23 @@ auto-resolved name for this package is `highlight.js` (the filterer requires
 `pugneum-filter-<name>`), so invoke it as `:highlight.js`:
 
 ```
+link(rel="stylesheet", href="/styles/highlight-theme.css")
 pre
-  code
+  code.hljs.language-scheme
     :highlight.js(language=scheme)
       (define (square x) (* x x))
 ```
 
 The filter body is highlighted as text — pugneum never executes it.
+
+## Output and styling
+
+The filter returns a token-markup **fragment** only. It does not emit `pre` or
+`code`, add a language class, or bundle a highlight.js theme. Wrap the filter as
+shown above, serve a highlight.js-compatible stylesheet yourself, and put the
+`hljs` class on `code`. With an explicit language, a `language-<name>` class is
+also useful for application styling. Autodetection does not add its detected
+language to the fragment.
 
 ## Attributes
 

@@ -147,6 +147,16 @@ function formatCodepoint(ch) {
   return 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
 }
 
+function isTagStart(ch) {
+  const code = ch.charCodeAt(0);
+  return (
+    (code >= 48 && code <= 57) ||
+    (code >= 65 && code <= 90) ||
+    code === 95 ||
+    (code >= 97 && code <= 122)
+  );
+}
+
 const variableNamePattern = '[-a-zA-Z_?]';
 const variableNameRe = new RegExp(variableNamePattern);
 const variableNameOnlyRe = new RegExp('^' + variableNamePattern + '+$');
@@ -3097,38 +3107,79 @@ class Lexer {
   }
 
   advance() {
-    return (
-      this.blank() ||
-      this.eos() ||
-      this.endInterpolation() ||
-      this.variable() ||
-      this.escapedTag() ||
-      this.yield() ||
-      this['extends']() ||
-      this.append() ||
-      this.prepend() ||
-      this.block() ||
-      this.mixinBlock() ||
-      this.include() ||
-      this.references() ||
-      this.footnotes() ||
-      this.given() ||
-      this.toc() ||
-      this.doctype() ||
-      this.mixin() ||
-      this.call() ||
-      this.tag() ||
-      this.filter() ||
-      this.id() ||
-      this.dot() ||
-      this.className() ||
-      this.attrs() ||
-      this.indent() ||
-      this.text() ||
-      this.comment() ||
-      this.colon() ||
-      this.fail()
-    );
+    const first = this.input[0];
+
+    if (first === undefined) return this.eos();
+
+    switch (first) {
+      case '\n':
+        return this.blank() || this.indent() || this.fail();
+      case ')':
+        return this.endInterpolation() || this.fail();
+      case '#':
+        return this.variable() || this.id() || this.fail();
+      case '\\':
+        return this.escapedTag() || this.fail();
+      case '+':
+        return this.call() || this.fail();
+      case ':':
+        return this.filter() || this.colon() || this.fail();
+      case '.':
+        return this.dot() || this.className() || this.fail();
+      case '(':
+        return this.attrs() || this.fail();
+      case ' ':
+      case '|':
+        return this.text() || this.fail();
+      case '/':
+        return this.comment() || this.fail();
+      case 'a':
+        if (this.append()) return true;
+        break;
+      case 'b':
+        if (
+          this.append() ||
+          this.prepend() ||
+          this.block() ||
+          this.mixinBlock()
+        ) {
+          return true;
+        }
+        break;
+      case 'd':
+        if (this.doctype()) return true;
+        break;
+      case 'e':
+        if (this['extends']()) return true;
+        break;
+      case 'f':
+        if (this.footnotes()) return true;
+        break;
+      case 'g':
+        if (this.given()) return true;
+        break;
+      case 'i':
+        if (this.include()) return true;
+        break;
+      case 'm':
+        if (this.mixin()) return true;
+        break;
+      case 'p':
+        if (this.prepend()) return true;
+        break;
+      case 'r':
+        if (this.references()) return true;
+        break;
+      case 't':
+        if (this.toc()) return true;
+        break;
+      case 'y':
+        if (this.yield()) return true;
+        break;
+    }
+
+    if (isTagStart(first)) return this.tag();
+    return this.fail();
   }
 
   getTokens() {

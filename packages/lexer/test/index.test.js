@@ -1999,6 +1999,29 @@ describe('successful shorthand scaling', () => {
   });
 });
 
+test('ordinary tag lines skip impossible recognizer families', () => {
+  const originalExec = RegExp.prototype.exec;
+  const lineCount = 100;
+  let regexpCalls = 0;
+  let tokens;
+
+  RegExp.prototype.exec = function (input) {
+    regexpCalls++;
+    return Reflect.apply(originalExec, this, arguments);
+  };
+  try {
+    tokens = lex('p x\n'.repeat(lineCount), {filename: 'dispatch.pg'});
+  } finally {
+    RegExp.prototype.exec = originalExec;
+  }
+
+  assert.strictEqual(tokens.length, lineCount * 3 + 1);
+  assert.ok(
+    regexpCalls <= lineCount * 10,
+    lineCount + ' simple lines ran ' + regexpCalls + ' regular expressions',
+  );
+});
+
 describe('footnote reference bracket parsing', () => {
   // Regression: interpolationsAreClosed treated a bare '[' inside an open ^[
   // as a nested bracket (needing a second ']'), while parseBracketContent (the

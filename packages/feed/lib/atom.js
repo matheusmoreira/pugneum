@@ -42,7 +42,9 @@ module.exports = function generateAtom(feed) {
 
   lines.push(
     '  <link href="' + escapeXml(feed.url) + '" rel="alternate"/>',
-    '  <link href="' + escapeXml(feed.url + feed.atomPath) + '" rel="self"/>',
+    '  <link href="' +
+      escapeXml(feed.atomUrl || feed.url + feed.atomPath) +
+      '" rel="self"/>',
     '  <id>' + escapeXml(feed.url) + '</id>',
     '  <updated>' + escapeXml(feedTimestamp(feed).toISOString()) + '</updated>',
     '  <author>',

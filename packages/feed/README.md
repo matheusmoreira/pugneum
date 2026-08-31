@@ -51,7 +51,11 @@ The base `url` must be absolute — it must include a scheme and host
 (`https://example.com/`). A path-only or protocol-relative value such as
 `/blog/` or `//cdn/` would produce feeds whose identifiers and links are not
 absolute, which feed readers cannot resolve, so it is rejected with a
-`FEED_INVALID_URL` error.
+`FEED_INVALID_URL` error. The base is a directory URL and cannot contain a
+query or fragment; its pathname is canonicalized with a trailing slash.
+Configured Atom/RSS output names remain literal filesystem paths, while
+URL-delimiter characters in those names are percent-encoded in public self
+links.
 
 ## HTML conventions
 

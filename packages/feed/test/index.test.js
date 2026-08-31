@@ -324,6 +324,35 @@ describe('end-to-end feed generation', () => {
     );
     assert.ok(fs.readFileSync(rssPath, 'utf8').includes('feeds/rss/site.xml'));
   });
+
+  test('keeps the base path and URL-encodes literal output-name delimiters', (t) => {
+    var fixture = boundaryFixture(t);
+    fixture.generate({
+      url: 'https://example.com/blog',
+      atom: 'feeds/atom#v.xml',
+      rss: 'feeds/rss#v.xml',
+    });
+
+    var atom = fs.readFileSync(
+      path.join(fixture.output, 'feeds', 'atom#v.xml'),
+      'utf8',
+    );
+    var rss = fs.readFileSync(
+      path.join(fixture.output, 'feeds', 'rss#v.xml'),
+      'utf8',
+    );
+    assert.ok(atom.includes('<id>https://example.com/blog/</id>'));
+    assert.ok(
+      atom.includes(
+        '<link href="https://example.com/blog/feeds/atom%23v.xml" rel="self"/>',
+      ),
+    );
+    assert.ok(
+      rss.includes(
+        '<atom:link href="https://example.com/blog/feeds/rss%23v.xml"',
+      ),
+    );
+  });
 });
 
 describe('config overrides', () => {
@@ -432,6 +461,17 @@ describe('error handling', () => {
         }),
       (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
     );
+  });
+
+  ['?view=full', '#section'].forEach((suffix) => {
+    test('throws FEED_INVALID_URL for a base URL ending in ' + suffix, (t) => {
+      var fixture = boundaryFixture(t);
+      assert.throws(
+        () => fixture.generate({url: 'https://example.com/blog' + suffix}),
+        (err) => err.code === 'PUGNEUM:FEED_INVALID_URL',
+      );
+      assertNoGeneratedFeeds(fixture);
+    });
   });
 
   test('throws when base URL is unresolvable', () => {

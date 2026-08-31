@@ -101,7 +101,8 @@ module.exports = function generateFeeds(options) {
   // resolves against. Atom <id> must be an absolute IRI and RSS guid/link must be
   // absolute URLs, so a path-only or protocol-relative base (e.g. "/blog/") would
   // produce a structurally-invalid feed. Require a real scheme + authority.
-  if (!isAbsoluteUrl(url)) {
+  const baseUrl = parseSiteBaseUrl(url);
+  if (!baseUrl) {
     throw feedError(
       'FEED_INVALID_URL',
       'Site base URL must be absolute (include a scheme and host), got: ' +
@@ -110,10 +111,18 @@ module.exports = function generateFeeds(options) {
     );
   }
 
-  // Ensure URL ends with /
-  if (!url.endsWith('/')) {
-    url += '/';
+  if (baseUrl.search || baseUrl.hash) {
+    throw feedError(
+      'FEED_INVALID_URL',
+      'Site base URL must not include a query or fragment, got: ' + url,
+    );
   }
+
+  // Treat the site base as a directory URL without mutating query/fragment
+  // text. URL serialisation also canonicalizes surrounding whitespace and
+  // percent-encoding consistently for every downstream identity/link.
+  if (!baseUrl.pathname.endsWith('/')) baseUrl.pathname += '/';
+  url = baseUrl.href;
 
   // Phase 2: Enrich entries from article pages
   const entries = [];
@@ -197,6 +206,8 @@ module.exports = function generateFeeds(options) {
     entries: entries,
     atomPath: atomPath,
     rssPath: rssPath,
+    atomUrl: publicFeedUrl(baseUrl, atomPath),
+    rssUrl: publicFeedUrl(baseUrl, rssPath),
     buildDate: buildDate,
   };
 
@@ -227,15 +238,29 @@ module.exports = function generateFeeds(options) {
 
 module.exports.resolveRelativeUrls = resolveRelativeUrls;
 
-// True only for URLs with both a scheme and an authority (host). Path-only
-// ("/blog/") and protocol-relative ("//cdn/") values are rejected.
-function isAbsoluteUrl(value) {
+// Parse URLs with both a scheme and an authority (host). Path-only ("/blog/")
+// and protocol-relative ("//cdn/") values are rejected.
+function parseSiteBaseUrl(value) {
   try {
     const parsed = new URL(value);
-    return Boolean(parsed.protocol && parsed.host);
+    return parsed.protocol && parsed.host ? parsed : null;
   } catch (e) {
-    return false;
+    return null;
   }
+}
+
+// Output names are filesystem paths, not URL references. Encode every literal
+// segment before appending it to the canonical site pathname so characters such
+// as # and ? continue to name the published file rather than becoming a URL
+// fragment or query.
+function publicFeedUrl(baseUrl, outputPath) {
+  const publicUrl = new URL(baseUrl.href);
+  const encodedPath = String(outputPath)
+    .split(/[\\/]/)
+    .map((segment) => encodeURIComponent(segment))
+    .join('/');
+  publicUrl.pathname += encodedPath;
+  return publicUrl.href;
 }
 
 // Attributes that carry a single resolvable URL, keyed by tag name. Mirrors the

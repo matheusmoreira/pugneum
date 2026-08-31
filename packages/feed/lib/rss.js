@@ -55,7 +55,7 @@ module.exports = function generateRss(feed) {
       '</lastBuildDate>',
     '    <generator>pugneum-feed</generator>',
     '    <atom:link href="' +
-      escapeXml(feed.url + feed.rssPath) +
+      escapeXml(feed.rssUrl || feed.url + feed.rssPath) +
       '" rel="self" type="application/rss+xml"/>',
   );
 

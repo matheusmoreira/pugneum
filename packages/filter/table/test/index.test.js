@@ -236,10 +236,48 @@ describe('alignment', () => {
 
   test('mixed alignment across columns', () => {
     var input = '| a | b | c |\n| :--- | ---: | :---: |\n| 1 | 2 | 3 |';
-    var result = tableFilter.filter(input, {});
-    assert.match(result, /col\(style="text-align:left"\)/);
-    assert.match(result, /col\(style="text-align:right"\)/);
-    assert.match(result, /col\(style="text-align:center"\)/);
+    var result = renderRoundTrip(input);
+    assert.match(result.src, /col\(style="text-align:left"\)/);
+    assert.match(result.src, /col\(style="text-align:right"\)/);
+    assert.match(result.src, /col\(style="text-align:center"\)/);
+    assert.match(
+      result.html,
+      /<th scope="col" style="text-align:left">a<\/th><th scope="col" style="text-align:right">b<\/th><th scope="col" style="text-align:center">c<\/th>/,
+    );
+    assert.match(
+      result.html,
+      /<td style="text-align:left">1<\/td><td style="text-align:right">2<\/td><td style="text-align:center">3<\/td>/,
+    );
+  });
+
+  test('alignment merges into explicit header and data cell styles', () => {
+    var input =
+      '| th(style="color:red") Heading |\n' +
+      '| :---: |\n' +
+      '| td(style="font-weight:bold") value |';
+    var result = renderRoundTrip(input);
+
+    assert.match(
+      result.html,
+      /<th scope="col" style="text-align:center;color:red">Heading<\/th>/,
+    );
+    assert.match(
+      result.html,
+      /<td style="text-align:center;font-weight:bold">value<\/td>/,
+    );
+  });
+
+  test('a colspan advances alignment to the next represented column', () => {
+    var input =
+      '| a | b | c |\n' +
+      '| :--- | ---: | :---: |\n' +
+      '| td(colspan="2") merged | tail |';
+    var result = renderRoundTrip(input);
+
+    assert.match(
+      result.html,
+      /<td colspan="2" style="text-align:left">merged<\/td><td style="text-align:center">tail<\/td>/,
+    );
   });
 });
 

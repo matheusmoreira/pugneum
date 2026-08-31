@@ -170,7 +170,12 @@ function renderCol(seg, indent) {
   // re-lex throw PUGNEUM:DUPLICATE_ATTRIBUTE, so fold the alignment declaration
   // into the user's style value instead of emitting a second attribute.
   if (alignStyle) {
-    const merged = mergeAlignmentIntoStyle(attrs, alignStyle, seg.location);
+    const merged = mergeAlignmentIntoStyle(
+      attrs,
+      alignStyle,
+      seg.location,
+      'table separator',
+    );
     if (merged !== null) {
       // Alignment was folded into an existing style="..."; emit attrs alone.
       return indent + 'col(' + merged + ')';
@@ -194,7 +199,7 @@ function renderCol(seg, indent) {
 // Returns null when there is no style attribute (the caller emits a separate
 // style token). A boolean style is replaced by the alignment declaration rather
 // than duplicated; duplicate style attributes remain an explicit error.
-function mergeAlignmentIntoStyle(attrs, alignStyle, location) {
+function mergeAlignmentIntoStyle(attrs, alignStyle, location, what) {
   const styles = scanRawAttributes(attrs).filter(
     (attr) => attr.name.toLowerCase() === 'style',
   );
@@ -202,7 +207,7 @@ function mergeAlignmentIntoStyle(attrs, alignStyle, location) {
   if (styles.length > 1) {
     throw error(
       'DUPLICATE_TABLE_ATTRIBUTE',
-      'duplicate style attribute in table separator',
+      'duplicate style attribute in ' + what,
       location,
     );
   }
@@ -225,6 +230,39 @@ function mergeAlignmentIntoStyle(attrs, alignStyle, location) {
     separator +
     attrs.slice(style.valueStart)
   );
+}
+
+function addAlignmentToCellHead(head, align, location) {
+  if (!align) return head;
+
+  const tag = head.slice(0, 2);
+  const attrs = head.length === 2 ? '' : head.slice(3, -1);
+  const alignStyle = 'text-align:' + align;
+  const merged = mergeAlignmentIntoStyle(
+    attrs,
+    alignStyle,
+    location,
+    'table cell head',
+  );
+  const result =
+    merged === null
+      ? (attrs ? attrs + ' ' : '') + 'style="' + alignStyle + '"'
+      : merged;
+  return tag + '(' + result + ')';
+}
+
+function cellColumnSpan(head) {
+  if (head === undefined || head.length === 2) return 1;
+  const attrs = head.slice(3, -1);
+  const colspan = scanRawAttributes(attrs).find(
+    (attr) => attr.name.toLowerCase() === 'colspan',
+  );
+  if (!colspan || !colspan.hasValue) return 1;
+
+  const value = attrs.slice(colspan.valueStart, colspan.valueEnd);
+  if (!/^[1-9][0-9]*$/.test(value)) return 1;
+  const span = Number(value);
+  return Number.isSafeInteger(span) ? span : 1;
 }
 
 function hasRawAttribute(attrs, name) {
@@ -341,6 +379,7 @@ function renderSection(
   indent,
   sectionAttrs,
   sectionLocation,
+  columnAlignments,
 ) {
   // The section's (attrs) marker group is emitted verbatim; a live `#{` crashes.
   assertNoInterpolation(
@@ -361,8 +400,11 @@ function renderSection(
       trLine = indent + '  tr' + row.trAttrs;
     }
     lines.push(trLine);
+    let columnIndex = 0;
     row.cells.forEach(function (cell) {
       const classified = classifyCell(cell, defaultCellTag);
+      const align = columnAlignments[columnIndex] || '';
+      columnIndex += cellColumnSpan(classified.verbatim);
       let cellLine;
       if (classified.verbatim !== undefined) {
         // Tagged cell: the head (tag + attrs) is verbatim Pugneum the real lexer
@@ -380,16 +422,24 @@ function renderSection(
         // contract: header cells in a thead are scoped automatically) — but only
         // when the author did not already set scope, else the re-lex would throw
         // DUPLICATE_ATTRIBUTE.
+        const alignedHead = addAlignmentToCellHead(
+          classified.verbatim,
+          align,
+          row.location,
+        );
         const head =
           sectionTag === 'thead'
-            ? addScopeColToThHead(classified.verbatim)
-            : classified.verbatim;
+            ? addScopeColToThHead(alignedHead)
+            : alignedHead;
         cellLine = indent + '    ' + head + escapeCellText(classified.text);
       } else {
         cellLine = indent + '    ' + classified.tag;
+        const cellAttrs = [];
         if (classified.tag === 'th' && sectionTag === 'thead') {
-          cellLine += '(scope="col")';
+          cellAttrs.push('scope="col"');
         }
+        if (align) cellAttrs.push('style="text-align:' + align + '"');
+        if (cellAttrs.length > 0) cellLine += '(' + cellAttrs.join(' ') + ')';
         if (classified.text !== '') {
           // Bare-cell text is re-lexed as Pugneum inline content; neutralize a
           // literal `#{` so tabular data does not crash the build.
@@ -439,6 +489,7 @@ function generate(parsed, attrs, invocationLocation) {
       '  ',
       '',
       allRows[0] && allRows[0].location,
+      [],
     );
   } else {
     // Emit colgroups (from first dash-sep, if any).
@@ -447,6 +498,15 @@ function generate(parsed, attrs, invocationLocation) {
         lines.push('  colgroup');
         cg.segs.forEach(function (seg) {
           lines.push(renderCol(seg, '    '));
+        });
+      });
+    }
+
+    const columnAlignments = [];
+    if (colgroups !== null) {
+      colgroups.forEach(function (colgroup) {
+        colgroup.segs.forEach(function (segment) {
+          columnAlignments.push(segment.align);
         });
       });
     }
@@ -463,6 +523,7 @@ function generate(parsed, attrs, invocationLocation) {
         '  ',
         section.attrStr,
         section.location,
+        columnAlignments,
       );
     });
   }

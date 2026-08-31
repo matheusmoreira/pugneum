@@ -49,8 +49,10 @@ errors.
   after a `tfoot` marker. Shorter runs of dashes or equals signs are ordinary
   cell data.
 - **Alignment** in a separator cell: `:---` left, `---:` right, `:---:` center.
-  Each separator column emits a `<col>`; alignment becomes
-  `col(style="text-align:...")`.
+  Each separator column emits a `<col>`, and its `text-align` style is also
+  applied directly to generated `th`/`td` cells so it works in browser table
+  layout. An explicit cell style is preserved after the generated declaration,
+  allowing the cell to override it.
 - **Per-column attributes** in a separator cell: `---(class="x")---`. Combined with
   alignment (`:---(class="x")---:`), both are emitted; if the attribute is `style`,
   the alignment is merged into it (one `style` attribute, never two).

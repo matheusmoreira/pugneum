@@ -736,6 +736,7 @@ function resolveFootnotes(ast, sources, warnings) {
   // This includes refs inside definition content blocks.
   const numberByName = Object.create(null);
   const refCountByName = Object.create(null);
+  const numberedNames = [];
   let nextNumber = 1;
 
   function resolveRef(node, replace) {
@@ -752,6 +753,7 @@ function resolveFootnotes(ast, sources, warnings) {
     if (!(name in numberByName)) {
       numberByName[name] = nextNumber++;
       refCountByName[name] = 0;
+      numberedNames.push(name);
     }
 
     const num = numberByName[name];
@@ -836,29 +838,20 @@ function resolveFootnotes(ast, sources, warnings) {
     }
   });
 
-  // Resolve refs inside definition blocks, but only for footnotes
-  // transitively reachable from body text. Fixpoint loop: each iteration numbers
-  // refs newly reachable through already-numbered footnotes. `nextNumber` is
-  // monotonic and bounded by the definition count, so the loop terminates; a
-  // footnote is rendered iff it is transitively reachable from body text.
-  const resolved = Object.create(null);
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const name in numberByName) {
-      if (name in resolved) continue;
-      resolved[name] = true;
-      const def = definitions[name];
-      if (def && def.block) {
-        const prevCount = nextNumber;
-        def.block = walk(def.block, function (innerNode, innerReplace) {
-          if (innerNode.type === 'FootnoteRef') {
-            resolveRef(innerNode, innerReplace);
-            return false;
-          }
-        });
-        if (nextNumber > prevCount) changed = true;
-      }
+  // Resolve definition bodies in the exact order their names first receive a
+  // number. Newly reached definitions append to the same queue, so every
+  // reachable body is processed once and numeric-looking names cannot be
+  // reordered by Object key enumeration.
+  for (let index = 0; index < numberedNames.length; index++) {
+    const name = numberedNames[index];
+    const def = definitions[name];
+    if (def && def.block) {
+      def.block = walk(def.block, function (innerNode, innerReplace) {
+        if (innerNode.type === 'FootnoteRef') {
+          resolveRef(innerNode, innerReplace);
+          return false;
+        }
+      });
     }
   }
 
@@ -878,9 +871,7 @@ function resolveFootnotes(ast, sources, warnings) {
   // All refs are now numbered so ordering is correct regardless of source position
   return walk(ast, function before(node, replace) {
     if (node.type === 'Footnotes') {
-      const referenced = Object.keys(numberByName).sort(function (a, b) {
-        return numberByName[a] - numberByName[b];
-      });
+      const referenced = numberedNames;
 
       if (referenced.length === 0) {
         replace([]);

@@ -139,6 +139,14 @@ describe('README examples', () => {
     assert.match(readme, /`PUGNEUM:COMPILATION_LIMIT_EXCEEDED`/);
   });
 
+  test('documents transactional directory publication and ownership', () => {
+    assert.match(readme, /renders every page and optional feed.*staging/s);
+    assert.match(readme, /one rollback-protected regular-file batch/);
+    assert.match(readme, /`\.pugneum-manifest\.json`/);
+    assert.match(readme, /Files not listed in the\nmanifest.*are\npreserved/);
+    assert.match(readme, /malformed, unsupported, or\nunsafe manifest aborts/);
+  });
+
   test('every Pugneum fence compiles', () => {
     assert.strictEqual(pugneumExamples.length, 42);
     for (const example of pugneumExamples) {

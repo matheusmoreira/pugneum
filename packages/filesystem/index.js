@@ -656,6 +656,18 @@ module.exports = function createRootedFilesystem(root) {
       const data = file.data;
       const chunks = file.chunks;
       const options = file.options;
+      const remove = file.remove;
+      if (remove !== undefined && typeof remove !== 'boolean') {
+        throw new TypeError(`files[${index}].remove must be a boolean`);
+      }
+      if (
+        remove === true &&
+        (data !== undefined || chunks !== undefined || options !== undefined)
+      ) {
+        throw new TypeError(
+          `files[${index}] cannot provide data, chunks, or options when remove is true`,
+        );
+      }
       if (chunks !== undefined) {
         if (data !== undefined) {
           throw new TypeError(
@@ -683,6 +695,7 @@ module.exports = function createRootedFilesystem(root) {
         data,
         chunks,
         options,
+        remove: remove === true,
         resolved,
         rootHandle: undefined,
         parent: undefined,
@@ -739,6 +752,8 @@ module.exports = function createRootedFilesystem(root) {
   }
 
   function stageTransactionFile(record) {
+    if (record.remove) return;
+
     runTransactionOperation(record, () => {
       const basename = path.basename(record.resolved.relative);
       const tempName = `.${basename}.${
@@ -820,8 +835,13 @@ module.exports = function createRootedFilesystem(root) {
   function publishTransactionFile(record) {
     verifyTransactionDestination(record);
     runTransactionOperation(record, () => {
-      fs.renameSync(record.tempPath, record.targetPath);
-      record.tempPath = undefined;
+      if (record.remove) {
+        if (record.existing === null) return;
+        fs.unlinkSync(record.targetPath);
+      } else {
+        fs.renameSync(record.tempPath, record.targetPath);
+        record.tempPath = undefined;
+      }
       record.published = true;
     });
   }
@@ -1021,7 +1041,13 @@ module.exports = function createRootedFilesystem(root) {
       closeTransactionHandles(records),
     );
 
-    if (failure) throw failure;
+    // The first directory sync is the commit point. Cleanup/handle failures
+    // after it cannot restore a complete prior set once rollback links begin to
+    // disappear, so reporting the build as failed would violate the caller's
+    // failed-call guarantee. Cleanup is retried above; after a durable commit,
+    // any remaining private artifact is recoverable housekeeping rather than a
+    // failed publication.
+    if (failure && !publicationComplete) throw failure;
   }
 
   return Object.freeze({

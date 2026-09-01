@@ -130,6 +130,12 @@ const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const pgExtension = /\.pg$/;
 const CLI_INPUT_ERROR = 'PUGNEUM:CLI_INPUT_ERROR';
 const CLI_OUTPUT_ERROR = 'PUGNEUM:CLI_OUTPUT_ERROR';
+const CLI_FEED_ERROR = 'PUGNEUM:CLI_FEED_ERROR';
+const OUTPUT_MANIFEST = '.pugneum-manifest.json';
+const OUTPUT_MANIFEST_VERSION = 1;
+const MAX_MANIFEST_BYTES = 16 * 1024 * 1024;
+const MAX_MANIFEST_FILES = 1000000;
+const STAGED_FILE_CHUNK_BYTES = 64 * 1024;
 
 function isPugneum(file) {
   return pgExtension.test(file);
@@ -207,6 +213,10 @@ function handleError(error) {
       console.error(error.message);
       process.exit(EXIT_CODES.INVALID_INPUT);
       break;
+    case CLI_FEED_ERROR:
+      console.error(error.message);
+      process.exit(EXIT_CODES.FEED_ERROR);
+      break;
     default:
       if (typeof error.code === 'string' && error.code.startsWith('PUGNEUM:')) {
         console.error(error.message);
@@ -217,6 +227,12 @@ function handleError(error) {
 }
 
 function rethrowOutputBoundary(error, relative) {
+  if (error.code === filesystemErrors.WRITE_FAILED) {
+    throw outputError(
+      `Could not publish output transaction: ${error.path || relative}`,
+      error,
+    );
+  }
   if (
     error.code === filesystemErrors.PATH_ESCAPE ||
     error.code === filesystemErrors.NOT_REGULAR_FILE ||
@@ -230,6 +246,12 @@ function rethrowOutputBoundary(error, relative) {
     throw outputError;
   }
   throw error;
+}
+
+function outputError(message, cause) {
+  const error = new Error(message, cause ? {cause} : undefined);
+  error.code = CLI_OUTPUT_ERROR;
+  return error;
 }
 
 function rethrowInputBoundary(error, relative) {
@@ -274,17 +296,230 @@ function errorMessage(error) {
   }
 }
 
-function exitWithFeedError(error) {
+function rethrowFeedError(error) {
+  let message;
   if (
     error &&
     typeof error.code === 'string' &&
     error.code.startsWith('PUGNEUM:')
   ) {
-    console.error(errorMessage(error));
+    message = errorMessage(error);
   } else {
-    console.error(`Feed generation failed: ${errorMessage(error)}`);
+    message = `Feed generation failed: ${errorMessage(error)}`;
   }
-  process.exit(EXIT_CODES.FEED_ERROR);
+  const wrapped = new Error(message, {cause: error});
+  wrapped.code = CLI_FEED_ERROR;
+  throw wrapped;
+}
+
+function createStagingDirectory(outputDirectory) {
+  const parent = path.dirname(outputDirectory);
+  const basename = path.basename(outputDirectory) || 'root';
+  return fs.mkdtempSync(path.join(parent, `.${basename}.pugneum-stage-`));
+}
+
+function removeStagingDirectory(directory) {
+  if (directory === undefined) return;
+  try {
+    fs.rmSync(directory, {recursive: true, force: true});
+  } catch (error) {
+    console.warn(
+      `Could not remove Pugneum staging directory '${directory}': ${errorMessage(
+        error,
+      )}`,
+    );
+  }
+}
+
+function stableDirectoryEntries(directory) {
+  return fs
+    .readdirSync(directory, {withFileTypes: true})
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+}
+
+function collectStagedFiles(root) {
+  const files = [];
+
+  function visit(relativeDirectory) {
+    const directory = path.join(root, relativeDirectory);
+    const entries = stableDirectoryEntries(directory);
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      const relative = path.join(relativeDirectory, entry.name);
+      if (entry.isDirectory()) {
+        visit(relative);
+      } else if (entry.isFile()) {
+        files.push(relative);
+      } else {
+        throw outputError(
+          `Staged output is not a regular file or directory: ${relative}`,
+        );
+      }
+    }
+  }
+
+  visit('');
+  return files.sort();
+}
+
+function manifestKey(filename) {
+  return process.platform === 'win32' ? filename.toLowerCase() : filename;
+}
+
+function validateManifestFiles(files) {
+  if (!Array.isArray(files) || files.length > MAX_MANIFEST_FILES) {
+    throw outputError(
+      `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': files must be an array of at most ${MAX_MANIFEST_FILES} paths`,
+    );
+  }
+
+  const destinations = new Set();
+  return files.map((filename, index) => {
+    const normalized =
+      typeof filename === 'string' ? path.normalize(filename) : undefined;
+    if (
+      typeof filename !== 'string' ||
+      filename === '' ||
+      filename.includes('\0') ||
+      path.isAbsolute(filename) ||
+      normalized !== filename ||
+      normalized === '.' ||
+      normalized === '..' ||
+      normalized.startsWith('..' + path.sep) ||
+      manifestKey(normalized) === manifestKey(OUTPUT_MANIFEST)
+    ) {
+      throw outputError(
+        `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': files[${index}] is not a canonical descendant path`,
+      );
+    }
+
+    const key = manifestKey(normalized);
+    if (destinations.has(key)) {
+      throw outputError(
+        `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': files[${index}] duplicates another destination`,
+      );
+    }
+    destinations.add(key);
+    return normalized;
+  });
+}
+
+function readOutputManifest(outputFiles) {
+  let source;
+  try {
+    source = outputFiles.readFile(OUTPUT_MANIFEST, {
+      encoding: 'utf8',
+      maxBytes: MAX_MANIFEST_BYTES,
+    });
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    if (error.code === filesystemErrors.LIMIT_EXCEEDED) {
+      throw outputError(
+        `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': file exceeds ${MAX_MANIFEST_BYTES} bytes`,
+        error,
+      );
+    }
+    rethrowOutputBoundary(error, OUTPUT_MANIFEST);
+  }
+
+  let manifest;
+  try {
+    manifest = JSON.parse(source);
+  } catch (error) {
+    throw outputError(
+      `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': ${errorMessage(
+        error,
+      )}`,
+      error,
+    );
+  }
+  if (
+    manifest === null ||
+    typeof manifest !== 'object' ||
+    Array.isArray(manifest) ||
+    manifest.version !== OUTPUT_MANIFEST_VERSION
+  ) {
+    throw outputError(
+      `Invalid Pugneum output manifest '${OUTPUT_MANIFEST}': expected version ${OUTPUT_MANIFEST_VERSION}`,
+    );
+  }
+  return validateManifestFiles(manifest.files);
+}
+
+function serializeOutputManifest(files, compilation) {
+  const source =
+    JSON.stringify(
+      {version: OUTPUT_MANIFEST_VERSION, files: validateManifestFiles(files)},
+      null,
+      2,
+    ) + '\n';
+  const bytes = Buffer.byteLength(source, 'utf8');
+  if (bytes > MAX_MANIFEST_BYTES) {
+    throw outputError(
+      `Pugneum output manifest exceeds ${MAX_MANIFEST_BYTES} bytes`,
+    );
+  }
+  compilation.charge(
+    'outputBytes',
+    bytes,
+    {},
+    'serializing the output manifest',
+  );
+  return source;
+}
+
+function* stagedFileChunks(filename) {
+  let fd;
+  try {
+    fd = fs.openSync(
+      filename,
+      fs.constants.O_RDONLY |
+        (fs.constants.O_NOFOLLOW || 0) |
+        (fs.constants.O_NONBLOCK || 0),
+    );
+    if (!fs.fstatSync(fd).isFile()) {
+      throw outputError(`Staged output is not a regular file: ${filename}`);
+    }
+    const buffer = Buffer.allocUnsafe(STAGED_FILE_CHUNK_BYTES);
+    let bytesRead;
+    do {
+      bytesRead = fs.readSync(fd, buffer, 0, buffer.length, null);
+      if (bytesRead > 0) yield buffer.subarray(0, bytesRead);
+    } while (bytesRead > 0);
+  } finally {
+    if (fd !== undefined) fs.closeSync(fd);
+  }
+}
+
+function publishStagedBuild(stagingDirectory, outputFiles, compilation) {
+  const files = collectStagedFiles(stagingDirectory);
+  const priorFiles = readOutputManifest(outputFiles);
+  const current = new Set(files.map(manifestKey));
+  const stale = priorFiles
+    .filter((filename) => !current.has(manifestKey(filename)))
+    .sort();
+  const manifest = serializeOutputManifest(files, compilation);
+
+  try {
+    for (let i = 0; i < files.length; i++) {
+      outputFiles.ensureDirectory(path.dirname(files[i]));
+    }
+    const transaction = files.map((filename) => ({
+      path: filename,
+      chunks: stagedFileChunks(path.join(stagingDirectory, filename)),
+    }));
+    for (let i = 0; i < stale.length; i++) {
+      transaction.push({path: stale[i], remove: true});
+    }
+    transaction.push({
+      path: OUTPUT_MANIFEST,
+      data: manifest,
+      options: {encoding: 'utf8'},
+    });
+    outputFiles.writeFilesTransaction(transaction);
+  } catch (error) {
+    rethrowOutputBoundary(error, error.path || OUTPUT_MANIFEST);
+  }
 }
 
 // Declared outside the try so the catch can still surface diagnostics
@@ -302,7 +537,7 @@ function flushWarnings() {
   pg.emitWarnings(pgOptions.warnings);
 }
 
-try {
+function build() {
   const {
     baseDirectory,
     inputDirectory,
@@ -335,9 +570,25 @@ try {
     !outputRelativeToInput.startsWith('..' + path.sep)
       ? realOutputDir
       : undefined;
+
+  // Freeze the source inventory before creating a sibling staging directory.
+  // This keeps a nested output/staging layout from becoming input during the
+  // same build and makes the later compile order deterministic.
+  const inputs = [];
   processDirectory(
     resolvedInputDir,
-    function compilePugneumAndSave(input) {
+    (input) => inputs.push(input),
+    undefined,
+    nestedOutputDir,
+  );
+
+  let stagingDirectory;
+  try {
+    stagingDirectory = createStagingDirectory(realOutputDir);
+    const stagingFiles = createRootedFilesystem(stagingDirectory);
+
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
       // Compute the relative path against the SAME base the walk uses
       // (resolvedInputDir, the realpath). Using the raw inputDirectory here would
       // diverge whenever the input dir is a symlink (or has a symlinked parent
@@ -357,52 +608,68 @@ try {
         Object.assign({}, pgOptions, {filename: input}),
       );
       try {
-        outputFiles.ensureDirectory(path.dirname(outputPath));
-        outputFiles.writeFileAtomic(outputPath, output, {encoding: 'utf8'});
+        stagingFiles.ensureDirectory(path.dirname(outputPath));
+        stagingFiles.writeFileAtomic(outputPath, output, {encoding: 'utf8'});
       } catch (error) {
-        rethrowOutputBoundary(error, relative);
-      }
-    },
-    undefined,
-    nestedOutputDir,
-  );
-
-  // Surface non-fatal diagnostics collected across the whole build once.
-  flushWarnings();
-
-  if (feeds && feeds.enabled !== false) {
-    // pugneum-feed is an optional peer dependency. Detect its absence with an
-    // isolated resolution probe: only failure here means "not installed". A
-    // MODULE_NOT_FOUND raised while loading a present package can instead name
-    // one of its transitive dependencies and is handled as a feed failure.
-    let feedAvailable = true;
-    try {
-      require.resolve('pugneum-feed');
-    } catch (resolveError) {
-      if (resolveError && resolveError.code === 'MODULE_NOT_FOUND') {
-        feedAvailable = false;
-        console.warn('pugneum-feed is not installed, skipping feed generation');
-      } else {
-        throw resolveError;
+        rethrowOutputBoundary(error, outputPath);
       }
     }
 
-    if (feedAvailable) {
+    // Surface non-fatal diagnostics collected across the whole build once.
+    flushWarnings();
+
+    if (feeds && feeds.enabled !== false) {
+      // pugneum-feed is an optional peer dependency. Detect its absence with an
+      // isolated resolution probe: only failure here means "not installed". A
+      // MODULE_NOT_FOUND raised while loading a present package can instead name
+      // one of its transitive dependencies and is handled as a feed failure.
+      let feedAvailable = true;
       try {
-        const generateFeeds = require('pugneum-feed');
-        generateFeeds({
-          compilationContext: pgOptions.compilationContext,
-          outputDirectory: outputDirectory,
-          feeds: feeds,
-        });
-      } catch (feedError) {
-        // Loading a present package can fail on initialization or a transitive
-        // dependency just as invocation can. Both are feed failures, while
-        // only the resolution probe above represents an absent optional peer.
-        exitWithFeedError(feedError);
+        require.resolve('pugneum-feed');
+      } catch (resolveError) {
+        if (resolveError && resolveError.code === 'MODULE_NOT_FOUND') {
+          feedAvailable = false;
+          console.warn(
+            'pugneum-feed is not installed, skipping feed generation',
+          );
+        } else {
+          throw resolveError;
+        }
+      }
+
+      if (feedAvailable) {
+        try {
+          const generateFeeds = require('pugneum-feed');
+          generateFeeds({
+            compilationContext: pgOptions.compilationContext,
+            outputDirectory: stagingDirectory,
+            writeDirectory: stagingDirectory,
+            feeds: feeds,
+          });
+        } catch (feedError) {
+          // Loading a present package can fail on initialization or a transitive
+          // dependency just as invocation can. Both are feed failures, while
+          // only the resolution probe above represents an absent optional peer.
+          rethrowFeedError(feedError);
+        }
       }
     }
+
+    // Nothing under the published output root changes until page rendering and
+    // optional feed generation have both completed. The final transaction also
+    // replaces the ownership manifest and removes only its now-stale paths.
+    publishStagedBuild(
+      stagingDirectory,
+      outputFiles,
+      pgOptions.compilationContext,
+    );
+  } finally {
+    removeStagingDirectory(stagingDirectory);
   }
+}
+
+try {
+  build();
 } catch (error) {
   // Surface warnings collected from files that built before this error, so a
   // later hard failure does not discard earlier diagnostics. flushWarnings is

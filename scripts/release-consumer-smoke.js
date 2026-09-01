@@ -242,6 +242,16 @@ function smokeLeaves() {
     files.ensureDirectory('nested');
     files.writeFileAtomic('nested/page.html', '<p>ok</p>', 'utf8');
     assert.strictEqual(files.readFile('nested/page.html', 'utf8'), '<p>ok</p>');
+    fs.writeFileSync(path.join(root, 'stale.html'), 'stale');
+    files.writeFilesTransaction([
+      {path: 'nested/page.html', data: '<p>new</p>', options: 'utf8'},
+      {path: 'stale.html', remove: true},
+    ]);
+    assert.strictEqual(
+      files.readFile('nested/page.html', 'utf8'),
+      '<p>new</p>',
+    );
+    assert.ok(!fs.existsSync(path.join(root, 'stale.html')));
     assertErrorCode(
       () => files.readFile('../outside', 'utf8'),
       createRootedFilesystem.ERROR_CODES.PATH_ESCAPE,
@@ -807,6 +817,14 @@ function smokeFacade(feedPresent) {
       `CLI failed: ${result.stdout || ''}${result.stderr || ''}`,
     );
     assert.ok(fs.existsSync(path.join(project.outputDirectory, 'index.html')));
+    const manifest = JSON.parse(
+      fs.readFileSync(
+        path.join(project.outputDirectory, '.pugneum-manifest.json'),
+        'utf8',
+      ),
+    );
+    assert.strictEqual(manifest.version, 1);
+    assert.ok(manifest.files.includes('index.html'));
     if (feedPresent) {
       assert.ok(fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
       assert.ok(fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));

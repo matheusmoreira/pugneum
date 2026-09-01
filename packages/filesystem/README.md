@@ -12,6 +12,7 @@ files.writeFileAtomic('atom.xml', xml, 'utf8');
 files.writeFilesTransaction([
   {path: 'atom.xml', data: atomXml, options: 'utf8'},
   {path: 'rss.xml', data: rssXml, options: 'utf8'},
+  {path: 'obsolete.xml', remove: true},
 ]);
 ```
 
@@ -28,7 +29,7 @@ The returned frozen object exposes:
 - `writeFileAtomic(relative, data, options)`, which publishes one regular file;
   and
 - `writeFilesTransaction(files)`, which stages and publishes a set of distinct
-  regular files with rollback on failure.
+  regular-file writes and removals with rollback on failure.
 
 The module also exports `ERROR_CODES` and `RootedFilesystemError`. Callers
 should route failures by the stable codes `PATH_ESCAPE`, `NOT_REGULAR_FILE`,
@@ -65,14 +66,19 @@ destination checks without publishing.
 
 `writeFilesTransaction` validates every distinct destination before creating a
 temporary file, then writes and syncs all temporary siblings before changing a
-final name. Existing destinations are preserved with private same-directory
-rollback links. If a later final rename fails, already-published fresh files
-are removed and prior files are restored before the error returns. Known
-temporary and rollback names are cleaned up on both success and failure.
-Each file record supplies `path`, `options`, and either whole-file `data` or an
-iterable of `chunks`. Chunk iterables are consumed one file at a time, allowing
-large outputs to be staged without retaining every complete document in
-memory.
+final name or removing an existing one. Existing destinations are preserved
+with private same-directory rollback links. If a later rename or removal
+fails, already-published fresh files are removed and replaced/removed prior
+files are restored before the error returns. The first successful directory
+sync is the commit point. Cleanup is retried after that point, and a cleanup or
+handle-close error cannot turn a durable publication into a reported failure
+that no longer has a complete prior set to restore. Known temporary and
+rollback names are cleaned up on both success and failure. A write record
+supplies `path`, `options`, and either whole-file `data` or an iterable of
+`chunks`; a removal record supplies `path` and `remove: true`. Removing an
+already absent path is a checked no-op. Chunk iterables are consumed one file
+at a time, allowing large outputs to be staged without retaining every
+complete document in memory.
 
 ## Concurrency and platform boundary
 

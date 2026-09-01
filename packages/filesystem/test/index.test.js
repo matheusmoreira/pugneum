@@ -698,6 +698,74 @@ describe('rooted transactional publication', () => {
     ]);
   });
 
+  test('publishes writes and removals as one complete set', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'stale.html'), 'stale');
+    fs.writeFileSync(path.join(root, 'asset.css'), 'asset');
+    const files = createRootedFilesystem(root);
+
+    files.writeFilesTransaction([
+      {path: 'fresh.html', data: 'fresh'},
+      {path: 'stale.html', remove: true},
+      {path: 'already-absent.html', remove: true},
+    ]);
+
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'asset.css',
+      'fresh.html',
+    ]);
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'asset.css'), 'utf8'),
+      'asset',
+    );
+  });
+
+  test('does not report a durable commit as failed when cleanup is retried', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'index.html'), 'old');
+    const files = createRootedFilesystem(root);
+    const originalUnlinkSync = fs.unlinkSync;
+    let cleanupFailures = 0;
+    fs.unlinkSync = function (filename) {
+      if (
+        cleanupFailures === 0 &&
+        path.basename(filename).endsWith('.rollback')
+      ) {
+        cleanupFailures++;
+        const error = new Error('injected cleanup failure');
+        error.code = 'EIO';
+        throw error;
+      }
+      return Reflect.apply(originalUnlinkSync, this, arguments);
+    };
+    t.after(() => {
+      fs.unlinkSync = originalUnlinkSync;
+    });
+
+    files.writeFilesTransaction([{path: 'index.html', data: 'new'}]);
+
+    assert.strictEqual(cleanupFailures, 1);
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'index.html'), 'utf8'),
+      'new',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root), ['index.html']);
+  });
+
+  test('rejects data on a removal before publication', (t) => {
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+
+    assert.throws(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'stale.html', remove: true, data: 'ambiguous'},
+        ]),
+      /cannot provide data.*when remove is true/,
+    );
+    assert.deepStrictEqual(fs.readdirSync(root), []);
+  });
+
   test('syncs both staged files before committing directory metadata', (t) => {
     if (process.platform === 'win32') {
       t.skip('Node does not expose writable Windows directory handles');
@@ -866,6 +934,37 @@ describe('rooted transactional publication', () => {
     assert.deepStrictEqual(fs.readdirSync(root).sort(), [
       'atom.xml',
       'rss.xml',
+    ]);
+  });
+
+  test('a later commit failure restores an earlier removal', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'stale.html'), 'stale');
+    fs.writeFileSync(path.join(root, 'manifest.json'), 'old manifest');
+    const files = createRootedFilesystem(root);
+    const didFail = failPublicationRename(t, 'manifest.json');
+
+    assertWriteFailed(
+      () =>
+        files.writeFilesTransaction([
+          {path: 'stale.html', remove: true},
+          {path: 'manifest.json', data: 'new manifest'},
+        ]),
+      'manifest.json',
+    );
+
+    assert.ok(didFail());
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'stale.html'), 'utf8'),
+      'stale',
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'),
+      'old manifest',
+    );
+    assert.deepStrictEqual(fs.readdirSync(root).sort(), [
+      'manifest.json',
+      'stale.html',
     ]);
   });
 

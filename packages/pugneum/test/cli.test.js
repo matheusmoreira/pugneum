@@ -10,6 +10,7 @@ const DomUtils = htmlparser2.DomUtils;
 
 const CLI = path.join(__dirname, '..', 'cli.js');
 const NO_FEEDS = Symbol('no feeds configuration');
+const OUTPUT_MANIFEST = '.pugneum-manifest.json';
 
 function childEnvironment(overrides) {
   return Object.assign({}, process.env, {HOME: os.tmpdir()}, overrides || {});
@@ -62,6 +63,21 @@ function writeConfiguration(directory, overrides) {
   fs.writeFileSync(
     path.join(directory, 'pugneum.json'),
     JSON.stringify(config),
+  );
+}
+
+function readOutputManifest(outputDirectory) {
+  return JSON.parse(
+    fs.readFileSync(path.join(outputDirectory, OUTPUT_MANIFEST), 'utf8'),
+  );
+}
+
+function assertNoStagingDirectory(projectDirectory) {
+  assert.deepStrictEqual(
+    fs
+      .readdirSync(projectDirectory)
+      .filter((name) => /^\.out\.pugneum-stage-/.test(name)),
+    [],
   );
 }
 
@@ -179,6 +195,31 @@ function writeFeedLoadFailure(directory) {
       '    throw error;',
       '  }',
       '  return Reflect.apply(originalLoad, this, arguments);',
+      '};',
+    ].join('\n'),
+  );
+  return preload;
+}
+
+function writeManifestCommitFailure(directory) {
+  const preload = path.join(directory, 'fail-manifest-commit.cjs');
+  fs.writeFileSync(
+    preload,
+    [
+      "const fs = require('node:fs');",
+      "const path = require('node:path');",
+      'const originalRename = fs.renameSync;',
+      'let failed = false;',
+      'fs.renameSync = function (source, destination) {',
+      '  if (!failed &&',
+      `      path.basename(destination) === '${OUTPUT_MANIFEST}' &&`,
+      "      path.basename(source).endsWith('.temporary')) {",
+      '    failed = true;',
+      "    const error = new Error('injected manifest commit failure');",
+      "    error.code = 'EIO';",
+      '    throw error;',
+      '  }',
+      '  return Reflect.apply(originalRename, this, arguments);',
       '};',
     ].join('\n'),
   );
@@ -761,6 +802,220 @@ describe('CLI', () => {
     assert.strictEqual(result.status, 1);
     assert.match(result.stderr, /Output path escapes output directory/);
     assert.ok(fs.lstatSync(fifo).isFIFO());
+  });
+
+  test('a later template failure leaves every published page and manifest unchanged', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(path.join(tmp, 'src', 'a.pg'), 'p old a');
+    fs.writeFileSync(path.join(tmp, 'src', 'z.pg'), 'p old z');
+    writeConfiguration(tmp);
+    run([], {cwd: tmp});
+
+    const oldA = fs.readFileSync(path.join(tmp, 'out', 'a.html'), 'utf8');
+    const oldZ = fs.readFileSync(path.join(tmp, 'out', 'z.html'), 'utf8');
+    const oldManifest = fs.readFileSync(
+      path.join(tmp, 'out', OUTPUT_MANIFEST),
+      'utf8',
+    );
+    fs.writeFileSync(path.join(tmp, 'src', 'a.pg'), 'p new a');
+    fs.writeFileSync(path.join(tmp, 'src', 'z.pg'), 'div(>=broken)');
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 6);
+    assert.strictEqual(
+      fs.readFileSync(path.join(tmp, 'out', 'a.html'), 'utf8'),
+      oldA,
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(tmp, 'out', 'z.html'), 'utf8'),
+      oldZ,
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(tmp, 'out', OUTPUT_MANIFEST), 'utf8'),
+      oldManifest,
+    );
+    assertNoStagingDirectory(tmp);
+  });
+
+  test('a feed failure leaves prior pages, feeds, and manifest unchanged', (t) => {
+    const project = makeFeedProject(t, {});
+    run([], {cwd: project.tmp});
+    const names = [
+      'index.html',
+      path.join('articles', 'post.html'),
+      'atom.xml',
+      'rss.xml',
+      OUTPUT_MANIFEST,
+    ];
+    const previous = new Map(
+      names.map((name) => [
+        name,
+        fs.readFileSync(path.join(project.outputDirectory, name)),
+      ]),
+    );
+    const indexPath = path.join(project.tmp, 'src', 'index.pg');
+    fs.writeFileSync(
+      indexPath,
+      fs
+        .readFileSync(indexPath, 'utf8')
+        .replace('    base(href="https://example.test/")\n', '')
+        .replace('Example Journal', 'Changed Journal'),
+    );
+
+    const result = runExpectFail([], {cwd: project.tmp});
+
+    assert.strictEqual(result.status, 7);
+    for (const [name, bytes] of previous) {
+      assert.deepStrictEqual(
+        fs.readFileSync(path.join(project.outputDirectory, name)),
+        bytes,
+      );
+    }
+    assertNoStagingDirectory(project.tmp);
+  });
+
+  test('a successful build removes only stale manifest-owned pages and feeds', (t) => {
+    const project = makeFeedProject(t, {url: 'https://example.test/'});
+    const asset = path.join(project.outputDirectory, 'site.css');
+    fs.writeFileSync(asset, 'user asset');
+    run([], {cwd: project.tmp});
+
+    fs.unlinkSync(path.join(project.tmp, 'src', 'articles', 'post.pg'));
+    fs.writeFileSync(path.join(project.tmp, 'src', 'about.pg'), 'p About');
+    writeConfiguration(project.tmp, {feeds: {enabled: false}});
+    run([], {cwd: project.tmp});
+
+    assert.ok(fs.existsSync(path.join(project.outputDirectory, 'index.html')));
+    assert.ok(fs.existsSync(path.join(project.outputDirectory, 'about.html')));
+    assert.ok(
+      !fs.existsSync(
+        path.join(project.outputDirectory, 'articles', 'post.html'),
+      ),
+    );
+    assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'atom.xml')));
+    assert.ok(!fs.existsSync(path.join(project.outputDirectory, 'rss.xml')));
+    assert.strictEqual(fs.readFileSync(asset, 'utf8'), 'user asset');
+    assert.deepStrictEqual(readOutputManifest(project.outputDirectory), {
+      version: 1,
+      files: ['about.html', 'index.html'],
+    });
+    assertNoStagingDirectory(project.tmp);
+  });
+
+  test('an invalid ownership manifest aborts without replacing it or output', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p old');
+    writeConfiguration(tmp);
+    run([], {cwd: tmp});
+    const outputPath = path.join(tmp, 'out', 'page.html');
+    const oldOutput = fs.readFileSync(outputPath, 'utf8');
+    const invalidManifest = '{not valid json';
+    fs.writeFileSync(path.join(tmp, 'out', OUTPUT_MANIFEST), invalidManifest);
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p new');
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /Invalid Pugneum output manifest/);
+    assert.strictEqual(fs.readFileSync(outputPath, 'utf8'), oldOutput);
+    assert.strictEqual(
+      fs.readFileSync(path.join(tmp, 'out', OUTPUT_MANIFEST), 'utf8'),
+      invalidManifest,
+    );
+    assertNoStagingDirectory(tmp);
+  });
+
+  test('an unsafe manifest path cannot delete outside the output root', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p old');
+    fs.writeFileSync(path.join(tmp, 'sentinel.txt'), 'outside');
+    writeConfiguration(tmp);
+    run([], {cwd: tmp});
+    const oldOutput = fs.readFileSync(path.join(tmp, 'out', 'page.html'));
+    fs.writeFileSync(
+      path.join(tmp, 'out', OUTPUT_MANIFEST),
+      JSON.stringify({version: 1, files: ['../sentinel.txt']}),
+    );
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p new');
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /canonical descendant path/);
+    assert.deepStrictEqual(
+      fs.readFileSync(path.join(tmp, 'out', 'page.html')),
+      oldOutput,
+    );
+    assert.strictEqual(
+      fs.readFileSync(path.join(tmp, 'sentinel.txt'), 'utf8'),
+      'outside',
+    );
+    assertNoStagingDirectory(tmp);
+  });
+
+  test('the ownership manifest name is reserved from feed output', (t) => {
+    const project = makeFeedProject(t, {
+      url: 'https://example.test/',
+      atom: OUTPUT_MANIFEST,
+      rss: 'rss.xml',
+    });
+
+    const result = runExpectFail([], {cwd: project.tmp});
+
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /canonical descendant path/);
+    assert.deepStrictEqual(fs.readdirSync(project.outputDirectory), []);
+    assertNoStagingDirectory(project.tmp);
+  });
+
+  test('a final manifest commit failure rolls back writes and stale removals', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p old page');
+    fs.writeFileSync(path.join(tmp, 'src', 'stale.pg'), 'p old stale');
+    writeConfiguration(tmp);
+    run([], {cwd: tmp});
+    const oldPage = fs.readFileSync(path.join(tmp, 'out', 'page.html'));
+    const oldStale = fs.readFileSync(path.join(tmp, 'out', 'stale.html'));
+    const oldManifest = fs.readFileSync(path.join(tmp, 'out', OUTPUT_MANIFEST));
+
+    fs.writeFileSync(path.join(tmp, 'src', 'page.pg'), 'p new page');
+    fs.unlinkSync(path.join(tmp, 'src', 'stale.pg'));
+    fs.writeFileSync(path.join(tmp, 'src', 'fresh.pg'), 'p fresh');
+    const preload = writeManifestCommitFailure(tmp);
+
+    const result = spawnCli([], {cwd: tmp, preload});
+
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /Could not publish output transaction/);
+    assert.deepStrictEqual(
+      fs.readFileSync(path.join(tmp, 'out', 'page.html')),
+      oldPage,
+    );
+    assert.deepStrictEqual(
+      fs.readFileSync(path.join(tmp, 'out', 'stale.html')),
+      oldStale,
+    );
+    assert.ok(!fs.existsSync(path.join(tmp, 'out', 'fresh.html')));
+    assert.deepStrictEqual(
+      fs.readFileSync(path.join(tmp, 'out', OUTPUT_MANIFEST)),
+      oldManifest,
+    );
+    assert.deepStrictEqual(
+      fs
+        .readdirSync(path.join(tmp, 'out'))
+        .filter((name) => /\.(?:temporary|rollback)$/.test(name)),
+      [],
+    );
+    assertNoStagingDirectory(tmp);
   });
 
   test('a feed-generation error exits cleanly with the feed exit code', (t) => {

@@ -251,8 +251,22 @@ extension to `.html`. Nested symlink entries are skipped, as are files without
 the `.pg` extension. A configured symlinked input root itself is followed. If
 the output directory is inside the input tree, that output subtree is excluded
 from traversal. A `.pg` entry must be a regular file; a special file such as a
-FIFO is rejected without being opened. Existing regular output files are
-replaced atomically; stale files for removed templates are not deleted.
+FIFO is rejected without being opened.
+
+Directory publication is transactional across pages and feeds. Pugneum first
+renders every page and optional feed into a private sibling staging directory;
+the published output remains untouched until all generation succeeds. It then
+commits the complete file set through one rollback-protected regular-file batch.
+A later commit failure restores replaced and removed files, removes fresh
+destinations, and leaves the previous manifest unchanged.
+
+Successful builds write `.pugneum-manifest.json`, a reserved, versioned list of
+paths owned by Pugneum. On the next successful build, paths that disappeared
+from that list are removed in the same transaction. Files not listed in the
+manifest—such as copied stylesheets, images, or other user-managed assets—are
+preserved. Missing manifest paths are harmless; a malformed, unsupported, or
+unsafe manifest aborts publication rather than guessing which files are owned.
+The manifest and staged files are bounded by the shared compilation limits.
 
 `pugneum --help` (or `-h`) prints usage, and `pugneum --version` (or `-v`)
 prints the installed version. Successful compilation is silent except for

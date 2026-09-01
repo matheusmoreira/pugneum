@@ -8,6 +8,7 @@ function render(source, filename, options) {
     source,
     Object.assign(
       {
+        basedir: path.join(__dirname, '..'),
         filename: path.join(__dirname, filename || 'test.pg'),
         warnings: [],
       },

@@ -54,11 +54,14 @@ function renderPugneum(string, options) {
   // If the caller supplies a warnings array we collect into it and let them
   // surface the diagnostics; otherwise we own them and emit them ourselves so
   // nothing fails silently.
-  const normalized = normalizeOptions(options, {
-    source: string,
-    lex: lex,
-    parse: parse,
-  });
+  const normalized = normalizeOptions(options, {lex: lex, parse: parse});
+  if (typeof string !== 'string') {
+    throw new Error(
+      'Expected source code to be a string but got "' + typeof string + '"',
+    );
+  }
+  string = load.decodeSource(string, normalized.options.filename);
+  normalized.options.source = string;
   const ownsWarnings = normalized.ownsWarnings;
   options = normalized.options;
   if (ownsWarnings) options.warnings = [];
@@ -195,7 +198,7 @@ function emitWarnings(warnings) {
 function renderPugneumFile(filename, options) {
   options = normalizeOptions(options).options;
   filename = resolve(filename);
-  const source = fs.readFileSync(filename, 'utf8');
+  const source = load.decodeSource(fs.readFileSync(filename), filename);
   options.filename = filename;
   return renderPugneum(source, options);
 }

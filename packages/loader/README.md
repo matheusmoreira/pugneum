@@ -11,12 +11,14 @@ For every `Include`, `RawInclude`, and `Extends` node it populates the node's
    with the default resolver; when `basedir` checks a default or custom
    non-library result, this is the checked, symlink-resolved target)
  - `raw` — the file contents as a `Buffer` (genuine bytes)
- - `str` — the file contents decoded as UTF-8 text (`raw.toString('utf8')`)
+ - `str` — the file contents decoded as strictly valid UTF-8 text
 
 For a filtered `RawInclude`, `str` is a lazy view: it is decoded on first
 access. An innermost binary include filter can therefore consume `raw` without
-allocating a duplicate UTF-8 string. Unfiltered raw includes and structured
-Pugneum dependencies are decoded immediately.
+allocating or validating a UTF-8 string. If that text view is requested,
+malformed UTF-8 and disallowed controls are rejected like any other text
+source. Unfiltered raw includes and structured Pugneum dependencies are
+decoded and validated immediately.
 
 For `Include` and `Extends` (pugneum source files, as opposed to `RawInclude`,
 which is verbatim text) it also lexes and parses the file and recursively loads
@@ -54,11 +56,18 @@ cloned, so callers must use the return value).
    collapse them across a build
  - `canonicalize` (function): returns the stable identity used for cycle
    detection. Filesystem loading uses real paths by default; a custom resolver
-   without `basedir` defaults to its returned string unchanged, so virtual
-   loaders can provide this hook when aliases need to share an identity
+   under an explicit or inferred containment root does too. A trusted custom
+   resolver using the uncontained opt-out defaults to its returned string
+   unchanged, so virtual loaders can provide this hook when aliases need to
+   share an identity
  - `basedir` (string): the project root. **Required** for absolute references,
-   and it is the containment boundary for relative references (see
-   "Path containment" below)
+   and an explicit containment boundary for relative references. When omitted,
+   the entry file's directory is the relative-reference boundary (see "Path
+   containment" below)
+ - `allowUncontainedPathsForTrustedInput` (boolean): explicit opt-out from the
+   inferred entry-directory boundary. It defaults to `false`, may be `true`
+   only when `basedir` is omitted, and is appropriate only when every template
+   path and custom resolver result is trusted
  - `maxLoadDepth` (number): maximum include/extends recursion depth
    (an integer from `0` through `256`, default `256`); a deeper non-cyclic
    chain throws `LOAD_DEPTH_EXCEEDED` before resolving or reading that edge
@@ -102,7 +111,20 @@ loader normalizes every accepted result to the `Buffer` exposed as `file.raw`.
 Use a `Buffer` or `Uint8Array` when byte fidelity matters. A returned string is
 UTF-8 encoded and cannot recover bytes that were already decoded incorrectly.
 
-## Path containment (`basedir`)
+### `load.decodeSource(value, filename?)`
+
+Decodes a `Buffer` or `Uint8Array` as fatal UTF-8, or validates an existing
+string, and returns the source string. `filename` is optional diagnostic
+context. The function rejects malformed byte sequences with
+`PUGNEUM:INVALID_UTF8` and rejects C0 controls other than tab, LF, and CR, plus
+DEL, with `PUGNEUM:DISALLOWED_SOURCE_CONTROL`.
+
+These diagnostics expose a zero-based `byteOffset` in addition to their
+one-based `line` and `column`; the byte offset also appears in the versioned
+JSON location. Invalid UTF-8 is never converted to U+FFFD. Tabs and LF/CR/CRLF,
+a leading UTF-8 BOM, and ordinary Unicode text remain valid.
+
+## Path containment
 
 When `basedir` is supplied, relative and absolute `include`/`extends`
 references are contained to that project root and may not escape it:
@@ -119,12 +141,20 @@ cannot be used to escape. The checked canonical target is the path passed to
 `read`, preventing a later swap of the original symlink from redirecting that
 read.
 
-When `basedir` is omitted, an absolute reference is rejected, but relative
-references have **no containment boundary** and may use `..` beyond the entry
-file's directory. That mode is suitable only for trusted templates. Set
-`basedir` for project confinement. This is path-based protection for ordinary
-local builds, not a descriptor-based sandbox against another process changing
-the canonical target or one of its ancestors during compilation.
+When `basedir` is omitted, an absolute reference is still rejected and the
+entry file's directory becomes the stable boundary for every relative load in
+that compilation. A relative path may descend within that directory but may
+not use `..`, a symlink, or a custom resolver result to leave it. Installed
+`@`-prefixed libraries remain available through their independently checked
+package roots.
+
+The only opt-out is
+`allowUncontainedPathsForTrustedInput: true`. Its name is intentionally
+explicit: it restores unrestricted relative/custom resolution only for callers
+that trust all authored paths and resolver results. It cannot be combined with
+`basedir`. Containment is path-based protection for ordinary local builds, not
+a descriptor-based sandbox against another process changing the canonical
+target or one of its ancestors during compilation.
 
 The same `basedir` check is applied after a custom resolver returns a
 non-library path. A custom resolver's `@`-prefixed library results are treated
@@ -175,6 +205,9 @@ The loader throws coded `PUGNEUM:` errors that callers may discriminate on via
  - `PATH_ESCAPE` — a reference that escapes the project root or package dir
  - `CIRCULAR_DEPENDENCY` — an `include`/`extends` cycle
  - `LOAD_DEPTH_EXCEEDED` — the include/extends chain exceeds `maxLoadDepth`
+ - `INVALID_UTF8` — a text source contains a malformed UTF-8 byte sequence
+ - `DISALLOWED_SOURCE_CONTROL` — a text source contains a forbidden C0/DEL
+   control; tab and line-ending controls remain valid
  - `INVALID_LIBRARY_PATH` — a malformed `@`-prefixed library reference
  - `PACKAGE_NOT_FOUND` — an `@`-prefixed package that is not installed
  - `LIBRARY_PATH_UNAVAILABLE` — the package exists but its requested subpath

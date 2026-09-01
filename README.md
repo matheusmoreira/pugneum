@@ -710,11 +710,11 @@ result. Ordinary block filters additionally support `pugneum` and `syntax`
 output types.
 
 Paths starting with `/` are resolved from `basedir`.
-Relative paths resolve from the including file's directory and, when
-`basedir` is set, must remain inside it. The CLI always supplies that boundary.
-Programmatic `render`/`renderFile` calls should set `basedir` explicitly when
-templates are not fully trusted: without it, relative paths are unconfined and
-may traverse above the entry file's directory.
+Relative paths resolve from the including file's directory. They must remain
+inside `basedir` when it is set, or inside the entry file's directory when it
+is omitted. The CLI always supplies its input/build boundary. Trusted callers
+that intentionally need unrestricted relative paths must opt out explicitly
+with `allowUncontainedPathsForTrustedInput: true`.
 
 Include from npm packages with `@`:
 
@@ -1029,17 +1029,20 @@ const fileHtml = pg.renderFile('page.pg');
 ```
 
 `render(source, options)` and `renderFile(filename, options)` synchronously
-return an HTML string. `renderFile` reads the entry file as UTF-8 and supplies
-its absolute filename to the compiler. Compiler failures use coded Pugneum
-errors, invalid public argument types use `TypeError`, and an entry-file read
-retains its Node.js filesystem error.
+return an HTML string. `renderFile` decodes the entry file as fatal UTF-8 and
+supplies its absolute filename to the compiler. Text sources reject malformed
+UTF-8 and ASCII controls other than tab, LF, and CR; invalid input cannot be
+silently replaced with U+FFFD or preserve NUL into HTML. Compiler failures use
+coded Pugneum errors, invalid public argument types use `TypeError`, and an
+entry-file read retains its Node.js filesystem error.
 
 ### Options
 
 | Option | Default | Description |
 | --- | --- | --- |
 | `filename` | | Entry source path, used for diagnostics and required by the default resolver for relative includes and extends; `renderFile` sets it automatically |
-| `basedir` | | Confinement root for absolute and relative filesystem includes/extends; required for absolute paths and strongly recommended for programmatic builds |
+| `basedir` | Entry file directory for relative paths | Explicit confinement root for absolute and relative filesystem includes/extends; required for absolute paths |
+| `allowUncontainedPathsForTrustedInput` | `false` | Explicitly disable the inferred entry-directory boundary for trusted templates and resolver results; cannot be combined with `basedir` |
 | `filters` | | Object mapping filter names to filter objects `{type, filter}`, where `type` is one of `text`/`html`/`pugneum`/`syntax` and `filter(input, attrs)` returns the transformed output |
 | `filterOptions` | | Per-filter options object, keyed by filter name |
 | `resolve` | Default filesystem/package resolver | Synchronous hook `(requestedPath, includingFilename, options) => resolvedPath` for dependency resolution |
@@ -1050,19 +1053,22 @@ retains its Node.js filesystem error.
 | `maxLinkDepth` | `256` | Maximum linker composition depth; an integer from `0` through `256` |
 | `warnings` | Automatic stderr emission | Mutable array to collect non-fatal diagnostics. If supplied, the caller owns emission and Pugneum does not write warnings to stderr |
 
-Relative filesystem dependencies first resolve from the including file and,
-when `basedir` is set, must remain within that root. Without `basedir`, relative
-paths are unconfined and may traverse above the entry directory, so that mode is
-appropriate only for trusted templates. Absolute dependencies require
-`basedir`. Installed `@`-prefixed library includes use package resolution and do
-not require an entry filename; their targets are confined to the package root.
+Relative filesystem dependencies first resolve from the including file and
+must remain within the explicit `basedir` or the inferred entry-file directory.
+Only `allowUncontainedPathsForTrustedInput: true` disables that inferred root.
+Absolute dependencies require `basedir`. Installed `@`-prefixed library
+includes use package resolution and do not require an entry filename; their
+targets are confined to the package root.
 
 ### Diagnostics
 
 Template and compiler failures are thrown with a `PUGNEUM:`-prefixed `code` and
 a formatted `message`. When source information is available, diagnostics also
-expose `filename`, `line`, `column`, the plain `msg`, and `source`; `toJSON()`
-returns their serializable fields. Public boundary violations instead use
+expose `filename`, `line`, `column`, the plain `msg`, and a non-enumerable
+`source`. Source-byte failures additionally expose a zero-based `byteOffset`.
+Versioned JSON retains severity, short and display messages, and location but
+omits raw source unless trusted code explicitly calls
+`toJSON({includeSource: true})`. Public boundary violations instead use
 `TypeError`, and direct entry-file I/O retains standard Node.js error codes.
 
 When `warnings` is omitted, `render` and `renderFile` collect warnings, remove

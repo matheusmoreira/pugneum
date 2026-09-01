@@ -89,6 +89,7 @@ function renderExample(example) {
 
   if (virtualDependencies) {
     delete options.basedir;
+    options.allowUncontainedPathsForTrustedInput = true;
     options.resolve = (requestedPath) => requestedPath;
     options.read = (resolvedPath) => {
       assert.ok(
@@ -118,6 +119,17 @@ describe('README examples', () => {
       /Status: historical design proposal \(non-normative\)/,
     );
     assert.match(feedDesign, /packages\/feed\/README\.md/);
+  });
+
+  test('documents safe file defaults and byte-valid text input', () => {
+    assert.match(
+      readme,
+      /inside the entry file's directory when it\s+is omitted/,
+    );
+    assert.match(readme, /`allowUncontainedPathsForTrustedInput: true`/);
+    assert.match(readme, /fatal UTF-8/);
+    assert.match(readme, /silently replaced with U\+FFFD or preserve NUL/);
+    assert.match(readme, /zero-based `byteOffset`/);
   });
 
   test('every Pugneum fence compiles', () => {

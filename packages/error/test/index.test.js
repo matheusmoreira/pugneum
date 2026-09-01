@@ -50,7 +50,10 @@ describe('public documentation', function () {
       readme,
       /displayMessage: diagnostic\.message, \/\/ formatted display text/,
     );
-    assert.match(readme, /location: \{\s+filename:.*\s+line:.*\s+column:/s);
+    assert.match(
+      readme,
+      /location: \{\s+filename:.*\s+line:.*\s+column:.*\s+byteOffset:/s,
+    );
     assert.match(readme, /`source`.*non-enumerable/s);
     assert.match(readme, /toJSON\(\{includeSource: true\}\)/);
     assert.match(readme, /trusted/);
@@ -484,6 +487,20 @@ describe('robust against odd inputs', function () {
     }
   });
 
+  test('byte offsets are zero-based, normalized, and serialized in location', function () {
+    for (const factory of [error, error.warning]) {
+      var diagnostic = factory('BYTE', 'message', {byteOffset: 0n});
+      assert.strictEqual(diagnostic.byteOffset, 0);
+      assert.strictEqual(diagnostic.toJSON().location.byteOffset, 0);
+
+      for (const invalid of [-1, 1.5, Infinity, '', Symbol('offset')]) {
+        diagnostic = factory('BYTE', 'message', {byteOffset: invalid});
+        assert.strictEqual(diagnostic.byteOffset, undefined);
+        assert.ok(!('byteOffset' in diagnostic.toJSON().location));
+      }
+    }
+  });
+
   test('safe BigInt and numeric-string coordinates become JSON numbers', function () {
     for (const factory of [error, error.warning]) {
       var diagnostic = factory('COORDINATE', 'message', {
@@ -527,7 +544,13 @@ describe('robust against odd inputs', function () {
 
   test('each option is read exactly once into a shared factory snapshot', function () {
     for (const factory of [error, error.warning]) {
-      var reads = {line: 0, column: 0, filename: 0, source: 0};
+      var reads = {
+        line: 0,
+        column: 0,
+        filename: 0,
+        source: 0,
+        byteOffset: 0,
+      };
       var options = {
         get line() {
           reads.line++;
@@ -545,6 +568,10 @@ describe('robust against odd inputs', function () {
           reads.source++;
           return 'first\nsecond';
         },
+        get byteOffset() {
+          reads.byteOffset++;
+          return 0;
+        },
       };
       var diagnostic = factory('SNAPSHOT', 'message', options);
       assert.deepStrictEqual(reads, {
@@ -552,9 +579,11 @@ describe('robust against odd inputs', function () {
         column: 1,
         filename: 1,
         source: 1,
+        byteOffset: 1,
       });
       assert.strictEqual(diagnostic.line, 1);
       assert.strictEqual(diagnostic.column, 1);
+      assert.strictEqual(diagnostic.byteOffset, 0);
       assert.match(diagnostic.message, /^file\.pg:1:1\n  > 1\| first/);
     }
   });

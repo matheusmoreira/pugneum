@@ -18,10 +18,10 @@
   },
   "author": "Matheus Afonso Martins Moreira <pugneum@matheusmoreira.com> (https://www.matheusmoreira.com/)",
   "peerDependencies": {
-    "pugneum": "^1.3.0"
+    "pugneum": "^2.0.0"
   },
   "devDependencies": {
-    "pugneum": "^1.3.0"
+    "pugneum": "^2.0.0"
   },
   "engines": {
     "node": ">=22"

@@ -10,6 +10,7 @@ var walk = require('pugneum-walker');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var load = require('../');
+var readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
 
 function parseSource(source, filename) {
   const options = filename === undefined ? {source} : {filename, source};
@@ -30,6 +31,23 @@ function findNode(ast, type) {
   );
   return found;
 }
+
+describe('public documentation', () => {
+  test('documents inferred confinement and its trusted-input opt-out', () => {
+    assert.match(readme, /entry file's directory becomes the stable boundary/);
+    assert.match(readme, /`allowUncontainedPathsForTrustedInput: true`/);
+    assert.match(readme, /cannot be combined with\s+`basedir`/);
+    assert.match(readme, /Installed\s+`@`-prefixed libraries remain available/);
+  });
+
+  test('documents strict text decoding and the binary exception', () => {
+    assert.match(readme, /`load\.decodeSource\(value, filename\?\)`/);
+    assert.match(readme, /`PUGNEUM:INVALID_UTF8`/);
+    assert.match(readme, /`PUGNEUM:DISALLOWED_SOURCE_CONTROL`/);
+    assert.match(readme, /zero-based `byteOffset`/);
+    assert.match(readme, /binary include filter can therefore consume `raw`/);
+  });
+});
 
 test('pugneum-loader', (t) => {
   let filename = __dirname + '/foo.pg';
@@ -149,6 +167,40 @@ describe('option validation', () => {
       );
     });
   }
+
+  for (const invalid of [null, 0, 'true', {}, []]) {
+    test(`rejects allowUncontainedPathsForTrustedInput=${JSON.stringify(
+      invalid,
+    )}`, () => {
+      assert.throws(
+        () =>
+          load(
+            {type: 'Block', nodes: []},
+            Object.assign(
+              {lex, parse},
+              {allowUncontainedPathsForTrustedInput: invalid},
+            ),
+          ),
+        /allowUncontainedPathsForTrustedInput.*boolean/,
+      );
+    });
+  }
+
+  test('rejects a trusted-path opt-out combined with basedir', () => {
+    assert.throws(
+      () =>
+        load(
+          {type: 'Block', nodes: []},
+          {
+            lex,
+            parse,
+            basedir: __dirname,
+            allowUncontainedPathsForTrustedInput: true,
+          },
+        ),
+      /allowUncontainedPathsForTrustedInput.*basedir/,
+    );
+  });
 
   for (const name of ['basedir', 'filename', 'source']) {
     for (const invalid of [null, false, 42, {}]) {
@@ -367,6 +419,96 @@ describe('path resolution', () => {
     );
   });
 
+  test('an omitted basedir confines relative loads to the entry directory', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'loader-entry-root-'));
+    const entryDirectory = path.join(root, 'site');
+    fs.mkdirSync(entryDirectory);
+    fs.writeFileSync(path.join(root, 'secret.pg'), 'p secret');
+    const filename = path.join(entryDirectory, 'page.pg');
+    const source = 'include ../secret.pg';
+
+    try {
+      assert.throws(
+        () => load(parseSource(source, filename), {lex, parse}),
+        (err) =>
+          err.code === 'PUGNEUM:PATH_ESCAPE' &&
+          err.filename === filename &&
+          err.line === 1,
+      );
+    } finally {
+      fs.rmSync(root, {recursive: true, force: true});
+    }
+  });
+
+  test('trusted input can opt out of the inferred entry boundary explicitly', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'loader-trusted-'));
+    const entryDirectory = path.join(root, 'site');
+    fs.mkdirSync(entryDirectory);
+    fs.writeFileSync(path.join(root, 'shared.pg'), 'p shared');
+    const filename = path.join(entryDirectory, 'page.pg');
+    const source = 'include ../shared.pg';
+
+    try {
+      const loaded = load(parseSource(source, filename), {
+        lex,
+        parse,
+        allowUncontainedPathsForTrustedInput: true,
+      });
+      assert.equal(findNode(loaded, 'Text').val, 'shared');
+      assert.equal(
+        findNode(loaded, 'Include').file.fullPath,
+        path.join(root, 'shared.pg'),
+      );
+    } finally {
+      fs.rmSync(root, {recursive: true, force: true});
+    }
+  });
+
+  test('the inferred entry boundary rejects a symlink to an outside target', (t) => {
+    const entryDirectory = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'loader-entry-symlink-'),
+    );
+    const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'loader-outside-'));
+    fs.writeFileSync(path.join(outside, 'secret.pg'), 'p secret');
+    try {
+      fs.symlinkSync(outside, path.join(entryDirectory, 'escape'), 'dir');
+    } catch (error) {
+      fs.rmSync(entryDirectory, {recursive: true, force: true});
+      fs.rmSync(outside, {recursive: true, force: true});
+      if (['EACCES', 'ENOTSUP', 'EPERM'].includes(error.code)) {
+        t.skip(`symlinks are unavailable on this runner (${error.code})`);
+        return;
+      }
+      throw error;
+    }
+
+    try {
+      const filename = path.join(entryDirectory, 'entry.pg');
+      const source = 'include escape/secret.pg';
+      assert.throws(
+        () => load(parseSource(source, filename), {lex, parse}),
+        (err) => err.code === 'PUGNEUM:PATH_ESCAPE',
+      );
+    } finally {
+      fs.rmSync(entryDirectory, {recursive: true, force: true});
+      fs.rmSync(outside, {recursive: true, force: true});
+    }
+  });
+
+  test('direct resolution applies the same inferred boundary and opt-out', () => {
+    const filename = path.join(__dirname, 'nested', 'entry.pg');
+    assert.throws(
+      () => load.resolve('../outside.pg', filename, {}),
+      (err) => err.code === 'PUGNEUM:PATH_ESCAPE',
+    );
+    assert.equal(
+      load.resolve('../outside.pg', filename, {
+        allowUncontainedPathsForTrustedInput: true,
+      }),
+      path.join(__dirname, 'outside.pg'),
+    );
+  });
+
   test('throws PATH_ESCAPE for sibling-prefix absolute path', () => {
     // basedir /x must not be escaped by /../x-evil — the containment check
     // requires a path separator after the base, so a sibling whose name shares
@@ -464,6 +606,35 @@ describe('path resolution', () => {
       assert.equal(reads, 0);
     } finally {
       fs.rmSync(basedir, {recursive: true, force: true});
+      fs.rmSync(outside, {recursive: true, force: true});
+    }
+  });
+
+  test('the inferred entry boundary contains a custom resolver before read', () => {
+    const entryDirectory = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'loader-custom-entry-'),
+    );
+    const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'loader-outside-'));
+    let reads = 0;
+    try {
+      const filename = path.join(entryDirectory, 'page.pg');
+      const source = 'include child.pg';
+      assert.throws(
+        () =>
+          load(parseSource(source, filename), {
+            lex,
+            parse,
+            resolve: () => path.join(outside, 'child.pg'),
+            read() {
+              reads++;
+              return Buffer.from('p should-not-run');
+            },
+          }),
+        (err) => err.code === 'PUGNEUM:PATH_ESCAPE',
+      );
+      assert.equal(reads, 0);
+    } finally {
+      fs.rmSync(entryDirectory, {recursive: true, force: true});
       fs.rmSync(outside, {recursive: true, force: true});
     }
   });
@@ -1125,17 +1296,113 @@ describe('binary contract and idempotency', () => {
     );
   });
 
-  test('non-UTF-8 bytes survive a binary read without corruption', () => {
+  test('non-UTF-8 bytes survive a binary-filter read without corruption', () => {
     // A custom Buffer-returning read carrying non-UTF-8 bytes must reach
     // file.raw byte-for-byte (it is not lossily decoded through UTF-8).
     var filename = __dirname + '/test.pg';
     var bytes = Buffer.from([0xff, 0xfe, 0x00, 0x41]);
     // Use a RawInclude (non-.pg) so the bytes are not re-lexed as pugneum.
-    var ast = parseSource('include blob.bin', filename);
+    var ast = parseSource('include:binary blob.bin', filename);
     var loaded = load(ast, {lex, parse, read: () => bytes});
     var raw = findNode(loaded, 'RawInclude').file.raw;
     assert.ok(Buffer.isBuffer(raw), 'file.raw is a Buffer');
     assert.deepEqual([...raw], [0xff, 0xfe, 0x00, 0x41]);
+  });
+
+  test('decodeSource rejects malformed UTF-8 at its first sequence byte', () => {
+    for (const bytes of [
+      [0x80],
+      [0xc0, 0x80],
+      [0xe0, 0x80, 0x80],
+      [0xed, 0xa0, 0x80],
+      [0xf4, 0x90, 0x80, 0x80],
+      [0xf0, 0x9f, 0x92],
+      [0x61, 0xc2, 0x20],
+    ]) {
+      assert.throws(
+        () => load.decodeSource(Buffer.from(bytes), 'invalid.pg'),
+        (err) => {
+          const expectedOffset = bytes[0] === 0x61 ? 1 : 0;
+          assert.equal(err.code, 'PUGNEUM:INVALID_UTF8');
+          assert.equal(err.filename, 'invalid.pg');
+          assert.equal(err.byteOffset, expectedOffset);
+          assert.equal(err.line, 1);
+          assert.equal(err.column, expectedOffset + 1);
+          assert.equal(err.toJSON().location.byteOffset, expectedOffset);
+          assert.match(err.msg, new RegExp('byte offset ' + expectedOffset));
+          assert.doesNotMatch(err.message, /�/);
+          return true;
+        },
+      );
+    }
+  });
+
+  test('decodeSource rejects disallowed controls with byte and text locations', () => {
+    for (const [control, notation] of [
+      ['\0', 'U+0000'],
+      ['\u000b', 'U+000B'],
+      ['\u007f', 'U+007F'],
+    ]) {
+      const source = 'é\r\ntext' + control + 'tail';
+      assert.throws(
+        () => load.decodeSource(Buffer.from(source), 'control.pg'),
+        (err) => {
+          assert.equal(err.code, 'PUGNEUM:DISALLOWED_SOURCE_CONTROL');
+          assert.equal(err.filename, 'control.pg');
+          assert.equal(err.byteOffset, 8);
+          assert.equal(err.line, 2);
+          assert.equal(err.column, 5);
+          assert.match(err.msg, new RegExp(notation.replace('+', '\\+')));
+          assert.equal(err.source, source);
+          return true;
+        },
+      );
+    }
+  });
+
+  test('decodeSource accepts UTF-8 BOM, tabs, all newline forms, and Unicode', () => {
+    const source = '\ufeffp snowman ☃\twide\r\nnext\rother\nlast';
+    assert.equal(load.decodeSource(Buffer.from(source), 'valid.pg'), source);
+    assert.strictEqual(load.decodeSource(source, 'valid.pg'), source);
+  });
+
+  test('structured dependencies reject malformed bytes before lexing', () => {
+    const filename = path.join(__dirname, 'entry.pg');
+    let lexes = 0;
+    assert.throws(
+      () =>
+        load(parseSource('include child.pg', filename), {
+          lex(source, options) {
+            lexes++;
+            return lex(source, options);
+          },
+          parse,
+          read: () => Buffer.from([0x70, 0x20, 0xc0, 0x80]),
+        }),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_UTF8' &&
+        err.filename === path.join(__dirname, 'child.pg') &&
+        err.byteOffset === 2,
+    );
+    assert.equal(lexes, 0);
+  });
+
+  test('a binary include validates only when its text view is requested', () => {
+    const filename = path.join(__dirname, 'entry.pg');
+    const bytes = Buffer.from([0xff, 0x00, 0x41]);
+    const loaded = load(parseSource('include:binary blob.bin', filename), {
+      lex,
+      parse,
+      read: () => bytes,
+    });
+    const file = findNode(loaded, 'RawInclude').file;
+
+    assert.strictEqual(file.raw, bytes);
+    assert.throws(
+      () => file.str,
+      (err) => err.code === 'PUGNEUM:INVALID_UTF8' && err.byteOffset === 0,
+    );
+    assert.strictEqual(file.raw, bytes);
   });
 
   for (const [kind, input] of [
@@ -1268,7 +1535,15 @@ describe('recursion depth limit', () => {
       return Buffer.from('p step ' + n + '\ninclude step-' + (n + 1) + '.pg');
     };
     assert.throws(
-      () => load(ast, {lex, parse, resolve, read, maxLoadDepth: 16}),
+      () =>
+        load(ast, {
+          lex,
+          parse,
+          resolve,
+          read,
+          maxLoadDepth: 16,
+          allowUncontainedPathsForTrustedInput: true,
+        }),
       (err) =>
         err.code === 'PUGNEUM:LOAD_DEPTH_EXCEEDED' &&
         /maximum depth of 16/.test(err.msg),
@@ -1292,6 +1567,7 @@ describe('canonical identity work', () => {
         parse,
         resolve: (file) => '/virtual/' + file,
         read: () => Buffer.from('p virtual'),
+        allowUncontainedPathsForTrustedInput: true,
       });
       assert.equal(findNode(loaded, 'Text').val, 'virtual');
     } finally {

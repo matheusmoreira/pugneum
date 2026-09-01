@@ -118,6 +118,7 @@ function readAndValidateInput(filename) {
 // invocations do not load the full compile pipeline (lexer/parser/loader/
 // linker/filterer/renderer) that requiring 'pugneum' pulls in.
 const pg = require('pugneum');
+const decodeSource = require('pugneum-loader').decodeSource;
 const createRootedFilesystem = require('pugneum-filesystem');
 const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const pgExtension = /\.pg$/;
@@ -328,7 +329,7 @@ try {
       const outputPath = relative.replace(pgExtension, '.html');
       let source;
       try {
-        source = inputFiles.readFile(relative, 'utf8');
+        source = decodeSource(inputFiles.readFile(relative), input);
       } catch (error) {
         rethrowInputBoundary(error, relative);
       }

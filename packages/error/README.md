@@ -26,13 +26,16 @@ location.
   a string once; an omitted message becomes the empty string, and a value whose
   string conversion throws becomes `[unprintable diagnostic message]`.
 - `options` is optional (and may be `null`). It can contain `filename`, `line`,
-  `column`, and `source`. Each option is read once. `filename` must be a
-  non-empty string, and `source` must be a string. An empty string is retained
-  as the source value but means that source context is unavailable.
+  `column`, `byteOffset`, and `source`. Each option is read once. `filename`
+  must be a non-empty string, and `source` must be a string. An empty string is
+  retained as the source value but means that source context is unavailable.
 - `line` and `column` are normalized to one-based safe integers. Numbers,
   numeric strings, and safely representable BigInts are accepted; malformed,
   fractional, non-positive, non-finite, and unsafe values become `undefined`.
   A column is unavailable when its line is unavailable.
+- `byteOffset` is an optional zero-based byte position. It accepts the same
+  numeric forms but permits zero; malformed, negative, fractional, and unsafe
+  values become `undefined`.
 
 The returned error has these public fields:
 
@@ -41,7 +44,8 @@ The returned error has these public fields:
 - `msg`: the normalized, unformatted message string;
 - `message`: the standard `Error` message, formatted with any available
   filename, location, and source excerpt;
-- `line`, `column`, and `filename`: the normalized location values;
+- `line`, `column`, `byteOffset`, and `filename`: the normalized location
+  values;
 - `source`: the normalized raw source string as a non-enumerable property;
 - `toJSON()`: the versioned serialization described below.
 
@@ -122,13 +126,15 @@ schema is `schemaVersion: 1`, also exported as
     filename: diagnostic.filename,
     line: diagnostic.line,
     column: diagnostic.column,
+    byteOffset: diagnostic.byteOffset, // present only when available
   },
 }
 ```
 
 `JSON.stringify()` uses that method and, following normal JSON behavior, omits
-location members whose values are `undefined`. Accepted BigInt coordinates have
-already been normalized to JSON-safe numbers. Default JSON omits the raw
+location members whose values are `undefined`; `byteOffset` is added only when
+available. Accepted BigInt coordinates have already been normalized to
+JSON-safe numbers. Default JSON omits the raw
 `source` and an error `stack`; the bounded, terminal-safe formatted text is
 already present as `displayMessage`.
 

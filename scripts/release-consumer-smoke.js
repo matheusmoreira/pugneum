@@ -337,13 +337,18 @@ function smokeLoader() {
     path.join(os.tmpdir(), 'pugneum-loader-consumer-'),
   );
   try {
-    const filename = path.join(root, 'entry.pg');
+    const entryDirectory = path.join(root, 'site');
+    fs.mkdirSync(entryDirectory);
+    const filename = path.join(entryDirectory, 'entry.pg');
     const source = 'include partial.pg';
     fs.writeFileSync(filename, source);
-    fs.writeFileSync(path.join(root, 'partial.pg'), 'strong included');
+    fs.writeFileSync(
+      path.join(entryDirectory, 'partial.pg'),
+      'strong included',
+    );
+    fs.writeFileSync(path.join(root, 'shared.pg'), 'strong shared');
     const ast = parse(lex(source, {filename}), {filename, source});
     const options = {
-      basedir: root,
       filename,
       lex,
       parse,
@@ -360,6 +365,42 @@ function smokeLoader() {
     assert.strictEqual(
       options.sources[include.file.fullPath],
       'strong included',
+    );
+
+    const escapingSource = 'include ../shared.pg';
+    const escapingAst = parse(lex(escapingSource, {filename}), {
+      filename,
+      source: escapingSource,
+    });
+    assertErrorCode(
+      () =>
+        load(escapingAst, {
+          filename,
+          lex,
+          parse,
+          source: escapingSource,
+        }),
+      'PUGNEUM:PATH_ESCAPE',
+    );
+    const trusted = load(escapingAst, {
+      filename,
+      lex,
+      parse,
+      source: escapingSource,
+      allowUncontainedPathsForTrustedInput: true,
+    });
+    assert.strictEqual(trusted.nodes[0].file.str, 'strong shared');
+
+    assert.throws(
+      () => load.decodeSource(Buffer.from([0x70, 0x20, 0xc0, 0x80]), filename),
+      (error) =>
+        error.code === 'PUGNEUM:INVALID_UTF8' && error.byteOffset === 2,
+    );
+    assert.throws(
+      () => load.decodeSource('p bad\0tail', filename),
+      (error) =>
+        error.code === 'PUGNEUM:DISALLOWED_SOURCE_CONTROL' &&
+        error.byteOffset === 5,
     );
   } finally {
     fs.rmSync(root, {recursive: true, force: true});

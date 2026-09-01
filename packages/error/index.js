@@ -56,6 +56,22 @@ function normalizeCoordinate(value) {
   return Number.isSafeInteger(number) && number >= 1 ? number : undefined;
 }
 
+function normalizeByteOffset(value) {
+  var type = typeof value;
+  if (type !== 'number' && type !== 'string' && type !== 'bigint') {
+    return undefined;
+  }
+  if (type === 'string' && value.trim() === '') return undefined;
+
+  var number;
+  try {
+    number = Number(value);
+  } catch (_error) {
+    return undefined;
+  }
+  return Number.isSafeInteger(number) && number >= 0 ? number : undefined;
+}
+
 function snapshotOptions(options) {
   options = options == null ? {} : options;
 
@@ -65,6 +81,7 @@ function snapshotOptions(options) {
   var rawColumn = options.column;
   var rawFilename = options.filename;
   var rawSource = options.source;
+  var rawByteOffset = options.byteOffset;
   var line = normalizeCoordinate(rawLine);
 
   return {
@@ -75,6 +92,7 @@ function snapshotOptions(options) {
         ? rawFilename
         : undefined,
     source: typeof rawSource === 'string' ? rawSource : undefined,
+    byteOffset: normalizeByteOffset(rawByteOffset),
   };
 }
 
@@ -526,17 +544,19 @@ function toJSON(options) {
     options !== null &&
     typeof options === 'object' &&
     options.includeSource === true;
+  var location = {
+    filename: this.filename,
+    line: this.line,
+    column: this.column,
+  };
+  if (this.byteOffset !== undefined) location.byteOffset = this.byteOffset;
   var record = {
     schemaVersion: DIAGNOSTIC_JSON_VERSION,
     code: this.code,
     severity: this.severity,
     message: this.msg,
     displayMessage: this.message,
-    location: {
-      filename: this.filename,
-      line: this.line,
-      column: this.column,
-    },
+    location: location,
   };
   if (includeSource) record.source = this.source;
   return record;
@@ -550,6 +570,7 @@ function fields(code, message, options, severity) {
     line: options.line,
     column: options.column,
     filename: options.filename,
+    byteOffset: options.byteOffset,
     toJSON: toJSON,
   };
 }

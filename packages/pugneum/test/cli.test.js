@@ -353,6 +353,40 @@ describe('CLI', () => {
     assert.strictEqual(result.status, 6);
   });
 
+  test('malformed UTF-8 is a coded template failure with no output', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(
+      path.join(tmp, 'src', 'bad.pg'),
+      Buffer.from([0x70, 0x20, 0xc0, 0x80]),
+    );
+    writeConfiguration(tmp);
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 6);
+    assert.match(result.stderr, /bad\.pg:1:3/);
+    assert.match(result.stderr, /Invalid UTF-8 sequence.*byte offset 2/);
+    assert.doesNotMatch(result.stderr, /�/);
+    assert.ok(!fs.existsSync(path.join(tmp, 'out', 'bad.html')));
+  });
+
+  test('NUL source input is a coded template failure with no output', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    fs.mkdirSync(path.join(tmp, 'src'));
+    fs.mkdirSync(path.join(tmp, 'out'));
+    fs.writeFileSync(path.join(tmp, 'src', 'bad.pg'), 'p bad\0tail');
+    writeConfiguration(tmp);
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 6);
+    assert.match(result.stderr, /bad\.pg:1:6/);
+    assert.match(result.stderr, /Disallowed source control U\+0000/);
+    assert.ok(!fs.existsSync(path.join(tmp, 'out', 'bad.html')));
+  });
+
   test('defaults the include boundary to inputDirectory', (t) => {
     const tmp = makeTemporaryDirectory(t);
     fs.mkdirSync(path.join(tmp, 'src'));

@@ -2033,6 +2033,68 @@ describe('renderFile()', () => {
     assert.match(result, /^<html>/);
   });
 
+  it('confines omitted-basedir dependencies to the entry directory', (t) => {
+    var root = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-entry-root-'));
+    t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+    var entryDirectory = path.join(root, 'site');
+    fs.mkdirSync(entryDirectory);
+    fs.writeFileSync(path.join(root, 'shared.pg'), 'p shared');
+    var entry = path.join(entryDirectory, 'entry.pg');
+    fs.writeFileSync(entry, 'include ../shared.pg');
+
+    assert.throws(
+      () => pg.renderFile(entry),
+      (err) => err.code === 'PUGNEUM:PATH_ESCAPE' && err.filename === entry,
+    );
+    assert.strictEqual(
+      pg.renderFile(entry, {allowUncontainedPathsForTrustedInput: true}),
+      '<p>shared</p>',
+    );
+  });
+
+  it('rejects malformed UTF-8 entry bytes without replacement text', (t) => {
+    var root = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-invalid-utf8-'));
+    t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+    var entry = path.join(root, 'entry.pg');
+    fs.writeFileSync(entry, Buffer.from([0x70, 0x20, 0xc0, 0x80]));
+
+    assert.throws(
+      () => pg.renderFile(entry),
+      (err) => {
+        assert.equal(err.code, 'PUGNEUM:INVALID_UTF8');
+        assert.equal(err.filename, entry);
+        assert.equal(err.byteOffset, 2);
+        assert.equal(err.line, 1);
+        assert.equal(err.column, 3);
+        assert.doesNotMatch(err.message, /�/);
+        return true;
+      },
+    );
+  });
+
+  it('rejects NUL in file and direct-string source', (t) => {
+    var root = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-nul-'));
+    t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+    var entry = path.join(root, 'entry.pg');
+    var source = 'p first\np bad\0tail';
+    fs.writeFileSync(entry, source);
+
+    for (const renderSource of [
+      () => pg.renderFile(entry),
+      () => pg.render(source, {filename: entry}),
+    ]) {
+      assert.throws(renderSource, (err) => {
+        assert.equal(err.code, 'PUGNEUM:DISALLOWED_SOURCE_CONTROL');
+        assert.equal(err.filename, entry);
+        assert.equal(err.byteOffset, 13);
+        assert.equal(err.line, 2);
+        assert.equal(err.column, 6);
+        assert.match(err.msg, /U\+0000/);
+        return true;
+      });
+    }
+  });
+
   it('passes yielded raw-include bytes to a binary filter as a Buffer', (t) => {
     var root = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-binary-yield-'));
     t.after(() => fs.rmSync(root, {recursive: true, force: true}));

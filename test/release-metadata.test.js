@@ -49,7 +49,7 @@ const expectedReleaseManifests = Object.freeze({
   },
   'packages/loader': {
     name: 'pugneum-loader',
-    version: '1.0.4',
+    version: '2.0.0',
     files: ['index.js'],
     dependencies: {
       'pugneum-error': '^2.0.0',
@@ -76,7 +76,7 @@ const expectedReleaseManifests = Object.freeze({
     },
     devDependencies: {
       'pugneum-lexer': '^1.2.1',
-      'pugneum-loader': '^1.0.4',
+      'pugneum-loader': '^2.0.0',
       'pugneum-parser': '^1.1.1',
     },
   },
@@ -118,7 +118,7 @@ const expectedReleaseManifests = Object.freeze({
   },
   'packages/pugneum': {
     name: 'pugneum',
-    version: '1.3.0',
+    version: '2.0.0',
     files: ['index.js', 'cli.js'],
     dependencies: {
       'pugneum-error': '^2.0.0',
@@ -126,7 +126,7 @@ const expectedReleaseManifests = Object.freeze({
       'pugneum-filesystem': '^1.0.0',
       'pugneum-lexer': '^1.2.1',
       'pugneum-linker': '^1.2.0',
-      'pugneum-loader': '^1.0.4',
+      'pugneum-loader': '^2.0.0',
       'pugneum-parser': '^1.1.1',
       'pugneum-renderer': '^1.1.1',
     },
@@ -197,8 +197,8 @@ const expectedReleaseManifests = Object.freeze({
     name: 'pugneum-mixins',
     version: '2.0.0',
     files: ['*.pg'],
-    devDependencies: {pugneum: '^1.3.0'},
-    peerDependencies: {pugneum: '^1.3.0'},
+    devDependencies: {pugneum: '^2.0.0'},
+    peerDependencies: {pugneum: '^2.0.0'},
   },
 });
 const releaseManifestFields = [

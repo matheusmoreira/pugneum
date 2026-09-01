@@ -11,6 +11,7 @@ const attributeInterpolationSource = Symbol.for(
 module.exports = load;
 module.exports.resolve = resolve;
 module.exports.loadOwned = loadOwned;
+module.exports.decodeSource = decodeSource;
 
 // Maximum include/extends recursion depth. Mirrors the parser's
 // MAX_PARSE_DEPTH and the linker's DEFAULT_MAX_LINK_DEPTH so that a deep
@@ -168,13 +169,13 @@ function loadWithOwnership(ast, options, ownsAst) {
   if (options.filename !== undefined && options.source !== undefined) {
     registerSource(options.sources, options.filename, options.source);
   }
-  options = getOptions(options);
+  const entryFilename = options.filename || ast.filename;
+  options = getOptions(options, entryFilename);
   // Clone the caller's AST once: walk() mutates nodes in place, and the input
   // tree belongs to the caller. Recursive loads work on freshly-parsed,
   // single-owner ASTs and are not cloned again (see loadAST).
   if (!ownsAst) ast = cloneAST(ast);
   const state = options[loadState];
-  const entryFilename = options.filename || ast.filename;
   if (entryFilename) {
     try {
       state.visiting.add(canonicalIdentity(entryFilename, options));
@@ -247,14 +248,15 @@ function loadAST(ast, options, depth) {
         // supplies a custom resolver. Library references deliberately select
         // an installed package outside that project boundary and are checked
         // against their package root by the default resolver instead.
+        const containmentRoot = sourceContainmentRoot(fromFilename, options);
         if (
           options.resolve !== resolve &&
-          options.basedir &&
+          containmentRoot &&
           file.path[0] !== '@'
         ) {
           filePath = assertWithin(
             filePath,
-            options.basedir,
+            containmentRoot,
             'Include path escapes project root: ' + filePath,
             options,
           );
@@ -314,7 +316,7 @@ function loadAST(ast, options, depth) {
             cacheEntry &&
             Object.prototype.hasOwnProperty.call(cacheEntry, 'str')
               ? cacheEntry.str
-              : raw.toString('utf8');
+              : decodeSource(raw, filePath);
           if (cacheEntry) cacheEntry.str = str;
           file.str = str;
           file.raw = raw;
@@ -385,6 +387,131 @@ function normalizeReadResult(raw) {
   throw new TypeError('read must return a Buffer, Uint8Array, or string');
 }
 
+function invalidUtf8Offset(raw) {
+  for (let index = 0; index < raw.length; ) {
+    const first = raw[index];
+    if (first <= 0x7f) {
+      index++;
+      continue;
+    }
+
+    let length;
+    let secondMinimum = 0x80;
+    let secondMaximum = 0xbf;
+    if (first >= 0xc2 && first <= 0xdf) {
+      length = 2;
+    } else if (first === 0xe0) {
+      length = 3;
+      secondMinimum = 0xa0;
+    } else if (
+      (first >= 0xe1 && first <= 0xec) ||
+      (first >= 0xee && first <= 0xef)
+    ) {
+      length = 3;
+    } else if (first === 0xed) {
+      length = 3;
+      secondMaximum = 0x9f;
+    } else if (first === 0xf0) {
+      length = 4;
+      secondMinimum = 0x90;
+    } else if (first >= 0xf1 && first <= 0xf3) {
+      length = 4;
+    } else if (first === 0xf4) {
+      length = 4;
+      secondMaximum = 0x8f;
+    } else {
+      return index;
+    }
+
+    if (index + length > raw.length) return index;
+    const second = raw[index + 1];
+    if (second < secondMinimum || second > secondMaximum) return index;
+    for (let offset = 2; offset < length; offset++) {
+      const continuation = raw[index + offset];
+      if (continuation < 0x80 || continuation > 0xbf) return index;
+    }
+    index += length;
+  }
+  return -1;
+}
+
+function sourceLocationAt(source, index) {
+  let line = 1;
+  let column = 1;
+  for (let offset = 0; offset < index; offset++) {
+    const code = source.charCodeAt(offset);
+    if (code === 13) {
+      if (source.charCodeAt(offset + 1) === 10 && offset + 1 < index) offset++;
+      line++;
+      column = 1;
+    } else if (code === 10) {
+      line++;
+      column = 1;
+    } else {
+      column++;
+    }
+  }
+  return {line, column};
+}
+
+function sourceDiagnostic(code, message, filename, source, index, byteOffset) {
+  const location = sourceLocationAt(source, index);
+  return makeError(code, message, {
+    filename,
+    line: location.line,
+    column: location.column,
+    source,
+    byteOffset,
+  });
+}
+
+function validateSourceText(source, filename) {
+  for (let index = 0; index < source.length; index++) {
+    const code = source.charCodeAt(index);
+    if (
+      (code < 0x20 && code !== 0x09 && code !== 0x0a && code !== 0x0d) ||
+      code === 0x7f
+    ) {
+      const byteOffset = Buffer.byteLength(source.slice(0, index), 'utf8');
+      const notation = 'U+' + code.toString(16).toUpperCase().padStart(4, '0');
+      throw sourceDiagnostic(
+        'DISALLOWED_SOURCE_CONTROL',
+        'Disallowed source control ' +
+          notation +
+          ' at zero-based byte offset ' +
+          byteOffset,
+        filename,
+        source,
+        index,
+        byteOffset,
+      );
+    }
+  }
+  return source;
+}
+
+function decodeSource(value, filename) {
+  if (filename !== undefined && typeof filename !== 'string') {
+    throw new TypeError('filename must be a string');
+  }
+  if (typeof value === 'string') return validateSourceText(value, filename);
+
+  const raw = normalizeReadResult(value);
+  const invalidOffset = invalidUtf8Offset(raw);
+  if (invalidOffset !== -1) {
+    const prefix = raw.subarray(0, invalidOffset).toString('utf8');
+    throw sourceDiagnostic(
+      'INVALID_UTF8',
+      'Invalid UTF-8 sequence at zero-based byte offset ' + invalidOffset,
+      filename,
+      prefix,
+      prefix.length,
+      invalidOffset,
+    );
+  }
+  return validateSourceText(raw.toString('utf8'), filename);
+}
+
 function attachLazyText(file, filePath, sources, cacheEntry) {
   Object.defineProperty(file, 'str', {
     configurable: true,
@@ -393,7 +520,7 @@ function attachLazyText(file, filePath, sources, cacheEntry) {
       const str =
         cacheEntry && Object.prototype.hasOwnProperty.call(cacheEntry, 'str')
           ? cacheEntry.str
-          : this.raw.toString('utf8');
+          : decodeSource(this.raw, filePath);
       if (cacheEntry) cacheEntry.str = str;
       Object.defineProperty(this, 'str', {
         configurable: true,
@@ -484,6 +611,22 @@ function assertWithin(candidate, baseDir, message, options) {
   return resolved;
 }
 
+function sourceContainmentRoot(source, options) {
+  const state = options && options[loadState];
+  if (state && state.containmentRoot) return state.containmentRoot;
+  if (options && options.basedir) return path.resolve(options.basedir);
+  if (options && options.allowUncontainedPathsForTrustedInput === true) {
+    return undefined;
+  }
+  if (typeof source !== 'string' || source.trim().length === 0) {
+    return undefined;
+  }
+
+  const root = path.dirname(path.resolve(source.trim()));
+  if (state) state.containmentRoot = root;
+  return root;
+}
+
 function resolve(filename, source, options) {
   if (typeof filename !== 'string') {
     throw new TypeError('filename must be a string');
@@ -520,15 +663,16 @@ function resolve(filename, source, options) {
   // Default-deny containment: include/extends must stay within basedir (the
   // project root — baseDirectory in the CLI config, which defaults to
   // inputDirectory). Absolute paths already require basedir; relative paths
-  // must not climb out of it either. The only sanctioned way to reach content
-  // outside the project is an npm-installed package via an @-prefixed library
-  // include (resolveLibrary). When no basedir is configured (a programmatic
-  // render with no build root), there is nothing to contain against, so the
-  // relative include simply resolves against the including file's directory.
-  if (options.basedir) {
+  // must not climb out of it either. When basedir is omitted, the entry file's
+  // directory becomes the stable compilation boundary. The only sanctioned
+  // defaults outside that root are installed @-prefixed packages. Callers that
+  // deliberately load trusted input without containment must say so through
+  // allowUncontainedPathsForTrustedInput.
+  const containmentRoot = sourceContainmentRoot(source, options);
+  if (containmentRoot) {
     return assertWithin(
       resolved,
-      options.basedir,
+      containmentRoot,
       'Include path escapes project root: ' + resolved,
       options,
     );
@@ -728,8 +872,7 @@ function findInstalledPackageRoot(pkg, roots) {
 
 function read(filename) {
   // No encoding: return a Buffer so file.raw is genuine bytes (binary
-  // include-filters depend on this). The loader derives the decoded string via
-  // raw.toString('utf8').
+  // include-filters depend on this). Text consumers use strict decodeSource().
   return fs.readFileSync(filename);
 }
 
@@ -801,6 +944,22 @@ function validateOptions(options) {
         DEFAULT_MAX_LOAD_DEPTH,
     );
   }
+  if (
+    options.allowUncontainedPathsForTrustedInput !== undefined &&
+    typeof options.allowUncontainedPathsForTrustedInput !== 'boolean'
+  ) {
+    throw new TypeError(
+      'options.allowUncontainedPathsForTrustedInput must be a boolean',
+    );
+  }
+  if (
+    options.allowUncontainedPathsForTrustedInput === true &&
+    options.basedir !== undefined
+  ) {
+    throw new TypeError(
+      'options.allowUncontainedPathsForTrustedInput cannot be true when options.basedir is set',
+    );
+  }
   for (const name of ['basedir', 'filename', 'source']) {
     if (options[name] !== undefined && typeof options[name] !== 'string') {
       throw new TypeError('options.' + name + ' must be a string');
@@ -822,7 +981,7 @@ function validateOptions(options) {
   }
 }
 
-function getOptions(options) {
+function getOptions(options, entryFilename) {
   const normalized = Object.assign({}, options);
   if (normalized.mixinContext === undefined) normalized.mixinContext = [];
   if (normalized.resolve === undefined) normalized.resolve = resolve;
@@ -830,14 +989,15 @@ function getOptions(options) {
   if (normalized.maxLoadDepth === undefined) {
     normalized.maxLoadDepth = DEFAULT_MAX_LOAD_DEPTH;
   }
+  const containmentRoot = sourceContainmentRoot(entryFilename, normalized);
   if (normalized.canonicalize === undefined) {
     normalized.canonicalize =
-      normalized.resolve === resolve || normalized.basedir
+      normalized.resolve === resolve || containmentRoot
         ? canonicalizeFilesystem
         : canonicalizeOpaque;
   }
   Object.defineProperty(normalized, loadState, {
-    value: {realpaths: new Map(), visiting: new Set()},
+    value: {containmentRoot, realpaths: new Map(), visiting: new Set()},
   });
   return normalized;
 }

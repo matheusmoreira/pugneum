@@ -31,7 +31,7 @@ const packages = Object.freeze([
     'index.js',
     'package.json',
   ]),
-  packagePolicy('packages/loader', 'pugneum-loader', '1.0.4', [
+  packagePolicy('packages/loader', 'pugneum-loader', '2.0.0', [
     'LICENSE.MIT',
     'README.md',
     'index.js',
@@ -75,7 +75,7 @@ const packages = Object.freeze([
   packagePolicy(
     'packages/pugneum',
     'pugneum',
-    '1.3.0',
+    '2.0.0',
     ['LICENSE.MIT', 'README.md', 'cli.js', 'index.js', 'package.json'],
     {'cli.js': 0o755},
   ),

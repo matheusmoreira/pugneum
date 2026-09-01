@@ -2,6 +2,8 @@
 
 Renders pugneum abstract syntax trees into HTML.
 
+Pugneum packages require Node.js 22 or newer.
+
 ## Installation
 
 Install only the renderer when your application already supplies a
@@ -9,11 +11,29 @@ renderer-ready AST:
 
     npm install pugneum-renderer
 
-To run the source-to-AST example below, install its lexer and parser too:
+For ordinary source-to-HTML compilation, install the facade that owns the
+complete pipeline:
+
+    npm install pugneum
+
+To run the deliberately limited direct-render example below, install its lexer
+and parser too:
 
     npm install pugneum-renderer pugneum-parser pugneum-lexer
 
 ## Usage
+
+Use the facade for general templates, especially ones containing includes,
+inheritance, filters, references, footnotes, or a table of contents:
+
+```js
+var pugneum = require('pugneum');
+
+let html = pugneum.render('p Hello, world!');
+//=> '<p>Hello, world!</p>'
+```
+
+Use this package directly only when the input is already renderer-ready:
 
 ```js
 var render = require('pugneum-renderer');
@@ -62,16 +82,47 @@ let html = render(parse(lex('p Hello, world!')));
 //=> '<p>Hello, world!</p>'
 ```
 
+### Output and trust model
+
+The renderer is an HTML generator for trusted templates, not an HTML sanitizer.
+`Text` and resolved `Variable` values are emitted verbatim, including preserved
+physical newlines and any authored markup. Do not interpolate untrusted data
+into text without applying an application-appropriate escaping or sanitization
+policy first.
+
+Attribute values are always double-quoted. After mixin-variable substitution,
+the renderer escapes `&` as `&amp;` and `"` as `&quot;`; `<` and `>` remain
+literal because they are valid inside a quoted HTML attribute. Boolean
+attributes use the value `true` and render without `="..."`. Other attribute
+value types are outside the renderer contract.
+
+Buffered `Comment` and `BlockComment` nodes render one HTML comment envelope.
+The renderer makes forbidden comment byte patterns safe by separating repeated
+hyphens and padding disallowed leading or trailing characters. Unbuffered
+comments produce no output, and unbuffered block descendants are not evaluated.
+Source newlines inside buffered content remain source newlines; “verbatim” does
+not mean single-line.
+
 The renderer has no doctype logic of its own. A `<!DOCTYPE html>`
 only appears when the source contains an explicit `doctype html`
 line, which the lexer pre-renders into a text token the renderer
 buffers verbatim.
 
 HTML void-element identity is ASCII-case-insensitive, while output retains the
-tag name's authored spelling. SVG self-closing names remain case-sensitive.
+tag name's authored spelling. The renderer's fixed SVG self-closing-name table
+is case-sensitive and currently applies regardless of ancestry. A direct AST
+node's `selfClosing` flag also suppresses its end tag. HTML void and explicit
+`selfClosing` nodes end with `>`; names in the SVG table end with ` />`.
+Self-closing nodes may contain whitespace-only `Text` children but reject other
+content with `PUGNEUM:VOID_ELEMENT_WITH_CONTENT`.
+
 Class attributes are coalesced with the same HTML identity: string
 contributions are space-joined into one canonical `class="..."`, and a lone
 valueless contribution is preserved as `class`.
+
+`Given` tests whether a caller supplied a named block, not whether that block
+eventually emits bytes. It therefore renders for an explicitly supplied empty
+named block and skips when the caller did not name the block at all.
 
 ### `options`
 
@@ -85,6 +136,12 @@ valueless contribution is preserved as `class`.
   context to thrown errors and collected warnings. `sources` is a
   map keyed by filename (populated by the loader); `source` is the
   single-source fallback.
+
+Located template/AST diagnostics throw `Error` instances whose `code` begins
+with `PUGNEUM:` and which carry available `filename`, `line`, `column`, and
+source context. Invalid public argument types throw `TypeError`. Warnings use
+the located diagnostic shape and are appended to the caller-supplied `warnings`
+array; the renderer never prints them itself.
 
 ## License
 

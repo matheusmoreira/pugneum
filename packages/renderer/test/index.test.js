@@ -1292,6 +1292,21 @@ describe('error handling', () => {
     );
   });
 
+  test('README states the runtime, pipeline, and output trust contracts', () => {
+    var readme = fs.readFileSync(path.join(packageRoot, 'README.md'), 'utf8');
+    var manifest = require('../package.json');
+    var documentedNode = /Node\.js (\d+) or newer/.exec(readme);
+
+    assert.ok(documentedNode, 'README must state its Node.js floor');
+    assert.strictEqual(manifest.engines.node, '>=' + documentedNode[1]);
+    assert.match(readme, /var pugneum = require\('pugneum'\);/);
+    assert.match(readme, /not an HTML sanitizer/);
+    assert.match(readme, /escapes `&` as `&amp;` and `"` as `&quot;`/);
+    assert.match(readme, /currently applies regardless of ancestry/);
+    assert.match(readme, /explicitly supplied empty\s+named block/);
+    assert.match(readme, /code` begins\s+with `PUGNEUM:`/);
+  });
+
   test('null node throws TypeError', () => {
     assert.throws(
       () => render(block([null])),

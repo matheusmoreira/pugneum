@@ -172,15 +172,23 @@ function smokeLeaves() {
   assert.strictEqual(error.code, 'PUGNEUM:BROKEN');
   assert.match(error.message, /input\.pg:2:3/);
   assert.deepStrictEqual(error.toJSON(), {
+    schemaVersion: 1,
     code: 'PUGNEUM:BROKEN',
-    msg: 'broken value',
-    line: 2,
-    column: 3,
-    filename: 'input.pg',
+    severity: 'error',
+    message: 'broken value',
+    displayMessage: error.message,
+    location: {filename: 'input.pg', line: 2, column: 3},
   });
+  assert.strictEqual(makeError.DIAGNOSTIC_JSON_VERSION, 1);
+  assert.ok(!Object.hasOwn({...error}, 'source'));
+  assert.strictEqual(
+    error.toJSON({includeSource: true}).source,
+    'first\nsecond',
+  );
   const warning = makeError.warning('NOTICE', 'notice', {});
   assert.strictEqual(warning.code, 'PUGNEUM:NOTICE');
   assert.strictEqual(warning.message, 'notice');
+  assert.strictEqual(warning.toJSON().severity, 'warning');
 
   const walk = require('pugneum-walker');
   const ast = block([

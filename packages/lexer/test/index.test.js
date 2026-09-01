@@ -638,11 +638,16 @@ function captureLexerError(source, filename) {
 
 function assertLexerErrorEnvelope(error, source, filename) {
   var json = {
+    schemaVersion: 1,
     code: error.code,
-    msg: error.msg,
-    line: error.line,
-    column: error.column,
-    filename,
+    severity: 'error',
+    message: error.msg,
+    displayMessage: error.message,
+    location: {
+      filename,
+      line: error.line,
+      column: error.column,
+    },
   };
 
   assert.ok(error instanceof Error);

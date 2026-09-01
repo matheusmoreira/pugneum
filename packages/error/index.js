@@ -1,6 +1,9 @@
+var DIAGNOSTIC_JSON_VERSION = 1;
+
 module.exports = makeError;
 module.exports.warning = makeWarning;
 module.exports.clearSourceCache = clearSourceCache;
+module.exports.DIAGNOSTIC_JSON_VERSION = DIAGNOSTIC_JSON_VERSION;
 
 var CONTEXT_RADIUS = 3;
 var TAB_SIZE = 8;
@@ -516,40 +519,73 @@ function formatMessage(message, options) {
   return header ? header + '\n\n' + displayMessage : displayMessage;
 }
 
-function toJSON() {
-  // Source, formatted display text, stack, and severity are deliberately not
-  // part of this legacy restricted projection. See the package README.
-  return {
+function toJSON(options) {
+  // JSON.stringify passes a string property key to toJSON(). Only a deliberate
+  // object option can opt trusted code into exporting raw source text.
+  var includeSource =
+    options !== null &&
+    typeof options === 'object' &&
+    options.includeSource === true;
+  var record = {
+    schemaVersion: DIAGNOSTIC_JSON_VERSION,
     code: this.code,
-    msg: this.msg,
-    line: this.line,
-    column: this.column,
-    filename: this.filename,
+    severity: this.severity,
+    message: this.msg,
+    displayMessage: this.message,
+    location: {
+      filename: this.filename,
+      line: this.line,
+      column: this.column,
+    },
   };
+  if (includeSource) record.source = this.source;
+  return record;
 }
 
-function fields(code, message, options) {
+function fields(code, message, options, severity) {
   return {
     code: 'PUGNEUM:' + code,
+    severity: severity,
     msg: message,
     line: options.line,
     column: options.column,
     filename: options.filename,
-    source: options.source,
     toJSON: toJSON,
   };
+}
+
+function attachSource(diagnostic, source) {
+  Object.defineProperty(diagnostic, 'source', {
+    configurable: true,
+    enumerable: false,
+    value: source,
+    writable: true,
+  });
+  return diagnostic;
 }
 
 function makeDiagnostic(code, message, options, ErrorConstructor) {
   var normalizedMessage = normalizeMessage(message);
   var normalizedOptions = snapshotOptions(options);
   var displayMessage = formatMessage(normalizedMessage, normalizedOptions);
-  var sharedFields = fields(code, normalizedMessage, normalizedOptions);
+  var severity = ErrorConstructor ? 'error' : 'warning';
+  var sharedFields = fields(
+    code,
+    normalizedMessage,
+    normalizedOptions,
+    severity,
+  );
 
   if (ErrorConstructor) {
-    return Object.assign(new ErrorConstructor(displayMessage), sharedFields);
+    return attachSource(
+      Object.assign(new ErrorConstructor(displayMessage), sharedFields),
+      normalizedOptions.source,
+    );
   }
-  return Object.assign(sharedFields, {message: displayMessage});
+  return attachSource(
+    Object.assign(sharedFields, {message: displayMessage}),
+    normalizedOptions.source,
+  );
 }
 
 function makeError(code, message, options) {

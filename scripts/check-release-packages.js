@@ -13,7 +13,7 @@ const expectedNpmVersion = '10.9.9';
 const npmExecPath = process.env.npm_execpath;
 
 const packages = Object.freeze([
-  packagePolicy('packages/error', 'pugneum-error', '1.1.0', [
+  packagePolicy('packages/error', 'pugneum-error', '2.0.0', [
     'LICENSE.MIT',
     'README.md',
     'index.js',
@@ -388,13 +388,13 @@ function scenarios(tarballs) {
       name: 'parser-minimum',
       smoke: 'parser',
       dependencies: {
-        'pugneum-error': '1.0.0',
+        'pugneum-error': localSpec(tarballs, 'pugneum-error'),
         'pugneum-lexer': localSpec(tarballs, 'pugneum-lexer'),
         'pugneum-parser': localSpec(tarballs, 'pugneum-parser'),
       },
       overrides: lexerErrorOverride,
       resolutions: [
-        resolution('pugneum-parser', 'pugneum-error', '1.0.0'),
+        localResolution('pugneum-parser', 'pugneum-error'),
         localResolution('pugneum-lexer', 'pugneum-error'),
       ],
     },
@@ -402,7 +402,7 @@ function scenarios(tarballs) {
       name: 'loader-minimum',
       smoke: 'loader',
       dependencies: {
-        'pugneum-error': '1.0.0',
+        'pugneum-error': localSpec(tarballs, 'pugneum-error'),
         'pugneum-lexer': localSpec(tarballs, 'pugneum-lexer'),
         'pugneum-loader': localSpec(tarballs, 'pugneum-loader'),
         'pugneum-parser': localSpec(tarballs, 'pugneum-parser'),
@@ -410,7 +410,7 @@ function scenarios(tarballs) {
       },
       overrides: lexerErrorOverride,
       resolutions: [
-        resolution('pugneum-loader', 'pugneum-error', '1.0.0'),
+        localResolution('pugneum-loader', 'pugneum-error'),
         localResolution('pugneum-loader', 'pugneum-walker'),
       ],
     },
@@ -442,7 +442,7 @@ function scenarios(tarballs) {
       name: 'filterer-minimum',
       smoke: 'filterer',
       dependencies: {
-        'pugneum-error': '1.0.0',
+        'pugneum-error': localSpec(tarballs, 'pugneum-error'),
         'pugneum-filterer': localSpec(tarballs, 'pugneum-filterer'),
         'pugneum-lexer': '1.2.0',
         'pugneum-parser': '1.1.0',
@@ -450,7 +450,7 @@ function scenarios(tarballs) {
         'pugneum-walker': localSpec(tarballs, 'pugneum-walker'),
       },
       resolutions: [
-        resolution('pugneum-filterer', 'pugneum-error', '1.0.0'),
+        localResolution('pugneum-filterer', 'pugneum-error'),
         resolution('pugneum-filterer', 'pugneum-lexer', '1.2.0'),
         resolution('pugneum-filterer', 'pugneum-parser', '1.1.0'),
         resolution('pugneum-filterer', 'pugneum-renderer', '1.1.0'),
@@ -485,7 +485,7 @@ function scenarios(tarballs) {
       name: 'table-peer-minimum',
       smoke: 'table',
       dependencies: {
-        'pugneum-error': '1.0.0',
+        'pugneum-error': localSpec(tarballs, 'pugneum-error'),
         'pugneum-filter-table': localSpec(tarballs, 'pugneum-filter-table'),
         'pugneum-filterer': '1.1.0',
         'pugneum-lexer': localSpec(tarballs, 'pugneum-lexer'),
@@ -495,7 +495,7 @@ function scenarios(tarballs) {
       },
       overrides: tableErrorOverrides,
       resolutions: [
-        resolution('pugneum-filter-table', 'pugneum-error', '1.0.0'),
+        localResolution('pugneum-filter-table', 'pugneum-error'),
         localResolution('pugneum-filter-table', 'pugneum-lexer'),
         resolution('pugneum-filter-table', 'pugneum-filterer', '1.1.0'),
       ],

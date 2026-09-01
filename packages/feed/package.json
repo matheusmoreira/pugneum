@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "htmlparser2": "^9.0.0",
-    "pugneum-error": "^1.1.0",
+    "pugneum-error": "^2.0.0",
     "pugneum-filesystem": "^1.0.0"
   },
   "engines": {

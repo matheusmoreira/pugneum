@@ -1,6 +1,7 @@
 var assert = require('node:assert/strict');
 var fs = require('node:fs');
 var path = require('node:path');
+var util = require('node:util');
 var {describe, test} = require('node:test');
 var error = require('../');
 var packageRoot = path.resolve(__dirname, '..');
@@ -41,19 +42,18 @@ describe('public documentation', function () {
     assert.match(readme, /full normalized `msg`, `filename`, and\s+`source`/);
   });
 
-  test('documents the exact lossy JSON boundary', function () {
-    for (const key of ['code', 'msg', 'line', 'column', 'filename']) {
-      assert.match(readme, new RegExp('  ' + key + ': diagnostic\\.' + key));
-    }
-    for (const omission of [
-      '`source`',
-      'formatted `message`',
-      'error `stack`',
-      'error-versus-warning',
-    ]) {
-      assert.match(readme, new RegExp(omission));
-    }
-    assert.match(readme, /cannot reproduce the display message byte for byte/);
+  test('documents the versioned JSON and trusted-source boundary', function () {
+    assert.match(readme, /`schemaVersion: 1`/);
+    assert.match(readme, /`severity`.*`error`.*`warning`/s);
+    assert.match(readme, /`message`.*short, unformatted/s);
+    assert.match(
+      readme,
+      /displayMessage: diagnostic\.message, \/\/ formatted display text/,
+    );
+    assert.match(readme, /location: \{\s+filename:.*\s+line:.*\s+column:/s);
+    assert.match(readme, /`source`.*non-enumerable/s);
+    assert.match(readme, /toJSON\(\{includeSource: true\}\)/);
+    assert.match(readme, /trusted/);
   });
 
   test('package metadata and prose name both diagnostic kinds', function () {
@@ -260,26 +260,55 @@ describe('warning', function () {
     assert.strictEqual(warn.message, err.message);
   });
 
-  test('error and warning have the same JSON-safe restricted projection', function () {
+  test('error and warning use one versioned JSON schema with severity', function () {
     for (const factory of [error, error.warning]) {
       var diagnostic = factory('CODE', 'msg', {
         line: 1n,
         column: 4n,
         filename: 'f',
-        source: 'x',
+        source: 'abcd',
       });
       var expected = {
+        schemaVersion: 1,
         code: 'PUGNEUM:CODE',
-        msg: 'msg',
-        line: 1,
-        column: 4,
-        filename: 'f',
+        severity: factory === error ? 'error' : 'warning',
+        message: 'msg',
+        displayMessage: 'f:1:4\n  > 1| abcd\n----------^\n\nmsg',
+        location: {filename: 'f', line: 1, column: 4},
       };
+      assert.strictEqual(error.DIAGNOSTIC_JSON_VERSION, 1);
+      assert.strictEqual(diagnostic.severity, expected.severity);
       assert.deepStrictEqual(diagnostic.toJSON(), expected);
       assert.deepStrictEqual(JSON.parse(JSON.stringify(diagnostic)), expected);
       assert.ok(!('source' in diagnostic.toJSON()));
-      assert.ok(!('message' in diagnostic.toJSON()));
       assert.ok(!('stack' in diagnostic.toJSON()));
+    }
+  });
+
+  test('raw source is live but absent from spread and default inspection', function () {
+    var source =
+      'shown\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nRAW_SECRET';
+    for (const factory of [error, error.warning]) {
+      var diagnostic = factory('PRIVATE', 'message', {
+        filename: 'private.pg',
+        line: 1,
+        source,
+      });
+      assert.strictEqual(diagnostic.source, source);
+      assert.strictEqual(
+        Object.prototype.propertyIsEnumerable.call(diagnostic, 'source'),
+        false,
+      );
+      assert.ok(!Object.hasOwn({...diagnostic}, 'source'));
+      assert.doesNotMatch(util.inspect(diagnostic), /RAW_SECRET/);
+      assert.doesNotMatch(JSON.stringify(diagnostic), /RAW_SECRET/);
+
+      var trusted = diagnostic.toJSON({includeSource: true});
+      assert.strictEqual(trusted.source, source);
+      assert.deepStrictEqual(
+        JSON.parse(JSON.stringify(trusted)).source,
+        source,
+      );
     }
   });
 });
@@ -464,8 +493,8 @@ describe('robust against odd inputs', function () {
       });
       assert.strictEqual(diagnostic.line, 1);
       assert.strictEqual(diagnostic.column, 2);
-      assert.strictEqual(typeof diagnostic.toJSON().line, 'number');
-      assert.strictEqual(typeof diagnostic.toJSON().column, 'number');
+      assert.strictEqual(typeof diagnostic.toJSON().location.line, 'number');
+      assert.strictEqual(typeof diagnostic.toJSON().location.column, 'number');
       assert.doesNotThrow(function () {
         JSON.stringify(diagnostic);
       });

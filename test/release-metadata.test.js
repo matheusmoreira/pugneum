@@ -31,20 +31,20 @@ const expectedWorkspaces = Object.freeze([
 const expectedReleaseManifests = Object.freeze({
   'packages/error': {
     name: 'pugneum-error',
-    version: '1.1.0',
+    version: '2.0.0',
     files: ['index.js'],
   },
   'packages/lexer': {
     name: 'pugneum-lexer',
     version: '1.2.1',
     files: ['index.js'],
-    dependencies: {'pugneum-error': '^1.1.0'},
+    dependencies: {'pugneum-error': '^2.0.0'},
   },
   'packages/parser': {
     name: 'pugneum-parser',
     version: '1.1.1',
     files: ['index.js'],
-    dependencies: {'pugneum-error': '^1.0.0'},
+    dependencies: {'pugneum-error': '^2.0.0'},
     devDependencies: {'pugneum-lexer': '^1.2.1'},
   },
   'packages/loader': {
@@ -52,7 +52,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.0.4',
     files: ['index.js'],
     dependencies: {
-      'pugneum-error': '^1.0.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-walker': '^2.0.0',
     },
     devDependencies: {
@@ -71,7 +71,7 @@ const expectedReleaseManifests = Object.freeze({
       'nodes.js',
     ],
     dependencies: {
-      'pugneum-error': '^1.1.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-walker': '^2.0.0',
     },
     devDependencies: {
@@ -85,7 +85,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.2.0',
     files: ['index.js', 'escape-text.js'],
     dependencies: {
-      'pugneum-error': '^1.0.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-lexer': '^1.2.0',
       'pugneum-parser': '^1.1.0',
       'pugneum-renderer': '^1.1.0',
@@ -100,7 +100,7 @@ const expectedReleaseManifests = Object.freeze({
     name: 'pugneum-renderer',
     version: '1.1.1',
     files: ['index.js'],
-    dependencies: {'pugneum-error': '^1.1.0'},
+    dependencies: {'pugneum-error': '^2.0.0'},
   },
   'packages/walker': {
     name: 'pugneum-walker',
@@ -121,7 +121,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.3.0',
     files: ['index.js', 'cli.js'],
     dependencies: {
-      'pugneum-error': '^1.1.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-filterer': '^1.2.0',
       'pugneum-filesystem': '^1.0.0',
       'pugneum-lexer': '^1.2.1',
@@ -144,7 +144,7 @@ const expectedReleaseManifests = Object.freeze({
     files: ['index.js'],
     dependencies: {
       'highlight.js': '^11.8.0',
-      'pugneum-error': '^1.0.0',
+      'pugneum-error': '^2.0.0',
     },
     devDependencies: {
       'pugneum-filterer': '^1.2.0',
@@ -159,7 +159,7 @@ const expectedReleaseManifests = Object.freeze({
     files: ['index.js'],
     dependencies: {
       prismjs: '^1.30.0',
-      'pugneum-error': '^1.0.0',
+      'pugneum-error': '^2.0.0',
     },
     devDependencies: {
       'pugneum-filterer': '^1.2.0',
@@ -173,7 +173,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.0.1',
     files: ['index.js', 'lib/'],
     dependencies: {
-      'pugneum-error': '^1.0.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-lexer': '^1.2.1',
     },
     devDependencies: {
@@ -189,7 +189,7 @@ const expectedReleaseManifests = Object.freeze({
     files: ['index.js', 'lib/'],
     dependencies: {
       htmlparser2: '^9.0.0',
-      'pugneum-error': '^1.1.0',
+      'pugneum-error': '^2.0.0',
       'pugneum-filesystem': '^1.0.0',
     },
   },

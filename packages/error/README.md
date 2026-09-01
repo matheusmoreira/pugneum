@@ -37,11 +37,13 @@ location.
 The returned error has these public fields:
 
 - `code`: the prefixed code, such as `PUGNEUM:MY_CODE`;
+- `severity`: `error`;
 - `msg`: the normalized, unformatted message string;
 - `message`: the standard `Error` message, formatted with any available
   filename, location, and source excerpt;
-- `line`, `column`, `filename`, and `source`: the normalized option values;
-- `toJSON()`: the restricted serialization described below.
+- `line`, `column`, and `filename`: the normalized location values;
+- `source`: the normalized raw source string as a non-enumerable property;
+- `toJSON()`: the versioned serialization described below.
 
 The normalized, unformatted explanation is stored in `err.msg` because
 `err.message` contains the formatted diagnostic intended for display.
@@ -74,7 +76,8 @@ throw err;
 Creates a nonthrowing diagnostic with the same code, location, source,
 formatted `message`, and `toJSON()` contract as `error()`. The result is a plain
 object, not an `Error` instance: it has no `Error` stack and the factory neither
-throws nor logs it. Callers decide how to collect or report warnings.
+throws nor logs it. Its `severity` is `warning`. Callers decide how to collect
+or report warnings.
 
 ```js
 var pugneumError = require('pugneum-error');
@@ -90,9 +93,8 @@ warnings.push(
 ```
 
 Keeping warnings as plain values lets a compiler collect several diagnostics
-without interrupting the build. Preserve whether a value came from `error()`
-or `error.warning()` if that distinction matters to the consumer; serialization
-does not add a severity field.
+without interrupting the build. The live and serialized `severity` fields
+preserve whether a value came from `error()` or `error.warning()`.
 
 ### `error.clearSourceCache()`
 
@@ -105,29 +107,44 @@ every successful or failed render.
 
 ## Serialization
 
-Both diagnostic shapes implement `toJSON()`. Calling it returns exactly these
-five keys:
+Both diagnostic shapes implement a versioned `toJSON()` record. The current
+schema is `schemaVersion: 1`, also exported as
+`error.DIAGNOSTIC_JSON_VERSION`. Its stable shape is:
 
 ```js
 {
+  schemaVersion: 1,
   code: diagnostic.code,
-  msg: diagnostic.msg,
-  line: diagnostic.line,
-  column: diagnostic.column,
-  filename: diagnostic.filename,
+  severity: diagnostic.severity, // "error" or "warning"
+  message: diagnostic.msg, // short, unformatted explanation
+  displayMessage: diagnostic.message, // formatted display text
+  location: {
+    filename: diagnostic.filename,
+    line: diagnostic.line,
+    column: diagnostic.column,
+  },
 }
 ```
 
 `JSON.stringify()` uses that method and, following normal JSON behavior, omits
-members whose values are `undefined`. Accepted BigInt coordinates have already
-been normalized to JSON-safe numbers. The serialized form deliberately omits
-`source`, the formatted `message`, an error `stack`, and the error-versus-warning
-distinction. It therefore cannot reproduce the display message byte for byte;
-consumers that need the source excerpt or diagnostic kind must retain them
-separately.
+location members whose values are `undefined`. Accepted BigInt coordinates have
+already been normalized to JSON-safe numbers. Default JSON omits the raw
+`source` and an error `stack`; the bounded, terminal-safe formatted text is
+already present as `displayMessage`.
 
-This restriction applies only to `toJSON()` and JSON serialization. The live
-error and warning objects still expose the original `source` field.
+The live diagnostic still exposes its original `source`, but that property is
+non-enumerable. Object spread and default object inspection therefore do not
+copy or print the full input document accidentally. A trusted caller that
+deliberately needs raw source can opt in explicitly:
+
+```js
+var recordWithSource = diagnostic.toJSON({includeSource: true});
+```
+
+Do not use the source-bearing form for untrusted telemetry or remote logs: it
+can contain the complete authored document, not merely the bounded excerpt in
+`displayMessage`. `JSON.stringify(diagnostic)` always uses the safe default;
+JavaScript's property-key argument to `toJSON` never enables source export.
 
 ## License
 

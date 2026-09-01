@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "prismjs": "^1.30.0",
-    "pugneum-error": "^1.0.0"
+    "pugneum-error": "^2.0.0"
   },
   "peerDependencies": {
     "pugneum-filterer": "^1.2.0"

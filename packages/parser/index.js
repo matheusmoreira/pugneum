@@ -184,18 +184,46 @@ const inlineTags = new Set([
   'wbr',
 ]);
 
-// Token types that begin a piece of inline content inside a text block.
-// Used by collectInlineContent to decide whether a consumed newline still
-// separates two pieces of inline content (in which case the '\n' separator
-// must be emitted) or is merely a trailing newline before outdent/eos.
-const inlineStartTokens = new Set([
-  'text',
-  'variable',
-  'start-interpolation',
-  'start-ref-link',
-  'start-ref-image',
-  'start-footnote-ref',
-]);
+// One inline grammar descriptor drives expression/tag admission, pipeless and
+// ordinary text collection, and the narrower reference-label/footnote-body
+// subsets. Handler-specific construction remains in Parser methods.
+const inlineTokenGrammar = Object.freeze({
+  text: Object.freeze({
+    parser: 'parseInlineText',
+    referenceLabel: true,
+    footnoteDefinition: true,
+  }),
+  variable: Object.freeze({parser: 'parseVariable'}),
+  'start-interpolation': Object.freeze({
+    parser: 'parseInlineInterpolation',
+    referenceLabel: true,
+    footnoteDefinition: true,
+  }),
+  'start-ref-link': Object.freeze({
+    parser: 'parseRefLink',
+    footnoteDefinition: true,
+  }),
+  'start-ref-image': Object.freeze({
+    parser: 'parseRefImage',
+    footnoteDefinition: true,
+  }),
+  'start-footnote-ref': Object.freeze({
+    parser: 'parseFootnoteRef',
+    footnoteDefinition: true,
+  }),
+});
+
+function inlineTokenTypes(category) {
+  return new Set(
+    Object.keys(inlineTokenGrammar).filter(function (type) {
+      return category === undefined || inlineTokenGrammar[type][category];
+    }),
+  );
+}
+
+const inlineStartTokens = inlineTokenTypes();
+const referenceLabelTokens = inlineTokenTypes('referenceLabel');
+const footnoteDefinitionTokens = inlineTokenTypes('footnoteDefinition');
 
 const filterOptionPolicy = {
   allowDuplicateClass: false,
@@ -358,7 +386,6 @@ class Parser {
    * | block
    * | mixin-block
    * | given
-   * | variable
    * | extends
    * | include
    * | references
@@ -366,7 +393,7 @@ class Parser {
    * | toc
    * | filter
    * | comment
-   * | text | start-interpolation | start-ref-link | start-ref-image | start-footnote-ref
+   * | any token in inlineTokenGrammar
    * | dot
    * | call
    * | interpolation
@@ -391,7 +418,10 @@ class Parser {
   }
 
   _parseExpr() {
-    switch (this.peek().type) {
+    const type = this.peek().type;
+    if (inlineStartTokens.has(type)) return this.parseText({block: true});
+
+    switch (type) {
       case 'tag':
         return this.parseTag();
       case 'mixin':
@@ -402,8 +432,6 @@ class Parser {
         return this.parseMixinBlock();
       case 'given':
         return this.parseGiven();
-      case 'variable':
-        return this.parseText({block: true});
       case 'extends':
         return this.parseExtends();
       case 'include':
@@ -418,12 +446,6 @@ class Parser {
         return this.parseFilter();
       case 'comment':
         return this.parseComment();
-      case 'text':
-      case 'start-interpolation':
-      case 'start-ref-link':
-      case 'start-ref-image':
-      case 'start-footnote-ref':
-        return this.parseText({block: true});
       case 'dot':
         return this.parseDot();
       case 'call':
@@ -459,47 +481,39 @@ class Parser {
    * Text
    */
 
+  parseInlineText() {
+    const tok = this.expect('text');
+    return tok.val === '' ? undefined : this.textNode(tok);
+  }
+
+  parseInlineInterpolation() {
+    this.expect('start-interpolation');
+    const expression = this.parseExpr();
+    this.expect('end-interpolation');
+    return expression;
+  }
+
+  parseInlineNode() {
+    const grammar = inlineTokenGrammar[this.peek().type];
+    return grammar ? this[grammar.parser]() : undefined;
+  }
+
   collectInlineContent(nodes, options) {
-    let nextTok = this.peek();
-    loop: while (true) {
-      switch (nextTok.type) {
-        case 'text':
-          this.appendText(nodes, this.advance());
-          break;
-        case 'variable':
-          nodes.push(this.parseVariable());
-          break;
-        case 'newline': {
-          if (!options || !options.block) break loop;
-          const tok = this.advance();
-          // Emit the line separator whenever more inline content follows, not
-          // only when the next line begins with a literal text token. A
-          // continued line that starts with an interpolation (#{var}) or an
-          // inline reference/footnote sigil is still inline content, and
-          // dropping the '\n' here glues the two lines' words together.
-          if (inlineStartTokens.has(this.peek().type)) {
-            nodes.push(this.textNode(tok, '\n'));
-          }
-          break;
-        }
-        case 'start-interpolation':
-          this.advance();
-          nodes.push(this.parseExpr());
-          this.expect('end-interpolation');
-          break;
-        case 'start-ref-link':
-          nodes.push(this.parseRefLink());
-          break;
-        case 'start-ref-image':
-          nodes.push(this.parseRefImage());
-          break;
-        case 'start-footnote-ref':
-          nodes.push(this.parseFootnoteRef());
-          break;
-        default:
-          break loop;
+    while (true) {
+      if (inlineStartTokens.has(this.peek().type)) {
+        const node = this.parseInlineNode();
+        if (node) nodes.push(node);
+        continue;
       }
-      nextTok = this.peek();
+      if (this.peek().type !== 'newline' || !options || !options.block) return;
+
+      const tok = this.advance();
+      // Emit the line separator whenever more inline content follows, not only
+      // when the next line begins with literal text. An interpolation or inline
+      // reference/footnote sigil is still inline content.
+      if (inlineStartTokens.has(this.peek().type)) {
+        nodes.push(this.textNode(tok, '\n'));
+      }
     }
   }
 
@@ -686,21 +700,15 @@ class Parser {
 
     while (this.peek().type !== 'end-ref-link') {
       const next = this.peek();
-      switch (next.type) {
-        case 'text':
-          this.appendText(block.nodes, this.advance());
-          break;
-        case 'start-interpolation':
-          this.advance();
-          block.nodes.push(this.parseExpr());
-          this.expect('end-interpolation');
-          break;
-        default:
-          this.error(
-            'INVALID_TOKEN',
-            'Unexpected token in reference link: ' + next.type,
-            next,
-          );
+      if (referenceLabelTokens.has(next.type)) {
+        const node = this.parseInlineNode();
+        if (node) block.nodes.push(node);
+      } else {
+        this.error(
+          'INVALID_TOKEN',
+          'Unexpected token in reference link: ' + next.type,
+          next,
+        );
       }
     }
     this.expect('end-ref-link');
@@ -724,21 +732,15 @@ class Parser {
 
     while (this.peek().type !== 'end-ref-image') {
       const next = this.peek();
-      switch (next.type) {
-        case 'text':
-          this.appendText(block.nodes, this.advance());
-          break;
-        case 'start-interpolation':
-          this.advance();
-          block.nodes.push(this.parseExpr());
-          this.expect('end-interpolation');
-          break;
-        default:
-          this.error(
-            'INVALID_TOKEN',
-            'Unexpected token in reference image: ' + next.type,
-            next,
-          );
+      if (referenceLabelTokens.has(next.type)) {
+        const node = this.parseInlineNode();
+        if (node) block.nodes.push(node);
+      } else {
+        this.error(
+          'INVALID_TOKEN',
+          'Unexpected token in reference image: ' + next.type,
+          next,
+        );
       }
     }
     this.expect('end-ref-image');
@@ -794,46 +796,25 @@ class Parser {
         this.peek().type !== 'eos'
       ) {
         const next = this.peek();
-        switch (next.type) {
-          case 'text': {
-            const text = this.advance();
-            if (text.val !== '') appendNode(this.textNode(text));
-            break;
+        if (footnoteDefinitionTokens.has(next.type)) {
+          const node = this.parseInlineNode();
+          if (node) appendNode(node);
+        } else if (next.type === 'newline') {
+          const newline = this.advance();
+          // A physical line break is a pending semantic boundary, not
+          // unconditional output. Leading and terminal boundaries disappear,
+          // repeated boundaries coalesce, and the renderer decides whether
+          // the surrounding segments produce content after mixin variables
+          // have resolved.
+          if (block.nodes.length > 0 && !pendingSeparator) {
+            pendingSeparator = newline;
           }
-          case 'newline': {
-            const newline = this.advance();
-            // A physical line break is a pending semantic boundary, not
-            // unconditional output. Leading and terminal boundaries disappear,
-            // repeated boundaries coalesce, and the renderer decides whether
-            // the surrounding segments produce content after mixin variables
-            // have resolved.
-            if (block.nodes.length > 0 && !pendingSeparator) {
-              pendingSeparator = newline;
-            }
-            break;
-          }
-          case 'start-interpolation': {
-            this.advance();
-            const expression = this.parseExpr();
-            this.expect('end-interpolation');
-            appendNode(expression);
-            break;
-          }
-          case 'start-ref-link':
-            appendNode(this.parseRefLink());
-            break;
-          case 'start-ref-image':
-            appendNode(this.parseRefImage());
-            break;
-          case 'start-footnote-ref':
-            appendNode(this.parseFootnoteRef());
-            break;
-          default:
-            this.error(
-              'INVALID_TOKEN',
-              'Unexpected token in footnote definition: ' + next.type,
-              next,
-            );
+        } else {
+          this.error(
+            'INVALID_TOKEN',
+            'Unexpected token in footnote definition: ' + next.type,
+            next,
+          );
         }
       }
       this.expect('footnote-def-end');
@@ -983,36 +964,22 @@ class Parser {
     if (!tok) return;
     const block = this.emptyBlock(tok.loc.start.line);
     while (this.peek().type !== 'end-pipeless-text') {
-      const currentTok = this.advance();
-      switch (currentTok.type) {
-        case 'text':
-          this.appendText(block.nodes, currentTok);
-          break;
-        case 'newline':
-          block.nodes.push(this.textNode(currentTok, '\n'));
-          break;
-        case 'start-interpolation':
-          block.nodes.push(this.parseExpr());
-          this.expect('end-interpolation');
-          break;
-        case 'start-ref-link':
-          block.nodes.push(this.parseRefLinkContent(currentTok));
-          break;
-        case 'start-ref-image':
-          block.nodes.push(this.parseRefImageContent(currentTok));
-          break;
-        case 'start-footnote-ref':
-          block.nodes.push(this.parseFootnoteRefContent(currentTok));
-          break;
-        default:
-          this.error(
-            'INVALID_TOKEN',
-            'Unexpected token type: ' + currentTok.type,
-            currentTok,
-          );
+      const currentTok = this.peek();
+      if (inlineStartTokens.has(currentTok.type)) {
+        const node = this.parseInlineNode();
+        if (node) block.nodes.push(node);
+      } else if (currentTok.type === 'newline') {
+        this.advance();
+        block.nodes.push(this.textNode(currentTok, '\n'));
+      } else {
+        this.error(
+          'INVALID_TOKEN',
+          'Unexpected token type: ' + currentTok.type,
+          currentTok,
+        );
       }
     }
-    this.advance();
+    this.expect('end-pipeless-text');
     return block;
   }
 
@@ -1119,39 +1086,35 @@ class Parser {
     }
 
     // Optional immediate inline content, colon expression, or mixin variable.
-    switch (this.peek().type) {
-      case 'text':
-      case 'variable':
-      case 'start-interpolation':
-      case 'start-ref-link':
-      case 'start-ref-image':
-      case 'start-footnote-ref':
-        const text = this.parseText();
-        // appendParsed uses bounded in-place pushes rather than argument
-        // spreading, so a line with many inline shorthands remains safe.
-        this.appendParsed(tag.block.nodes, text);
-        break;
-      case ':':
-        this.advance();
-        const expr = this.parseExpr();
-        tag.block =
-          expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
-        break;
-      case 'newline':
-      case 'indent':
-      case 'outdent':
-      case 'eos':
-      case 'start-pipeless-text':
-      case 'end-interpolation':
-        break;
-      default:
-        this.error(
-          'INVALID_TOKEN',
-          'Unexpected token `' +
-            this.peek().type +
-            '` while parsing tag content',
-          this.peek(),
-        );
+    if (inlineStartTokens.has(this.peek().type)) {
+      // appendParsed uses bounded in-place pushes rather than argument
+      // spreading, so a line with many inline shorthands remains safe.
+      this.appendParsed(tag.block.nodes, this.parseText());
+    } else {
+      switch (this.peek().type) {
+        case ':': {
+          this.advance();
+          const expr = this.parseExpr();
+          tag.block =
+            expr.type === 'Block' ? expr : this.initBlock(tag.line, [expr]);
+          break;
+        }
+        case 'newline':
+        case 'indent':
+        case 'outdent':
+        case 'eos':
+        case 'start-pipeless-text':
+        case 'end-interpolation':
+          break;
+        default:
+          this.error(
+            'INVALID_TOKEN',
+            'Unexpected token `' +
+              this.peek().type +
+              '` while parsing tag content',
+            this.peek(),
+          );
+      }
     }
 
     // Line separators before an optional body.

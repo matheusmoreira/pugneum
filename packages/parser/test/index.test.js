@@ -584,6 +584,39 @@ test('preserves private attribute interpolation provenance', () => {
   );
 });
 
+test('the inline grammar accepts every lexer inline-start token', () => {
+  const source =
+    'mixin inline(v)\n' +
+    '  p text#{v} #(strong bold) @[docs label] ![logo alt] ^[note]';
+  const tokens = lex(source, {filename: 'inline.pg'});
+  const tokenTypes = new Set(tokens.map((token) => token.type));
+  const inlineStarts = [
+    'text',
+    'variable',
+    'start-interpolation',
+    'start-ref-link',
+    'start-ref-image',
+    'start-footnote-ref',
+  ];
+
+  inlineStarts.forEach((type) => {
+    assert.ok(tokenTypes.has(type), 'fixture must emit ' + type);
+  });
+
+  const ast = parse(tokens, {filename: 'inline.pg', source});
+  const nodeTypes = new Set(typedNodes(ast).map((node) => node.type));
+  [
+    'Text',
+    'Variable',
+    'Tag',
+    'ReferenceLink',
+    'ReferenceImage',
+    'FootnoteRef',
+  ].forEach((type) => {
+    assert.ok(nodeTypes.has(type), 'parser must retain ' + type);
+  });
+});
+
 describe('direct variable continuations', () => {
   function contentSignature(tag) {
     return tag.block.nodes

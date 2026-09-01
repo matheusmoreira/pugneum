@@ -122,15 +122,6 @@ function isolateCommentBlock(block) {
   });
 }
 
-function isolateCommentSemantics(ast) {
-  return walk(ast, function (node) {
-    if (node.type === 'BlockComment') {
-      node.block = isolateCommentBlock(node.block);
-      return false;
-    }
-  });
-}
-
 function walkDocumentContent(ast, before) {
   return walk(ast, function (node, replace, control) {
     if (node.type === 'BlockComment') return false;
@@ -161,41 +152,90 @@ function normalizeTextNewlines(value) {
   return value.replace(/\r\n|\r/g, '\n');
 }
 
+function lintNode(node, sources, warnings, seenIds) {
+  if (node.type !== 'Tag') return;
+  const attrs = node.attrs || [];
+  for (const attr of attrs) {
+    if (asciiLowerCase(attr.name) === 'id' && typeof attr.val === 'string') {
+      const loc = attr.line != null ? attr : node;
+      if (seenIds[attr.val]) {
+        warn(
+          'DUPLICATE_ID',
+          "Duplicate id '" + attr.val + "' (ids must be unique)",
+          loc,
+          sources,
+          warnings,
+        );
+      } else {
+        seenIds[attr.val] = true;
+      }
+    }
+  }
+  if (
+    asciiLowerCase(node.name) === 'img' &&
+    !attrs.some((a) => asciiLowerCase(a.name) === 'alt')
+  ) {
+    warn(
+      'IMG_WITHOUT_ALT',
+      'img has no alt attribute (use alt="" for purely decorative images)',
+      node,
+      sources,
+      warnings,
+    );
+  }
+}
+
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
 function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
   walkDocumentContent(ast, function (node) {
-    if (node.type !== 'Tag') return;
-    const attrs = node.attrs || [];
-    for (const attr of attrs) {
-      if (asciiLowerCase(attr.name) === 'id' && typeof attr.val === 'string') {
-        const loc = attr.line != null ? attr : node;
-        if (seenIds[attr.val]) {
-          warn(
-            'DUPLICATE_ID',
-            "Duplicate id '" + attr.val + "' (ids must be unique)",
-            loc,
-            sources,
-            warnings,
-          );
-        } else {
-          seenIds[attr.val] = true;
-        }
-      }
-    }
-    if (
-      asciiLowerCase(node.name) === 'img' &&
-      !attrs.some((a) => asciiLowerCase(a.name) === 'alt')
-    ) {
-      warn(
-        'IMG_WITHOUT_ALT',
-        'img has no alt attribute (use alt="" for purely decorative images)',
-        node,
-        sources,
-        warnings,
-      );
-    }
+    lintNode(node, sources, warnings, seenIds);
   });
+}
+
+// Isolate comment-local syntax, discover optional document features, and
+// tentatively lint the untransformed tree in one pass. When no resolver can
+// rewrite the document, these lint results are already final; otherwise they
+// are discarded and lintDocument runs over the transformed tree so warning
+// order and visibility retain their established contract.
+function censusDocumentSemantics(ast, sources) {
+  const features = {
+    references: false,
+    footnotes: false,
+    footnoteDefinitions: false,
+    toc: false,
+  };
+  const lintWarnings = [];
+  const seenIds = Object.create(null);
+
+  ast = walk(ast, function (node) {
+    if (node.type === 'BlockComment') {
+      node.block = isolateCommentBlock(node.block);
+      return false;
+    }
+
+    switch (node.type) {
+      case 'References':
+      case 'ReferenceLink':
+      case 'ReferenceImage':
+        features.references = true;
+        break;
+      case 'Footnotes':
+        features.footnotes = true;
+        features.footnoteDefinitions = true;
+        break;
+      case 'FootnoteRef':
+        features.footnotes = true;
+        break;
+      case 'Toc':
+        features.toc = true;
+        break;
+    }
+
+    lintNode(node, sources, lintWarnings, seenIds);
+  });
+
+  return {ast, features, lintWarnings};
 }
 
 const DEFAULT_MAX_LINK_DEPTH = 256;
@@ -236,12 +276,24 @@ link.assemble = function (ast, options) {
 function resolveDocument(ast, options) {
   const sources = diagnosticSources(options);
   const warnings = options.warnings;
-  ast = isolateCommentSemantics(ast);
-  const reachableFootnotes = findReachableFootnoteDefinitions(ast);
-  ast = resolveReferences(ast, sources, warnings, reachableFootnotes);
-  ast = resolveToc(ast, sources, warnings);
-  ast = resolveFootnotes(ast, sources, warnings);
-  lintDocument(ast, sources, warnings);
+  const census = censusDocumentSemantics(ast, sources);
+  const features = census.features;
+  ast = census.ast;
+
+  if (features.references) {
+    const reachableFootnotes = features.footnoteDefinitions
+      ? findReachableFootnoteDefinitions(ast)
+      : [];
+    ast = resolveReferences(ast, sources, warnings, reachableFootnotes);
+  }
+  if (features.toc) ast = resolveToc(ast, sources, warnings);
+  if (features.footnotes) ast = resolveFootnotes(ast, sources, warnings);
+
+  if (features.references || features.toc || features.footnotes) {
+    lintDocument(ast, sources, warnings);
+  } else {
+    appendItems(warnings, census.lintWarnings);
+  }
   return ast;
 }
 link.resolve = function (ast, options) {

@@ -559,7 +559,7 @@ describe('warnings', () => {
 // Link a project laid out as {filename: source} in a fresh temp directory so
 // the loader's basedir is the temp root (relative includes/extends stay inside
 // it). Returns the linked AST; the caller passes the entry filename.
-function linkProject(files, entry) {
+function linkProject(files, entry, linker) {
   var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-linker-'));
   try {
     Object.keys(files).forEach(function (name) {
@@ -572,11 +572,65 @@ function linkProject(files, entry) {
     var warnings = [];
     var options = {filename, source, lex, parse, basedir: dir, warnings};
     var loaded = load(parse(lex(source, options), options), options);
-    var linked = link(loaded, options);
+    var linked = (linker || link)(loaded, options);
     return {linked: linked, warnings: warnings};
   } finally {
     fs.rmSync(dir, {recursive: true, force: true});
   }
+}
+
+// Load an isolated linker instance whose captured walker records deterministic
+// pass and node-visit counts. The package caches are restored synchronously, so
+// the rest of this file continues using the ordinary linker and walker.
+function instrumentLinkerWalks() {
+  const walkerPath = require.resolve('pugneum-walker');
+  const linkerPath = require.resolve('../');
+  const walkerEntry = require.cache[walkerPath];
+  const linkerEntry = require.cache[linkerPath];
+  const originalWalk = walkerEntry.exports;
+  const counts = {walks: 0, nodes: 0};
+
+  function countedWalk(ast, before, after, options) {
+    if (
+      after &&
+      typeof after === 'object' &&
+      !Array.isArray(after) &&
+      options === undefined
+    ) {
+      options = after;
+      after = null;
+    }
+    counts.walks++;
+    return originalWalk(
+      ast,
+      function countedBefore(node, replace, control) {
+        counts.nodes++;
+        if (before) return before(node, replace, control);
+      },
+      after,
+      options,
+    );
+  }
+
+  let instrumentedLinker;
+  try {
+    walkerEntry.exports = countedWalk;
+    delete require.cache[linkerPath];
+    instrumentedLinker = require('../');
+  } finally {
+    walkerEntry.exports = originalWalk;
+    delete require.cache[linkerPath];
+    if (linkerEntry) require.cache[linkerPath] = linkerEntry;
+  }
+
+  return {
+    linker: instrumentedLinker,
+    counts,
+    reset() {
+      counts.walks = 0;
+      counts.nodes = 0;
+    },
+  };
 }
 
 function tocOutline(ast) {
@@ -627,11 +681,66 @@ function inheritanceProject(depth) {
   return {files: files, entry: 'level' + depth + '.pg'};
 }
 
-describe('flattenParentBlocks deduplication (exponential blowup guard)', () => {
-  test('a deep extends chain overriding a shared replace-mode block links in linear time', () => {
-    // Without deduping visited blocks in flattenParentBlocks this fan-out DAG
-    // pushes shared block objects exponentially and crashes with
-    // "RangeError: Invalid array length" around depth ~18.
+describe('linker pass and inheritance scaling', () => {
+  test('feature-free resolution combines its census and lints in one walk', () => {
+    const instrumented = instrumentLinkerWalks();
+    const source = 'p#dup first\nimg#dup(src=/image.png)';
+    const warnings = [];
+    const options = {filename: 'simple.pg', source, warnings};
+    const ast = parse(lex(source, options), options);
+
+    const result = instrumented.linker.resolve(ast, options);
+
+    assert.strictEqual(instrumented.counts.walks, 1);
+    assert.strictEqual(result.nodes.length, 2);
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.code),
+      ['PUGNEUM:DUPLICATE_ID', 'PUGNEUM:IMG_WITHOUT_ALT'],
+    );
+  });
+
+  test('a reference document runs only its required resolver and final lint', () => {
+    const instrumented = instrumentLinkerWalks();
+    const source = 'references\n  docs /docs\n\np @[docs documentation]';
+    const warnings = [];
+    const options = {filename: 'reference.pg', source, warnings};
+    const ast = parse(lex(source, options), options);
+
+    const result = instrumented.linker.resolve(ast, options);
+
+    assert.strictEqual(instrumented.counts.walks, 4);
+    assert.strictEqual(result.nodes.length, 1);
+    assert.strictEqual(result.nodes[0].block.nodes[0].type, 'Tag');
+    assert.deepStrictEqual(warnings, []);
+  });
+
+  test('deep repeated overrides require linear walker visits', () => {
+    const instrumented = instrumentLinkerWalks();
+    const shallowProject = inheritanceProject(30);
+    linkProject(
+      shallowProject.files,
+      shallowProject.entry,
+      instrumented.linker,
+    );
+    const shallowVisits = instrumented.counts.nodes;
+
+    instrumented.reset();
+    const deepProject = inheritanceProject(60);
+    linkProject(deepProject.files, deepProject.entry, instrumented.linker);
+    const deepVisits = instrumented.counts.nodes;
+
+    assert.ok(
+      deepVisits < shallowVisits * 2.1,
+      'doubling inheritance depth must stay linear: ' +
+        shallowVisits +
+        ' visits grew to ' +
+        deepVisits,
+    );
+  });
+
+  test('a deep extends chain overriding a shared replace-mode block stays bounded', () => {
+    // Each level now retains only the current rendered slot index. There is no
+    // flattened ancestry graph to recursively rebuild while the chain unwinds.
     var depth = 60;
     var project = inheritanceProject(depth);
     var result = linkProject(project.files, project.entry);

@@ -42,13 +42,19 @@ escape-only path.
 
 ## Prism components
 
-This adapter uses the official `prismjs` package and its `components.json`
-registry. The core and requested grammar (plus declared dependencies) load only
-after an explicit language is selected; there is no generated all-language
-bundle to maintain. To update Prism, bump the pinned dependency floor, review
-the upstream component-registry changes, and run this package's focused tests
-and the repository release check. The tests exercise aliases, dependency
-loading, unknown names, token output, and the escape-only no-load boundary.
+This adapter uses [`prism-minmaxed`](https://github.com/matheusmoreira/prism-minmaxed),
+a server-only Prism fork maintained by Pugneum's author. It removes browser
+code and optional project files while putting every supported language and its
+dependencies in one zero-dependency package. The bundle is loaded lazily only
+when a language is explicitly selected; escape-only filtering does not load
+Prism.
+
+The fork currently incorporates the server-relevant code and grammars from
+Prism 1.29. Prism 1.30 changed browser-only core code, so there is no applicable
+server update to carry yet. When Prism v2 is released, review its server-side
+changes and give the new version the same minmaxing treatment before updating
+this dependency. The tests exercise aliases, bundled dependencies, unknown
+names, token output, and the escape-only no-load boundary.
 
 ## License
 

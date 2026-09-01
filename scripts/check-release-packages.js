@@ -340,7 +340,7 @@ function exactExternalDependencies() {
   return {
     'highlight.js': '11.8.0',
     htmlparser2: '9.0.0',
-    prismjs: '1.30.0',
+    'prism-minmaxed': '1.0.0',
   };
 }
 
@@ -469,7 +469,7 @@ function scenarios(tarballs) {
       smoke: 'plugins',
       dependencies: {
         'highlight.js': '11.8.0',
-        prismjs: '1.30.0',
+        'prism-minmaxed': '1.0.0',
         ...pluginRuntime,
         'pugneum-filter-highlight.js': localSpec(
           tarballs,
@@ -485,7 +485,7 @@ function scenarios(tarballs) {
         localResolution('pugneum-filter-highlight.js', 'pugneum-filterer'),
         localResolution('pugneum-filter-prismjs', 'pugneum-filterer'),
         resolution('pugneum-filter-highlight.js', 'highlight.js', '11.8.0'),
-        resolution('pugneum-filter-prismjs', 'prismjs', '1.30.0'),
+        resolution('pugneum-filter-prismjs', 'prism-minmaxed', '1.0.0'),
       ],
     },
     {
@@ -554,7 +554,7 @@ function scenarios(tarballs) {
       resolutions: [
         ...cohortResolutions(),
         resolution('pugneum-filter-highlight.js', 'highlight.js', '11.8.0'),
-        resolution('pugneum-filter-prismjs', 'prismjs', '1.30.0'),
+        resolution('pugneum-filter-prismjs', 'prism-minmaxed', '1.0.0'),
         resolution('pugneum-feed', 'htmlparser2', '9.0.0'),
       ],
     },
@@ -565,7 +565,7 @@ function scenarios(tarballs) {
       resolutions: cohortResolutions(),
       freshCache: true,
       preferOnline: true,
-      reportVersions: ['highlight.js', 'htmlparser2', 'prismjs'],
+      reportVersions: ['highlight.js', 'htmlparser2', 'prism-minmaxed'],
     },
   ];
 }

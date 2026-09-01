@@ -161,7 +161,7 @@ const expectedReleaseManifests = Object.freeze({
     version: '1.1.1',
     files: ['index.js'],
     dependencies: {
-      prismjs: '^1.30.0',
+      'prism-minmaxed': '^1.0.0',
       'pugneum-error': '^2.0.0',
     },
     devDependencies: {

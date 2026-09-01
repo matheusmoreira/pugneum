@@ -14,16 +14,10 @@ describe('prismjs filter', () => {
   });
 
   test('entry loading and escape-only filtering do not initialize Prism', () => {
-    var core = require.resolve('prismjs');
-    var components = require.resolve('prismjs/components/');
-    var registry = require.resolve('prismjs/components.json');
-    assert.strictEqual(require.cache[core], undefined);
-    assert.strictEqual(require.cache[components], undefined);
-    assert.strictEqual(require.cache[registry], undefined);
+    var bundle = require.resolve('prism-minmaxed');
+    assert.strictEqual(require.cache[bundle], undefined);
     assert.strictEqual(prism.filter('<code>', {}), '&lt;code&gt;');
-    assert.strictEqual(require.cache[core], undefined);
-    assert.strictEqual(require.cache[components], undefined);
-    assert.strictEqual(require.cache[registry], undefined);
+    assert.strictEqual(require.cache[bundle], undefined);
   });
 
   test('no language uses Pugneum full HTML escaping', () => {
@@ -37,12 +31,12 @@ describe('prismjs filter', () => {
   });
 
   test('unknown language throws', () => {
-    var core = require.resolve('prismjs');
+    var bundle = require.resolve('prism-minmaxed');
     assert.throws(
       () => prism.filter('code', {language: 'definitelynotalang'}),
       /Unknown language/,
     );
-    assert.strictEqual(require.cache[core], undefined);
+    assert.notStrictEqual(require.cache[bundle], undefined);
   });
 
   test('supplied language values must be nonempty strings', () => {
@@ -100,7 +94,7 @@ describe('prismjs filter', () => {
     assert.match(out, /class="token/);
   });
 
-  test('registry aliases and component dependencies load on demand', () => {
+  test('bundled aliases and component dependencies are available', () => {
     assert.match(
       prism.filter('const value: string = "ok";', {language: 'TS'}),
       /token builtin/,

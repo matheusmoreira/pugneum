@@ -36,6 +36,29 @@ function text(val) {
   return {type: 'Text', val: val, line: 1, column: 1, filename: 'test'};
 }
 
+function comment(val, buffer, children) {
+  const node = {
+    type: children === undefined ? 'Comment' : 'BlockComment',
+    val,
+    buffer,
+    line: 1,
+    filename: 'test',
+  };
+  if (children !== undefined) node.block = block(children);
+  return node;
+}
+
+function given(name, children) {
+  return {
+    type: 'Given',
+    name,
+    block: block(children || []),
+    line: 1,
+    column: 1,
+    filename: 'test',
+  };
+}
+
 function footnoteBody(nodes) {
   return Object.assign(block(nodes), {isFootnoteBody: true});
 }
@@ -231,7 +254,7 @@ describe('footnote line joining', () => {
 
 describe('attributes', () => {
   test('string attribute', () => {
-    var attrs = [{name: 'href', val: '/home', line: 1, column: 1}];
+    var attrs = [attr('href', '/home')];
     assert.strictEqual(
       render(block([tag('a', attrs, [text('link')])])),
       '<a href="/home">link</a>',
@@ -239,7 +262,7 @@ describe('attributes', () => {
   });
 
   test('boolean attribute', () => {
-    var attrs = [{name: 'disabled', val: true, line: 1, column: 1}];
+    var attrs = [attr('disabled', true)];
     assert.strictEqual(
       render(block([tag('input', attrs)])),
       '<input disabled>',
@@ -247,10 +270,7 @@ describe('attributes', () => {
   });
 
   test('multiple classes joined with spaces', () => {
-    var attrs = [
-      {name: 'class', val: 'a', line: 1, column: 1},
-      {name: 'class', val: 'b', line: 1, column: 1},
-    ];
+    var attrs = [attr('class', 'a'), attr('class', 'b')];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
       '<div class="a b"></div>',
@@ -258,16 +278,12 @@ describe('attributes', () => {
   });
 
   test('a valueless class attribute is preserved', () => {
-    var attrs = [{name: 'class', val: true, line: 1, column: 1}];
+    var attrs = [attr('class', true)];
     assert.strictEqual(render(block([tag('div', attrs)])), '<div class></div>');
   });
 
   test('class coalescing uses ASCII-case-insensitive HTML identity', () => {
-    var attrs = [
-      {name: 'CLASS', val: 'a', line: 1, column: 1},
-      {name: 'Class', val: true, line: 1, column: 1},
-      {name: 'class', val: 'b', line: 1, column: 1},
-    ];
+    var attrs = [attr('CLASS', 'a'), attr('Class', true), attr('class', 'b')];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
       '<div class="a b"></div>',
@@ -290,7 +306,7 @@ describe('attributes', () => {
   });
 
   test('quotes in class values are escaped', () => {
-    var attrs = [{name: 'class', val: 'a"b', line: 1, column: 1}];
+    var attrs = [attr('class', 'a"b')];
     assert.strictEqual(
       render(block([tag('div', attrs)])),
       '<div class="a&quot;b"></div>',
@@ -336,10 +352,10 @@ describe('void elements', () => {
 describe('SVG void elements', () => {
   test('rect is self-closing', () => {
     var attrs = [
-      {name: 'x', val: '0', line: 1, column: 1},
-      {name: 'y', val: '0', line: 1, column: 1},
-      {name: 'width', val: '100', line: 1, column: 1},
-      {name: 'height', val: '50', line: 1, column: 1},
+      attr('x', '0'),
+      attr('y', '0'),
+      attr('width', '100'),
+      attr('height', '50'),
     ];
     assert.strictEqual(
       render(block([tag('rect', attrs)])),
@@ -348,11 +364,7 @@ describe('SVG void elements', () => {
   });
 
   test('circle is self-closing', () => {
-    var attrs = [
-      {name: 'cx', val: '50', line: 1, column: 1},
-      {name: 'cy', val: '50', line: 1, column: 1},
-      {name: 'r', val: '25', line: 1, column: 1},
-    ];
+    var attrs = [attr('cx', '50'), attr('cy', '50'), attr('r', '25')];
     assert.strictEqual(
       render(block([tag('circle', attrs)])),
       '<circle cx="50" cy="50" r="25" />',
@@ -361,10 +373,10 @@ describe('SVG void elements', () => {
 
   test('line is self-closing', () => {
     var attrs = [
-      {name: 'x1', val: '0', line: 1, column: 1},
-      {name: 'y1', val: '0', line: 1, column: 1},
-      {name: 'x2', val: '100', line: 1, column: 1},
-      {name: 'y2', val: '100', line: 1, column: 1},
+      attr('x1', '0'),
+      attr('y1', '0'),
+      attr('x2', '100'),
+      attr('y2', '100'),
     ];
     assert.strictEqual(
       render(block([tag('line', attrs)])),
@@ -373,7 +385,7 @@ describe('SVG void elements', () => {
   });
 
   test('path is self-closing', () => {
-    var attrs = [{name: 'd', val: 'M0 0 L100 100', line: 1, column: 1}];
+    var attrs = [attr('d', 'M0 0 L100 100')];
     assert.strictEqual(
       render(block([tag('path', attrs)])),
       '<path d="M0 0 L100 100" />',
@@ -443,8 +455,8 @@ describe('SVG void elements', () => {
   test('sibling SVG shapes do not misnest (self-closing slash separates them)', () => {
     // Without the trailing slash, <rect> stays open in SVG foreign content and
     // the following <rect> is parsed as its child rather than its sibling.
-    var a = [{name: 'id', val: 'a', line: 1, column: 1}];
-    var b = [{name: 'id', val: 'b', line: 1, column: 1}];
+    var a = [attr('id', 'a')];
+    var b = [attr('id', 'b')];
     assert.strictEqual(
       render(block([tag('svg', [], [tag('rect', a), tag('rect', b)])])),
       '<svg><rect id="a" /><rect id="b" /></svg>',
@@ -452,7 +464,7 @@ describe('SVG void elements', () => {
   });
 
   test('SVG animation element followed by a shape stays a sibling', () => {
-    var attrs = [{name: 'attributeName', val: 'x', line: 1, column: 1}];
+    var attrs = [attr('attributeName', 'x')];
     assert.strictEqual(
       render(block([tag('svg', [], [tag('animate', attrs), tag('rect')])])),
       '<svg><animate attributeName="x" /><rect /></svg>',
@@ -462,187 +474,84 @@ describe('SVG void elements', () => {
 
 describe('comments', () => {
   test('buffered comment', () => {
-    var node = {
-      type: 'Comment',
-      val: ' hello ',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' hello ', true);
     assert.strictEqual(render(block([node])), '<!-- hello -->');
   });
 
   test('unbuffered comment produces no output', () => {
-    var node = {
-      type: 'Comment',
-      val: ' hidden ',
-      buffer: false,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' hidden ', false);
     assert.strictEqual(render(block([node])), '');
   });
 
   test('buffered block comment', () => {
-    var node = {
-      type: 'BlockComment',
-      val: ' start ',
-      buffer: true,
-      block: block([text('body')]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' start ', true, [text('body')]);
     assert.strictEqual(render(block([node])), '<!-- start body-->');
   });
 
   test('unbuffered block comment produces no output', () => {
-    var node = {
-      type: 'BlockComment',
-      val: ' hidden ',
-      buffer: false,
-      block: block([text('body')]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' hidden ', false, [text('body')]);
     assert.strictEqual(render(block([node])), '');
   });
 
   test('unbuffered block comments do not evaluate invalid descendants', () => {
-    var node = {
-      type: 'BlockComment',
-      val: ' hidden ',
-      buffer: false,
-      block: block([
-        {
-          type: 'Variable',
-          name: 'outside',
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
-      ]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' hidden ', false, [variable('outside')]);
     assert.strictEqual(render(block([node])), '');
   });
 
   test('unbuffered block comments do not register hidden mixins', () => {
-    var comment = {
-      type: 'BlockComment',
-      val: ' hidden ',
-      buffer: false,
-      block: block([mixinDef('hidden', [], [text('body')])]),
-      line: 1,
-      filename: 'test',
-    };
+    var hidden = comment(' hidden ', false, [
+      mixinDef('hidden', [], [text('body')]),
+    ]);
     assert.throws(
-      () => render(block([comment, mixinCallOpts('hidden')])),
+      () => render(block([hidden, mixinCallOpts('hidden')])),
       (err) => err.code === 'PUGNEUM:UNDEFINED_MIXIN',
     );
   });
 
   test('block comment with empty val', () => {
-    var node = {
-      type: 'BlockComment',
-      val: '',
-      buffer: true,
-      block: block([text('content')]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('', true, [text('content')]);
     assert.strictEqual(render(block([node])), '<!--content-->');
   });
 
   test('comment with null val renders empty comment', () => {
-    var node = {
-      type: 'Comment',
-      val: null,
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(null, true);
     assert.strictEqual(render(block([node])), '<!---->');
   });
 
   test('block comment with null val uses body only', () => {
-    var node = {
-      type: 'BlockComment',
-      val: null,
-      buffer: true,
-      block: block([text('body')]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(null, true, [text('body')]);
     assert.strictEqual(render(block([node])), '<!--body-->');
   });
 });
 
 describe('comment sanitization', () => {
   test('-- in comment is separated with spaces', () => {
-    var node = {
-      type: 'Comment',
-      val: 'foo--bar',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('foo--bar', true);
     assert.strictEqual(render(block([node])), '<!--foo- -bar-->');
   });
 
   test('--- (odd-length dashes) are all separated', () => {
-    var node = {
-      type: 'Comment',
-      val: 'foo---bar',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('foo---bar', true);
     assert.strictEqual(render(block([node])), '<!--foo- - -bar-->');
   });
 
   test('comment starting with > has space prepended', () => {
-    var node = {
-      type: 'Comment',
-      val: '>dangerous',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('>dangerous', true);
     assert.strictEqual(render(block([node])), '<!-- >dangerous-->');
   });
 
   test('comment starting with -> has space prepended', () => {
-    var node = {
-      type: 'Comment',
-      val: '->dangerous',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('->dangerous', true);
     assert.strictEqual(render(block([node])), '<!-- ->dangerous-->');
   });
 
   test('comment ending with - has space appended', () => {
-    var node = {
-      type: 'Comment',
-      val: 'trailing-',
-      buffer: true,
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment('trailing-', true);
     assert.strictEqual(render(block([node])), '<!--trailing- -->');
   });
 
   test('block comment with -- in body text is sanitized', () => {
-    var node = {
-      type: 'BlockComment',
-      val: ' start ',
-      buffer: true,
-      block: block([text('has--dashes')]),
-      line: 1,
-      filename: 'test',
-    };
+    var node = comment(' start ', true, [text('has--dashes')]);
     assert.strictEqual(render(block([node])), '<!-- start has- -dashes-->');
   });
 });
@@ -716,13 +625,7 @@ describe('mixins', () => {
       name: 'wrapper',
       call: false,
       args: [],
-      block: block([
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
-      ]),
+      block: block([tag('div', [], [mixinBlock()])]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -838,7 +741,7 @@ describe('mixin errors', () => {
     // not be silently dropped.
     var declaration = mixinDecl('box', [], [tag('div', [], [])]);
     var call = mixinCallOpts('box', [], null, {
-      attrs: [{name: 'class', val: 'highlight', line: 2, column: 1}],
+      attrs: [attr('class', 'highlight', 2)],
     });
     assert.throws(
       () => render(block([declaration, call])),
@@ -850,7 +753,7 @@ describe('mixin errors', () => {
     // +box#main
     var declaration = mixinDecl('box', [], [tag('div', [], [])]);
     var call = mixinCallOpts('box', [], null, {
-      attrs: [{name: 'id', val: 'main', line: 2, column: 1}],
+      attrs: [attr('id', 'main', 2)],
     });
     assert.throws(
       () => render(block([declaration, call])),
@@ -1101,9 +1004,7 @@ describe('variables in attributes', () => {
       name: 'test',
       call: false,
       args: [],
-      block: block([
-        tag('div', [{name: 'x', val: '#{missing}', line: 1, column: 1}]),
-      ]),
+      block: block([tag('div', [attr('x', '#{missing}')])]),
       line: 1,
       column: 1,
       filename: 'test',
@@ -1465,30 +1366,12 @@ describe('error handling', () => {
 
 // Helper: mixin declaration node
 function mixinDecl(name, args, children) {
-  return {
-    type: 'Mixin',
-    name: name,
-    call: false,
-    args: args,
-    block: block(children || []),
-    line: 1,
-    column: 1,
-    filename: 'test',
-  };
+  return mixinDef(name, args, children);
 }
 
 // Helper: mixin call node
 function mixinCall(name, args, children) {
-  return {
-    type: 'Mixin',
-    name: name,
-    call: true,
-    args: args,
-    block: children ? block(children) : null,
-    line: 2,
-    column: 1,
-    filename: 'test',
-  };
+  return mixinCallOpts(name, args, children);
 }
 
 // Helper: variable node
@@ -1497,8 +1380,8 @@ function variable(name) {
 }
 
 // Helper: attribute
-function attr(name, val) {
-  return {name: name, val: val, line: 1, column: 1};
+function attr(name, val, line) {
+  return {name: name, val: val, line: line || 1, column: 1};
 }
 
 describe('optional arguments', () => {
@@ -1909,15 +1792,8 @@ describe('named mixin blocks', () => {
           },
         },
       );
-      const given = {
-        type: 'Given',
-        name: 'optional',
-        block: block(optionalNodes),
-        line: 1,
-        column: 1,
-        filename: 'test',
-      };
-      const decl = mixinDef('card', [], [given], {usesNamedBlocks: true});
+      const optional = given('optional', optionalNodes);
+      const decl = mixinDef('card', [], [optional], {usesNamedBlocks: true});
       const calls = Array.from({length: callCount}, () =>
         mixinCallOpts('card', []),
       );
@@ -2254,14 +2130,7 @@ describe('mixed named + unnamed blocks', () => {
     const decl = mixinDef(
       'card',
       [],
-      [
-        namedBlock('header', 'replace'),
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
-      ],
+      [namedBlock('header', 'replace'), tag('div', [], [mixinBlock()])],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
     const call = mixinCallOpts(
@@ -2281,11 +2150,7 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('Default Header')]),
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
+        tag('div', [], [mixinBlock()]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2302,11 +2167,7 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('Default')]),
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
+        tag('div', [], [mixinBlock()]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2322,14 +2183,7 @@ describe('mixed named + unnamed blocks', () => {
     const decl = mixinDef(
       'page',
       [],
-      [
-        namedBlock('nav', 'replace'),
-        tag(
-          'main',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
-      ],
+      [namedBlock('nav', 'replace'), tag('main', [], [mixinBlock()])],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
     const call = mixinCallOpts(
@@ -2353,11 +2207,7 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('header', 'replace', [text('H')]),
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
+        tag('div', [], [mixinBlock()]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2383,11 +2233,7 @@ describe('mixed named + unnamed blocks', () => {
       [],
       [
         namedBlock('footer', 'replace', [text('default footer')]),
-        tag(
-          'div',
-          [],
-          [{type: 'MixinBlock', line: 1, column: 1, filename: 'test'}],
-        ),
+        tag('div', [], [mixinBlock()]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2409,15 +2255,8 @@ describe('given keyword', () => {
       'card',
       [],
       [
-        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
-        {
-          type: 'Given',
-          name: 'footer',
-          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        mixinBlock(),
+        given('footer', [tag('footer', [], [namedBlock('footer', 'replace')])]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2437,15 +2276,8 @@ describe('given keyword', () => {
       'card',
       [],
       [
-        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
-        {
-          type: 'Given',
-          name: 'footer',
-          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        mixinBlock(),
+        given('footer', [tag('footer', [], [namedBlock('footer', 'replace')])]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2461,15 +2293,8 @@ describe('given keyword', () => {
       'card',
       [],
       [
-        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
-        {
-          type: 'Given',
-          name: 'footer',
-          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        mixinBlock(),
+        given('footer', [tag('footer', [], [namedBlock('footer', 'replace')])]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2489,14 +2314,9 @@ describe('given keyword', () => {
       [],
       [
         namedBlock('main', 'replace'),
-        {
-          type: 'Given',
-          name: 'sidebar',
-          block: block([tag('aside', [], [namedBlock('sidebar', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        given('sidebar', [
+          tag('aside', [], [namedBlock('sidebar', 'replace')]),
+        ]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
@@ -2517,14 +2337,9 @@ describe('given keyword', () => {
       [],
       [
         namedBlock('main', 'replace', [text('default')]),
-        {
-          type: 'Given',
-          name: 'sidebar',
-          block: block([tag('aside', [], [namedBlock('sidebar', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        given('sidebar', [
+          tag('aside', [], [namedBlock('sidebar', 'replace')]),
+        ]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
@@ -2541,23 +2356,9 @@ describe('given keyword', () => {
       'page',
       [],
       [
-        {type: 'MixinBlock', line: 1, column: 1, filename: 'test'},
-        {
-          type: 'Given',
-          name: 'nav',
-          block: block([tag('nav', [], [namedBlock('nav', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
-        {
-          type: 'Given',
-          name: 'footer',
-          block: block([tag('footer', [], [namedBlock('footer', 'replace')])]),
-          line: 1,
-          column: 1,
-          filename: 'test',
-        },
+        mixinBlock(),
+        given('nav', [tag('nav', [], [namedBlock('nav', 'replace')])]),
+        given('footer', [tag('footer', [], [namedBlock('footer', 'replace')])]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
@@ -2573,16 +2374,9 @@ describe('given keyword', () => {
   });
 
   test('given outside mixin call throws GIVEN_OUTSIDE_CALL', () => {
-    const given = {
-      type: 'Given',
-      name: 'footer',
-      block: block([text('content')]),
-      line: 1,
-      column: 1,
-      filename: 'test',
-    };
+    const footer = given('footer', [text('content')]);
     assert.throws(
-      () => render(block([given])),
+      () => render(block([footer])),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_CALL',
     );
   });
@@ -2648,7 +2442,7 @@ describe('defensive error paths', () => {
   });
 
   test('MixinBlock outside a mixin call throws CALL_STACK_UNDERFLOW', () => {
-    const node = {type: 'MixinBlock', line: 1, column: 1, filename: 'test'};
+    const node = mixinBlock();
     assert.throws(
       () => render(block([node])),
       (err) => err.code === 'PUGNEUM:CALL_STACK_UNDERFLOW',

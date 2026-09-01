@@ -206,6 +206,15 @@ class Compiler {
     }
   }
 
+  withCallerScope(callback) {
+    const current = this.callStack.pop();
+    try {
+      return callback(current);
+    } finally {
+      this.callStack.push(current);
+    }
+  }
+
   visit(node, parent) {
     if (!node) {
       let msg;
@@ -302,13 +311,15 @@ class Compiler {
             }
 
             const renderFragment = (fragment) => {
-              if (fragment.scope === 'caller') this.callStack.pop();
-              try {
+              const renderNodes = () => {
                 for (const node of fragment.nodes) {
                   this.visit(node, namedBlock);
                 }
-              } finally {
-                if (fragment.scope === 'caller') this.callStack.push(frame);
+              };
+              if (fragment.scope === 'caller') {
+                this.withCallerScope(renderNodes);
+              } else {
+                renderNodes();
               }
             };
 
@@ -715,16 +726,13 @@ class Compiler {
     // frame up), restored in finally. namedBlocks !== null means this mixin
     // mixes named blocks with an unnamed slot, so MixinBlock yields only the
     // unnamed remainder; otherwise it yields the whole caller block.
-    const current = this.callStack.pop();
-    try {
+    this.withCallerScope((current) => {
       const target =
         current.namedBlocks !== null ? current.unnamedBlock : current.block;
       if (target && target.nodes && target.nodes.length) {
         this.visit(target);
       }
-    } finally {
-      this.callStack.push(current);
-    }
+    });
   }
 
   visitGiven(given) {

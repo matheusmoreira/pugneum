@@ -1059,6 +1059,43 @@ class Lexer {
     return captures;
   }
 
+  collectIndentedBlockLines(minIndent) {
+    const lines = [];
+    let consumed = 0;
+    let termination = 'end-of-source';
+
+    while (consumed < this.input.length) {
+      if (this.input[consumed] !== '\n') {
+        termination = 'same-line-content';
+        break;
+      }
+
+      const start = consumed + 1;
+      let end = this.input.indexOf('\n', start);
+      if (end === -1) end = this.input.length;
+
+      const raw = this.input.slice(start, end);
+      const captures = this.indentRe.exec('\n' + raw);
+      const indent = captures ? captures[1].length : 0;
+      const blank = !raw.trim();
+      if (!blank && indent < minIndent) {
+        termination = 'outdent';
+        break;
+      }
+
+      lines.push({
+        raw,
+        indent,
+        blank,
+        indented: indent >= minIndent,
+        span: {start: consumed, contentStart: start, end},
+      });
+      consumed = end;
+    }
+
+    return {lines, consumed, termination};
+  }
+
   /**
    * end-of-source.
    */
@@ -2591,89 +2628,79 @@ class Lexer {
     const indents = captures && captures[1].length;
     if (!indents || indents <= this.indentStack[0]) return;
 
-    let stringPtr = 0;
-    let isMatch;
-    do {
-      let i = this.input.slice(stringPtr + 1).indexOf('\n');
-      if (i === -1) i = this.input.length - stringPtr - 1;
-      const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
-      const lineCaptures = this.indentRe.exec('\n' + str);
-      const lineIndents = lineCaptures && lineCaptures[1].length;
-      isMatch = lineIndents >= indents || !str.trim();
-      if (isMatch) {
-        stringPtr += str.length + 1;
-        const content = str.slice(indents).trim();
-        if (content) {
-          this.incrementLine(1);
-          this.incrementColumn(indents);
+    const block = this.collectIndentedBlockLines(indents);
+    for (const line of block.lines) {
+      const content = line.raw.slice(indents).trim();
+      if (content) {
+        this.incrementLine(1);
+        this.incrementColumn(indents);
 
-          // Parse "name url" or "name 'quoted url'" or 'name "quoted url"'
-          const spaceIdx = content.indexOf(' ');
-          if (spaceIdx === -1) {
-            this.error(
-              'INVALID_REF_DEF',
-              'Reference definition requires both a name and a URL: ' + content,
-            );
-          }
-          const name = content.substring(0, spaceIdx);
-          const rawRest = content.substring(spaceIdx + 1);
-          const leadingRestWhitespace =
-            rawRest.length - rawRest.trimStart().length;
-          const restStart = spaceIdx + 1 + leadingRestWhitespace;
-          const rest = rawRest.trim();
-          let url;
-          let urlInterpolationSource;
-          let defaultText = null;
-
-          // Handle quoted URLs (may be followed by default text)
-          if (rest[0] === "'" || rest[0] === '"') {
-            const quote = rest[0];
-            const closeIdx = findClosingQuote(rest, quote, 1);
-            if (closeIdx === -1) {
-              this.incrementColumn(restStart);
-              this.error(
-                'INVALID_REF_DEF',
-                'Unclosed quote in reference definition URL: ' + content,
-              );
-            }
-            const decodedUrl = decodeResource(rest.substring(1, closeIdx));
-            url = decodedUrl.value;
-            urlInterpolationSource = decodedUrl.interpolationSource;
-            const afterUrl = rest.substring(closeIdx + 1).trim();
-            if (afterUrl) defaultText = afterUrl;
-          } else {
-            // Unquoted URL: first word is URL, rest is default text
-            const urlEnd = rest.indexOf(' ');
-            if (urlEnd === -1) {
-              url = rest;
-            } else {
-              url = rest.substring(0, urlEnd);
-              const afterUrl = rest.substring(urlEnd + 1).trim();
-              if (afterUrl) defaultText = afterUrl;
-            }
-            urlInterpolationSource = url;
-          }
-
-          if (!url) {
-            this.error(
-              'INVALID_REF_DEF',
-              'Reference definition requires a non-empty URL: ' + content,
-            );
-          }
-
-          const tok = this.tok('ref-def');
-          tok.name = name;
-          tok.url = url;
-          tok.defaultText = defaultText;
-          retainAttributeInterpolationSource(tok, url, urlInterpolationSource);
-          this.incrementColumn(content.length);
-          this.tokens.push(this.tokEnd(tok));
-        } else {
-          this.incrementLine(1);
+        // Parse "name url" or "name 'quoted url'" or 'name "quoted url"'
+        const spaceIdx = content.indexOf(' ');
+        if (spaceIdx === -1) {
+          this.error(
+            'INVALID_REF_DEF',
+            'Reference definition requires both a name and a URL: ' + content,
+          );
         }
+        const name = content.substring(0, spaceIdx);
+        const rawRest = content.substring(spaceIdx + 1);
+        const leadingRestWhitespace =
+          rawRest.length - rawRest.trimStart().length;
+        const restStart = spaceIdx + 1 + leadingRestWhitespace;
+        const rest = rawRest.trim();
+        let url;
+        let urlInterpolationSource;
+        let defaultText = null;
+
+        // Handle quoted URLs (may be followed by default text)
+        if (rest[0] === "'" || rest[0] === '"') {
+          const quote = rest[0];
+          const closeIdx = findClosingQuote(rest, quote, 1);
+          if (closeIdx === -1) {
+            this.incrementColumn(restStart);
+            this.error(
+              'INVALID_REF_DEF',
+              'Unclosed quote in reference definition URL: ' + content,
+            );
+          }
+          const decodedUrl = decodeResource(rest.substring(1, closeIdx));
+          url = decodedUrl.value;
+          urlInterpolationSource = decodedUrl.interpolationSource;
+          const afterUrl = rest.substring(closeIdx + 1).trim();
+          if (afterUrl) defaultText = afterUrl;
+        } else {
+          // Unquoted URL: first word is URL, rest is default text
+          const urlEnd = rest.indexOf(' ');
+          if (urlEnd === -1) {
+            url = rest;
+          } else {
+            url = rest.substring(0, urlEnd);
+            const afterUrl = rest.substring(urlEnd + 1).trim();
+            if (afterUrl) defaultText = afterUrl;
+          }
+          urlInterpolationSource = url;
+        }
+
+        if (!url) {
+          this.error(
+            'INVALID_REF_DEF',
+            'Reference definition requires a non-empty URL: ' + content,
+          );
+        }
+
+        const tok = this.tok('ref-def');
+        tok.name = name;
+        tok.url = url;
+        tok.defaultText = defaultText;
+        retainAttributeInterpolationSource(tok, url, urlInterpolationSource);
+        this.incrementColumn(content.length);
+        this.tokens.push(this.tokEnd(tok));
+      } else {
+        this.incrementLine(1);
       }
-    } while (this.input.length - stringPtr && isMatch);
-    this.consume(stringPtr);
+    }
+    this.consume(block.consumed);
   }
 
   /**
@@ -2753,23 +2780,8 @@ class Lexer {
     const defIndent = captures && captures[1].length;
     if (!defIndent || defIndent <= this.indentStack[0]) return;
 
-    // Collect all lines belonging to this block
-    const blockLines = [];
-    let stringPtr = 0;
-    let isMatch;
-    do {
-      let i = this.input.slice(stringPtr + 1).indexOf('\n');
-      if (i === -1) i = this.input.length - stringPtr - 1;
-      const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
-      const lineCaptures = this.indentRe.exec('\n' + str);
-      const lineIndents = lineCaptures && lineCaptures[1].length;
-      isMatch = lineIndents >= defIndent || !str.trim();
-      if (isMatch) {
-        stringPtr += str.length + 1;
-        blockLines.push({raw: str, indent: lineIndents || 0});
-      }
-    } while (this.input.length - stringPtr && isMatch);
-    this.consume(stringPtr);
+    const block = this.collectIndentedBlockLines(defIndent);
+    this.consume(block.consumed);
 
     // Group lines into definitions. Tokens are emitted eagerly, line by line,
     // so each one is tagged with the line/column it physically occupies (the
@@ -2784,8 +2796,8 @@ class Lexer {
       defOpen = false;
     };
 
-    for (let li = 0; li < blockLines.length; li++) {
-      const line = blockLines[li];
+    for (let li = 0; li < block.lines.length; li++) {
+      const line = block.lines[li];
 
       if (!line.raw.trim()) {
         this.incrementLine(1);
@@ -3131,42 +3143,18 @@ class Lexer {
 
     indents = indents || (captures && captures[1].length);
     if (indents > this.indentStack[0]) {
-      // First pass: find the minimum indent among non-blank indented lines
-      let minIndent = indents;
-      let scanPtr = 0;
-      while (scanPtr < this.input.length) {
-        let i = this.input.indexOf('\n', scanPtr + 1);
-        if (i === -1) i = this.input.length;
-        const str = this.input.slice(scanPtr + 1, i);
-        const lineCaptures = this.indentRe.exec('\n' + str);
-        const lineIndents = lineCaptures && lineCaptures[1].length;
-        if (str.trim() && lineIndents <= this.indentStack[0]) break;
-        if (str.trim() && lineIndents < minIndent) minIndent = lineIndents;
-        scanPtr = i;
+      const block = this.collectIndentedBlockLines(this.indentStack[0] + 1);
+      for (const line of block.lines) {
+        if (!line.blank && line.indent < indents) indents = line.indent;
       }
-      indents = minIndent;
 
       this.tokens.push(this.tokEnd(this.tok('start-pipeless-text')));
-      const tokens = [];
-      const tokenIndents = [];
-      let isMatch;
-      let stringPtr = 0;
-      do {
-        let i = this.input.slice(stringPtr + 1).indexOf('\n');
-        if (-1 === i) i = this.input.length - stringPtr - 1;
-        const str = this.input.slice(stringPtr + 1, stringPtr + 1 + i);
-        const lineCaptures = this.indentRe.exec('\n' + str);
-        const lineIndents = lineCaptures && lineCaptures[1].length;
-        isMatch = lineIndents >= indents;
-        tokenIndents.push(isMatch);
-        isMatch = isMatch || !str.trim();
-        if (isMatch) {
-          stringPtr += str.length + 1;
-          tokens.push(str.slice(indents));
-        }
-      } while (this.input.length - stringPtr && isMatch);
-      const consumedEnd = this.locationAfter(this.input.slice(0, stringPtr));
-      this.consume(stringPtr);
+      const tokens = block.lines.map((line) => line.raw.slice(indents));
+      const tokenIndents = block.lines.map((line) => line.indent >= indents);
+      const consumedEnd = this.locationAfter(
+        this.input.slice(0, block.consumed),
+      );
+      this.consume(block.consumed);
       while (this.input.length === 0 && tokens[tokens.length - 1] === '')
         tokens.pop();
 

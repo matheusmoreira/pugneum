@@ -1090,6 +1090,38 @@ describe('filter end-of-line padding', () => {
   });
 });
 
+test('indented block readers share blank-line and outdent boundaries', () => {
+  [
+    {
+      source: 'references\n  docs /docs\n\np after',
+      ownedType: 'ref-def',
+    },
+    {
+      source: 'footnotes\n  note body\n\np after',
+      ownedType: 'footnote-def-start',
+    },
+    {
+      source: 'p.\n  body\n\np after',
+      ownedType: 'start-pipeless-text',
+    },
+  ].forEach(({source, ownedType}) => {
+    const tokens = lex(source, {filename: 'block-boundary.pg'});
+    const trailingTag = tokens.filter((tok) => tok.type === 'tag').at(-1);
+
+    assert.ok(
+      tokens.some((tok) => tok.type === ownedType),
+      ownedType,
+    );
+    assert.strictEqual(trailingTag.val, 'p');
+    assert.deepStrictEqual(trailingTag.loc.start, {line: 4, column: 1});
+    assert.ok(
+      tokens.some((tok) => tok.type === 'text' && tok.val === 'after'),
+      ownedType + ' must leave the outdented line for ordinary lexing',
+    );
+    assertPhysicalTokenLocations(source, tokens, ownedType);
+  });
+});
+
 describe('pipeless text terminal locations', () => {
   function assertTerminalLocation(source, expected) {
     const tokens = lex(source, {filename: 'pipeless-eof.pg'});

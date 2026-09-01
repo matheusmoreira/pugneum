@@ -803,15 +803,11 @@ function toSuperscript(n) {
     .join('');
 }
 
-// Footnote anchor id scheme. The forward reference (`<sup><a id=…>`) and the
-// matching backlink (`<a href="#…">` in the rendered list item) MUST produce
-// identical strings for the same (name, index) or the bidirectional navigation
-// breaks silently. Keep both behind these helpers so the scheme can only be
-// changed in one place. NOTE: this encoding is not injective across the two id
-// families for adversarial footnote names (e.g. `x` referenced twice collides
-// with `x-2`, and a footnote named `reference-x` collides with `x`'s ref
-// anchor); making the families provably disjoint is tracked separately because
-// it also changes the shared /test-cases oracles.
+// Preferred footnote anchor ids retain the established readable output. Actual
+// ids are allocated once from the document-wide namespace below, because these
+// candidates are not injective for adversarial names (`x` reference 2 versus
+// `x-2` reference 1, or definition `reference-x` versus reference `x`) and can
+// also collide with author-provided ids.
 function footnoteDefId(name) {
   return 'footnote-' + name;
 }
@@ -822,12 +818,36 @@ function footnoteRefId(name, index) {
     : 'footnote-reference-' + name + '-' + index;
 }
 
+function allocateDocumentId(preferred, allocatedIds) {
+  let id = preferred;
+  let suffix = 2;
+  while (allocatedIds.has(id)) {
+    id = preferred + '-' + suffix++;
+  }
+  allocatedIds.add(id);
+  return id;
+}
+
 function resolveFootnotes(ast, sources, warnings) {
   const definitions = Object.create(null);
+  const allocatedIds = new Set();
   let footnotesBlockCount = 0;
 
-  // Pass 1: collect definitions, error on duplicates and multiple blocks
+  // Pass 1: reserve every existing document id, collect definitions, and error
+  // on duplicates and multiple blocks. Reserving in this existing walk keeps
+  // generated footnote anchors from colliding with authored or earlier-pass
+  // ids without adding another whole-document traversal.
   walk(ast, function (node) {
+    if (node.type === 'Tag') {
+      for (const attr of node.attrs || []) {
+        if (
+          asciiLowerCase(attr.name) === 'id' &&
+          typeof attr.val === 'string'
+        ) {
+          allocatedIds.add(attr.val);
+        }
+      }
+    }
     if (node.type === 'Footnotes') {
       footnotesBlockCount++;
       if (footnotesBlockCount > 1) {
@@ -866,6 +886,8 @@ function resolveFootnotes(ast, sources, warnings) {
   // This includes refs inside definition content blocks.
   const numberByName = Object.create(null);
   const refCountByName = Object.create(null);
+  const defIdByName = Object.create(null);
+  const refIdsByName = Object.create(null);
   const numberedNames = [];
   let nextNumber = 1;
 
@@ -883,12 +905,18 @@ function resolveFootnotes(ast, sources, warnings) {
     if (!(name in numberByName)) {
       numberByName[name] = nextNumber++;
       refCountByName[name] = 0;
+      defIdByName[name] = allocateDocumentId(footnoteDefId(name), allocatedIds);
+      refIdsByName[name] = [];
       numberedNames.push(name);
     }
 
     const num = numberByName[name];
     const refIndex = ++refCountByName[name];
-    const refId = footnoteRefId(name, refIndex);
+    const refId = allocateDocumentId(
+      footnoteRefId(name, refIndex),
+      allocatedIds,
+    );
+    refIdsByName[name].push(refId);
 
     const anchorNode = {
       type: 'Tag',
@@ -896,7 +924,7 @@ function resolveFootnotes(ast, sources, warnings) {
       attrs: [
         {
           name: 'href',
-          val: '#' + footnoteDefId(name),
+          val: '#' + defIdByName[name],
           line: node.line,
           column: node.column,
           filename: node.filename,
@@ -1014,7 +1042,7 @@ function resolveFootnotes(ast, sources, warnings) {
 
         const backLinkNodes = [];
         for (let i = 1; i <= totalRefs; i++) {
-          const backId = footnoteRefId(name, i);
+          const backId = refIdsByName[name][i - 1];
           const label = i === 1 ? '↩' : '↩' + toSuperscript(i);
           backLinkNodes.push({
             type: 'Tag',
@@ -1076,7 +1104,7 @@ function resolveFootnotes(ast, sources, warnings) {
           attrs: [
             {
               name: 'id',
-              val: footnoteDefId(name),
+              val: defIdByName[name],
               line: def.line,
               column: def.column,
               filename: def.filename,

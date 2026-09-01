@@ -1153,6 +1153,57 @@ describe('footnote transitive fixpoint and multi-reference rendering', () => {
     assert.deepStrictEqual(backlinkLabels, ['↩', '↩²', '↩³']);
   });
 
+  test('footnote anchors share one collision-free document id namespace', () => {
+    const {linked, warnings} = linkSource(
+      [
+        'p#footnote-x Authored definition candidate',
+        'p#footnote-x-2 Authored fallback candidate',
+        'p#footnote-reference-x Authored reference candidate',
+        'p A^[x] B^[x] C^[x-2] D^[reference-x] E^[reference-x-2]',
+        '',
+        'footnotes',
+        '  x X',
+        '  x-2 X2',
+        '  reference-x RX',
+        '  reference-x-2 RX2',
+      ].join('\n'),
+    );
+    const ids = [];
+    const endnoteIds = new Set();
+    const noterefIds = new Set();
+    const noterefTargets = [];
+    const backlinkTargets = [];
+
+    walk(linked, function (node) {
+      if (node.type !== 'Tag') return;
+      const attrs = node.attrs || [];
+      const id = attrs.find((attr) => attr.name === 'id');
+      const href = attrs.find((attr) => attr.name === 'href');
+      const role = attrs.find((attr) => attr.name === 'role');
+      if (id) ids.push(id.val);
+      if (!role) return;
+      if (role.val === 'doc-endnote') endnoteIds.add(id.val);
+      if (role.val === 'doc-noteref') {
+        noterefIds.add(id.val);
+        noterefTargets.push(href.val.slice(1));
+      }
+      if (role.val === 'doc-backlink') {
+        backlinkTargets.push(href.val.slice(1));
+      }
+    });
+
+    assert.strictEqual(ids.length, new Set(ids).size);
+    assert.strictEqual(endnoteIds.size, 4);
+    assert.strictEqual(noterefIds.size, 5);
+    assert.ok(noterefTargets.every((target) => endnoteIds.has(target)));
+    assert.ok(backlinkTargets.every((target) => noterefIds.has(target)));
+    assert.strictEqual(
+      warnings.filter((warning) => warning.code === 'PUGNEUM:DUPLICATE_ID')
+        .length,
+      0,
+    );
+  });
+
   test('numeric-looking names preserve first-reference queue order', () => {
     const {linked} = linkSource(
       'p first^[10] second^[2]\n\nfootnotes\n  10 reaches^[a]\n  2 reaches^[b]\n  a A\n  b B',

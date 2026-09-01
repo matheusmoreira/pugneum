@@ -58,10 +58,11 @@ All fields except `enabled` are optional. JSON config values take priority over 
     "url": "https://matheusmoreira.com",
     "title": "Override Title",
     "author": "Override Author",
+    "buildDate": "2026-04-02T12:00:00Z",
     "index": "articles.html",
     "selector": "article",
-    "atom": "atom.xml",
-    "rss": "rss.xml"
+    "atom": "feeds/site.atom.xml",
+    "rss": "feeds/site.rss.xml"
   }
 }
 ```
@@ -70,10 +71,11 @@ All fields except `enabled` are optional. JSON config values take priority over 
 |-------|---------|-------------|
 | `enabled` | `true` (if `feeds` key present) | Toggle feed generation on/off |
 | `url` | Extracted from `<base href>` | Site base URL (required — error if unresolvable) |
-| `title` | Extracted from `<title>` | Feed title |
-| `author` | Extracted from `<meta name="author">` | Feed author name |
+| `title` | Extracted from `<title>` | Non-empty feed title required by both formats |
+| `author` | Extracted from `<meta name="author">` | Default Atom entry author; optional when every entry supplies one |
 | `index` | `index.html` | Index page to parse for article discovery |
 | `description` | Extracted from `<meta name="description">` | Feed description (required for RSS) |
+| `buildDate` | One captured build-start instant | Exact ISO-8601 build timestamp when configured |
 | `selector` | `article` | Element tag name for article content extraction (not CSS syntax); a missing element produces empty content |
 | `atom` | `atom.xml` | Output filename for Atom feed |
 | `rss` | `rss.xml` | Output filename for RSS feed |
@@ -90,14 +92,25 @@ Each piece of metadata follows the same pattern: use JSON config if present, fal
 **Feed title:**
 1. `feeds.title` in `pugneum.json`
 2. `<title>` of the index page
+3. Error if the resolved string is empty or whitespace
 
 **Feed author:**
 1. `feeds.author` in `pugneum.json`
 2. `<meta name="author">` on the index page
+3. Per Atom entry, use the article author first and this feed author second;
+   error if neither is non-empty
 
 **Feed description:**
 1. `feeds.description` in `pugneum.json`
 2. `<meta name="description">` on the index page
+
+An explicitly present JSON metadata property is the override even when blank;
+required metadata validation does not silently fall back to the HTML value.
+Every entry title resolves from its article `<title>` and then its index-link
+text, and must be non-empty. RSS authors are optional: `<dc:creator>` is emitted
+only when the resolved article/feed author is non-empty. An Atom feed-level
+author is omitted when every entry has its own author (and may therefore also
+be absent from an empty feed).
 
 **Language:**
 1. `<html lang="...">` attribute
@@ -112,7 +125,8 @@ Each piece of metadata follows the same pattern: use JSON config if present, fal
 3. Extract feed-level metadata: `<base href>`, `<title>`, `<meta name="description">`, `<meta name="author">`, `<html lang>`
 4. Find all elements with a `data-published-at` attribute
 5. For each, find the `<a>` inside it — extract `href` (article URL) and text content (article title)
-6. Sort entries by `data-published-at` descending (newest first)
+6. Parse each supported ISO-8601 `data-published-at` value once to a numeric
+   instant and sort valid instants descending (newest first)
 
 ### Phase 2: Article Page Enrichment
 
@@ -135,6 +149,7 @@ For each discovered entry:
   url: 'https://matheusmoreira.com/articles/example',
   title: 'Example Article',
   published: '2026-04-01',  // from data-published-at
+  publishedEpoch: 1775001600000, // parsed once for ordering/serialization
   summary: '...',            // from meta description
   author: '...',             // from meta author, falls back to feed-level
   content: '...',            // innerHTML of <article>
@@ -152,10 +167,10 @@ For each discovered entry:
   <title>{feed title}</title>
   <subtitle>{feed description}</subtitle>
   <link href="{base url}" rel="alternate"/>
-  <link href="{base url}/atom.xml" rel="self"/>
+  <link href="{public URL of configured atom output name}" rel="self"/>
   <id>{base url}/</id>
-  <updated>{most recent entry date, ISO 8601}</updated>
-  <author>
+  <updated>{newest valid entry instant, or build instant, ISO 8601}</updated>
+  <author> <!-- omitted when no feed-level author is needed -->
     <name>{feed author}</name>
   </author>
   <generator>pugneum-feed</generator>
@@ -164,8 +179,8 @@ For each discovered entry:
     <title>{entry title}</title>
     <link href="{entry url}" rel="alternate"/>
     <id>{entry url}</id>
-    <published>{data-published-at, ISO 8601}</published>
-    <updated>{data-published-at, ISO 8601}</updated>
+    <published>{parsed publication instant, or build instant, ISO 8601}</published>
+    <updated>{same instant as published, ISO 8601}</updated>
     <summary>{meta description}</summary>
     <content type="html">{article innerHTML, XML-escaped}</content>
     <author>
@@ -176,6 +191,10 @@ For each discovered entry:
 ```
 
 - Content uses XML character escaping for embedded HTML.
+- A date-only value such as `2026-04-01` normalizes to
+  `2026-04-01T00:00:00.000Z`; a zoneless datetime is also interpreted as UTC.
+- When no valid publication exists, including an empty feed, `<updated>` uses
+  the exact configured build instant or the one captured at build start.
 - `<updated>` reuses the published date. Future enhancement: support a separate `data-updated-at` attribute for articles that have been modified after publication.
 
 ### RSS 2.0
@@ -188,18 +207,18 @@ For each discovered entry:
     <link>{base url}</link>
     <description>{feed description}</description>
     <language>{html lang}</language>
-    <lastBuildDate>{most recent entry date, RFC 822}</lastBuildDate>
+    <lastBuildDate>{exact build instant, RFC 822}</lastBuildDate>
     <generator>pugneum-feed</generator>
-    <atom:link href="{base url}/rss.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="{public URL of configured rss output name}" rel="self" type="application/rss+xml"/>
 
     <item>
       <title>{entry title}</title>
       <link>{entry url}</link>
       <guid isPermaLink="true">{entry url}</guid>
-      <pubDate>{data-published-at, RFC 822}</pubDate>
+      <pubDate>{parsed publication instant, or build instant, RFC 822}</pubDate>
       <description>{meta description}</description>
       <content:encoded><![CDATA[{article innerHTML}]]></content:encoded>
-      <dc:creator>{entry author}</dc:creator>
+      <dc:creator>{resolved entry/feed author; element omitted if absent}</dc:creator>
     </item>
   </channel>
 </rss>
@@ -207,7 +226,8 @@ For each discovered entry:
 
 - Full content uses `content:encoded` with CDATA sections (standard RSS extension, universally supported).
 - Includes `atom:link rel="self"` for feed autodiscovery (RSS Advisory Board best practice).
-- Dates in RFC 822 format.
+- Dates use RFC 822 output. `lastBuildDate` is the exact configured
+  `feeds.buildDate`, or the single instant captured when the build starts.
 
 ## CLI Integration
 
@@ -224,7 +244,8 @@ Feed generation hooks into the existing CLI after HTML compilation:
      c. Try to require('pugneum-feed')
      d. If not installed, warn: "pugneum-feed is not installed, skipping feed generation"
      e. If installed, run feed generation against outputDirectory
-     f. Write atom.xml and rss.xml to outputDirectory
+     f. Write the configured `feeds.atom` and `feeds.rss` names to the output
+        directory and advertise those same names in the feed self links
 ```
 
 ### Error Behavior
@@ -236,6 +257,9 @@ Feed generation hooks into the existing CLI after HTML compilation:
 | Article page not found for a discovered link | Error identifying the missing file |
 | No `data-published-at` entries found on index page | Empty feed (valid XML, zero entries) |
 | RSS description missing (no `<meta name="description">`, no config) | Error with guidance |
+| Feed or entry title resolves to blank text | Coded metadata error before output setup |
+| Atom entry has neither an article nor feed author | Coded metadata error before output setup |
+| `feeds.buildDate` is not a supported ISO-8601 instant | `FEED_INVALID_BUILD_DATE` before filesystem access |
 
 ## Testing
 

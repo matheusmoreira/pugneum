@@ -16,7 +16,11 @@ function assertValidAtom(xml, expected) {
   const feedId = requiredText(root, 'id', 'Atom feed id');
   assertUrl(feedId, 'Atom feed id');
   assertIsoTimestamp(requiredText(root, 'updated', 'Atom feed updated'));
-  requiredText(one(root, 'author', 'Atom feed author'), 'name', 'Atom author');
+  const feedAuthors = children(root, 'author');
+  assert.ok(feedAuthors.length <= 1, 'Atom feed author count');
+  if (feedAuthors.length === 1) {
+    requiredText(feedAuthors[0], 'name', 'Atom feed author');
+  }
 
   const alternate = links(root, 'alternate');
   assert.strictEqual(alternate.length, 1, 'Atom alternate link count');
@@ -46,11 +50,15 @@ function assertValidAtom(xml, expected) {
       requiredText(entry, 'published', 'Atom entry published'),
     );
     assertIsoTimestamp(requiredText(entry, 'updated', 'Atom entry updated'));
-    requiredText(
-      one(entry, 'author', 'Atom entry author'),
-      'name',
-      'Atom entry author',
+    const entryAuthors = children(entry, 'author');
+    assert.ok(entryAuthors.length <= 1, 'Atom entry author count');
+    assert.ok(
+      feedAuthors.length === 1 || entryAuthors.length === 1,
+      'Atom entry must inherit or contain an author',
     );
+    if (entryAuthors.length === 1) {
+      requiredText(entryAuthors[0], 'name', 'Atom entry author');
+    }
     const content = one(entry, 'content', 'Atom entry content');
     assert.strictEqual(content.attribs.type, 'html', 'Atom content type');
 
@@ -131,7 +139,11 @@ function assertValidRss(xml, expected) {
     assert.ok(!ids.has(guid), 'RSS item guids must be unique');
     ids.add(guid);
     assertRfcTimestamp(requiredText(item, 'pubDate', 'RSS item pubDate'));
-    requiredText(item, 'dc:creator', 'RSS item creator');
+    const creators = children(item, 'dc:creator');
+    assert.ok(creators.length <= 1, 'RSS item creator count');
+    if (creators.length === 1) {
+      nonEmptyText(creators[0], 'RSS item creator');
+    }
     one(item, 'content:encoded', 'RSS encoded content');
     for (const category of children(item, 'category')) {
       nonEmptyText(category, 'RSS category');

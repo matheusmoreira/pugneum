@@ -1,6 +1,5 @@
-const feedError = require('./error');
 const {escapeXml, escapeCdata} = require('./xml');
-const {parseDate, feedTimestamp} = require('./date');
+const {prepareFeed} = require('./model');
 
 function generateRss(feed) {
   return Array.from(rssChunks(feed)).join('');
@@ -10,13 +9,7 @@ generateRss.chunks = rssChunks;
 module.exports = generateRss;
 
 function rssChunks(feed) {
-  if (!feed.description) {
-    throw feedError(
-      'FEED_MISSING_DESCRIPTION',
-      'RSS requires a channel description. Add a <meta name="description"> to your index page or set feeds.description in pugneum.json.',
-    );
-  }
-  return serializeRss(feed);
+  return serializeRss(prepareFeed(feed, 'rss'));
 }
 
 function* serializeRss(feed) {
@@ -35,7 +28,7 @@ function* serializeRss(feed) {
 
   lines.push(
     '    <lastBuildDate>' +
-      escapeXml(feedTimestamp(feed).toUTCString()) +
+      escapeXml(new Date(feed.buildEpoch).toUTCString()) +
       '</lastBuildDate>',
     '    <generator>pugneum-feed</generator>',
     '    <atom:link href="' +
@@ -45,19 +38,19 @@ function* serializeRss(feed) {
 
   yield lines.join('\n') + '\n';
   for (let i = 0; i < feed.entries.length; i++) {
-    yield rssItem(feed.entries[i], feed.buildDate) + '\n';
+    yield rssItem(feed.entries[i]) + '\n';
   }
   yield '  </channel>\n</rss>\n';
 }
 
-function rssItem(entry, buildDate) {
+function rssItem(entry) {
   return [
     '    <item>',
     '      <title>' + escapeXml(entry.title) + '</title>',
     '      <link>' + escapeXml(entry.url) + '</link>',
     '      <guid isPermaLink="true">' + escapeXml(entry.url) + '</guid>',
     '      <pubDate>' +
-      escapeXml(toRFC822(entry.publishedEpoch ?? entry.published, buildDate)) +
+      escapeXml(new Date(entry.publishedEpoch).toUTCString()) +
       '</pubDate>',
     entry.summary
       ? '      <description>' + escapeXml(entry.summary) + '</description>'
@@ -65,16 +58,14 @@ function rssItem(entry, buildDate) {
     '      <content:encoded><![CDATA[' +
       escapeCdata(entry.content) +
       ']]></content:encoded>',
-    '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>',
+    entry.author
+      ? '      <dc:creator>' + escapeXml(entry.author) + '</dc:creator>'
+      : null,
     categoryLines(entry.keywords, '      '),
     '    </item>',
   ]
     .filter((line) => line !== null)
     .join('\n');
-}
-
-function toRFC822(dateStr, fallback) {
-  return parseDate(dateStr, fallback).toUTCString();
 }
 
 // Emit one <category> per keyword (RSS 2.0), or null when there are none so the

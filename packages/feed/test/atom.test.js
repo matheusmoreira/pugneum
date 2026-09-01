@@ -149,6 +149,68 @@ test('custom Atom self links remain valid', () => {
   assertValidAtom(generateAtom(feed), {selfUrl: feed.atomUrl});
 });
 
+test('Atom requires non-empty feed and entry titles', () => {
+  [null, '   '].forEach((title) => {
+    assert.throws(
+      () => generateAtom(makeAtomFeed({title})),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_TITLE',
+    );
+    assert.throws(
+      () =>
+        generateAtom(
+          makeAtomFeed({entries: [makeEntry({title, author: 'A'})]}),
+        ),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_ENTRY_TITLE',
+    );
+  });
+});
+
+test('Atom entries inherit the feed author', () => {
+  var xml = generateAtom(
+    makeAtomFeed({
+      author: 'Feed Author',
+      entries: [makeEntry({author: null})],
+    }),
+  );
+
+  assertValidAtom(xml);
+  assert.strictEqual((xml.match(/<name>Feed Author<\/name>/g) || []).length, 2);
+});
+
+test('Atom permits entry authors without a feed author', () => {
+  var xml = generateAtom(
+    makeAtomFeed({
+      author: null,
+      entries: [makeEntry({author: 'Entry Author'})],
+    }),
+  );
+  var header = xml.slice(0, xml.indexOf('  <entry>'));
+
+  assertValidAtom(xml);
+  assert.ok(!header.includes('<author>'));
+  assert.ok(xml.includes('<name>Entry Author</name>'));
+});
+
+test('Atom rejects an entry with no entry or feed author', () => {
+  assert.throws(
+    () =>
+      generateAtom(
+        makeAtomFeed({
+          author: null,
+          entries: [makeEntry({author: '  '})],
+        }),
+      ),
+    (error) => error.code === 'PUGNEUM:FEED_MISSING_AUTHOR',
+  );
+});
+
+test('an empty Atom feed does not require or emit an author', () => {
+  var xml = generateAtom(makeAtomFeed({author: null, entries: []}));
+
+  assertValidAtom(xml);
+  assert.ok(!xml.includes('<author>'));
+});
+
 test('Atom validity oracle rejects missing required structure', () => {
   var feed = makeAtomFeed({title: 'T', description: undefined, author: 'A'});
   var xml = generateAtom(feed);
@@ -162,18 +224,27 @@ test('Atom validity oracle rejects missing required structure', () => {
   assert.throws(() => assertValidAtom(xml.replace('</feed>', '</not-feed>')));
 });
 
-test('empty feed with no buildDate does not emit "Invalid Date"', () => {
-  var feed = makeAtomFeed({
-    title: 'Empty Site',
-    description: 'No articles yet',
-    author: 'Test Author',
-    buildDate: undefined,
+test('empty feed with no buildDate uses one captured current instant', (t) => {
+  var originalNow = Date.now;
+  var expected = Date.parse('2026-07-08T09:10:11.012Z');
+  var calls = 0;
+  Date.now = function () {
+    calls++;
+    return expected;
+  };
+  t.after(() => {
+    Date.now = originalNow;
   });
 
-  var xml = generateAtom(feed);
+  var xml = generateAtom(
+    makeAtomFeed({
+      title: 'Empty Site',
+      description: 'No articles yet',
+      author: 'Test Author',
+      buildDate: undefined,
+    }),
+  );
 
-  // The empty-feed branch must reuse the guarded date fallback, never leak the
-  // literal "Invalid Date" string nor emit an empty <updated> element.
-  assert.ok(!xml.includes('Invalid Date'));
-  assert.doesNotMatch(xml, /<updated><\/updated>/);
+  assert.ok(xml.includes('<updated>2026-07-08T09:10:11.012Z</updated>'));
+  assert.strictEqual(calls, 1);
 });

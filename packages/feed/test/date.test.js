@@ -14,6 +14,9 @@ describe('strict ISO date components', () => {
     '2026-01-01T23:59:60Z',
     '2026-01-01T12:00:00+24:00',
     '2026-01-01T12:00:00-03:60',
+    'March 15, 2026',
+    '03/15/2026',
+    '   ',
   ].forEach((value) => {
     test('falls back for ' + value, () => {
       assert.strictEqual(parseDate(value, fallback).toISOString(), fallback);
@@ -37,6 +40,13 @@ describe('strict ISO date components', () => {
   test('accepts a pre-parsed Unix epoch value', () => {
     assert.strictEqual(
       parseDate(0, fallback).toISOString(),
+      '1970-01-01T00:00:00.000Z',
+    );
+  });
+
+  test('accepts a Unix epoch fallback without replacing it with now', () => {
+    assert.strictEqual(
+      parseDate(null, 0).toISOString(),
       '1970-01-01T00:00:00.000Z',
     );
   });

@@ -115,6 +115,31 @@ test('custom RSS self links remain valid', () => {
   assertValidRss(generateRss(feed), {selfUrl: feed.rssUrl});
 });
 
+test('RSS requires non-empty feed and entry titles', () => {
+  [null, '   '].forEach((title) => {
+    assert.throws(
+      () => generateRss(makeRssFeed({title})),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_TITLE',
+    );
+    assert.throws(
+      () => generateRss(makeRssFeed({entries: [makeEntry({title})]})),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_ENTRY_TITLE',
+    );
+  });
+});
+
+test('RSS omits an unavailable optional creator', () => {
+  var rss = generateRss(
+    makeRssFeed({
+      author: null,
+      entries: [makeEntry({author: null})],
+    }),
+  );
+
+  assertValidRss(rss);
+  assert.ok(!rss.includes('<dc:creator>'));
+});
+
 test('RSS validity oracle rejects missing required structure', () => {
   var feed = makeRssFeed({title: 'T', description: 'D', author: 'A'});
   var xml = generateRss(feed);
@@ -133,7 +158,18 @@ test('RSS validity oracle rejects missing required structure', () => {
   assert.throws(() => assertValidRss(xml.replace('</rss>', '</not-rss>')));
 });
 
-test('empty feed with no buildDate does not emit "Invalid Date"', () => {
+test('empty feed with no buildDate uses one captured current instant', (t) => {
+  var originalNow = Date.now;
+  var expected = Date.parse('2026-07-08T09:10:11.000Z');
+  var calls = 0;
+  Date.now = function () {
+    calls++;
+    return expected;
+  };
+  t.after(() => {
+    Date.now = originalNow;
+  });
+
   var rss = generateRss(
     makeRssFeed({
       title: 'Empty Site',
@@ -144,20 +180,41 @@ test('empty feed with no buildDate does not emit "Invalid Date"', () => {
     }),
   );
 
-  // The empty-feed branch must reuse the guarded date fallback rather than
-  // formatting `new Date(undefined)`, which yields the literal "Invalid Date".
-  assert.ok(!rss.includes('Invalid Date'));
+  assert.ok(
+    rss.includes(
+      '<lastBuildDate>Wed, 08 Jul 2026 09:10:11 GMT</lastBuildDate>',
+    ),
+  );
+  assert.strictEqual(calls, 1);
 });
 
 test('RSS description is required', () => {
-  assert.throws(
-    () => generateRss(makeRssFeed({description: null})),
-    (error) => {
-      assert.strictEqual(error.code, 'PUGNEUM:FEED_MISSING_DESCRIPTION');
-      assert.doesNotMatch(error.message, /^0(?:\n|$)/);
-      return true;
-    },
+  [null, '   '].forEach((description) => {
+    assert.throws(
+      () => generateRss(makeRssFeed({description})),
+      (error) => {
+        assert.strictEqual(error.code, 'PUGNEUM:FEED_MISSING_DESCRIPTION');
+        assert.doesNotMatch(error.message, /^0(?:\n|$)/);
+        return true;
+      },
+    );
+  });
+});
+
+test('RSS lastBuildDate uses the configured build instant', () => {
+  var rss = generateRss(
+    makeRssFeed({
+      buildDate: '2026-01-02T03:04:05-03:00',
+      entries: [makeEntry({published: '2026-08-01'})],
+    }),
   );
+
+  assert.ok(
+    rss.includes(
+      '<lastBuildDate>Fri, 02 Jan 2026 06:04:05 GMT</lastBuildDate>',
+    ),
+  );
+  assert.ok(rss.includes('<pubDate>Sat, 01 Aug 2026 00:00:00 GMT</pubDate>'));
 });
 
 test('zoneless datetime is interpreted as UTC, not local time', () => {
@@ -217,17 +274,4 @@ test('CDATA content with ]]> is properly escaped', () => {
 
   assert.ok(!rss.includes('<pre>xml: ]]></pre>'));
   assert.ok(rss.includes(']]]]><![CDATA[>'));
-});
-
-test('null entry fields do not crash', () => {
-  var feed = makeRssFeed({
-    title: null,
-    author: null,
-    entries: [makeEntry({title: null, author: null, content: ''})],
-  });
-
-  var rss = generateRss(feed);
-
-  assert.ok(rss.includes('<title></title>'));
-  assert.ok(rss.includes('<dc:creator></dc:creator>'));
 });

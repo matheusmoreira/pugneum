@@ -321,7 +321,10 @@ describe('end-to-end feed generation', () => {
 
     generateFeeds({
       outputDirectory: fixturesDir,
-      feeds: {enabled: true},
+      feeds: {
+        enabled: true,
+        buildDate: '2026-05-02T03:04:05Z',
+      },
       writeDirectory: output,
     });
 
@@ -376,7 +379,7 @@ describe('end-to-end feed generation', () => {
     );
   });
 
-  test('orders feeds and selects freshness by publication instant', (t) => {
+  test('orders entries by publication instant and keeps build time exact', (t) => {
     var sandbox = temporaryDirectory(t, 'pugneum-feed-order-');
     var input = path.join(sandbox, 'input');
     var output = path.join(sandbox, 'output');
@@ -409,7 +412,10 @@ describe('end-to-end feed generation', () => {
     generateFeeds({
       outputDirectory: input,
       writeDirectory: output,
-      feeds: {enabled: true},
+      feeds: {
+        enabled: true,
+        buildDate: '2026-02-03T04:05:06Z',
+      },
     });
     var atom = fs.readFileSync(path.join(output, 'atom.xml'), 'utf8');
     var rss = fs.readFileSync(path.join(output, 'rss.xml'), 'utf8');
@@ -420,9 +426,49 @@ describe('end-to-end feed generation', () => {
     assert.ok(atom.includes('<updated>2026-01-01T00:00:00.000Z</updated>'));
     assert.ok(
       rss.includes(
-        '<lastBuildDate>Thu, 01 Jan 2026 00:00:00 GMT</lastBuildDate>',
+        '<lastBuildDate>Tue, 03 Feb 2026 04:05:06 GMT</lastBuildDate>',
       ),
     );
+  });
+
+  test('captures one build-start instant for both empty formats', (t) => {
+    var sandbox = temporaryDirectory(t, 'pugneum-feed-empty-clock-');
+    var input = path.join(sandbox, 'input');
+    var output = path.join(sandbox, 'output');
+    fs.mkdirSync(input);
+    fs.mkdirSync(output);
+    fs.writeFileSync(
+      path.join(input, 'index.html'),
+      '<!DOCTYPE html><html><head><base href="https://example.com/">' +
+        '<title>Empty Site</title><meta name="description" content="D">' +
+        '<meta name="author" content="A"></head><body></body></html>',
+    );
+    var originalNow = Date.now;
+    var expected = Date.parse('2026-07-08T09:10:11.000Z');
+    var calls = 0;
+    Date.now = function () {
+      calls++;
+      return expected;
+    };
+    t.after(() => {
+      Date.now = originalNow;
+    });
+
+    generateFeeds({
+      outputDirectory: input,
+      writeDirectory: output,
+      feeds: {enabled: true},
+    });
+
+    var atom = fs.readFileSync(path.join(output, 'atom.xml'), 'utf8');
+    var rss = fs.readFileSync(path.join(output, 'rss.xml'), 'utf8');
+    assert.ok(atom.includes('<updated>2026-07-08T09:10:11.000Z</updated>'));
+    assert.ok(
+      rss.includes(
+        '<lastBuildDate>Wed, 08 Jul 2026 09:10:11 GMT</lastBuildDate>',
+      ),
+    );
+    assert.strictEqual(calls, 1);
   });
 });
 
@@ -648,6 +694,97 @@ describe('config overrides', () => {
   });
 });
 
+describe('required feed metadata', () => {
+  test('rejects an explicitly blank feed title before output setup', (t) => {
+    var fixture = boundaryFixture(t);
+
+    assert.throws(
+      () => fixture.generate({title: '   '}),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_TITLE',
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('rejects an entry when article and link titles are blank', (t) => {
+    var fixture = boundaryFixture(t);
+    fs.writeFileSync(
+      path.join(fixture.input, 'index.html'),
+      feedIndex('articles/post.html').replace('>Post</a>', '>   </a>'),
+    );
+    fs.writeFileSync(
+      path.join(fixture.input, 'articles', 'post.html'),
+      feedArticle('inside content').replace(
+        '<title>Post</title>',
+        '<title>   </title>',
+      ),
+    );
+
+    assert.throws(
+      () => fixture.generate(),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_ENTRY_TITLE',
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('uses an article author when the feed has no author', (t) => {
+    var fixture = boundaryFixture(t);
+    var indexPath = path.join(fixture.input, 'index.html');
+    fs.writeFileSync(
+      indexPath,
+      fs
+        .readFileSync(indexPath, 'utf8')
+        .replace('<meta name="author" content="Author">', ''),
+    );
+
+    fixture.generate();
+
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    var header = atom.slice(0, atom.indexOf('  <entry>'));
+    assert.ok(!header.includes('<author>'));
+    assert.ok(atom.includes('<name>Author</name>'));
+  });
+
+  test('uses the feed author when an article has no author', (t) => {
+    var fixture = boundaryFixture(t);
+    var articlePath = path.join(fixture.input, 'articles', 'post.html');
+    fs.writeFileSync(
+      articlePath,
+      fs
+        .readFileSync(articlePath, 'utf8')
+        .replace('<meta name="author" content="Author">', ''),
+    );
+
+    fixture.generate();
+
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    assert.strictEqual((atom.match(/<name>Author<\/name>/g) || []).length, 2);
+  });
+
+  test('rejects an Atom entry when neither author source exists', (t) => {
+    var fixture = boundaryFixture(t);
+    var indexPath = path.join(fixture.input, 'index.html');
+    var articlePath = path.join(fixture.input, 'articles', 'post.html');
+    fs.writeFileSync(
+      indexPath,
+      fs
+        .readFileSync(indexPath, 'utf8')
+        .replace('<meta name="author" content="Author">', ''),
+    );
+    fs.writeFileSync(
+      articlePath,
+      fs
+        .readFileSync(articlePath, 'utf8')
+        .replace('<meta name="author" content="Author">', ''),
+    );
+
+    assert.throws(
+      () => fixture.generate(),
+      (error) => error.code === 'PUGNEUM:FEED_MISSING_AUTHOR',
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+});
+
 describe('end-to-end URL resolution', () => {
   test('article content keeps its original URL semantics in the feed', (t) => {
     var dir = temporaryDirectory(t, 'pugneum-feed-urls-');
@@ -835,6 +972,11 @@ describe('option validation', () => {
       'feeds.description',
     ],
     [
+      'a non-string build date',
+      {outputDirectory: unreadableRoot, feeds: {buildDate: 0}},
+      'feeds.buildDate',
+    ],
+    [
       'an empty index path',
       {outputDirectory: unreadableRoot, feeds: {index: ''}},
       'feeds.index',
@@ -890,6 +1032,18 @@ describe('option validation', () => {
         feeds: {enabled: false},
       }),
       undefined,
+    );
+    assert.ok(!fs.existsSync(unreadableRoot));
+  });
+
+  test('an invalid build date is rejected before filesystem access', () => {
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: unreadableRoot,
+          feeds: {enabled: false, buildDate: 'not-an-instant'},
+        }),
+      (error) => error.code === 'PUGNEUM:FEED_INVALID_BUILD_DATE',
     );
     assert.ok(!fs.existsSync(unreadableRoot));
   });

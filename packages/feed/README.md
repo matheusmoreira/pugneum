@@ -25,16 +25,19 @@ Add a `feeds` key to `pugneum.json`:
 }
 ```
 
-All `feeds.*` fields are optional. Values are extracted from HTML first,
-with JSON config serving as override.
+All `feeds.*` fields are optional. Values are extracted from HTML when the
+corresponding JSON property is absent. A property that is present is the
+override even when its string is blank, so blank required metadata is rejected
+instead of silently falling back to HTML.
 
 | Field | Default | Description |
 |-------|---------|-------------|
 | `enabled` | `true` | Toggle feed generation on/off |
 | `url` | From `<base href>` | Site base URL (required; must be absolute, e.g. `https://example.com/`) |
-| `title` | From `<title>` | Feed title |
-| `author` | From `<meta name="author">` | Feed author |
+| `title` | From `<title>` | Non-empty feed title (required for both formats) |
+| `author` | From `<meta name="author">` | Default author for Atom entries; may be omitted when every entry has an article author |
 | `description` | From `<meta name="description">` | Feed description (required for RSS) |
+| `buildDate` | Build-start instant | Exact ISO-8601 build date/datetime used by RSS and invalid publication fallbacks |
 | `index` | `index.html` | Index page to parse |
 | `selector` | `article` | Element (tag) name for content extraction — not a CSS selector |
 | `atom` | `atom.xml` | Atom output filename |
@@ -55,7 +58,18 @@ absolute, which feed readers cannot resolve, so it is rejected with a
 query or fragment; its pathname is canonicalized with a trailing slash.
 Configured Atom/RSS output names remain literal filesystem paths, while
 URL-delimiter characters in those names are percent-encoded in public self
-links.
+links. Each configured name controls the corresponding filesystem destination
+and advertised Atom/RSS self URL; no serializer or CLI fallback hard-codes the
+default names after configuration is resolved.
+
+The resolved feed title and every resolved entry title must contain non-space
+text. An article `<title>` takes precedence over its index-link text; the link
+text is the fallback when the article has no title. Atom entry authors resolve
+from the article first and then the feed-level author. Generation fails with a
+coded diagnostic if an entry has neither. When every Atom entry supplies its
+own author, the feed-level `<author>` may be absent; this also permits a new,
+empty feed to omit an author. RSS creators are optional and an unavailable
+creator is omitted instead of serialized as an empty element.
 
 Atom and RSS are published as one rollback-protected transaction. Serializer
 setup, including eager format validation, completes before output setup. Each
@@ -94,18 +108,26 @@ and lists articles via elements with a `data-published-at` attribute.
 </html>
 ```
 
-`data-published-at` accepts a real ISO-8601 calendar date (`YYYY-MM-DD`) or a
-datetime with hours and minutes, optional seconds (and fractional seconds), and
-an optional `Z` or `+HH:MM`/`-HH:MM` offset. Date-only values mean midnight UTC.
-Datetimes with no zone also mean UTC, so output is independent of the build
-machine's timezone.
+`data-published-at` and `feeds.buildDate` accept a real ISO-8601 calendar date
+(`YYYY-MM-DD`) or a datetime with hours and minutes, optional seconds (and
+fractional seconds), and an optional `Z` or `+HH:MM`/`-HH:MM` offset. Date-only
+values mean midnight UTC. Datetimes with no zone also mean UTC, so output is
+independent of the build machine's timezone.
 Invalid or overflowing values (for example `2026-02-30`, an hour of `24`, or a
-non-date string) use the one feed build timestamp for serialization instead of
-being normalized to another instant. Empty attributes are not entries. Valid
-entries are ordered by their UTC instant regardless of authored offset; equal
-instants retain document order, and invalid values remain stable after valid
-entries. With no valid newest entry—including an empty feed—the Atom `updated`
-and RSS `lastBuildDate` values use that same build timestamp.
+non-ISO string) use the one feed build timestamp for entry serialization
+instead of being normalized to another instant. An invalid configured
+`feeds.buildDate` is a `PUGNEUM:FEED_INVALID_BUILD_DATE` error, including while
+feeds are disabled. Empty publication attributes are not entries. Valid entries
+are ordered by their UTC instant regardless of authored offset; equal instants
+retain document order, and invalid values remain stable after valid entries.
+
+The generator parses each authored date to one numeric instant and captures one
+build instant before reading input. If `feeds.buildDate` is present, that exact
+normalized instant is used; otherwise the build-start clock is read once. Atom
+`updated` is the newest valid authored publication instant, falling back to the
+build instant when no valid publication exists (including an empty feed). RSS
+`lastBuildDate` is always the build instant. Atom `published`/`updated` and RSS
+`pubDate` for an invalid authored publication also use that same build instant.
 
 The index `<html lang>` value is copied to `xml:lang` on the Atom `<feed>` root
 and to RSS `<channel><language>`. Both are omitted when the HTML has no language.
@@ -201,10 +223,13 @@ created, including when `feeds.enabled` is `false`. `outputDirectory` is a
 required non-empty string; `writeDirectory` must be a non-empty string when
 provided; `feeds` must be an object; `enabled` must be a boolean; and every
 other supported `feeds.*` value must be a string. `index`, `atom`, and `rss`
-must be non-empty, and `selector` must be one element tag name. Atom and RSS names must
-also resolve to different destinations after path normalization. Invalid
-configuration fails consistently with the `PUGNEUM:FEED_INVALID_OPTIONS` error
-code before filesystem access.
+must be non-empty, and `selector` must be one element tag name. Atom and RSS
+names must also resolve to different destinations after path normalization.
+Shape/path failures use `PUGNEUM:FEED_INVALID_OPTIONS`; an invalid
+`feeds.buildDate` uses `PUGNEUM:FEED_INVALID_BUILD_DATE`. Both fail before
+filesystem access. Resolved metadata failures use `PUGNEUM:FEED_MISSING_TITLE`,
+`PUGNEUM:FEED_MISSING_ENTRY_TITLE`, `PUGNEUM:FEED_MISSING_AUTHOR`, or the
+existing RSS `PUGNEUM:FEED_MISSING_DESCRIPTION` diagnostic before output setup.
 
 Feed generation charges source bytes before allocating verified regular-file
 contents, discovered entries before article reads, and each Atom/RSS UTF-8

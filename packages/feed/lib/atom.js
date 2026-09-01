@@ -1,5 +1,5 @@
 const {escapeXml} = require('./xml');
-const {parseDate, feedTimestamp} = require('./date');
+const {prepareFeed} = require('./model');
 
 function generateAtom(feed) {
   return Array.from(atomChunks(feed)).join('');
@@ -9,7 +9,7 @@ generateAtom.chunks = atomChunks;
 module.exports = generateAtom;
 
 function atomChunks(feed) {
-  return serializeAtom(feed);
+  return serializeAtom(prepareFeed(feed, 'atom'));
 }
 
 function* serializeAtom(feed) {
@@ -34,25 +34,28 @@ function* serializeAtom(feed) {
       escapeXml(feed.atomUrl || feed.url + feed.atomPath) +
       '" rel="self"/>',
     '  <id>' + escapeXml(feed.url) + '</id>',
-    '  <updated>' + escapeXml(feedTimestamp(feed).toISOString()) + '</updated>',
-    '  <author>',
-    '    <name>' + escapeXml(feed.author) + '</name>',
-    '  </author>',
-    '  <generator>pugneum-feed</generator>',
+    '  <updated>' +
+      escapeXml(new Date(feed.updatedEpoch).toISOString()) +
+      '</updated>',
   );
+  if (feed.author) {
+    lines.push(
+      '  <author>',
+      '    <name>' + escapeXml(feed.author) + '</name>',
+      '  </author>',
+    );
+  }
+  lines.push('  <generator>pugneum-feed</generator>');
 
   yield lines.join('\n') + '\n';
   for (let i = 0; i < feed.entries.length; i++) {
-    yield atomEntry(feed.entries[i], feed.buildDate) + '\n';
+    yield atomEntry(feed.entries[i]) + '\n';
   }
   yield '</feed>\n';
 }
 
-function atomEntry(entry, buildDate) {
-  const timestamp = toISO8601(
-    entry.publishedEpoch ?? entry.published,
-    buildDate,
-  );
+function atomEntry(entry) {
+  const timestamp = new Date(entry.publishedEpoch).toISOString();
 
   return [
     '  <entry>',
@@ -73,10 +76,6 @@ function atomEntry(entry, buildDate) {
   ]
     .filter((line) => line !== null)
     .join('\n');
-}
-
-function toISO8601(dateStr, fallback) {
-  return parseDate(dateStr, fallback).toISOString();
 }
 
 // Emit one <category term="..."/> per keyword (Atom 1.0 §4.2.2), or null when

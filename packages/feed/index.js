@@ -6,6 +6,7 @@ const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const extract = require('./lib/extract');
 const generateAtom = require('./lib/atom');
 const feedError = require('./lib/error');
+const {captureBuildEpoch} = require('./lib/model');
 const generateRss = require('./lib/rss');
 
 function invalidOptions(message) {
@@ -36,6 +37,10 @@ function canonicalDestination(writeDirectory, outputPath) {
   return process.platform === 'win32' ? destination.toLowerCase() : destination;
 }
 
+function configuredValue(configured, extracted) {
+  return configured === undefined ? extracted : configured;
+}
+
 // Snapshot and validate the entire public option surface before touching the
 // filesystem. Accessor-backed option bags therefore cannot change meaning
 // between validation and use, and disabled feeds do not hide invalid siblings.
@@ -64,6 +69,7 @@ function validateOptions(options) {
   const title = feeds.title;
   const author = feeds.author;
   const description = feeds.description;
+  const buildDate = feeds.buildDate;
   const configuredIndex = feeds.index;
   const configuredSelector = feeds.selector;
   const configuredAtom = feeds.atom;
@@ -76,6 +82,9 @@ function validateOptions(options) {
   validateOptionalString(title, 'feeds.title');
   validateOptionalString(author, 'feeds.author');
   validateOptionalString(description, 'feeds.description');
+  validateOptionalString(buildDate, 'feeds.buildDate');
+  const buildEpoch =
+    buildDate === undefined ? undefined : captureBuildEpoch(buildDate);
 
   const index = configuredIndex === undefined ? 'index.html' : configuredIndex;
   const selector =
@@ -123,6 +132,8 @@ function validateOptions(options) {
       title,
       author,
       description,
+      buildDate,
+      buildEpoch,
       index,
       selector,
       atom,
@@ -353,6 +364,11 @@ module.exports = function generateFeeds(options) {
     return;
   }
 
+  // Capture one instant before input work. Passing its numeric identity to both
+  // serializers keeps their fallback/build timestamps exactly aligned.
+  const buildEpoch =
+    feedsConfig.buildEpoch === undefined ? Date.now() : feedsConfig.buildEpoch;
+
   const outputDir = validatedOptions.outputDirectory;
   const writeDir = validatedOptions.writeDirectory;
   const indexFile = feedsConfig.index;
@@ -385,10 +401,13 @@ module.exports = function generateFeeds(options) {
   );
 
   // Resolve metadata: config overrides HTML
-  let url = feedsConfig.url || indexData.url;
-  const title = feedsConfig.title || indexData.title;
-  const author = feedsConfig.author || indexData.author;
-  const description = feedsConfig.description || indexData.description;
+  let url = configuredValue(feedsConfig.url, indexData.url);
+  const title = configuredValue(feedsConfig.title, indexData.title);
+  const author = configuredValue(feedsConfig.author, indexData.author);
+  const description = configuredValue(
+    feedsConfig.description,
+    indexData.description,
+  );
   const language = indexData.language;
 
   if (!url) {
@@ -502,7 +521,6 @@ module.exports = function generateFeeds(options) {
   }
 
   // Build feed data
-  const buildDate = new Date().toISOString();
   const feed = {
     url: url,
     title: title,
@@ -514,7 +532,7 @@ module.exports = function generateFeeds(options) {
     rssPath: rssPath,
     atomUrl: publicFeedUrl(baseUrl, atomPath),
     rssUrl: publicFeedUrl(baseUrl, rssPath),
-    buildDate: buildDate,
+    buildEpoch: buildEpoch,
   };
 
   // Construct both serializers before filesystem work so their eager

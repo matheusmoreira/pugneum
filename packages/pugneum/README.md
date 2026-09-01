@@ -979,15 +979,21 @@ Add a `feeds` key to `pugneum.json`:
   "inputDirectory": "pg",
   "outputDirectory": "site",
   "feeds": {
-    "url": "https://example.com"
+    "url": "https://example.com",
+    "atom": "feeds/site.atom.xml",
+    "rss": "feeds/site.rss.xml"
   }
 }
 ```
 
-The feed generator reads compiled HTML to extract article metadata.
-Articles are discovered from elements with `data-published-at`
-attributes on the index page. Feed title, author, and description
-are extracted from standard HTML meta elements.
+The feed generator reads compiled HTML to extract article metadata. Articles
+are discovered from elements with `data-published-at` attributes on the index
+page. Feed title, author, and description are extracted from standard HTML
+metadata. Feed and entry titles must be non-empty; Atom entries need either an
+article author or the feed-level fallback. Configured `atom` and `rss` names
+control both their output paths and public self links. An optional ISO-8601
+`buildDate` pins the RSS build time and invalid-publication fallbacks; otherwise
+one build-start instant is shared by both formats.
 
 See the `pugneum-feed` package for full configuration.
 

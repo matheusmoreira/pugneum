@@ -14,7 +14,6 @@ const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
 const ZONELESS_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(\.\d+)?$/;
 const ISO_DATETIME =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?(?:\.(\d+))?(?:Z|[+-](\d{2}):(\d{2}))?$/;
-const ISO_CALENDAR_PREFIX = /^\d{4}-\d{2}-\d{2}/;
 
 function normalizeToUtc(dateStr) {
   if (DATE_ONLY.test(dateStr)) {
@@ -37,9 +36,7 @@ function hasValidIsoComponents(dateStr) {
   }
 
   const datetime = ISO_DATETIME.exec(dateStr);
-  if (!datetime) {
-    return !ISO_CALENDAR_PREFIX.test(dateStr);
-  }
+  if (!datetime) return false;
 
   if (
     !isCalendarDate(
@@ -100,21 +97,12 @@ function parseAuthoredDate(dateStr) {
 // Parse a date string to a Date, normalizing zoneless ISO values to UTC and
 // falling back to `fallback` (then to now) when the input is empty or invalid.
 function parseDate(dateStr, fallback) {
-  return parseAuthoredDate(dateStr) || new Date(fallback || Date.now());
-}
-
-// Select the feed-level timestamp. Extraction orders valid parsed instants
-// newest-first and places invalid values after them, so entries[0] is either the
-// newest valid publication or an invalid value that falls back to buildDate.
-// An empty feed has no publication instant and uses buildDate as well.
-function feedTimestamp(feed) {
-  if (feed.entries.length > 0) {
-    const entry = feed.entries[0];
-    return parseDate(entry.publishedEpoch ?? entry.published, feed.buildDate);
-  }
-  return parseDate(null, feed.buildDate);
+  return (
+    parseAuthoredDate(dateStr) ||
+    parseAuthoredDate(fallback) ||
+    new Date(Date.now())
+  );
 }
 
 exports.parseAuthoredDate = parseAuthoredDate;
 exports.parseDate = parseDate;
-exports.feedTimestamp = feedTimestamp;

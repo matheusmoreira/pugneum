@@ -316,6 +316,7 @@ function cohortResolutions() {
     localResolution('pugneum-filterer', 'pugneum-renderer'),
     localResolution('pugneum-filterer', 'pugneum-walker'),
     localResolution('pugneum-renderer', 'pugneum-error'),
+    localResolution('pugneum-renderer', 'pugneum-walker'),
     localResolution('pugneum', 'pugneum-filesystem'),
     localResolution('pugneum', 'pugneum-filterer'),
     localResolution('pugneum', 'pugneum-lexer'),
@@ -353,6 +354,7 @@ function scenarios(tarballs) {
     ...lexerErrorOverride,
     'pugneum-renderer': {
       'pugneum-error': localSpec(tarballs, 'pugneum-error'),
+      'pugneum-walker': localSpec(tarballs, 'pugneum-walker'),
     },
   };
   const cohort = allCohortDependencies(tarballs);
@@ -436,8 +438,12 @@ function scenarios(tarballs) {
       dependencies: localDependencies(tarballs, [
         'pugneum-error',
         'pugneum-renderer',
+        'pugneum-walker',
       ]),
-      resolutions: [localResolution('pugneum-renderer', 'pugneum-error')],
+      resolutions: [
+        localResolution('pugneum-renderer', 'pugneum-error'),
+        localResolution('pugneum-renderer', 'pugneum-walker'),
+      ],
     },
     {
       name: 'filterer-minimum',
@@ -499,6 +505,8 @@ function scenarios(tarballs) {
         localResolution('pugneum-filter-table', 'pugneum-error'),
         localResolution('pugneum-filter-table', 'pugneum-lexer'),
         resolution('pugneum-filter-table', 'pugneum-filterer', '1.1.0'),
+        resolution('pugneum-filterer', 'pugneum-walker', '1.0.2'),
+        localResolution('pugneum-renderer', 'pugneum-walker'),
       ],
     },
     {

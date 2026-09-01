@@ -497,6 +497,96 @@ describe('successful optional syntax forms', () => {
   });
 });
 
+describe('inline shorthand contract inventory', () => {
+  [
+    ['p @(/x label)', 'a'],
+    ['p !(/x alt)', 'img'],
+    ['p *(x)', 'strong'],
+    ['p _(x)', 'em'],
+    ['p ~(x)', 'del'],
+    ['p &(x)', 'ins'],
+    ['p ^(x)', 'sup'],
+    ['p %(x)', 'kbd'],
+    ['p ,(x)', 'sub'],
+    ['p ?(HTML Hypertext)', 'abbr'],
+    ['p `(x)', 'code'],
+    ['p #(span x)', 'span'],
+  ].forEach(([source, tag]) => {
+    test(source + ' dispatches through its grammar descriptor', () => {
+      const tokens = lex(source, {filename: 'inventory.pg'});
+
+      assert.ok(
+        tokens.some((token) => token.type === 'tag' && token.val === tag),
+      );
+      assertPhysicalTokenLocations(source, tokens, source);
+    });
+  });
+});
+
+describe('immediate resource targets and link labels', () => {
+  const shorthandLookingUrls = [
+    '/x/@(link)',
+    '/x/!(image)',
+    '/x/*(strong)',
+    '/x/_(emphasis)',
+    '/x/~(delete)',
+    '/x/&(insert)',
+    '/x/^(sup)',
+    '/x/%(key)',
+    '/x/,(sub)',
+    '/x/?(abbr)',
+    '/x/`(code)',
+    '/x/#(tag)',
+  ];
+
+  shorthandLookingUrls.forEach((url) => {
+    [url, '"' + url + '"'].forEach((spelling) => {
+      test('implicit label is literal for ' + spelling, () => {
+        const source = 'p @(' + spelling + ')';
+        const tokens = lex(source, {filename: 'link-label.pg'});
+        const tags = tokens
+          .filter((token) => token.type === 'tag')
+          .map((token) => token.val);
+        const visible = tokens
+          .filter((token) => token.type === 'text')
+          .map((token) => token.val)
+          .join('');
+
+        assert.deepStrictEqual(tags, ['p', 'a']);
+        assert.strictEqual(visible, url);
+        assertPhysicalTokenLocations(source, tokens, source);
+      });
+    });
+  });
+
+  test('an explicit label still opts into inline parsing', () => {
+    const tokens = lex('p @(/work Rich _(title))', {
+      filename: 'link-label.pg',
+    });
+
+    assert.ok(
+      tokens.some((token) => token.type === 'tag' && token.val === 'em'),
+    );
+  });
+
+  [
+    ['p @()', 'PUGNEUM:INVALID_LINK'],
+    ['p @("" label)', 'PUGNEUM:INVALID_LINK'],
+    ['p !()', 'PUGNEUM:INVALID_IMAGE'],
+    ['p !("" alt)', 'PUGNEUM:INVALID_IMAGE'],
+    ['p @[]', 'PUGNEUM:INVALID_REF_LINK'],
+    ['p ![]', 'PUGNEUM:INVALID_REF_IMAGE'],
+    ['p ^[]', 'PUGNEUM:INVALID_FOOTNOTE_REF'],
+  ].forEach(([source, code]) => {
+    test('rejects empty target in ' + source, () => {
+      assert.throws(
+        () => lex(source, {filename: 'empty-target.pg'}),
+        (error) => error.code === code,
+      );
+    });
+  });
+});
+
 test('exported attribute-name validation matches lexer boundaries', () => {
   const accepted = ['data-value', 'foo.bar', 'data:x', '@x', '_x', '-x'];
   const rejected = ['x/y', 'x>y', 'x\0y', '', 'two words'];
@@ -1028,7 +1118,7 @@ describe('physical shorthand source locations', () => {
       assert.strictEqual(eos.loc.end.column, source.length + 1, source);
     });
 
-    const footnoteSource = 'p ^[ note ] tail';
+    const footnoteSource = 'p ^[note-1] tail';
     const footnoteEos = lex(footnoteSource, {filename: 'locations.pg'}).at(-1);
     assert.strictEqual(footnoteEos.loc.end.column, footnoteSource.length + 1);
   });
@@ -1454,7 +1544,6 @@ describe('context-aware reference shorthand boundaries', () => {
   const families = [
     {open: '@[', start: 'start-ref-link'},
     {open: '![', start: 'start-ref-image'},
-    {open: '^[', start: 'start-footnote-ref'},
   ];
 
   function assertBoundedPayload(payload) {
@@ -1524,6 +1613,18 @@ describe('context-aware reference shorthand boundaries', () => {
       1,
     );
     assert.strictEqual(tokens.at(-1).type, 'eos');
+    assertPhysicalTokenLocations(source, tokens, source);
+  });
+
+  test('footnote references retain the shared bracket boundary for valid names', () => {
+    const source = 'p ^[note-1] tail';
+    const tokens = lex(source, {filename: 'boundary.pg'});
+
+    assert.strictEqual(
+      tokens.find((tok) => tok.type === 'start-footnote-ref').val,
+      'note-1',
+    );
+    assert.ok(tokens.some((tok) => tok.type === 'text' && tok.val === ' tail'));
     assertPhysicalTokenLocations(source, tokens, source);
   });
 });
@@ -2179,6 +2280,46 @@ describe('non-ASCII whitespace in indentation', () => {
       },
     ]);
   });
+
+  [
+    'div(' + NBSP + 'id=x)',
+    'div(id' + NBSP + '=x)',
+    'div(id=' + NBSP + 'x)',
+    'div(id=x' + NBSP + 'class=y)',
+    'div("data' + NBSP + 'name"=x)',
+  ].forEach((source) => {
+    test('rejects NBSP at attribute structure in ' + source, () => {
+      assert.throws(
+        () => lex(source, {filename: 'attrs.pg'}),
+        (error) => error.code === 'PUGNEUM:NON_ASCII_WHITESPACE',
+      );
+    });
+  });
+
+  test('Unicode whitespace remains data inside a quoted attribute value', () => {
+    const tokens = lex('div(title="left' + NBSP + 'right")', {
+      filename: 'attrs.pg',
+    });
+
+    assert.strictEqual(
+      tokens.find(
+        (token) => token.type === 'attribute' && token.name === 'title',
+      ).val,
+      'left' + NBSP + 'right',
+    );
+  });
+
+  test('Unicode whitespace at the start of continued text is preserved', () => {
+    const tokens = lex('p.\n  first\n  ' + NBSP + 'second', {
+      filename: 'text.pg',
+    });
+
+    assert.ok(
+      tokens.some(
+        (token) => token.type === 'text' && token.val === NBSP + 'second',
+      ),
+    );
+  });
 });
 
 describe('id and dot/class shorthand boundaries', () => {
@@ -2350,36 +2491,44 @@ test('ordinary tag lines skip impossible recognizer families', () => {
   );
 });
 
-describe('footnote reference bracket parsing', () => {
-  // Regression: interpolationsAreClosed treated a bare '[' inside an open ^[
-  // as a nested bracket (needing a second ']'), while parseBracketContent (the
-  // real parser) closes ^[...] at the first ']'. That made a footnote with bare
-  // brackets merge the following pipeless line, diverging from the inline form.
-  test('inline ^[ with a bare bracket closes at the first ]', () => {
-    const tokens = lex('p ^[note [x] tail]', {filename: 't.pg'});
-    const ref = tokens.find((t) => t.type === 'start-footnote-ref');
-    assert.ok(ref);
-    assert.strictEqual(ref.val, 'note [x');
+describe('footnote identifier grammar', () => {
+  ['note', 'NOTE_2', '123', 'a-b_c'].forEach((name) => {
+    test('accepts ' + name + ' in both uses and definitions', () => {
+      const tokens = lex(
+        'p ^[' + name + ']\n\nfootnotes\n  ' + name + '\tContent',
+        {filename: 'footnote-name.pg'},
+      );
+
+      assert.strictEqual(
+        tokens.find((tok) => tok.type === 'start-footnote-ref').val,
+        name,
+      );
+      assert.strictEqual(
+        tokens.find((tok) => tok.type === 'start-footnote-def').val,
+        name,
+      );
+    });
   });
 
-  test('pipeless ^[ with a bare bracket does NOT swallow the next line', () => {
-    // Line 1 contains a ']' that closes the footnote at the first bracket.
-    // With the old merge detector the bare '[' bumped a nested-bracket counter,
-    // so the ']' only balanced that counter and the footnote looked unclosed,
-    // wrongly merging line 2 (and its newline) into the footnote line.
-    const src = 'div.\n  pre ^[note [x] more\n  next line';
-    const tokens = lex(src, {filename: 't.pg'});
-    const ref = tokens.find((t) => t.type === 'start-footnote-ref');
-    assert.ok(ref);
-    // Same footnote name as the inline form (closes at the first ']').
-    assert.strictEqual(ref.val, 'note [x');
-    // The two pipeless lines stay separate: a newline token sits between them
-    // and the second line survives as its own text token. (Under the bug the
-    // lines were merged, so there was no separating newline.)
-    const texts = tokens.filter((t) => t.type === 'text').map((t) => t.val);
-    assert.ok(texts.includes('next line'));
-    const newlines = tokens.filter((t) => t.type === 'newline');
-    assert.strictEqual(newlines.length, 1);
+  [' note', 'note ', 'note one', 'note.one', 'nóté'].forEach((name) => {
+    test('rejects unresolvable use ' + JSON.stringify(name), () => {
+      assert.throws(
+        () => lex('p ^[' + name + ']', {filename: 'footnote-name.pg'}),
+        (error) => error.code === 'PUGNEUM:INVALID_FOOTNOTE_REF',
+      );
+    });
+  });
+
+  ['note.one', 'nóté'].forEach((name) => {
+    test('rejects invalid definition ' + JSON.stringify(name), () => {
+      assert.throws(
+        () =>
+          lex('footnotes\n  ' + name + ' Content', {
+            filename: 'footnote-name.pg',
+          }),
+        (error) => error.code === 'PUGNEUM:INVALID_FOOTNOTE_NAME',
+      );
+    });
   });
 });
 

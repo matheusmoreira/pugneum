@@ -153,33 +153,103 @@ const typographicQuoteRe = /[‘’“”]/;
 // whitespace must be plain spaces or tabs, so these are never valid here.
 const nonAsciiWhitespaceRe =
   /[\u0085\u00A0\u1680\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/;
+const footnoteIdentifierRe = /^[A-Za-z0-9_-]+$/;
 
 const bracketPairs = {'(': ')', '{': '}', '[': ']'};
 const closingBrackets = {')': '(', '}': '{', ']': '['};
 
-const inlineShorthands = {
-  strong: {tag: 'strong', sigil: '*'},
-  emphasis: {tag: 'em', sigil: '_', name: 'emphasis'},
-  del: {tag: 'del', sigil: '~'},
-  ins: {tag: 'ins', sigil: '&'},
-  sup: {tag: 'sup', sigil: '^'},
-  kbd: {tag: 'kbd', sigil: '%'},
-  sub: {tag: 'sub', sigil: ','},
-};
-
 const parenShorthands = [
-  {sigil: '@', key: 'link', kind: 'link', label: 'inline links'},
-  {sigil: '!', key: 'image', kind: 'image', label: 'inline images'},
-  {sigil: '*', key: 'strong', kind: 'strong', label: 'inline strong'},
-  {sigil: '_', key: 'emphasis', kind: 'emphasis', label: 'inline emphasis'},
-  {sigil: '~', key: 'del', kind: 'del', label: 'inline del'},
-  {sigil: '&', key: 'ins', kind: 'ins', label: 'inline ins'},
-  {sigil: '^', key: 'sup', kind: 'sup', label: 'inline sup'},
-  {sigil: '%', key: 'kbd', kind: 'kbd', label: 'inline kbd'},
-  {sigil: ',', key: 'sub', kind: 'sub', label: 'inline sub'},
-  {sigil: '?', key: 'abbr', kind: 'abbr', label: 'inline abbr'},
-  {sigil: '`', key: 'code', kind: 'code', label: 'inline code'},
-  {sigil: '#', key: 'interp', kind: 'interpolation', label: 'inline tags'},
+  {
+    sigil: '@',
+    key: 'link',
+    kind: 'link',
+    label: 'inline links',
+    handler: 'handleLinkShorthand',
+  },
+  {
+    sigil: '!',
+    key: 'image',
+    kind: 'image',
+    label: 'inline images',
+    handler: 'handleImageShorthand',
+  },
+  {
+    sigil: '*',
+    key: 'strong',
+    kind: 'strong',
+    label: 'inline strong',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['strong', '*', 'strong'],
+  },
+  {
+    sigil: '_',
+    key: 'emphasis',
+    kind: 'emphasis',
+    label: 'inline emphasis',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['em', '_', 'emphasis'],
+  },
+  {
+    sigil: '~',
+    key: 'del',
+    kind: 'del',
+    label: 'inline del',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['del', '~', 'del'],
+  },
+  {
+    sigil: '&',
+    key: 'ins',
+    kind: 'ins',
+    label: 'inline ins',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['ins', '&', 'ins'],
+  },
+  {
+    sigil: '^',
+    key: 'sup',
+    kind: 'sup',
+    label: 'inline sup',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['sup', '^', 'sup'],
+  },
+  {
+    sigil: '%',
+    key: 'kbd',
+    kind: 'kbd',
+    label: 'inline kbd',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['kbd', '%', 'kbd'],
+  },
+  {
+    sigil: ',',
+    key: 'sub',
+    kind: 'sub',
+    label: 'inline sub',
+    handler: 'handleInlineShorthand',
+    handlerArgs: ['sub', ',', 'sub'],
+  },
+  {
+    sigil: '?',
+    key: 'abbr',
+    kind: 'abbr',
+    label: 'inline abbr',
+    handler: 'handleAbbrShorthand',
+  },
+  {
+    sigil: '`',
+    key: 'code',
+    kind: 'code',
+    label: 'inline code',
+    handler: 'handleCodeShorthand',
+  },
+  {
+    sigil: '#',
+    key: 'interp',
+    kind: 'interpolation',
+    label: 'inline tags',
+    handler: 'handleInterpolation',
+  },
 ];
 
 const bracketShorthands = [
@@ -214,6 +284,13 @@ const parenShorthandBySigil = {};
 for (const t of parenShorthands) parenShorthandBySigil[t.sigil] = t.kind;
 const bracketShorthandBySigil = {};
 for (const t of bracketShorthands) bracketShorthandBySigil[t.sigil] = t.kind;
+const inlineShorthandByKind = Object.create(null);
+for (const descriptor of parenShorthands.concat(bracketShorthands)) {
+  if (inlineShorthandByKind[descriptor.kind]) {
+    throw new Error('Duplicate inline shorthand kind: ' + descriptor.kind);
+  }
+  inlineShorthandByKind[descriptor.kind] = descriptor;
+}
 
 function escapeForRegex(ch) {
   return /[\\^$.*+?()[\]{}|]/.test(ch) ? '\\' + ch : ch;
@@ -693,6 +770,45 @@ function findClosingQuote(str, quote, start) {
   return -1;
 }
 
+function trimAsciiWhitespace(str) {
+  return str.replace(/^[ \t]+|[ \t]+$/g, '');
+}
+
+function trimAsciiWhitespaceStart(str) {
+  return str.replace(/^[ \t]+/, '');
+}
+
+// Read one leading resource-like field with the same quote, escape, and ASCII
+// separator rules for inline URLs and reference-definition URLs. Callers own
+// the field-specific diagnostic and trailing payload semantics.
+function readLeadingField(str) {
+  if (str[0] === "'" || str[0] === '"') {
+    const quote = str[0];
+    const end = findClosingQuote(str, quote, 1);
+    return {
+      quoted: true,
+      quote,
+      unclosed: end === -1,
+      start: 1,
+      end,
+      afterStart: end === -1 ? str.length : end + 1,
+      raw: end === -1 ? str.substring(1) : str.substring(1, end),
+    };
+  }
+
+  const separator = str.search(/[ \t]/);
+  const end = separator === -1 ? str.length : separator;
+  return {
+    quoted: false,
+    quote: null,
+    unclosed: false,
+    start: 0,
+    end,
+    afterStart: end,
+    raw: str.substring(0, end),
+  };
+}
+
 /**
  * Decode resource escapes while retaining the original slash count before a
  * valid attribute interpolation. The public value still handles \( \) \\ \' \"
@@ -797,7 +913,7 @@ function mergeMultiLineInterpolations(
 
   for (let j = 0; j < tokens.length; j++) {
     if (pendingText !== null) {
-      pendingText += ' ' + tokens[j].trimStart();
+      pendingText += ' ' + tokens[j].replace(/^[ \t]+/, '');
       // The normalized representation inserts one separator between physical
       // lines; feed it through the same context scanner as the visible bytes.
       scanInlineContexts(' ', state, 0);
@@ -913,6 +1029,17 @@ class Lexer {
         ' is used literally, which ' +
         'usually produces broken output. Use a straight quote (\' or ") or ' +
         'remove the quotes — your editor may have auto-replaced them.',
+    );
+  }
+
+  rejectNonAsciiStructuralWhitespace(char) {
+    if (!char || !nonAsciiWhitespaceRe.test(char)) return;
+    this.error(
+      'NON_ASCII_WHITESPACE',
+      'Unexpected non-ASCII whitespace ' +
+        formatCodepoint(char) +
+        '. Structural whitespace must use regular spaces, tabs, or line ' +
+        'breaks; Unicode whitespace is preserved only in text and quoted values.',
     );
   }
 
@@ -1135,7 +1262,7 @@ class Lexer {
       const raw = this.input.slice(start, end);
       const captures = this.indentRe.exec('\n' + raw);
       const indent = captures ? captures[1].length : 0;
-      const blank = !raw.trim();
+      const blank = /^[ \t]*$/.test(raw);
       if (!blank && indent < minIndent) {
         termination = 'outdent';
         break;
@@ -1428,98 +1555,33 @@ class Lexer {
   }
 
   _processInlineElement(type, value, prefix, escaped, earliest) {
-    switch (earliest.kind) {
-      case 'interpolation':
-        return this.handleInterpolation(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
-      case 'link':
-        return this.handleLinkShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
-      case 'image':
-        return this.handleImageShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
-      case 'reference':
-      case 'ref-image':
-      case 'footnote-ref': {
-        const bt = bracketShorthands.find((t) => t.kind === earliest.kind);
-        return this[bt.handler](type, value, prefix, escaped, earliest.pos);
-      }
-
-      case 'strong':
-      case 'emphasis':
-      case 'del':
-      case 'ins':
-      case 'sup':
-      case 'kbd':
-      case 'sub': {
-        const shorthand = inlineShorthands[earliest.kind];
-        return this.handleInlineShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-          shorthand.tag,
-          shorthand.sigil,
-          shorthand.name || shorthand.tag,
-        );
-      }
-
-      case 'abbr':
-        return this.handleAbbrShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
-      case 'code':
-        return this.handleCodeShorthand(
-          type,
-          value,
-          prefix,
-          escaped,
-          earliest.pos,
-        );
-
-      case 'variable':
-        return this.handleVariableRef(type, value, prefix, escaped, earliest);
-
-      case 'invalid-variable':
-        this.incrementColumn(prefix.length + earliest.pos + escaped);
-        this.raiseVariableError(earliest.variable);
-        return;
-
-      default:
-        // The shorthand tables (parenShorthands/bracketShorthands) and this
-        // switch must be extended together. If a new shorthand kind is added
-        // to a table but its case is forgotten here, the switch would return
-        // undefined and corrupt the addText loop with an uncoded TypeError far
-        // from the mistake. Fail loudly and locally instead.
-        this.error(
-          'LEXER_BUG',
-          'Unhandled inline element kind: ' + earliest.kind,
-        );
+    if (earliest.kind === 'variable') {
+      return this.handleVariableRef(type, value, prefix, escaped, earliest);
     }
+    if (earliest.kind === 'invalid-variable') {
+      this.incrementColumn(prefix.length + earliest.pos + escaped);
+      this.raiseVariableError(earliest.variable);
+      return;
+    }
+
+    // Recognition, multiline completeness, and dispatch all consume the same
+    // descriptor inventory. Adding a shorthand without a handler is therefore
+    // a local invariant failure instead of a late undefined-return corruption.
+    const descriptor = inlineShorthandByKind[earliest.kind];
+    if (!descriptor || typeof this[descriptor.handler] !== 'function') {
+      this.error(
+        'LEXER_BUG',
+        'Unhandled inline element kind: ' + earliest.kind,
+      );
+    }
+    return this[descriptor.handler](
+      type,
+      value,
+      prefix,
+      escaped,
+      earliest.pos,
+      ...(descriptor.handlerArgs || []),
+    );
   }
 
   findEarliestCandidate(value, startPos, initialParenDepth) {
@@ -1686,7 +1748,8 @@ class Lexer {
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i];
       const line = startLine + i;
-      const trimmed = i === 0 ? segment.text : segment.text.trimStart();
+      const trimmed =
+        i === 0 ? segment.text : segment.text.replace(/^[ \t]+/, '');
       const trimmedColumns = segment.text.length - trimmed.length;
       const column = (segment.indented ? indents : 0) + trimmedColumns + 1;
 
@@ -1718,6 +1781,12 @@ class Lexer {
       });
     }
     this.advanceLocation(value);
+  }
+
+  addLiteralSourceText(value, rawSource) {
+    const tok = this.tok('text', value);
+    this.advanceLocation(rawSource);
+    this.tokens.push(this.tokEnd(tok));
   }
 
   addReferenceText(value) {
@@ -1842,42 +1911,37 @@ class Lexer {
     const content = range.src;
     const after = rest.substring(range.end + 1);
 
-    let url, text, urlStart, urlEnd, textStart;
-    if (content.length > 0 && (content[0] === "'" || content[0] === '"')) {
-      const quote = content[0];
-      const endQuote = findClosingQuote(content, quote, 1);
-      if (endQuote === -1) {
-        this.error(errorCode, `Unclosed quote in ${label} URL.`);
-      }
-      urlStart = 1;
-      urlEnd = endQuote;
-      url = content.substring(1, endQuote);
-      const afterUrl = content.substring(endQuote + 1);
-      const trimmed = afterUrl.trimStart();
+    let text, textStart;
+    const field = readLeadingField(content);
+    if (field.unclosed) {
+      this.error(errorCode, `Unclosed quote in ${label} URL.`);
+    }
+    if (field.quoted) {
+      const afterUrl = content.substring(field.afterStart);
+      this.rejectNonAsciiStructuralWhitespace(afterUrl[0]);
+      const trimmed = trimAsciiWhitespaceStart(afterUrl);
       text = trimmed || null;
       textStart = text === null ? null : content.length - trimmed.length;
     } else {
-      const spaceIdx = content.indexOf(' ');
-      urlStart = 0;
-      urlEnd = spaceIdx === -1 ? content.length : spaceIdx;
-      if (spaceIdx === -1 || !content.substring(spaceIdx + 1)) {
-        url = spaceIdx === -1 ? content : content.substring(0, spaceIdx);
+      if (
+        field.afterStart === content.length ||
+        !content.substring(field.afterStart + 1)
+      ) {
         text = null;
         textStart = null;
       } else {
-        url = content.substring(0, spaceIdx);
-        text = content.substring(spaceIdx + 1);
-        textStart = spaceIdx + 1;
+        text = content.substring(field.afterStart + 1);
+        textStart = field.afterStart + 1;
       }
     }
-    const decodedUrl = decodeResource(url);
+    const decodedUrl = decodeResource(field.raw);
     return {
       url: decodedUrl.value,
       urlInterpolationSource: decodedUrl.interpolationSource,
-      rawUrl: url,
+      rawUrl: field.raw,
       text,
-      urlStart,
-      urlEnd,
+      urlStart: field.start,
+      urlEnd: field.end,
       textStart,
       content,
       after,
@@ -1895,6 +1959,9 @@ class Lexer {
       'INVALID_LINK',
       '@() link',
     );
+    if (!parsed.url) {
+      this.error('INVALID_LINK', '@() link requires a non-empty URL.');
+    }
     this.startDesugaredElement('a');
 
     tok = this.tok('start-attributes');
@@ -1906,7 +1973,13 @@ class Lexer {
     const linkText = parsed.text !== null ? parsed.text : parsed.rawUrl;
     const textStart = parsed.text !== null ? parsed.textStart : parsed.urlStart;
     this.advanceLocation(parsed.content.slice(0, textStart));
-    this.addSourceText(linkText);
+    if (parsed.text !== null) {
+      this.addSourceText(linkText);
+    } else {
+      // A URL that doubles as its own label is data, not inline source. Only
+      // an explicitly authored label opts into recursive shorthand parsing.
+      this.addLiteralSourceText(parsed.url, parsed.rawUrl);
+    }
     this.advanceLocation(parsed.content.slice(textStart + linkText.length));
 
     tok = this.tok('end-interpolation');
@@ -1926,6 +1999,9 @@ class Lexer {
       'INVALID_IMAGE',
       '!() image',
     );
+    if (!parsed.url) {
+      this.error('INVALID_IMAGE', '!() image requires a non-empty source.');
+    }
     const decodedAlt =
       parsed.text !== null
         ? decodeResource(parsed.text)
@@ -2243,13 +2319,20 @@ class Lexer {
       );
     }
     const rawName = inner.substring(0, result.end);
-    const name = rawName.trim();
-    if (!name) {
+    if (!rawName) {
       this.error(
         'INVALID_FOOTNOTE_REF',
         'Footnote reference ^[] requires an identifier.',
       );
     }
+    if (!footnoteIdentifierRe.test(rawName)) {
+      this.error(
+        'INVALID_FOOTNOTE_REF',
+        'Footnote reference identifiers may contain only ASCII letters, ' +
+          'digits, "_", and "-".',
+      );
+    }
+    const name = rawName;
 
     tok = this.tok('start-footnote-ref');
     tok.val = name;
@@ -2333,11 +2416,11 @@ class Lexer {
   blockDirective(regexp, mode) {
     let captures;
     if ((captures = regexp.exec(this.input))) {
-      let name = captures[1].trim();
+      let name = trimAsciiWhitespace(captures[1]);
       let comment = '';
       if (name.indexOf('//') !== -1) {
         comment = '//' + name.split('//').slice(1).join('//');
-        name = name.split('//')[0].trim();
+        name = trimAsciiWhitespace(name.split('//')[0]);
       }
       if (!name) return;
       const tok = this.tok('block', name);
@@ -2419,7 +2502,7 @@ class Lexer {
 
   path() {
     const tok = this.scanEndOfLine(/^ ([^\n]+)/, 'path');
-    if (tok && (tok.val = tok.val.trim())) {
+    if (tok && (tok.val = trimAsciiWhitespace(tok.val))) {
       this.tokens.push(this.tokEnd(tok));
       return true;
     }
@@ -2681,13 +2764,13 @@ class Lexer {
 
     const block = this.collectIndentedBlockLines(indents);
     for (const line of block.lines) {
-      const content = line.raw.slice(indents).trim();
+      const content = trimAsciiWhitespace(line.raw.slice(indents));
       if (content) {
         this.incrementLine(1);
         this.incrementColumn(indents);
 
         // Parse "name url" or "name 'quoted url'" or 'name "quoted url"'
-        const spaceIdx = content.indexOf(' ');
+        const spaceIdx = content.search(/[ \t]/);
         if (spaceIdx === -1) {
           this.error(
             'INVALID_REF_DEF',
@@ -2695,41 +2778,39 @@ class Lexer {
           );
         }
         const name = content.substring(0, spaceIdx);
-        const rawRest = content.substring(spaceIdx + 1);
+        const rawRest = content.substring(spaceIdx);
         const leadingRestWhitespace =
-          rawRest.length - rawRest.trimStart().length;
-        const restStart = spaceIdx + 1 + leadingRestWhitespace;
-        const rest = rawRest.trim();
+          rawRest.length - trimAsciiWhitespaceStart(rawRest).length;
+        const restStart = spaceIdx + leadingRestWhitespace;
+        const rest = trimAsciiWhitespace(rawRest);
         let url;
         let urlInterpolationSource;
         let defaultText = null;
+        const field = readLeadingField(rest);
 
         // Handle quoted URLs (may be followed by default text)
-        if (rest[0] === "'" || rest[0] === '"') {
-          const quote = rest[0];
-          const closeIdx = findClosingQuote(rest, quote, 1);
-          if (closeIdx === -1) {
+        if (field.quoted) {
+          if (field.unclosed) {
             this.incrementColumn(restStart);
             this.error(
               'INVALID_REF_DEF',
               'Unclosed quote in reference definition URL: ' + content,
             );
           }
-          const decodedUrl = decodeResource(rest.substring(1, closeIdx));
+          const decodedUrl = decodeResource(field.raw);
           url = decodedUrl.value;
           urlInterpolationSource = decodedUrl.interpolationSource;
-          const afterUrl = rest.substring(closeIdx + 1).trim();
+          const afterUrl = trimAsciiWhitespace(
+            rest.substring(field.afterStart),
+          );
           if (afterUrl) defaultText = afterUrl;
         } else {
           // Unquoted URL: first word is URL, rest is default text
-          const urlEnd = rest.indexOf(' ');
-          if (urlEnd === -1) {
-            url = rest;
-          } else {
-            url = rest.substring(0, urlEnd);
-            const afterUrl = rest.substring(urlEnd + 1).trim();
-            if (afterUrl) defaultText = afterUrl;
-          }
+          url = field.raw;
+          const afterUrl = trimAsciiWhitespace(
+            rest.substring(field.afterStart),
+          );
+          if (afterUrl) defaultText = afterUrl;
           urlInterpolationSource = url;
         }
 
@@ -2775,9 +2856,9 @@ class Lexer {
   given() {
     let captures;
     if ((captures = /^given +([^\n]+)/.exec(this.input))) {
-      let name = captures[1].trim();
+      let name = trimAsciiWhitespace(captures[1]);
       if (name.indexOf('//') !== -1) {
-        name = name.split('//')[0].trim();
+        name = trimAsciiWhitespace(name.split('//')[0]);
       }
       if (!name) {
         this.error('MALFORMED_GIVEN', 'given requires a block name');
@@ -2850,7 +2931,7 @@ class Lexer {
     for (let li = 0; li < block.lines.length; li++) {
       const line = block.lines[li];
 
-      if (!line.raw.trim()) {
+      if (/^[ \t]*$/.test(line.raw)) {
         this.incrementLine(1);
         continue;
       }
@@ -2862,11 +2943,17 @@ class Lexer {
         this.incrementLine(1);
 
         const content = line.raw.slice(defIndent);
-        const spaceIdx = content.indexOf(' ');
-        const name =
-          spaceIdx === -1 ? content.trim() : content.slice(0, spaceIdx);
+        const spaceIdx = content.search(/[ \t]/);
+        const name = spaceIdx === -1 ? content : content.slice(0, spaceIdx);
 
         this.incrementColumn(defIndent);
+        if (!footnoteIdentifierRe.test(name)) {
+          this.error(
+            'INVALID_FOOTNOTE_NAME',
+            'Footnote definition identifiers may contain only ASCII letters, ' +
+              'digits, "_", and "-".',
+          );
+        }
         const startTok = this.tok('start-footnote-def');
         startTok.val = name;
         this.incrementColumn(name.length);
@@ -2874,13 +2961,18 @@ class Lexer {
         defOpen = true;
 
         if (spaceIdx !== -1) {
-          this.incrementColumn(1);
-          this.addText('text', content.substring(spaceIdx + 1));
+          const bodyStart = content.substring(spaceIdx).search(/[^ \t]/);
+          if (bodyStart !== -1) {
+            this.incrementColumn(bodyStart);
+            this.addText('text', content.substring(spaceIdx + bodyStart));
+          } else {
+            this.incrementColumn(content.length - name.length);
+          }
         }
       } else {
         // Continuation line of the current definition.
         this.incrementLine(1);
-        const continuation = line.raw.slice(defIndent).trimStart();
+        const continuation = line.raw.slice(defIndent).replace(/^[ \t]+/, '');
         this.tokens.push(this.tokEnd(this.tok('newline')));
         this.incrementColumn(line.indent);
         this.addText('text', continuation);
@@ -2914,6 +3006,7 @@ class Lexer {
 
     // consume all whitespace before the key
     i = this.skipWhitespace(str, 0);
+    this.rejectNonAsciiStructuralWhitespace(str[i]);
 
     if (i === str.length) {
       return '';
@@ -2932,6 +3025,7 @@ class Lexer {
 
     // start looping through the key
     for (; i < str.length; i++) {
+      this.rejectNonAsciiStructuralWhitespace(str[i]);
       if (quote) {
         if (str[i] === quote) {
           this.incrementColumn(1);
@@ -2976,6 +3070,7 @@ class Lexer {
 
       // consume all whitespace after the =
       i = this.skipWhitespace(str, i);
+      this.rejectNonAsciiStructuralWhitespace(str[i]);
 
       // quote?
       if (quoteRe.test(str[i])) {
@@ -3047,6 +3142,7 @@ class Lexer {
             continue;
           }
         } else {
+          this.rejectNonAsciiStructuralWhitespace(str[i]);
           if (str[i] === '\\' && i + 1 < str.length) {
             const next = str[i + 1];
             if (next === '\\' || whitespaceRe.test(next)) {
@@ -3081,6 +3177,7 @@ class Lexer {
 
     this.tokens.push(this.tokEnd(tok));
 
+    this.rejectNonAsciiStructuralWhitespace(str[i]);
     if (quote && str[i] && !whitespaceRe.test(str[i])) {
       this.error(
         'MALFORMED_ATTRIBUTE',
@@ -3253,16 +3350,7 @@ class Lexer {
 
   fail() {
     const first = this.input[0];
-    if (first && nonAsciiWhitespaceRe.test(first)) {
-      const codepoint = formatCodepoint(first);
-      this.error(
-        'NON_ASCII_WHITESPACE',
-        'Unexpected non-ASCII whitespace ' +
-          codepoint +
-          '. If this is indentation, use regular spaces or tabs — your ' +
-          'editor may have inserted it.',
-      );
-    }
+    this.rejectNonAsciiStructuralWhitespace(first);
 
     const inlinePatterns = [];
     for (const t of parenShorthands) {

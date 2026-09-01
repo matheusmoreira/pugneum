@@ -65,6 +65,11 @@ modified to be fully static.
 All dynamic features have been removed.
 Only the clean language remains.
 
+Structural whitespace—indentation, separators, and spacing within attribute
+lists—uses ASCII spaces, tabs, or physical line breaks. Non-ASCII whitespace is
+preserved in authored text and quoted attribute values, but rejected at a
+structural boundary with `PUGNEUM:NON_ASCII_WHITESPACE`.
+
 ## Text
 
 ### Piped text
@@ -279,7 +284,10 @@ p @(/contact Contact us)
 <p><a href="/contact">Contact us</a></p>
 ```
 
-If no text is provided, the URL is used as the link text.
+If no text is provided, the URL is used as literal link text: shorthand-looking
+characters inside that fallback label are not parsed as markup. Supplying text
+after the URL explicitly opts that label into ordinary inline parsing. The URL
+must be nonempty.
 Escape with `\@(` to output a literal `@(`.
 
 ## Image shorthand
@@ -296,7 +304,8 @@ p !(/logo.png Logo)(class="logo" loading="lazy")
 <p><img class="logo" src="/logo.png" alt="Logo" loading="lazy"></p>
 ```
 
-If no alt text is provided, an empty `alt=""` is used (decorative image).
+The image source must be nonempty. If no alt text is provided, an empty
+`alt=""` is used (decorative image).
 Custom attributes can be appended after the shorthand in parentheses.
 Escape with `\!(` to output a literal `!(`.
 
@@ -531,7 +540,10 @@ footnotes
 ```
 
 Repeated references show the same number with multiple
-back-links. Footnote content supports all inline shorthands.
+back-links. Footnote content supports all inline shorthands. A footnote name is
+one or more ASCII letters, digits, hyphens, or underscores; definitions and
+references use exactly the same grammar, without surrounding or internal
+whitespace.
 
 ## Table filter
 

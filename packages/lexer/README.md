@@ -155,6 +155,19 @@ physical span across escapes and multiline folding. Consumers must therefore
 use `loc`, rather than the length of a transformed token value, for source
 mapping. The final `eos` token is also zero-width.
 
+The inline grammar has one descriptor inventory shared by candidate
+recognition, multiline completeness scanning, and dispatch. Immediate `@()`
+links and `!()` images require a nonempty URL/source; deferred `@[]`, `![]`, and
+`^[]` forms require a nonempty identifier. When `@()` has no explicit label,
+its decoded URL is emitted as literal text rather than recursively scanned as
+inline markup. Footnote definitions and uses share the identifier grammar
+`[A-Za-z0-9_-]+`.
+
+Structural whitespace is ASCII space, tab, or a physical line break.
+Non-ASCII whitespace at a grammar boundary—including before, between, or
+around attributes—throws `PUGNEUM:NON_ASCII_WHITESPACE`; the same code points
+remain ordinary data inside text and quoted attribute values.
+
 Every `tag` token value begins with an ASCII letter. Later characters may be
 ASCII letters, digits, underscores, hyphens, or colons, with a hyphen or colon
 only between word characters. The same rule applies inside `#(...)` and after

@@ -1611,6 +1611,13 @@ describe('link shorthand', () => {
     );
   });
 
+  it('keeps shorthand-looking URL fallback text literal', () => {
+    assert.strictEqual(
+      pg.render('p @(/docs/_(draft))'),
+      '<p><a href="/docs/_(draft)">/docs/_(draft)</a></p>',
+    );
+  });
+
   it('should work inline in text', () => {
     assert.strictEqual(
       pg.render('p Visit @(https://example.com our site) today.'),

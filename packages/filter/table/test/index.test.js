@@ -1,6 +1,8 @@
 'use strict';
 
 var assert = require('node:assert/strict');
+var fs = require('node:fs');
+var path = require('node:path');
 var {test, describe} = require('node:test');
 
 var tableFilter = require('../');
@@ -8,6 +10,7 @@ var applyFilters = require('pugneum-filterer');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var render = require('pugneum-renderer');
+var readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
 
 // The table filter is type:'pugneum' — the filterer re-lexes/re-parses its
 // output. Round-trip the generated source through the real lexer+parser so a
@@ -172,6 +175,109 @@ describe('row attrs', () => {
     assert.strictEqual(
       result,
       'table\n  tbody\n    tr\n      td tr\n      td value',
+    );
+  });
+});
+
+describe('context-aware cell delimiters', () => {
+  test('README publishes the top-level delimiter and escape contract', () => {
+    assert.match(readme, /structural only at the top-level cell context/);
+    assert.match(readme, /`\\\|` emits a literal pipe/);
+    assert.match(readme, /`INVALID_TABLE_DELIMITER_CONTEXT`/);
+  });
+
+  test('pipes in quoted tagged-cell attributes remain in one cell', () => {
+    var result = roundTrip(
+      '| td(title="left|right" data-note=\'up|down\') value |',
+    );
+    var cells = collectNodes(result.ast, 'Tag').filter(
+      (node) => node.name === 'td',
+    );
+
+    assert.strictEqual(cells.length, 1);
+    assert.match(
+      result.html,
+      /<td title="left\|right" data-note="up\|down">value<\/td>/,
+    );
+  });
+
+  test('pipes in balanced code and link shorthands remain cell content', () => {
+    var result = roundTrip(
+      '| `(left | right) | @(https://example.test/a|b linked) |',
+    );
+    var cells = collectNodes(result.ast, 'Tag').filter(
+      (node) => node.name === 'td',
+    );
+
+    assert.strictEqual(cells.length, 2);
+    assert.match(result.html, /<code>left \| right<\/code>/);
+    assert.match(
+      result.html,
+      /<a href="https:\/\/example\.test\/a\|b">linked<\/a>/,
+    );
+  });
+
+  test('a top-level escaped pipe is literal and HTML references still work', () => {
+    var result = roundTrip('| left \\| right | left &#124; right |');
+    var cells = collectNodes(result.ast, 'Tag').filter(
+      (node) => node.name === 'td',
+    );
+
+    assert.strictEqual(cells.length, 2);
+    assert.match(result.html, /<td>left \| right<\/td>/);
+    assert.match(result.html, /<td>left &#124; right<\/td>/);
+  });
+
+  test('pipes survive row and separator attribute groups', () => {
+    var result = roundTrip(
+      'tr(title="row|title") | head |\n' +
+        '| ---(title="column|title")--- |\n' +
+        '| value |',
+    );
+
+    assert.match(result.html, /<col title="column\|title">/);
+    assert.match(result.html, /<tr title="row\|title">/);
+  });
+
+  test('separator colgroups still use only top-level double pipes', () => {
+    var result = roundTrip(
+      '| left | right |\n' +
+        '| ---(title="a||b")--- || --- |\n' +
+        '| one || two |',
+    );
+
+    assert.strictEqual((result.html.match(/<colgroup>/g) || []).length, 2);
+    assert.strictEqual(
+      collectNodes(result.ast, 'Tag').filter((node) => node.name === 'td')
+        .length,
+      2,
+    );
+    assert.match(result.html, /<col title="a\|\|b">/);
+  });
+
+  test('mismatched and unclosed contexts fail at the authored character', () => {
+    for (const input of ['| (left | right] |', '| "left | right |']) {
+      const character = input.includes(']') ? ']' : '"';
+      assert.throws(
+        () => tableFilter.filter(input, {}),
+        (failure) => {
+          assert.strictEqual(
+            failure.code,
+            'PUGNEUM:INVALID_TABLE_DELIMITER_CONTEXT',
+          );
+          assert.strictEqual(failure.line, 1);
+          assert.strictEqual(failure.column, input.indexOf(character) + 1);
+          assert.strictEqual(failure.source, input);
+          return true;
+        },
+      );
+    }
+  });
+
+  test('delimiter runs longer than a colgroup boundary are rejected', () => {
+    assert.throws(
+      () => tableFilter.filter('| a ||| b |', {}),
+      (failure) => failure.code === 'PUGNEUM:INVALID_TABLE_DELIMITER_CONTEXT',
     );
   });
 });
@@ -604,10 +710,10 @@ describe('edge cases', () => {
     assert.match(result, /td b/);
   });
 
-  test('quotes do not shield a pipe from context-free cell splitting', () => {
+  test('a quoted whole-cell pipe is content', () => {
     assert.strictEqual(
       tableFilter.filter('| "left|right" |', {}),
-      'table\n  tbody\n    tr\n      td "left\n      td right"',
+      'table\n  tbody\n    tr\n      td "left|right"',
     );
   });
 
@@ -919,11 +1025,14 @@ describe('balanced parens in attribute groups', () => {
     assert.doesNotThrow(() => roundTrip(input));
   });
 
-  test('a long run of unbalanced ( in a cell does not blow up (linear time)', () => {
+  test('a long run of unbalanced ( fails in linear time', () => {
     // The old `\([^)]*\)` regexes backtracked O(n^2): ~80 KB stalled >10 s.
     var input = '| --- |\n| ' + '('.repeat(200000) + ' |';
     var t0 = Date.now();
-    tableFilter.filter(input, {});
+    assert.throws(
+      () => tableFilter.filter(input, {}),
+      (failure) => failure.code === 'PUGNEUM:INVALID_TABLE_DELIMITER_CONTEXT',
+    );
     var elapsed = Date.now() - t0;
     assert.ok(elapsed < 2000, 'took ' + elapsed + 'ms (expected linear)');
   });
@@ -1198,14 +1307,15 @@ describe('literal #{ in cell/caption text', () => {
   });
 });
 
-// classifyCell must require a BALANCED (attrs) group for verbatim treatment, so
-// an unbalanced th(/td( becomes data instead of crashing the re-lex.
+// classifyCell still requires a balanced (attrs) group for verbatim treatment;
+// the row scanner now rejects an unclosed group before it can hide a delimiter.
 describe('cell classification edge cases', () => {
-  test('unbalanced th( is treated as data, not a verbatim tag (no crash)', () => {
+  test('unbalanced th( produces the row-delimiter diagnostic', () => {
     var input = '| a |\n| --- |\n| th(scope value |';
-    var result = tableFilter.filter(input, {});
-    assert.match(result, /td th\(scope value/);
-    assert.doesNotThrow(() => roundTrip(input));
+    assert.throws(
+      () => tableFilter.filter(input, {}),
+      (failure) => failure.code === 'PUGNEUM:INVALID_TABLE_DELIMITER_CONTEXT',
+    );
   });
 
   test('a cell with a .class/#id is data, not an invalid tag (no re-lex crash)', () => {

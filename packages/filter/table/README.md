@@ -40,11 +40,14 @@ errors.
   `| a | b |`, `a | b`, and `| a | b` are equivalent. A trailing/leading pipe just
   produces an empty edge cell that is dropped. Every nonblank, non-caption line
   must be a recognized section marker or contain a row delimiter; other text is
-  rejected with `INVALID_TABLE_LINE` instead of being discarded. Splitting is
-  context-free: every ASCII `|` is a delimiter, including inside quotes,
-  shorthands, code spans, or attribute groups, and there is no backslash escape
-  for a literal pipe. Use an HTML character reference such as `&#124;` when a
-  rendered cell needs one.
+  rejected with `INVALID_TABLE_LINE` instead of being discarded. An ASCII `|`
+  is structural only at the top-level cell context: pipes inside single or
+  double quotes and balanced `()`, `[]`, or `{}` groups remain content. This
+  preserves pipes in code/link shorthands and quoted attribute values. At top
+  level, `\|` emits a literal pipe and consumes the escape; `&#124;` remains a
+  compatible way to spell one. Unclosed quotes/groups, mismatched closers, and
+  delimiter runs wider than `||` fail with
+  `INVALID_TABLE_DELIMITER_CONTEXT` at the authored character.
 - **Header separator** `| --- | --- |`: separator cells contain at least three
   dashes. The rows above it become a `<thead>`, and the rows below begin a
   `<tbody>`. A second `---` starts another `<tbody>`.
@@ -83,11 +86,13 @@ errors.
   balanced `(attrs)` group and then whitespace or end of cell is emitted verbatim,
   letting you set per-cell attributes (`td(colspan="2") x`). Header cells in
   `thead` get `scope="col"` automatically. An unbalanced parenthesis (e.g.
-  `th(scope value`) is treated as plain data, not a tag. Tag `.class`/`#id`
-  shorthands are not recognized in a cell — use an explicit `(attrs)` group (so a
-  cell like `td.5` is treated as ordinary data).
+  `th(scope value`) is rejected as an invalid delimiter context rather than
+  being allowed to hide the rest of the row. Tag `.class`/`#id` shorthands are
+  not recognized in a cell — use an explicit `(attrs)` group (so a cell like
+  `td.5` is treated as ordinary data).
 - **Escapes**: prefix a cell with `\` (`\td foo`) to keep literal text that would
-  otherwise be read as a tagged cell.
+  otherwise be read as a tagged cell. At top-level cell context, `\|` is a
+  literal pipe rather than a boundary.
 - **Box-drawing input** is recognized structurally, line by line. The supported
   single-line frame is `┌ ┬ ┐`, `├ ┼ ┤`, `└ ┴ ┘`, `│`, and `─`; the supported
   double-line frame is `╔ ╦ ╗`, `╠ ╬ ╣`, `╚ ╩ ╝`, `║`, and `═`. Outer border
@@ -131,7 +136,8 @@ Expected table failures use stable `PUGNEUM:` codes. Empty input and tables
 without rows report `EMPTY_TABLE` and `TABLE_WITHOUT_ROWS`; malformed separator
 or section structure reports `MIXED_TABLE_SEPARATOR`,
 `INVALID_TABLE_SEPARATOR_ATTRIBUTES`, `INVALID_TABLE_SECTION_ORDER`,
-`DUPLICATE_TABLE_SECTION`, `EMPTY_TABLE_SECTION`, or `INVALID_TABLE_LINE`.
+`DUPLICATE_TABLE_SECTION`, `EMPTY_TABLE_SECTION`, `INVALID_TABLE_LINE`, or
+`INVALID_TABLE_DELIMITER_CONTEXT`.
 Generated attribute problems report `INVALID_TABLE_ATTRIBUTE_NAME`,
 `DUPLICATE_TABLE_ATTRIBUTE`, or `INTERPOLATION_IN_TABLE_HEAD`. When invoked
 through `pugneum-filterer`, these diagnostics retain the caller filename,

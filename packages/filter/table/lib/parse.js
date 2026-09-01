@@ -13,17 +13,144 @@ function matchAttrGroup(s) {
   return {attrs: s.slice(0, close), rest: s.slice(close)};
 }
 
-// Split a pipe-delimited fragment into its inner cells, dropping the empty
-// leading/trailing segments produced by surrounding pipes, and trimming each.
-// Centralizes the edge-cell rule shared by data rows and separator rows so the
-// two cannot drift (the rule is subtle: a lone `|` -> ['', ''] -> []).
-function splitPipeCells(fragment) {
-  const parts = fragment.split('|');
-  const start = parts[0].trim() === '' ? 1 : 0;
+const delimiterClosers = Object.freeze({'(': ')', '[': ']', '{': '}'});
+const delimiterClosingCharacters = new Set(Object.values(delimiterClosers));
+
+function delimiterFailure(message, index, location, offset) {
+  if (!location) return null;
+  const pinpoint = Object.assign({}, location);
+  if (Number.isSafeInteger(pinpoint.column)) {
+    pinpoint.column += (offset || 0) + index;
+  }
+  throw error('INVALID_TABLE_DELIMITER_CONTEXT', message, pinpoint);
+}
+
+// Scan one row once and recognize `|` only at the top level. Quotes and
+// balanced expression groups retain their complete contents for the real
+// Pugneum lexer. At top level, an odd backslash escapes a literal pipe and is
+// consumed; pairs of backslashes remain data and leave the following pipe
+// structural. Delimiter runs are retained so separator rows can distinguish
+// `||` colgroup boundaries while data rows treat either width as one boundary.
+function scanPipeRow(line, location, offset) {
+  const fragments = [''];
+  const delimiterWidths = [];
+  const groups = [];
+  let quote = null;
+  let quoteStart = -1;
+
+  function append(value) {
+    fragments[fragments.length - 1] += value;
+  }
+
+  for (let index = 0; index < line.length; index++) {
+    const character = line[index];
+
+    if (character === '\\') {
+      const next = line[index + 1];
+      if (next === '|' && quote === null && groups.length === 0) {
+        append('|');
+        index++;
+      } else if (next !== undefined) {
+        append(character + next);
+        index++;
+      } else {
+        append(character);
+      }
+      continue;
+    }
+
+    if (quote !== null) {
+      append(character);
+      if (character === quote) quote = null;
+      continue;
+    }
+
+    if (
+      (character === '"' || character === "'") &&
+      (groups.length > 0 || fragments[fragments.length - 1].trim() === '')
+    ) {
+      quote = character;
+      quoteStart = index;
+      append(character);
+      continue;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(delimiterClosers, character)) {
+      groups.push({character, close: delimiterClosers[character], index});
+      append(character);
+      continue;
+    }
+
+    if (delimiterClosingCharacters.has(character)) {
+      if (groups.length > 0) {
+        const group = groups[groups.length - 1];
+        if (character !== group.close) {
+          return delimiterFailure(
+            `Mismatched ${character} in table row; expected ${group.close}`,
+            index,
+            location,
+            offset,
+          );
+        }
+        groups.pop();
+      }
+      append(character);
+      continue;
+    }
+
+    if (character === '|' && groups.length === 0) {
+      let width = 1;
+      while (line[index + width] === '|') width++;
+      if (width > 2) {
+        return delimiterFailure(
+          'A table row delimiter contains more than two adjacent pipes',
+          index,
+          location,
+          offset,
+        );
+      }
+      delimiterWidths.push(width);
+      fragments.push('');
+      index += width - 1;
+      continue;
+    }
+
+    append(character);
+  }
+
+  if (quote !== null) {
+    return delimiterFailure(
+      `Unclosed ${quote} quote in table row`,
+      quoteStart,
+      location,
+      offset,
+    );
+  }
+  if (groups.length > 0) {
+    const group = groups[groups.length - 1];
+    return delimiterFailure(
+      `Unclosed ${group.character} group in table row`,
+      group.index,
+      location,
+      offset,
+    );
+  }
+
+  return {delimiterWidths, fragments};
+}
+
+// Drop the empty edge fragments produced by surrounding delimiters and trim
+// every remaining cell. A delimiter run, whether `|` or `||`, contributes one
+// data-row boundary.
+function dataCells(scan) {
+  const fragments = scan.fragments;
+  const start = fragments[0].trim() === '' ? 1 : 0;
   const end =
-    parts[parts.length - 1].trim() === '' ? parts.length - 1 : parts.length;
-  return parts.slice(start, end).map(function (s) {
-    return s.trim();
+    fragments[fragments.length - 1].trim() === ''
+      ? fragments.length - 1
+      : fragments.length;
+  return fragments.slice(start, end).map(function (fragment) {
+    return fragment.trim();
   });
 }
 
@@ -33,31 +160,37 @@ function parseTrPrefix(line) {
   // A tr prefix is the literal `tr` followed by a balanced (attrs) group, then
   // optional whitespace and a pipe-delimited row. Requiring the group keeps a
   // bare first cell such as `tr | value |` unambiguous data.
-  if (line.slice(0, 2) !== 'tr') return {trAttrs: null, rest: line};
+  if (line.slice(0, 2) !== 'tr') {
+    return {offset: 0, trAttrs: null, rest: line};
+  }
   const after = line.slice(2);
-  if (after[0] !== '(') return {trAttrs: null, rest: line};
+  if (after[0] !== '(') return {offset: 0, trAttrs: null, rest: line};
   const group = matchAttrGroup(after);
   const rest = group.rest.replace(/^\s*/, '');
-  if (rest[0] !== '|') return {trAttrs: null, rest: line};
-  return {trAttrs: group.attrs, rest: rest};
+  if (rest[0] !== '|') return {offset: 0, trAttrs: null, rest: line};
+  return {
+    offset: line.length - rest.length,
+    trAttrs: group.attrs,
+    rest: rest,
+  };
 }
 
 // Parse a pipe-delimited row into an array of trimmed cell strings.
 // Returns null if the line has no pipe delimiters.
 // Also extracts optional tr(attrs) prefix.
 // Returns {trAttrs: string|null, cells: string[]} or null.
-// In data rows, || is treated as | (normalized before splitting).
-function parseRow(line) {
+// In data rows, || is treated as one cell boundary. Separator rows retain its
+// distinct colgroup meaning through the private scan descriptor.
+function parseRow(line, location) {
   const parsed = parseTrPrefix(line.trim());
   const rowLine = parsed.rest;
-  if (!rowLine.includes('|')) return null;
-  // Normalize || to | for data rows (separator rows handle || separately)
-  const normalizedLine = rowLine.replace(/\|\|/g, '|');
-  const cells = splitPipeCells(normalizedLine);
+  const scan = scanPipeRow(rowLine, location, parsed.offset);
+  if (scan === null || scan.delimiterWidths.length === 0) return null;
+  const cells = dataCells(scan);
   if (cells.length === 0) return null;
   // Surface the post-prefix line so the dash-sep branch can reuse it without
   // re-running parseTrPrefix (one decomposition, one source of truth).
-  return {trAttrs: parsed.trAttrs, cells: cells, rest: rowLine};
+  return {trAttrs: parsed.trAttrs, cells: cells, rest: rowLine, scan};
 }
 
 // A separator segment is dashes with optional leading/trailing colons
@@ -108,18 +241,20 @@ function describeSeparatorRow(row) {
   const colgroups = [];
   let hasDash = false;
   let hasEquals = false;
+  const fragments = row.scan.fragments;
+  const widths = row.scan.delimiterWidths;
+  const start = fragments[0].trim() === '' ? 1 : 0;
+  const end =
+    fragments[fragments.length - 1].trim() === ''
+      ? fragments.length - 1
+      : fragments.length;
+  let segs = [];
 
-  for (const chunk of row.rest.split('||')) {
-    const cells = splitPipeCells(chunk);
-    if (cells.length === 0) continue;
-
-    const segs = [];
-    for (const cell of cells) {
-      if (cell === '') {
-        segs.push({align: '', attrs: ''});
-        continue;
-      }
-
+  for (let index = start; index < end; index++) {
+    const cell = fragments[index].trim();
+    if (cell === '') {
+      segs.push({align: '', attrs: ''});
+    } else {
       const dash = parseDashSeparatorSegment(cell);
       if (dash !== null) {
         hasDash = true;
@@ -131,8 +266,13 @@ function describeSeparatorRow(row) {
         return null;
       }
     }
-    colgroups.push({segs: segs});
+
+    if (index < end - 1 && widths[index] === 2) {
+      colgroups.push({segs});
+      segs = [];
+    }
   }
+  if (segs.length > 0) colgroups.push({segs});
 
   if (hasDash && hasEquals) return {type: 'mixed', colgroups};
   if (hasDash) return {type: 'dash', colgroups};
@@ -277,7 +417,7 @@ function parse(lines) {
     }
 
     // Check for pipe row
-    const row = parseRow(line);
+    const row = parseRow(line, location);
     if (row === null) {
       throw error(
         'INVALID_TABLE_LINE',

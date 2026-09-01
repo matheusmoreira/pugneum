@@ -130,10 +130,16 @@ A successful stream has these balance and termination guarantees:
 
 - `indent` and `outdent` tokens balance without an underflow.
 - `start-attributes`, `start-pipeless-text`, `start-interpolation`,
-  `start-ref-link`, `start-ref-image`, and `start-footnote-ref` are properly
-  nested with their corresponding `end-*` tokens.
+  `start-ref-link`, `start-ref-image`, `start-footnote-ref`, and
+  `start-footnote-def` are properly nested with their corresponding `end-*`
+  tokens.
 - Exactly one zero-width `eos` token terminates the array. Empty input therefore
   returns an array containing only `eos`.
+
+Inline constructs at the start/end of a text span or immediately beside another
+construct do not create zero-length padding tokens. A zero-length text token is
+reserved for an explicitly authored empty text line, where it preserves the
+line boundary for downstream consumers.
 
 Inline constructs are scanned by nested lexers internally, but their tokens are
 flattened into the one returned array between the applicable boundary tokens;

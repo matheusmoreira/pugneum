@@ -94,6 +94,11 @@ stable, indexed `TypeError` before parsing; a complete stream that violates the
 parser grammar throws the coded diagnostic documented below. Use the lexer
 contract when another producer needs to construct compatible tokens.
 
+Current lexer streams delimit footnote definitions with `start-footnote-def`
+and `end-footnote-def`. For compatibility with older hand-built streams, the
+parser also accepts the former `footnote-def-start` and `footnote-def-end`
+spellings.
+
 ### AST contract (v1)
 
 The parser returns a `Block` root. The tables below describe fields emitted by

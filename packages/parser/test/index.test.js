@@ -814,6 +814,26 @@ describe('fragment mixin context', () => {
 });
 
 describe('parser structure and boundary regressions', () => {
+  test('legacy footnote-definition delimiters remain accepted', () => {
+    const loc = {start: {line: 1, column: 1}};
+    const ast = parse(
+      [
+        {type: 'footnotes', loc},
+        {type: 'footnote-def-start', val: 'note', loc},
+        {type: 'text', val: 'Legacy content', loc},
+        {type: 'footnote-def-end', loc},
+        {type: 'eos', loc},
+      ],
+      {filename: 'legacy-footnote-tokens.pg'},
+    );
+
+    assert.strictEqual(ast.nodes[0].definitions[0].name, 'note');
+    assert.strictEqual(
+      ast.nodes[0].definitions[0].block.nodes[0].val,
+      'Legacy content',
+    );
+  });
+
   test('HTML inline classification is ASCII-case-insensitive without rewriting names', () => {
     const source = 'SPAN text\nDiv block';
     const ast = parseSource(source, 'case.pg');

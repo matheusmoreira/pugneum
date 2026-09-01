@@ -1350,12 +1350,12 @@ class Lexer {
     }
   }
   addText(type, value, prefix, escaped) {
-    let tok;
     prefix = prefix || '';
     escaped = escaped || 0;
     // Candidate handlers consume their own syntax, but the surrounding text's
     // ordinary parenthesis depth must survive each dispatch.
     let parenDepth = 0;
+    let sawInlineConstruct = false;
 
     while (true) {
       let earliest;
@@ -1366,9 +1366,7 @@ class Lexer {
 
         if (!earliest) {
           value = prefix + value.substring(scanPos);
-          tok = this.tok(type, value);
-          this.incrementColumn(value.length + escaped);
-          this.tokens.push(this.tokEnd(tok));
+          this.emitInlineText(type, value, escaped, !sawInlineConstruct);
           return;
         }
 
@@ -1399,11 +1397,11 @@ class Lexer {
       }
 
       if (earliest.kind === 'end') {
-        if (prefix + value.substring(0, earliest.pos)) {
-          const tok = this.tok(type, prefix + value.substring(0, earliest.pos));
-          this.incrementColumn(prefix.length + earliest.pos + escaped);
-          this.tokens.push(this.tokEnd(tok));
-        }
+        this.emitInlineText(
+          type,
+          prefix + value.substring(0, earliest.pos),
+          escaped,
+        );
         this.ended = true;
         this.input = value.slice(earliest.pos + 1) + this.input;
         return;
@@ -1416,10 +1414,17 @@ class Lexer {
         escaped,
         earliest,
       );
+      sawInlineConstruct = true;
       value = remainder;
       prefix = '';
       escaped = 0;
     }
+  }
+
+  emitInlineText(type, value, escaped, preserveEmpty) {
+    const tok = value || preserveEmpty ? this.tok(type, value) : null;
+    this.incrementColumn(value.length + (escaped || 0));
+    if (tok) this.tokens.push(this.tokEnd(tok));
   }
 
   _processInlineElement(type, value, prefix, escaped, earliest) {
@@ -1797,9 +1802,8 @@ class Lexer {
   }
 
   handleInterpolation(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);
     this.tokens.push(this.tokEnd(tok));
@@ -1881,9 +1885,8 @@ class Lexer {
   }
 
   handleLinkShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const rest = value.substring(pos + 1);
     const parsed = this.parseShorthandContent(
@@ -1913,9 +1916,8 @@ class Lexer {
   }
 
   handleImageShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const rest = value.substring(pos + 1);
     const parsed = this.parseShorthandContent(
@@ -1978,9 +1980,8 @@ class Lexer {
   }
 
   handleAbbrShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const rest = value.substring(pos + 1);
     const parsed = this.parseShorthandContent(
@@ -2021,9 +2022,8 @@ class Lexer {
   }
 
   handleInlineShorthand(type, value, prefix, escaped, pos, tag, sigil, name) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const rest = value.substring(pos + 1);
     let range;
@@ -2049,9 +2049,8 @@ class Lexer {
   }
 
   handleCodeShorthand(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const rest = value.substring(pos + 1);
     let range;
@@ -2090,9 +2089,8 @@ class Lexer {
   }
 
   handleRefLink(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const inner = value.substring(pos + 2); // after @[
     const result = parseBracketContent(inner, 0);
@@ -2164,9 +2162,8 @@ class Lexer {
   }
 
   handleRefImage(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const inner = value.substring(pos + 2); // after ![
     const result = parseBracketContent(inner, 0);
@@ -2234,9 +2231,8 @@ class Lexer {
   }
 
   handleFootnoteRef(type, value, prefix, escaped, pos) {
-    let tok = this.tok(type, prefix + value.substring(0, pos));
-    this.incrementColumn(prefix.length + pos + escaped);
-    this.tokens.push(this.tokEnd(tok));
+    this.emitInlineText(type, prefix + value.substring(0, pos), escaped);
+    let tok;
 
     const inner = value.substring(pos + 2); // after ^[
     const result = parseBracketContent(inner, 0);
@@ -2270,13 +2266,8 @@ class Lexer {
 
   handleVariableRef(type, value, prefix, escaped, candidate) {
     let tok;
-    let before = value.slice(0, candidate.pos);
-    if (prefix || before) {
-      before = prefix + before;
-      tok = this.tok(type, before);
-      this.incrementColumn(before.length + escaped);
-      this.tokens.push(this.tokEnd(tok));
-    }
+    const before = prefix + value.slice(0, candidate.pos);
+    this.emitInlineText(type, before, escaped);
 
     tok = this.tok('start-interpolation');
     this.incrementColumn(2);
@@ -2852,7 +2843,7 @@ class Lexer {
 
     const closeDefinition = () => {
       if (!defOpen) return;
-      this.tokens.push(this.tokEnd(this.tok('footnote-def-end')));
+      this.tokens.push(this.tokEnd(this.tok('end-footnote-def')));
       defOpen = false;
     };
 
@@ -2876,7 +2867,7 @@ class Lexer {
           spaceIdx === -1 ? content.trim() : content.slice(0, spaceIdx);
 
         this.incrementColumn(defIndent);
-        const startTok = this.tok('footnote-def-start');
+        const startTok = this.tok('start-footnote-def');
         startTok.val = name;
         this.incrementColumn(name.length);
         this.tokens.push(this.tokEnd(startTok));

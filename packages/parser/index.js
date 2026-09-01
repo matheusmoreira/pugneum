@@ -4,6 +4,14 @@ const attributeInterpolationSource = Symbol.for(
 );
 
 const MAX_PARSE_DEPTH = 256;
+const footnoteDefinitionStartTokens = new Set([
+  'start-footnote-def',
+  'footnote-def-start',
+]);
+const footnoteDefinitionEndTokens = new Set([
+  'end-footnote-def',
+  'footnote-def-end',
+]);
 
 class TokenStream {
   constructor(tokens) {
@@ -787,7 +795,7 @@ class Parser {
     const tok = this.expect('footnotes');
     const definitions = [];
 
-    while (this.peek().type === 'footnote-def-start') {
+    while (footnoteDefinitionStartTokens.has(this.peek().type)) {
       const defTok = this.advance();
       const name = defTok.val;
       const block = this.emptyBlock(defTok.loc.start.line);
@@ -805,7 +813,7 @@ class Parser {
       };
 
       while (
-        this.peek().type !== 'footnote-def-end' &&
+        !footnoteDefinitionEndTokens.has(this.peek().type) &&
         this.peek().type !== 'eos'
       ) {
         const next = this.peek();
@@ -830,7 +838,11 @@ class Parser {
           );
         }
       }
-      this.expect('footnote-def-end');
+      if (footnoteDefinitionEndTokens.has(this.peek().type)) {
+        this.advance();
+      } else {
+        this.expect('end-footnote-def');
+      }
 
       definitions.push(
         this.withLocation(defTok, {

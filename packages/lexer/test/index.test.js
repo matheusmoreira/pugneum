@@ -130,6 +130,7 @@ function assertDocumentedTokenStreamContract(tokens, filename) {
     'start-ref-link': 'end-ref-link',
     'start-ref-image': 'end-ref-image',
     'start-footnote-ref': 'end-footnote-ref',
+    'start-footnote-def': 'end-footnote-def',
   };
   const boundaryEnds = new Set(Object.values(boundaryPairs));
   const expectedEnds = [];
@@ -313,6 +314,56 @@ test('shared nested doctype keeps its canonical text and physical span', () => {
   });
 });
 
+test('adjacent inline constructs do not emit empty text padding', () => {
+  const constructs = [
+    '#(span one)',
+    '@(/ one)',
+    '!(image.png alt)',
+    '?(HTML expansion)',
+    '*(one)',
+    '`(one)',
+    '@[link]',
+    '![image]',
+    '^[note]',
+    '#{name}',
+  ];
+
+  for (const construct of constructs) {
+    const source = 'p ' + construct + construct;
+    const tokens = lex(source, {filename: 'inline-padding.pg'});
+    assert.strictEqual(
+      tokens.some((token) => token.type === 'text' && token.val === ''),
+      false,
+      source,
+    );
+  }
+});
+
+test('an authored empty text line retains its structural token', () => {
+  const tokens = lex('p\n  | one\n  |\n  | two', {
+    filename: 'empty-text-line.pg',
+  });
+  const empty = tokens.filter(
+    (token) => token.type === 'text' && token.val === '',
+  );
+
+  assert.strictEqual(empty.length, 1);
+  assert.deepStrictEqual(empty[0].loc.start, {line: 3, column: 4});
+});
+
+test('footnote definition delimiters use the canonical paired spelling', () => {
+  const tokens = lex('footnotes\n  note Content', {
+    filename: 'footnote-token-names.pg',
+  });
+
+  assert.deepStrictEqual(
+    tokens
+      .filter((token) => token.type.includes('footnote-def'))
+      .map((token) => token.type),
+    ['start-footnote-def', 'end-footnote-def'],
+  );
+});
+
 describe('doctype end-of-line padding', () => {
   function assertCanonicalDoctype(source) {
     const tokens = lex(source, {filename: 'doctype-padding.pg'});
@@ -376,18 +427,9 @@ describe('successful optional syntax forms', () => {
 
     assert.deepStrictEqual(
       tokens.map((token) => token.type),
-      [
-        'tag',
-        'text',
-        'start-interpolation',
-        'tag',
-        'text',
-        'end-interpolation',
-        'text',
-        'eos',
-      ],
+      ['tag', 'start-interpolation', 'tag', 'text', 'end-interpolation', 'eos'],
     );
-    assert.deepStrictEqual(tokens[3], {
+    assert.deepStrictEqual(tokens[2], {
       type: 'tag',
       loc: {
         start: {line: 1, column: 5},
@@ -396,7 +438,7 @@ describe('successful optional syntax forms', () => {
       },
       val: 'abbr',
     });
-    assert.deepStrictEqual(tokens[4], {
+    assert.deepStrictEqual(tokens[3], {
       type: 'text',
       loc: {
         start: {line: 1, column: 5},
@@ -1162,7 +1204,7 @@ test('indented block readers share blank-line and outdent boundaries', () => {
     },
     {
       source: 'footnotes\n  note body\n\np after',
-      ownedType: 'footnote-def-start',
+      ownedType: 'start-footnote-def',
     },
     {
       source: 'p.\n  body\n\np after',
@@ -2343,13 +2385,13 @@ describe('footnote reference bracket parsing', () => {
 
 describe('footnote definition source locations', () => {
   // Regression: footnotesBlock emitted def tokens lazily after incrementLine
-  // had already advanced, tagging every footnote-def-start/text with the
+  // had already advanced, tagging every start-footnote-def/text with the
   // FOLLOWING line and column 1. They must carry the line/column they
   // physically occupy (same discipline as referencesBlock).
   test('footnote-def tokens carry their physical line and column', () => {
     const src = 'footnotes\n  fn1 first\n  fn2 second';
     const tokens = lex(src, {filename: 't.pg'});
-    const defs = tokens.filter((t) => t.type === 'footnote-def-start');
+    const defs = tokens.filter((t) => t.type === 'start-footnote-def');
     assert.strictEqual(defs.length, 2);
     // 'fn1' is on source line 2, starting at column 3 (after two-space indent).
     assert.strictEqual(defs[0].val, 'fn1');

@@ -67,6 +67,77 @@ function appendItems(target, items) {
   }
 }
 
+function commentText(node, value) {
+  return {
+    type: 'Text',
+    val: value,
+    line: node.line,
+    column: node.column,
+    filename: node.filename,
+  };
+}
+
+function commentBlock(node, fallback) {
+  if (node.block && node.block.nodes.length > 0) {
+    return isolateCommentBlock(node.block);
+  }
+  return {
+    type: 'Block',
+    nodes: fallback === '' ? [] : [commentText(node, fallback)],
+    line: node.line,
+    filename: node.filename,
+  };
+}
+
+// A buffered comment's body is rendered locally into one HTML comment string,
+// not into the document DOM. Remove document-global constructs while retaining
+// their authored local label/text so the renderer never needs unresolved nodes
+// and the hidden subtree cannot create visible TOC/endnote/navigation output.
+function isolateCommentBlock(block) {
+  return walk(block, function (node, replace) {
+    if (node.type === 'BlockComment') {
+      node.block = isolateCommentBlock(node.block);
+      return false;
+    }
+    if (node.type === 'ReferenceLink') {
+      replace(commentBlock(node, node.name));
+      return false;
+    }
+    if (node.type === 'ReferenceImage') {
+      replace(commentBlock(node, ''));
+      return false;
+    }
+    if (node.type === 'FootnoteRef') {
+      replace(commentText(node, '^[' + node.name + ']'));
+      return false;
+    }
+    if (
+      node.type === 'References' ||
+      node.type === 'Footnotes' ||
+      node.type === 'Toc'
+    ) {
+      replace(commentBlock(node, ''));
+      return false;
+    }
+  });
+}
+
+function isolateCommentSemantics(ast) {
+  return walk(ast, function (node) {
+    if (node.type === 'BlockComment') {
+      node.block = isolateCommentBlock(node.block);
+      return false;
+    }
+  });
+}
+
+function walkDocumentContent(ast, before) {
+  return walk(ast, function (node, replace, control) {
+    if (node.type === 'BlockComment') return false;
+    return before(node, replace, control);
+  });
+}
+
 function appendReferenceAttributes(target, attrs, reserved, sources) {
   if (!attrs) return;
   for (const attr of attrs) {
@@ -93,7 +164,7 @@ function normalizeTextNewlines(value) {
 // Whole-document lints. Run once by link() on the final, fully assembled tree.
 function lintDocument(ast, sources, warnings) {
   const seenIds = Object.create(null);
-  walk(ast, function (node) {
+  walkDocumentContent(ast, function (node) {
     if (node.type !== 'Tag') return;
     const attrs = node.attrs || [];
     for (const attr of attrs) {
@@ -165,6 +236,7 @@ link.assemble = function (ast, options) {
 function resolveDocument(ast, options) {
   const sources = diagnosticSources(options);
   const warnings = options.warnings;
+  ast = isolateCommentSemantics(ast);
   const reachableFootnotes = findReachableFootnoteDefinitions(ast);
   ast = resolveReferences(ast, sources, warnings, reachableFootnotes);
   ast = resolveToc(ast, sources, warnings);
@@ -575,7 +647,7 @@ function findReachableFootnoteDefinitions(ast) {
     }
   }
 
-  walk(ast, function (node) {
+  walkDocumentContent(ast, function (node) {
     if (node.type === 'Footnotes') {
       for (const definition of node.definitions) {
         if (!(definition.name in definitions)) {
@@ -592,7 +664,7 @@ function findReachableFootnoteDefinitions(ast) {
     const definition = definitions[names[index]];
     if (!definition || !definition.block) continue;
     reachable.push(definition);
-    walk(definition.block, function (node) {
+    walkDocumentContent(definition.block, function (node) {
       if (node.type === 'Footnotes') return false;
       enqueue(node);
     });
@@ -606,7 +678,7 @@ function findReachableFootnoteDefinitions(ast) {
 // content graph without requiring reference and footnote syntax to be coupled.
 function walkReferenceContent(ast, reachableFootnotes, before) {
   function visit(node, replace, control) {
-    if (node.type === 'Footnotes') return false;
+    if (node.type === 'Footnotes' || node.type === 'BlockComment') return false;
     return before(node, replace, control);
   }
 
@@ -837,7 +909,7 @@ function resolveFootnotes(ast, sources, warnings) {
   // on duplicates and multiple blocks. Reserving in this existing walk keeps
   // generated footnote anchors from colliding with authored or earlier-pass
   // ids without adding another whole-document traversal.
-  walk(ast, function (node) {
+  walkDocumentContent(ast, function (node) {
     if (node.type === 'Tag') {
       for (const attr of node.attrs || []) {
         if (
@@ -986,7 +1058,7 @@ function resolveFootnotes(ast, sources, warnings) {
   }
 
   // Resolve refs in main document (skip into Footnotes definitions)
-  ast = walk(ast, function before(node, replace) {
+  ast = walkDocumentContent(ast, function before(node, replace) {
     if (node.type === 'FootnoteRef') {
       resolveRef(node, replace);
       return false;
@@ -1004,12 +1076,15 @@ function resolveFootnotes(ast, sources, warnings) {
     const name = numberedNames[index];
     const def = definitions[name];
     if (def && def.block) {
-      def.block = walk(def.block, function (innerNode, innerReplace) {
-        if (innerNode.type === 'FootnoteRef') {
-          resolveRef(innerNode, innerReplace);
-          return false;
-        }
-      });
+      def.block = walkDocumentContent(
+        def.block,
+        function (innerNode, innerReplace) {
+          if (innerNode.type === 'FootnoteRef') {
+            resolveRef(innerNode, innerReplace);
+            return false;
+          }
+        },
+      );
     }
   }
 
@@ -1027,7 +1102,7 @@ function resolveFootnotes(ast, sources, warnings) {
 
   // Pass 3: replace Footnotes node with rendered section
   // All refs are now numbered so ordering is correct regardless of source position
-  return walk(ast, function before(node, replace) {
+  return walkDocumentContent(ast, function before(node, replace) {
     if (node.type === 'Footnotes') {
       const referenced = numberedNames;
 
@@ -1184,7 +1259,7 @@ function resolveToc(ast, sources, warnings) {
   const headings = [];
 
   // Pass 1: collect headings with IDs
-  walk(ast, function (node) {
+  walkDocumentContent(ast, function (node) {
     if (node.type === 'Tag') {
       const headingName = asciiLowerCase(node.name);
       if (!/^h[1-6]$/.test(headingName)) return;
@@ -1212,7 +1287,7 @@ function resolveToc(ast, sources, warnings) {
 
   if (headings.length === 0) {
     // No headings with IDs — remove Toc node (and warn that it produced nothing)
-    return walk(ast, function (node, replace) {
+    return walkDocumentContent(ast, function (node, replace) {
       if (node.type === 'Toc') {
         warn(
           'EMPTY_TOC',
@@ -1228,7 +1303,7 @@ function resolveToc(ast, sources, warnings) {
   }
 
   // Pass 2: replace Toc nodes with nav structure
-  return walk(ast, function before(node, replace) {
+  return walkDocumentContent(ast, function before(node, replace) {
     if (node.type === 'Toc') {
       replace(buildTocNav(headings, node));
       return false;
@@ -1241,6 +1316,7 @@ function extractText(nodes) {
   const pending = nodes.slice().reverse();
   while (pending.length > 0) {
     const node = pending.pop();
+    if (node.type === 'BlockComment') continue;
     if (node.type === 'Text') {
       text += node.val;
       continue;

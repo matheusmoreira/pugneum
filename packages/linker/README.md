@@ -127,6 +127,14 @@ Running after the filterer is also what lets references, footnotes, and `toc`
 emitted by a `pugneum`-type filter (e.g. a `:table` cell) resolve against the
 document's blocks.
 
+`BlockComment` descendants are outside that document-global scope because the
+renderer serializes a buffered body into one HTML comment string (and discards
+an unbuffered body). Headings, IDs, images, references, footnotes, and `toc`
+inside either form therefore do not create live navigation, endnotes, usage, or
+lint facts. A buffered reference keeps only its local label/alt text, a footnote
+reference remains readable literal `^[name]` text, and declarations/`toc` emit
+nothing inside the comment.
+
 An unused footnote definition is discarded content. Its reference links and
 reference declarations do not participate in resolution or mark global
 definitions as used. When a footnote is reached from the document—or

@@ -212,6 +212,83 @@ describe('render()', () => {
     assert.strictEqual(pg.render('//- hidden'), '');
   });
 
+  it('keeps buffered-comment headings out of the document toc', () => {
+    var source = [
+      '//',
+      '  #(h2#hidden Hidden)',
+      'toc',
+      'h2#visible Visible',
+    ].join('\n');
+
+    assert.strictEqual(
+      pg.render(source, {warnings: []}),
+      '<!--<h2 id="hidden">Hidden</h2>-->' +
+        '<nav role="doc-toc" aria-label="Table of contents"><ol>' +
+        '<li><a href="#visible">Visible</a></li></ol></nav>' +
+        '<h2 id="visible">Visible</h2>',
+    );
+  });
+
+  it('keeps discarded comment subtrees out of document passes', () => {
+    var source = [
+      '//-',
+      '  #(h2#hidden Hidden)',
+      'toc',
+      'h2#visible Visible',
+    ].join('\n');
+
+    assert.strictEqual(
+      pg.render(source, {warnings: []}),
+      '<nav role="doc-toc" aria-label="Table of contents"><ol>' +
+        '<li><a href="#visible">Visible</a></li></ol></nav>' +
+        '<h2 id="visible">Visible</h2>',
+    );
+  });
+
+  it('keeps buffered-comment footnotes local and leaves definitions unused', () => {
+    var warnings = [];
+    var result = pg.render('//\n  hidden^[n]\nfootnotes\n  n Note', {
+      filename: 'comment.pg',
+      warnings: warnings,
+    });
+
+    assert.strictEqual(result, '<!--hidden^[n]-->');
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.code),
+      ['PUGNEUM:UNUSED_FOOTNOTE'],
+    );
+  });
+
+  it('does not lint ids or images inside buffered comments as live DOM', () => {
+    var warnings = [];
+    var source = [
+      'p#same Live',
+      '//',
+      '  #(p#same Hidden)',
+      '  #(img(src=x))',
+    ].join('\n');
+
+    assert.strictEqual(
+      pg.render(source, {warnings: warnings}),
+      '<p id="same">Live</p>' + '<!--<p id="same">Hidden</p>\n<img src="x">-->',
+    );
+    assert.deepStrictEqual(warnings, []);
+  });
+
+  it('does not count a reference used only inside a comment as live usage', () => {
+    var warnings = [];
+    var result = pg.render('references\n  docs /docs\n//\n  @[docs]', {
+      filename: 'comment.pg',
+      warnings: warnings,
+    });
+
+    assert.strictEqual(result, '<!--docs-->');
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.code),
+      ['PUGNEUM:UNUSED_REFERENCE'],
+    );
+  });
+
   it('should render text blocks', () => {
     var input = 'p.\n  Line 1\n  Line 2';
     assert.strictEqual(pg.render(input), '<p>Line 1\nLine 2</p>');

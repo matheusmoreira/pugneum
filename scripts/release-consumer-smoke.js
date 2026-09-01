@@ -913,15 +913,25 @@ function smokeMixins() {
       quote,
       [
         'include @pugneum-mixins/quote.pg',
-        '+quote(https://example.test/)',
+        '+quote(https://example.test/quotation)',
         '  | Quoted text.',
-        '  block source',
-        '    | Author',
+        '  block caption',
+        '    +linked-citation(https://example.test/work)',
+        '      block attribution',
+        '        | Author',
+        '      block title',
+        '        | Work',
       ].join('\n'),
     );
     const quoteHtml = pg.renderFile(quote, {basedir: root, warnings: []});
-    assert.match(quoteHtml, /<blockquote cite="https:\/\/example\.test\/">/);
-    assert.match(quoteHtml, /<figcaption>/);
+    assert.match(
+      quoteHtml,
+      /<blockquote cite="https:\/\/example\.test\/quotation">/,
+    );
+    assert.match(
+      quoteHtml,
+      /<figcaption>Author, <cite><a href="https:\/\/example\.test\/work">Work<\/a><\/cite><\/figcaption>/,
+    );
 
     const code = path.join(root, 'code.pg');
     fs.writeFileSync(
@@ -961,7 +971,7 @@ function smokeMixins() {
         '  img(src=/image.png alt=Image)',
         '+file-system',
         '  +file(index.js)',
-        '+plain-quote',
+        '+quote',
         '  | Quote',
       ].join('\n'),
     );

@@ -195,7 +195,7 @@ const expectedReleaseManifests = Object.freeze({
   },
   'packages/mixins': {
     name: 'pugneum-mixins',
-    version: '1.0.1',
+    version: '2.0.0',
     files: ['*.pg'],
     devDependencies: {pugneum: '^1.3.0'},
     peerDependencies: {pugneum: '^1.3.0'},

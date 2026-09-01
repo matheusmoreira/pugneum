@@ -1,4 +1,6 @@
-mixin details(summary)
+mixin details(summary?)
   details
-    summary #{summary}
+    summary
+      block summary
+        | #{summary?}
     block

@@ -113,7 +113,7 @@ const packages = Object.freeze([
     'lib/xml.js',
     'package.json',
   ]),
-  packagePolicy('packages/mixins', 'pugneum-mixins', '1.0.1', [
+  packagePolicy('packages/mixins', 'pugneum-mixins', '2.0.0', [
     'LICENSE.MIT',
     'README.md',
     'breadcrumb.pg',

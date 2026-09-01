@@ -1,18 +1,26 @@
-mixin quote(url)
+mixin quote(source?)
   figure
-    blockquote(cite="#{url}")
+    blockquote(cite="#{source?}")
       block
-    given source
+    given caption
       figcaption
-        cite
-          a(href="#{url}")
-            block source
+        block caption
 
-mixin plain-quote
-  figure
-    blockquote
-      block
-    given source
-      figcaption
-        cite
-          block source
+mixin citation(separator=', ')
+  given attribution
+    block attribution
+  given title
+    given attribution
+      | #{separator}
+    cite
+      block title
+
+mixin linked-citation(href separator=', ')
+  given attribution
+    block attribution
+  given title
+    given attribution
+      | #{separator}
+    cite
+      a(href="#{href}")
+        block title

@@ -2003,16 +2003,20 @@ describe('documented library include', () => {
     var filename = path.join(__dirname, 'readme-library-example.pg');
     var html = pg.render(
       'include @pugneum-mixins/quote.pg\n\n' +
-        '+quote(https://example.com)\n' +
+        '+quote(https://example.com/quotation)\n' +
         '  | To be or not to be.\n' +
-        '  block source\n' +
-        '    | Example Author',
+        '  block caption\n' +
+        '    +citation\n' +
+        '      block attribution\n' +
+        '        | Example Author\n' +
+        '      block title\n' +
+        '        | Example Work',
       {filename, warnings: []},
     );
 
     assert.strictEqual(
       html,
-      '<figure><blockquote cite="https://example.com">To be or not to be.</blockquote><figcaption><cite><a href="https://example.com">Example Author</a></cite></figcaption></figure>',
+      '<figure><blockquote cite="https://example.com/quotation">To be or not to be.</blockquote><figcaption>Example Author, <cite>Example Work</cite></figcaption></figure>',
     );
   });
 });

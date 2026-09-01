@@ -8,49 +8,55 @@ Reusable mixin library for pugneum templates.
 
 ## Quotation
 
-### `+quote(url)`
+### `+quote(source?)`
 
-Linked citation: URL powers both `blockquote cite=` and wraps
-source content in an `<a>` tag.
+Figure-wrapped quotation. The optional source URL is used only for the
+`blockquote cite=` attribute. A supplied `block caption` becomes the
+`figcaption`; without it, the caption is omitted.
 
 ```pugneum
 include @pugneum-mixins/quote.pg
 
-+quote(https://example.com)
++quote(https://example.com/quotation)
   | Quoted text here.
-  block source
-    | Author, Source
+  block caption
+    +linked-citation(https://example.com/work)
+      block attribution
+        | Example Author
+      block title
+        | Example Work
 ```
 
 ```html
 <figure>
-  <blockquote cite="https://example.com">Quoted text here.</blockquote>
-  <figcaption><cite><a href="https://example.com">Author, Source</a></cite></figcaption>
+  <blockquote cite="https://example.com/quotation">Quoted text here.</blockquote>
+  <figcaption>Example Author, <cite><a href="https://example.com/work">Example Work</a></cite></figcaption>
 </figure>
 ```
 
-Without `block source`, the `<figcaption>` is omitted entirely.
+### `+citation(separator?)`, `+linked-citation(href separator?)`
 
-`+quote` is the variant *with* a URL: the `source` content is
-wrapped in an `<a href>`. Use `+plain-quote` when there is no
-URL — calling `+quote` without one produces a `source` link
-(`<a>`) that has no `href` and is therefore not a real link.
-Source content given to `+quote` must not itself be
-interactive (e.g. another link), since it nests inside the
-outer `<a>`.
-
-### `+plain-quote`
-
-Unlinked citation: no URL, no `<a>` tag.
+Structured citation fragments for use in a quote caption or any other phrasing
+content. Both accept rich `attribution` and `title` slots. Only the title is
+wrapped in `<cite>`; the linked form additionally wraps that title in an anchor.
+The separator defaults to `", "` and appears only when both slots are supplied.
 
 ```pugneum
 include @pugneum-mixins/quote.pg
 
-+plain-quote
++quote
   | An anonymous quote.
-  block source
-    | Unknown author
+  block caption
+    +citation(' — ')
+      block attribution
+        | Anonymous
+      block title
+        | Oral tradition
 ```
+
+The linked helper's `href` is required by its public contract. Attribution-only
+and title-only citations are valid and do not emit dangling punctuation or
+empty semantic wrappers.
 
 ## Figure
 
@@ -88,30 +94,39 @@ library before using this example:
 
 ## Disclosure
 
-### `+details(summary)`
+### `+details(summary?)`
 
-Disclosure widget. Summary text with spaces requires quoting.
+Disclosure widget. A scalar summary is the simple fallback. A rich
+`block summary` may be supplied instead and takes precedence when both exist.
 
 ```pugneum
 include @pugneum-mixins/details.pg
 
 +details('System Requirements')
   p Requires a computer with memory.
+
++details
+  block summary
+    | Frequently Asked *(Questions)
+  p Rich phrasing is allowed in the summary.
 ```
 
 ## Navigation
 
-### `+breadcrumbs`, `+breadcrumb(href)`, `+breadcrumb-current`
+### Breadcrumb helpers
 
-Breadcrumb trail with correct ARIA attributes.
+`+breadcrumbs(label?)` creates an `aria-label` landmark and defaults to
+`"Breadcrumb"`. `+breadcrumbs-labelledby(id)` instead references an authored
+accessible name. `+breadcrumb-current` renders an honest non-link span;
+`+breadcrumb-current-link(href)` is the explicit self-link form.
 
 ```pugneum
 include @pugneum-mixins/breadcrumb.pg
 
-+breadcrumbs
++breadcrumbs('Fil d Ariane')
   +breadcrumb(/) Home
   +breadcrumb(/articles) Articles
-  +breadcrumb-current This Article
+  +breadcrumb-current-link(/articles/current) Current article
 ```
 
 ## File System
@@ -146,8 +161,8 @@ These mixins follow pugneum's core model: the template author
 is the HTML author. A few consequences are worth calling out.
 
 **Text arguments and slot text are emitted raw.** The `name`
-in `+file`/`+directory`, the `summary` in `+details`, the code
-fed to `+code`, and any text in a breadcrumb or quote slot are
+in `+file`/`+directory`, a scalar `summary` in `+details`, the code
+fed to `+code`, and any text in breadcrumb, quote, or citation slots are
 written to the output verbatim — `<`, `>` and `&` are not
 escaped. (Attribute values such as `href`/`cite`/`class` *are*
 escaped.) If a value may contain HTML metacharacters or is not
@@ -162,12 +177,12 @@ and `+file-system(tree wide)` raise
 `PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH`. Quote them:
 `+details('System Requirements')`, `+file-system('tree wide')`.
 
-**Required-looking arguments are optional.** Per pugneum,
-trailing mixin arguments may be omitted. Omitting `name`,
-`href` or a quote `url` does not error; it renders an empty or
-attribute-less element (e.g. `+breadcrumb` with no href yields
-a non-link `<a>`). Supply these arguments unless an empty
-element is intended.
+**Core trailing arguments can be omitted.** Pugneum permits callers to omit
+trailing mixin arguments even when their declaration has no `?` or default.
+The helper contracts remain stricter: supply the `href` required by
+`+breadcrumb`, `+breadcrumb-current-link`, and `+linked-citation`. A missing
+required href would otherwise produce an href-less anchor. The `source` for
+`+quote` and scalar `summary` for `+details` are explicitly optional.
 
 ## License
 

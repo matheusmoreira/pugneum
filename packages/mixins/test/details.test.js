@@ -7,50 +7,51 @@ var {createRenderer} = require('./helpers');
 var render = createRenderer('details.pg');
 
 describe('details mixin', () => {
-  test('basic disclosure widget', () => {
-    var input = '+details(Requirements)\n' + '  p A computer with memory.';
-    var html = render(input);
-    assert.ok(html.includes('<details>'));
-    assert.ok(html.includes('<summary>Requirements</summary>'));
-    assert.ok(html.includes('<p>A computer with memory.</p>'));
-    assert.ok(html.includes('</details>'));
-  });
-
-  test('unquoted multi-word arg is split — too many arguments', () => {
-    var input = '+details(System Requirements)\n' + '  p Content here.';
-    // Unquoted whitespace separates mixin arguments. details declares exactly
-    // one parameter, so this two-argument author error must keep the language's
-    // normalized argument-count diagnostic rather than render partial text.
-    assert.throws(
-      () => render(input),
-      (err) => err.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
+  test('scalar summary remains the simple fallback', () => {
+    assert.strictEqual(
+      render('+details(Requirements)\n  p A computer with memory.'),
+      '<details><summary>Requirements</summary><p>A computer with memory.</p></details>',
     );
   });
 
-  test('single-quoted summary with spaces', () => {
-    var input = "+details('System Requirements')\n" + '  p Content here.';
-    var html = render(input);
-    assert.ok(html.includes('<summary>System Requirements</summary>'));
+  test('a rich summary slot works without a scalar argument', () => {
+    var input =
+      '+details\n' +
+      '  block summary\n' +
+      '    | System *(Requirements)\n' +
+      '  p Content here.';
+
+    assert.strictEqual(
+      render(input),
+      '<details><summary>System <strong>Requirements</strong></summary><p>Content here.</p></details>',
+    );
   });
 
-  test('double-quoted summary with spaces', () => {
+  test('the summary slot takes precedence over the scalar fallback', () => {
     var input =
-      '+details("Frequently Asked Questions")\n' +
-      '  p Answer to first question.';
-    var html = render(input);
-    assert.ok(html.includes('<summary>Frequently Asked Questions</summary>'));
+      '+details(Ignored)\n' +
+      '  block summary\n' +
+      '    code npm install\n' +
+      '  p Content here.';
+
+    assert.strictEqual(
+      render(input),
+      '<details><summary><code>npm install</code></summary><p>Content here.</p></details>',
+    );
   });
 
-  test('multi-line content', () => {
-    var input =
-      '+details(Installation)\n' +
-      '  ol\n' +
-      '    li Download\n' +
-      '    li Extract\n' +
-      '    li Run';
-    var html = render(input);
-    assert.ok(html.includes('<summary>Installation</summary>'));
-    assert.ok(html.includes('<ol>'));
-    assert.ok(html.includes('<li>Download</li>'));
+  test('an omitted scalar and slot produce an explicit empty summary', () => {
+    assert.strictEqual(
+      render('+details\n  p Content here.'),
+      '<details><summary></summary><p>Content here.</p></details>',
+    );
+  });
+
+  test('unquoted multi-word scalar is still too many arguments', () => {
+    var input = '+details(System Requirements)\n  p Content here.';
+    assert.throws(
+      () => render(input),
+      (error) => error.code === 'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
+    );
   });
 });

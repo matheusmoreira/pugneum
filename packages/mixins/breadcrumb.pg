@@ -1,5 +1,10 @@
-mixin breadcrumbs
-  nav(aria-label="Breadcrumb")
+mixin breadcrumbs(label=Breadcrumb)
+  nav(aria-label="#{label}")
+    ol
+      block
+
+mixin breadcrumbs-labelledby(id)
+  nav(aria-labelledby="#{id}")
     ol
       block
 
@@ -10,5 +15,10 @@ mixin breadcrumb(href)
 
 mixin breadcrumb-current
   li
-    a(aria-current="page")
+    span(aria-current="page")
+      block
+
+mixin breadcrumb-current-link(href)
+  li
+    a(href="#{href}" aria-current="page")
       block

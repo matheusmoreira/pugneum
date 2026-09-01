@@ -709,10 +709,14 @@ Include from npm packages with `@`:
 ```pugneum
 include @pugneum-mixins/quote.pg
 
-+quote(https://example.com)
++quote(https://example.com/quotation)
   | To be or not to be.
-  block source
-    | Example Author
+  block caption
+    +citation
+      block attribution
+        | Example Author
+      block title
+        | Example Work
 ```
 
 Install the package first: `npm install pugneum-mixins`.
@@ -824,22 +828,25 @@ named blocks provide multiple slots
 that callers fill independently:
 
 ```pugneum
-mixin citation
+mixin quotation
   figure
     blockquote
       block quote
     figcaption
+      block attribution
+        | Anonymous
+      | ,&#32;
       cite
-        block source
-          | Anonymous
+        block title
+          | Untitled
 
-+citation
++quotation
   block quote
     p To be or not to be.
-  block source
-    | Shakespeare,
-    |  
-    time(datetime="1600") circa 1600
+  block attribution
+    | William Shakespeare
+  block title
+    | Hamlet
 ```
 
 ```html
@@ -848,14 +855,14 @@ mixin citation
     <p>To be or not to be.</p>
   </blockquote>
   <figcaption>
-    <cite>Shakespeare, <time datetime="1600">circa 1600</time></cite>
+    William Shakespeare, <cite>Hamlet</cite>
   </figcaption>
 </figure>
 ```
 
 Each slot can have default content.
-Omitted slots use their defaults;
-the `source` slot above defaults to "Anonymous".
+Omitted slots use their defaults; the `attribution` and `title` slots above
+default to "Anonymous" and "Untitled".
 
 A mixin may use both an unnamed `block` and named blocks.
 Caller content not inside a named block fills the unnamed slot.
@@ -887,31 +894,32 @@ still counts. This enables wrapper elements that disappear when a slot is
 omitted:
 
 ```pugneum
-mixin quote(url?)
+mixin quote(source?)
   figure
-    blockquote(cite="#{url?}")
+    blockquote(cite="#{source?}")
       block
-    given source
+    given caption
       figcaption
-        cite
-          block source
+        block caption
 
-+quote(https://example.com)
++quote(https://example.com/quotation)
   | Quoted text.
-  block source
-    a(href='https://example.com') Author
+  block caption
+    | Example Author,&#32;
+    cite
+      a(href='https://example.com/work') Example Work
 
 +quote
   | No attribution needed.
 ```
 
 ```html
-<figure><blockquote cite="https://example.com">Quoted text.</blockquote><figcaption><cite><a href="https://example.com">Author</a></cite></figcaption></figure>
+<figure><blockquote cite="https://example.com/quotation">Quoted text.</blockquote><figcaption>Example Author, <cite><a href="https://example.com/work">Example Work</a></cite></figcaption></figure>
 <figure><blockquote>No attribution needed.</blockquote></figure>
 ```
 
-The second quote has no `<figcaption>` — `given source` suppressed
-the entire subtree because the caller didn't provide `block source`.
+The second quote has no `<figcaption>` — `given caption` suppressed
+the entire subtree because the caller didn't provide `block caption`.
 
 Use `\given` to create an HTML element named `given`.
 

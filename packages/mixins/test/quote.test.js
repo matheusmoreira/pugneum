@@ -7,102 +7,112 @@ var {createRenderer} = require('./helpers');
 var render = createRenderer('quote.pg');
 
 describe('quote mixin', () => {
-  test('linked quote with source', () => {
+  test('source URL and structured linked citation have separate roles', () => {
     var input =
-      '+quote(https://example.com)\n' +
+      '+quote(https://example.com/quotation)\n' +
       '  | Quoted text.\n' +
-      '  block source\n' +
-      '    | Author, Source';
-    var html = render(input);
-    assert.ok(html.includes('<blockquote cite="https://example.com">'));
-    assert.ok(html.includes('Quoted text.'));
-    assert.ok(
-      html.includes('<a href="https://example.com">Author, Source</a>'),
+      '  block caption\n' +
+      '    +linked-citation(https://example.com/work)\n' +
+      '      block attribution\n' +
+      '        | Example Author\n' +
+      '      block title\n' +
+      '        | Example Work';
+
+    assert.strictEqual(
+      render(input),
+      '<figure><blockquote cite="https://example.com/quotation">Quoted text.</blockquote><figcaption>Example Author, <cite><a href="https://example.com/work">Example Work</a></cite></figcaption></figure>',
     );
-    assert.ok(html.includes('<figcaption>'));
-    assert.ok(html.includes('<cite>'));
   });
 
-  test('linked quote without source — figcaption omitted', () => {
-    var input = '+quote(https://example.com)\n' + '  | Just a linked quote.';
-    var html = render(input);
-    assert.ok(html.includes('<blockquote cite="https://example.com">'));
-    assert.ok(html.includes('Just a linked quote.'));
-    assert.ok(!html.includes('<figcaption>'));
+  test('source and caption are independently optional', () => {
+    assert.strictEqual(
+      render('+quote\n  | An unattributed quotation.'),
+      '<figure><blockquote>An unattributed quotation.</blockquote></figure>',
+    );
+
+    assert.strictEqual(
+      render('+quote(/source)\n  | A sourced quotation.'),
+      '<figure><blockquote cite="/source">A sourced quotation.</blockquote></figure>',
+    );
   });
 
-  test('multi-paragraph linked quote', () => {
+  test('caption accepts arbitrary rich content', () => {
     var input =
-      '+quote(https://example.com)\n' +
+      '+quote\n' +
       '  p First paragraph.\n' +
       '  p Second paragraph.\n' +
-      '  block source\n' +
-      '    | Author';
-    var html = render(input);
-    assert.ok(html.includes('<p>First paragraph.</p>'));
-    assert.ok(html.includes('<p>Second paragraph.</p>'));
-    assert.ok(html.includes('<a href="https://example.com">Author</a>'));
-    var bq = html.match(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/);
-    assert.ok(bq);
-    assert.ok(bq[1].includes('First paragraph'));
-    assert.ok(bq[1].includes('Second paragraph'));
+      '  block caption\n' +
+      '    | Recorded #(time(datetime=2021-09-04) Sept 4, 2021).';
+
+    assert.strictEqual(
+      render(input),
+      '<figure><blockquote><p>First paragraph.</p><p>Second paragraph.</p></blockquote><figcaption>Recorded <time datetime="2021-09-04">Sept 4, 2021</time>.</figcaption></figure>',
+    );
   });
 
-  test('source with rich content', () => {
-    var input =
-      '+quote(https://example.com)\n' +
-      '  | Text.\n' +
-      '  block source\n' +
-      '    | Author, #(time(datetime=2021-09-04) Sept 4, 2021)';
-    var html = render(input);
-    assert.ok(html.includes('<time datetime="2021-09-04">Sept 4, 2021</time>'));
-    assert.ok(html.includes('<a href="https://example.com">'));
+  test('the removed plain-quote helper is not retained as an alias', () => {
+    assert.throws(
+      () => render('+plain-quote\n  | Legacy call.'),
+      (error) => error.code === 'PUGNEUM:UNDEFINED_MIXIN',
+    );
   });
 });
 
-describe('plain-quote mixin', () => {
-  test('plain quote with source', () => {
+describe('citation helpers', () => {
+  test('citation places only the title in cite', () => {
     var input =
-      '+plain-quote\n' +
-      '  | Anonymous wisdom.\n' +
-      '  block source\n' +
-      '    | Unknown author';
-    var html = render(input);
-    assert.ok(html.includes('<figure>'));
-    assert.ok(html.includes('<blockquote>'));
-    assert.ok(!html.includes('cite='));
-    assert.ok(html.includes('Anonymous wisdom.'));
-    assert.ok(html.includes('<cite>'));
-    assert.ok(html.includes('Unknown author'));
-    assert.ok(!html.includes('<a'));
+      '+citation\n' +
+      '  block attribution\n' +
+      '    | Ursula K. Le Guin\n' +
+      '  block title\n' +
+      '    | The Dispossessed';
+
+    assert.strictEqual(
+      render(input),
+      'Ursula K. Le Guin, <cite>The Dispossessed</cite>',
+    );
   });
 
-  test('plain quote without source — figcaption omitted', () => {
-    var input = '+plain-quote\n' + '  | Just a thought.';
-    var html = render(input);
-    assert.ok(html.includes('<blockquote>'));
-    assert.ok(html.includes('Just a thought.'));
-    assert.ok(!html.includes('<figcaption>'));
-    assert.ok(!html.includes('<cite>'));
-  });
-
-  test('plain quote supports inline shorthands', () => {
-    var input = '+plain-quote\n' + '  | This is *(important) text.';
-    var html = render(input);
-    assert.ok(html.includes('<strong>important</strong>'));
-  });
-
-  test('plain quote multi-paragraph', () => {
+  test('linked-citation links only the cited title', () => {
     var input =
-      '+plain-quote\n' +
-      '  p First.\n' +
-      '  p Second.\n' +
-      '  block source\n' +
-      '    | Proverb';
-    var html = render(input);
-    assert.ok(html.includes('<p>First.</p>'));
-    assert.ok(html.includes('<p>Second.</p>'));
-    assert.ok(html.includes('Proverb'));
-    assert.ok(!html.includes('<a'));
+      '+linked-citation(/books/the-dispossessed)\n' +
+      '  block attribution\n' +
+      '    strong Ursula K. Le Guin\n' +
+      '  block title\n' +
+      '    em The Dispossessed';
+
+    assert.strictEqual(
+      render(input),
+      '<strong>Ursula K. Le Guin</strong>, <cite><a href="/books/the-dispossessed"><em>The Dispossessed</em></a></cite>',
+    );
+  });
+
+  test('attribution-only and title-only citations omit dangling structure', () => {
+    assert.strictEqual(
+      render('+citation\n  block attribution\n    | Anonymous'),
+      'Anonymous',
+    );
+    assert.strictEqual(
+      render('+citation\n  block title\n    | Oral tradition'),
+      '<cite>Oral tradition</cite>',
+    );
+  });
+
+  test('separator is configurable and appears only between populated slots', () => {
+    var input =
+      "+citation(' — ')\n" +
+      '  block attribution\n' +
+      '    | Anonymous\n' +
+      '  block title\n' +
+      '    | Oral tradition';
+    assert.strictEqual(
+      render(input),
+      'Anonymous — <cite>Oral tradition</cite>',
+    );
+
+    assert.strictEqual(
+      render("+citation(' — ')\n  block title\n    | Oral tradition"),
+      '<cite>Oral tradition</cite>',
+    );
   });
 });

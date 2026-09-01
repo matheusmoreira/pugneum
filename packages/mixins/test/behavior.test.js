@@ -59,15 +59,17 @@ describe('mixin attribute arguments ARE escaped (no breakout)', () => {
     assert.ok(!html.includes('" onmouseover=alert(1)'));
   });
 
-  test('quote url with an ampersand is escaped in cite and href', () => {
+  test('quote source and linked citation href are escaped independently', () => {
     var input =
       "+quote('https://e.com/?a=1&b=2')\n" +
       '  | t\n' +
-      '  block source\n' +
-      '    | Auth';
+      '  block caption\n' +
+      "    +linked-citation('https://work.test/?a=1&b=2')\n" +
+      '      block title\n' +
+      '        | Work';
     var html = renderQuote(input);
     assert.ok(html.includes('cite="https://e.com/?a=1&amp;b=2"'));
-    assert.ok(html.includes('href="https://e.com/?a=1&amp;b=2"'));
+    assert.ok(html.includes('href="https://work.test/?a=1&amp;b=2"'));
   });
 });
 
@@ -116,12 +118,13 @@ describe('required-looking arguments are optional and degrade silently', () => {
     assert.ok(!html.includes('href='));
   });
 
-  test('+quote with a source slot but no url renders an href-less <a>', () => {
-    var input = '+quote\n' + '  | t\n' + '  block source\n' + '    | Auth';
+  test('+quote without a source omits cite while retaining its caption', () => {
+    var input = '+quote\n' + '  | t\n' + '  block caption\n' + '    | Auth';
     var html = renderQuote(input);
     assert.ok(html.includes('<blockquote>'));
     assert.ok(!html.includes('cite='));
-    assert.ok(html.includes('<cite><a>Auth</a></cite>'));
+    assert.ok(html.includes('<figcaption>Auth</figcaption>'));
+    assert.ok(!html.includes('<a'));
   });
 });
 

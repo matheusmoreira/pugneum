@@ -7,7 +7,8 @@
 //   - A tag's trailing text (`tag <text>`) becomes a text node the lexer/parser
 //     reprocesses, so inline shorthands (`*(...)`, `@(...)`, ...) stay active in
 //     cell text by design. A literal `#{` would be read as a mixin interpolation
-//     (VARIABLE_OUTSIDE_MIXIN) — see escapeCellText, which neutralizes it.
+//     (VARIABLE_OUTSIDE_MIXIN), so the lexer-owned generated-source helper
+//     neutralizes it before this source is returned.
 //   - `(...)` after a tag is parsed by the lexer's attribute grammar, so any
 //     attribute string this module emits (formatAttrs) must be valid Pugneum
 //     source that survives re-lexing — escape backslashes and quotes, and keep
@@ -17,33 +18,13 @@
 //     cell text and is NOT escaped — it is handed to the lexer's attribute
 //     grammar as-is. A live `#{...}` there is variable interpolation outside a
 //     mixin, which crashes the re-lex (PUGNEUM:CALL_STACK_UNDERFLOW). Cell TEXT
-//     neutralizes `#{` (escapeCellText), but neutralizing inside an attribute
-//     value was rejected; instead we detect it up front and raise a clean,
-//     coded INTERPOLATION_IN_TABLE_HEAD error — see assertNoInterpolation.
+//     neutralizes `#{` through lex.escapeLiveInterpolations, but neutralizing
+//     inside an attribute value was rejected; instead we detect it up front and
+//     raise a clean, coded INTERPOLATION_IN_TABLE_HEAD error.
 
 const classifyCell = require('./parse').classifyCell;
 const error = require('pugneum-error');
 const lex = require('pugneum-lexer');
-
-function backslashRunStart(text, marker, lowerBound) {
-  let start = marker;
-  while (start > lowerBound && text[start - 1] === '\\') start--;
-  return start;
-}
-
-// The lexer preserves raw attribute escape provenance and applies the same
-// odd/even rule as text: an odd run escapes the opener, while an even run leaves
-// a live interpolation after slash-pair decoding.
-function hasLiveInterpolation(source) {
-  let searchFrom = 0;
-  for (;;) {
-    const marker = source.indexOf('#{', searchFrom);
-    if (marker === -1) return false;
-    const slashStart = backslashRunStart(source, marker, searchFrom);
-    if ((marker - slashStart) % 2 === 0) return true;
-    searchFrom = marker + 2;
-  }
-}
 
 // A verbatim attribute group (or tagged-cell head) is emitted as-is for the
 // re-lex. A live `#{...}` in it cannot be neutralized without rewriting the
@@ -53,7 +34,7 @@ function hasLiveInterpolation(source) {
 // naming the offending construct instead. `what` describes the construct (e.g.
 // "table cell head") and `source` is the verbatim string for the message.
 function assertNoInterpolation(source, what, location) {
-  if (hasLiveInterpolation(source)) {
+  if (lex.hasLiveInterpolation(source)) {
     throw error(
       'INTERPOLATION_IN_TABLE_HEAD',
       'live interpolation #{...} is not allowed in a ' +
@@ -340,45 +321,11 @@ function formatAttrs(attrs, location) {
   return '(' + pairs.join(' ') + ')';
 }
 
-// Neutralize a literal `#{` in cell/caption text. Cell text is re-lexed as
-// Pugneum, where `#{name}` is variable interpolation that is illegal outside a
-// mixin (VARIABLE_OUTSIDE_MIXIN) — so a table documenting shell prompts or
-// Pugneum syntax would otherwise crash the whole build. The lexer treats a
-// backslash-escaped `\#{` as the literal text `#{` everywhere it re-lexes cell
-// text — plain text, inline-shorthand content, and `(...) code spans alike (see
-// unescapeShorthand) — so we prepend a backslash to each LIVE `#{`. "Live" means
-// an even-length run of preceding backslashes (including zero); an odd run is
-// already escaped, and escaping it again would yield `\\#{` = a literal
-// backslash followed by live interpolation (the crash, reintroduced).
-// Inline shorthand sigils (`*(`, `@(`, ...) stay ACTIVE per the cell contract;
-// only `#{` is neutralized. Applied to every re-lexed cell-text path (bare cell,
-// tagged-cell trailing text, caption). A `#{` inside a tagged head's (or any
-// verbatim) attribute value is NOT neutralized here — that was the rejected
-// option; it is rejected with a coded error instead (assertNoInterpolation).
-function escapeCellText(text) {
-  const pieces = [];
-  let copiedThrough = 0;
-
-  for (;;) {
-    const marker = text.indexOf('#{', copiedThrough);
-    if (marker === -1) break;
-
-    const slashStart = backslashRunStart(text, marker, copiedThrough);
-
-    pieces.push(text.slice(copiedThrough, marker));
-    if ((marker - slashStart) % 2 === 0) pieces.push('\\');
-    pieces.push('#{');
-    copiedThrough = marker + 2;
-  }
-
-  if (copiedThrough === 0) return text;
-  pieces.push(text.slice(copiedThrough));
-  return pieces.join('');
-}
-
 // Build one cell source line regardless of whether its head was authored
 // explicitly or supplied by the section. Alignment and header scope therefore
-// have one ordering and duplicate-attribute policy for both forms.
+// have one ordering and duplicate-attribute policy for both forms. Cell text
+// uses the lexer-owned literal-interpolation contract; inline shorthands stay
+// active, while every live `#{` survives the generated-source re-lex literally.
 function renderCell(classified, sectionTag, align, location) {
   const isVerbatim = classified.verbatim !== undefined;
   let head = isVerbatim ? classified.verbatim : classified.tag;
@@ -393,7 +340,7 @@ function renderCell(classified, sectionTag, align, location) {
   if (sectionTag === 'thead') head = addScopeColToThHead(head);
 
   const textPrefix = !isVerbatim && classified.text !== '' ? ' ' : '';
-  return head + textPrefix + escapeCellText(classified.text);
+  return head + textPrefix + lex.escapeLiveInterpolations(classified.text);
 }
 
 // Append indented Pugneum lines for a section (thead, tbody, or tfoot) directly
@@ -463,7 +410,10 @@ function generate(parsed, attrs, invocationLocation) {
       caption.location,
     );
     lines.push(
-      '  caption' + caption.attrStr + ' ' + escapeCellText(caption.text),
+      '  caption' +
+        caption.attrStr +
+        ' ' +
+        lex.escapeLiveInterpolations(caption.text),
     );
   }
 

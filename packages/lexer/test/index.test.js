@@ -50,6 +50,42 @@ describe('expression group boundary helper', () => {
   });
 });
 
+describe('generated-source interpolation helpers', () => {
+  [
+    {source: 'plain', live: false, escaped: 'plain'},
+    {source: '#{x}', live: true, escaped: '\\#{x}'},
+    {source: '\\#{x}', live: false, escaped: '\\#{x}'},
+    {source: '\\\\#{x}', live: true, escaped: '\\\\\\#{x}'},
+  ].forEach(({source, live, escaped}) => {
+    test(JSON.stringify(source) + ' follows odd/even escape parity', () => {
+      assert.strictEqual(lex.hasLiveInterpolation(source), live);
+      assert.strictEqual(lex.escapeLiveInterpolations(source), escaped);
+      assert.strictEqual(lex.escapeLiveInterpolations(escaped), escaped);
+    });
+  });
+
+  test('neutralized interpolation stays literal inside a code span', () => {
+    const escaped = lex.escapeLiveInterpolations('price #{n}');
+    const tokens = lex('p `(' + escaped + ')`', {filename: 'generated.pg'});
+    const content = tokens.find(
+      (token) => token.type === 'text' && token.val.includes('price'),
+    );
+
+    assert.strictEqual(content.val, 'price #{n}');
+  });
+
+  test('both helpers require a string', () => {
+    assert.throws(
+      () => lex.hasLiveInterpolation(null),
+      /Expected interpolation source to be a string/,
+    );
+    assert.throws(
+      () => lex.escapeLiveInterpolations({}),
+      /Expected interpolation source to be a string/,
+    );
+  });
+});
+
 function comparePoints(left, right) {
   return left.line - right.line || left.column - right.column;
 }

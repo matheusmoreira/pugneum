@@ -92,6 +92,55 @@ function isValidAttributeName(name) {
 // lexer function so packages do not maintain subtly different deny lists.
 lex.isValidAttributeName = isValidAttributeName;
 
+function assertInterpolationSource(source) {
+  if (typeof source !== 'string') {
+    throw new TypeError('Expected interpolation source to be a string');
+  }
+}
+
+function interpolationOpenerIsLive(source, marker) {
+  let slash = marker;
+  while (slash > 0 && source[slash - 1] === '\\') slash--;
+  return (marker - slash) % 2 === 0;
+}
+
+function hasLiveInterpolation(source) {
+  assertInterpolationSource(source);
+  let searchFrom = 0;
+  for (;;) {
+    const marker = source.indexOf('#{', searchFrom);
+    if (marker === -1) return false;
+    if (interpolationOpenerIsLive(source, marker)) return true;
+    searchFrom = marker + 2;
+  }
+}
+
+function escapeLiveInterpolations(source) {
+  assertInterpolationSource(source);
+  const pieces = [];
+  let copiedThrough = 0;
+  let searchFrom = 0;
+
+  for (;;) {
+    const marker = source.indexOf('#{', searchFrom);
+    if (marker === -1) break;
+    if (interpolationOpenerIsLive(source, marker)) {
+      pieces.push(source.slice(copiedThrough, marker), '\\#{');
+      copiedThrough = marker + 2;
+    }
+    searchFrom = marker + 2;
+  }
+
+  if (pieces.length === 0) return source;
+  pieces.push(source.slice(copiedThrough));
+  return pieces.join('');
+}
+
+// Generated-source producers must share the lexer's odd/even backslash rule.
+// The escaping helper is idempotent: it adds one slash only before a live #{.
+lex.hasLiveInterpolation = hasLiveInterpolation;
+lex.escapeLiveInterpolations = escapeLiveInterpolations;
+
 const whitespaceRe = /[ \n\t]/;
 
 // Curly "smart" quotes that editors and AI tools auto-substitute for straight

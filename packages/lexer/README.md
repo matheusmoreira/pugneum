@@ -167,6 +167,13 @@ than maintaining parallel grammar fragments:
   offset just past the matching `)`, or `-1` when the offset is not an opener or
   the group is incomplete. Parentheses nest, quotes protect parentheses, and a
   backslash escapes the next byte only inside a quoted value.
+- `lex.hasLiveInterpolation(source)` reports whether generated source contains
+  a live `#{` opener. An even-length run of preceding backslashes leaves an
+  opener live; an odd-length run escapes it.
+- `lex.escapeLiveInterpolations(source)` inserts one backslash before each live
+  `#{` opener. It is idempotent and is the supported way for source generators
+  to preserve literal interpolation text through re-lexing, including inside
+  inline code spans.
 
 ## License
 

@@ -792,6 +792,24 @@ attribute values with the `#{name}` syntax; the names refer to the
 mixin's arguments. Outside a mixin there is no variable scope, so
 `#{name}` is an error. Escape with `\#{` for literal output.
 
+Each invocation has only its own parameter bindings: a callee does not
+implicitly capture variables from its caller. Forward a value explicitly by
+using `#{name}` in a nested call argument:
+
+```pugneum
+mixin label(text)
+  strong #{text}
+
+mixin button(text)
+  button
+    +label(#{text})
+
++button(Save)
+```
+
+Call-argument substitution is single-pass. Escape the marker as `\#{name}`
+when a nested call should receive the literal text `#{name}`.
+
 Mixins can be called inline within text using `#(+mixin(args))`:
 
 ```pugneum
@@ -810,6 +828,11 @@ Balanced parentheses can be nested inside an unquoted argument that contains
 no separator whitespace, for example `+transform(calc(1+2))`. Quote an
 argument to preserve whitespace; the outer quotes are removed and a backslash
 escapes the next quoted character, as in `+label('Status (ready)')`.
+
+Declarations take effect in source order. A declaration evaluated inside a
+mixin invocation may shadow an outer declaration, but that local binding ends
+when the invocation returns. Unused-mixin warnings are tracked per declaration,
+including same-name redefinitions.
 
 Mixins can also receive block content from the caller:
 

@@ -719,7 +719,7 @@ describe('mixins', () => {
     assert.strictEqual(render(block([declaration, call])), '<div>inside</div>');
   });
 
-  test('nested mixin calls inherit parent environment', () => {
+  test('nested mixin calls cannot capture undeclared caller parameters', () => {
     var inner = {
       type: 'Mixin',
       name: 'inner',
@@ -763,7 +763,54 @@ describe('mixins', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([inner, outer, call])), 'hello');
+    assert.throws(
+      () => render(block([inner, outer, call])),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
+    );
+  });
+
+  test('nested mixin calls explicitly forward caller parameters', () => {
+    const inner = mixinDef('inner', [{name: 'x'}], [variable('x')]);
+    const outer = mixinDef(
+      'outer',
+      [{name: 'x'}],
+      [mixinCall('inner', ['#{x}'])],
+    );
+
+    assert.strictEqual(
+      render(block([inner, outer, mixinCall('outer', ['hello'])])),
+      'hello',
+    );
+  });
+
+  test('nested same-name declarations have distinct recursion identities', () => {
+    const inner = mixinDef('outer', [], [text('inner')]);
+    inner.line = 2;
+    const outer = mixinDef('outer', [], [inner, mixinCall('outer', [])]);
+
+    assert.strictEqual(render(block([outer, mixinCall('outer', [])])), 'inner');
+  });
+
+  test('nested declarations restore the surrounding binding on return', () => {
+    const globalHelper = mixinDef('helper', [], [text('global')]);
+    const localHelper = mixinDef('helper', [], [text('local')]);
+    const install = mixinDef(
+      'install',
+      [],
+      [localHelper, mixinCall('helper', [])],
+    );
+
+    assert.strictEqual(
+      render(
+        block([
+          globalHelper,
+          install,
+          mixinCall('install', []),
+          mixinCall('helper', []),
+        ]),
+      ),
+      'localglobal',
+    );
   });
 });
 
@@ -2529,6 +2576,41 @@ describe('unused mixin warnings', () => {
     const warnings = [];
     render(block([decl, call]), {filename: 'test', warnings});
     assert.strictEqual(warnings.length, 0);
+  });
+
+  test('tracks unused redefinitions by declaration identity', () => {
+    const first = mixinDef('item', [], [text('first')]);
+    const second = mixinDef('item', [], [text('second')]);
+    first.line = 1;
+    second.line = 3;
+    const warnings = [];
+
+    assert.strictEqual(
+      render(block([first, mixinCall('item', []), second]), {
+        filename: 'test',
+        warnings,
+      }),
+      'first',
+    );
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.line),
+      [3],
+    );
+  });
+
+  test('warns once for each unused same-name declaration', () => {
+    const first = mixinDef('item', [], [text('first')]);
+    const second = mixinDef('item', [], [text('second')]);
+    first.line = 1;
+    second.line = 3;
+    const warnings = [];
+
+    render(block([first, second]), {filename: 'test', warnings});
+
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.line),
+      [1, 3],
+    );
   });
 
   test('mixin defined in a different file is not flagged', () => {

@@ -11,6 +11,7 @@ const attributeInterpolationResolved = Symbol.for(
 );
 const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
 const mixinCallStack = Symbol.for('pugneum.mixinCallStack');
+const mixinBindingScope = Symbol.for('pugneum.mixinBindingScope');
 const mixinEnvironment = Symbol.for('pugneum.mixinEnvironment');
 const attributeVariableNameCharacter = /[-a-zA-Z_?]/;
 const MAX_MIXIN_DEPTH = 256;
@@ -39,9 +40,11 @@ class MixinExpander {
   constructor(options, isolateCommentBlock) {
     this.options = options;
     this.isolateCommentBlock = isolateCommentBlock;
-    this.mixins = Object.create(null);
-    this.mixinSlots = new WeakMap();
-    this.usedMixins = new Set();
+    this.mixinIdentities = new WeakMap();
+    this.mixinDeclarations = new Map();
+    this.usedMixinDeclarations = new Set();
+    this.rootMixinScope = createMixinScope(null);
+    this.mixinScope = this.rootMixinScope;
     this.callStack = [];
     this.footnoteDefinitions = Object.create(null);
     this.expandedFootnotes = new WeakSet();
@@ -76,15 +79,14 @@ class MixinExpander {
     this.finished = true;
     const entry = this.options.filename;
     const sources = this.options.sources;
-    for (const name in this.mixins) {
-      const mixin = this.mixins[name];
+    for (const [identity, mixin] of this.mixinDeclarations) {
       if (
-        !this.usedMixins.has(name) &&
+        !this.usedMixinDeclarations.has(identity) &&
         sourceOrigin(sources, mixin.filename) === sourceOrigin(sources, entry)
       ) {
         this.warn(
           'UNUSED_MIXIN',
-          "Mixin '" + name + "' is defined but never called",
+          "Mixin '" + mixin.name + "' is defined but never called",
           mixin,
         );
       }
@@ -148,6 +150,7 @@ class MixinExpander {
         for (const definition of node.definitions) {
           if (this.callStack.length > 0) {
             setHidden(definition, mixinCallStack, this.callStack.slice());
+            setHidden(definition, mixinBindingScope, this.mixinScope);
           }
           if (!(definition.name in this.footnoteDefinitions)) {
             this.footnoteDefinitions[definition.name] = definition;
@@ -191,11 +194,11 @@ class MixinExpander {
         node,
       );
     }
-    const value = this.callStack.at(-1).environment[name];
-    if (value === undefined) {
+    const environment = this.callStack.at(-1).environment;
+    if (!Object.prototype.hasOwnProperty.call(environment, name)) {
       this.error('UNDEFINED_VARIABLE', `Variable '${name}' is undefined`, node);
     }
-    return value;
+    return environment[name];
   }
 
   expandVariable(variable) {
@@ -213,17 +216,26 @@ class MixinExpander {
   }
 
   declareMixin(mixin) {
-    this.mixins[mixin.name] = mixin;
-    this.mixinSlots.set(mixin, this.inspectMixinSlots(mixin.block));
+    const identity = mixinIdentity(this.mixinIdentities, mixin);
+    if (!this.mixinDeclarations.has(identity)) {
+      this.mixinDeclarations.set(identity, mixin);
+    }
+    this.mixinScope.bindings[mixin.name] = {
+      declaration: mixin,
+      identity,
+      scope: this.mixinScope,
+      slots: this.inspectMixinSlots(mixin.block),
+    };
     return [];
   }
 
   expandMixinCall(mixin) {
-    const declared = this.mixins[mixin.name];
-    if (!declared) {
+    const binding = resolveMixinBinding(this.mixinScope, mixin.name);
+    if (!binding) {
       this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
     }
-    this.usedMixins.add(mixin.name);
+    const declared = binding.declaration;
+    this.usedMixinDeclarations.add(binding.identity);
 
     if (
       (mixin.attrs && mixin.attrs.length > 0) ||
@@ -237,17 +249,17 @@ class MixinExpander {
       );
     }
 
-    const args = mixin.args;
+    const rawArgs = mixin.args;
     const parameterCount = declared.args.length;
-    if (args.length > parameterCount) {
+    if (rawArgs.length > parameterCount) {
       this.error(
         'MIXIN_ARGUMENT_COUNT_MISMATCH',
-        `Too many arguments: mixin '${mixin.name}' declared ${parameterCount} called ${args.length}`,
+        `Too many arguments: mixin '${mixin.name}' declared ${parameterCount} called ${rawArgs.length}`,
         mixin,
       );
     }
     for (const frame of this.callStack) {
-      if (frame.name === mixin.name) {
+      if (frame.declarationIdentity === binding.identity) {
         this.error(
           'RECURSIVE_MIXIN',
           `Recursive call to mixin '${mixin.name}' detected`,
@@ -263,10 +275,13 @@ class MixinExpander {
       );
     }
 
-    const parentFrame = this.callStack.at(-1);
-    const environment = Object.create(
-      (parentFrame && parentFrame.environment) || null,
-    );
+    const args =
+      this.callStack.length === 0
+        ? rawArgs
+        : rawArgs.map((argument) =>
+            this.resolveInterpolatedValue(String(argument), mixin),
+          );
+    const environment = Object.create(null);
     for (let index = 0; index < parameterCount; index++) {
       const parameter = declared.args[index];
       if (index < args.length) {
@@ -278,7 +293,7 @@ class MixinExpander {
       }
     }
 
-    const slots = this.mixinSlots.get(declared);
+    const slots = binding.slots;
     let namedBlocks = null;
     let unnamedBlock = null;
     if (slots.usesNamedBlocks) {
@@ -306,17 +321,40 @@ class MixinExpander {
       this.validateNamedBlocks(declared, namedBlocks, slots.namedBlockNames);
     }
 
+    const callerScope = this.mixinScope;
+    const calleeScope = createMixinScope(binding.scope);
     this.callStack.push({
       name: mixin.name,
+      declarationIdentity: binding.identity,
       environment,
       block: mixin.block,
       namedBlocks,
       unnamedBlock,
+      callerScope,
+      calleeScope,
     });
+    this.mixinScope = calleeScope;
     try {
-      return this.expandBlock(cloneAst(declared.block)).nodes;
+      return this.expandBlock(this.cloneAst(declared.block)).nodes;
     } finally {
+      this.mixinScope = callerScope;
       this.callStack.pop();
+    }
+  }
+
+  cloneAst(value) {
+    return cloneAst(value, undefined, this.mixinIdentities);
+  }
+
+  withCallerScope(callback) {
+    const current = this.callStack.pop();
+    const activeScope = this.mixinScope;
+    this.mixinScope = current.callerScope;
+    try {
+      return callback(current);
+    } finally {
+      this.mixinScope = activeScope;
+      this.callStack.push(current);
     }
   }
 
@@ -328,16 +366,13 @@ class MixinExpander {
         mixinBlock,
       );
     }
-    const current = this.callStack.pop();
-    try {
+    return this.withCallerScope((current) => {
       const target =
         current.namedBlocks !== null ? current.unnamedBlock : current.block;
       return target && target.nodes
-        ? this.expandNodes(cloneAst(target.nodes))
+        ? this.expandNodes(this.cloneAst(target.nodes))
         : [];
-    } finally {
-      this.callStack.push(current);
-    }
+    });
   }
 
   expandGiven(given) {
@@ -346,7 +381,7 @@ class MixinExpander {
     }
     const frame = this.callStack.at(-1);
     return frame.namedBlocks && frame.namedBlocks[given.name]
-      ? this.expandNodes(cloneAst(given.block.nodes))
+      ? this.expandNodes(this.cloneAst(given.block.nodes))
       : [];
   }
 
@@ -406,14 +441,9 @@ class MixinExpander {
   }
 
   expandFragment(fragment) {
-    const nodes = cloneAst(fragment.nodes);
+    const nodes = this.cloneAst(fragment.nodes);
     if (fragment.scope !== 'caller') return this.expandNodes(nodes);
-    const current = this.callStack.pop();
-    try {
-      return this.expandNodes(nodes);
-    } finally {
-      this.callStack.push(current);
-    }
+    return this.withCallerScope(() => this.expandNodes(nodes));
   }
 
   validateNamedBlocks(declared, callerBlocks, declaredNames) {
@@ -478,13 +508,16 @@ class MixinExpander {
       if (!definition || this.expandedFootnotes.has(definition)) continue;
       this.expandedFootnotes.add(definition);
       const savedStack = this.callStack;
+      const savedScope = this.mixinScope;
       this.callStack = definition[mixinCallStack]
         ? definition[mixinCallStack].slice()
         : [];
+      this.mixinScope = definition[mixinBindingScope] || this.rootMixinScope;
       try {
         this.expandBlock(definition.block);
       } finally {
         this.callStack = savedStack;
+        this.mixinScope = savedScope;
       }
       collectFootnoteRefs(definition.block, enqueue);
     }
@@ -500,6 +533,28 @@ function collectFootnoteRefs(ast, enqueue) {
 
 function appendItems(target, items) {
   for (const item of items) target.push(item);
+}
+
+function createMixinScope(parent) {
+  return {bindings: Object.create(null), parent};
+}
+
+function resolveMixinBinding(scope, name) {
+  while (scope) {
+    if (Object.prototype.hasOwnProperty.call(scope.bindings, name)) {
+      return scope.bindings[name];
+    }
+    scope = scope.parent;
+  }
+}
+
+function mixinIdentity(identities, mixin) {
+  let identity = identities.get(mixin);
+  if (!identity) {
+    identity = {};
+    identities.set(mixin, identity);
+  }
+  return identity;
 }
 
 function setHidden(target, key, value) {
@@ -577,7 +632,7 @@ function sourceOrigin(sources, filename) {
     : filename;
 }
 
-function cloneAst(value, copies) {
+function cloneAst(value, copies, mixinIdentities) {
   if (value === null || typeof value !== 'object') return value;
   copies = copies || new Map();
   if (copies.has(value)) return copies.get(value);
@@ -591,10 +646,13 @@ function cloneAst(value, copies) {
     ? []
     : Object.create(Object.getPrototypeOf(value));
   copies.set(value, copy);
+  if (mixinIdentities && value.type === 'Mixin' && value.call === false) {
+    mixinIdentities.set(copy, mixinIdentity(mixinIdentities, value));
+  }
   for (const key of Reflect.ownKeys(value)) {
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
-      descriptor.value = cloneAst(descriptor.value, copies);
+      descriptor.value = cloneAst(descriptor.value, copies, mixinIdentities);
     }
     Object.defineProperty(copy, key, descriptor);
   }

@@ -833,6 +833,49 @@ describe('mixin parameter bindings', () => {
       '<p>lower upper</p>',
     );
   });
+
+  it('forwards caller parameters explicitly across a mixin call', () => {
+    assert.strictEqual(
+      pg.render(
+        'mixin inner(x)\n  span #{x}\nmixin outer(x)\n  +inner(#{x})\n+outer(hello)',
+      ),
+      '<span>hello</span>',
+    );
+  });
+
+  it('keeps escaped forwarding syntax literal', () => {
+    assert.strictEqual(
+      pg.render(
+        'mixin inner(x)\n  span #{x}\nmixin outer(x)\n  +inner(\\#{x})\n+outer(hello)',
+      ),
+      '<span>#{x}</span>',
+    );
+  });
+});
+
+describe('mixin declaration scope', () => {
+  it('allows a nested declaration to shadow an active same-name declaration', () => {
+    assert.strictEqual(
+      pg.render('mixin outer\n  mixin outer\n    p inner\n  +outer\n+outer'),
+      '<p>inner</p>',
+    );
+  });
+
+  it('restores a surrounding binding after a nested declaration returns', () => {
+    assert.strictEqual(
+      pg.render(
+        'mixin helper\n' +
+          '  p global\n' +
+          'mixin install\n' +
+          '  mixin helper\n' +
+          '    p local\n' +
+          '  +helper\n' +
+          '+install\n' +
+          '+helper',
+      ),
+      '<p>local</p><p>global</p>',
+    );
+  });
 });
 
 describe('filter option validation', () => {
@@ -1070,6 +1113,23 @@ describe('mixin-expanded document semantics', () => {
     );
   });
 
+  it('retains lexical mixin bindings for deferred footnote bodies', () => {
+    const source = [
+      'mixin note-wrap(value)',
+      '  mixin helper(x)',
+      '    strong #{x}',
+      '  p See^[n]',
+      '  footnotes',
+      '    n #(+helper(#{value}))',
+      '+note-wrap(hello)',
+    ].join('\n');
+
+    assert.match(
+      pg.render(source, {filename: 'footnote-mixin.pg', warnings: []}),
+      /<li id="footnote-n" role="doc-endnote"><strong>hello<\/strong>/,
+    );
+  });
+
   it('keeps substituted interpolation markers literal in generated attributes', () => {
     const source = [
       'mixin example(id label)',
@@ -1186,12 +1246,13 @@ describe('variables in attributes', () => {
     );
   });
 
-  it('should resolve variables from parent mixin scope', () => {
-    assert.strictEqual(
-      pg.render(
-        'mixin inner()\n  span(data-x="#{x}")\nmixin outer(x)\n  +inner()\n+outer(hello)',
-      ),
-      '<span data-x="hello"></span>',
+  it('does not capture undeclared variables from the caller mixin', () => {
+    assert.throws(
+      () =>
+        pg.render(
+          'mixin inner()\n  span(data-x="#{x}")\nmixin outer(x)\n  +inner()\n+outer(hello)',
+        ),
+      (err) => err.code === 'PUGNEUM:UNDEFINED_VARIABLE',
     );
   });
 
@@ -2292,6 +2353,39 @@ describe('warnings', () => {
     assert.strictEqual(
       unusedMixinWarnings('mixin used()\n  p x\n+used()').length,
       0,
+    );
+  });
+
+  it('warns for the specific redefinition that was never called', () => {
+    var warnings = unusedMixinWarnings(
+      'mixin item\n  p first\n+item\nmixin item\n  p second',
+    );
+
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.line),
+      [4],
+    );
+  });
+
+  it('warns once for each unused same-name declaration', () => {
+    var warnings = unusedMixinWarnings(
+      'mixin item\n  p first\nmixin item\n  p second',
+    );
+
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.line),
+      [1, 3],
+    );
+  });
+
+  it('warns once for an unused nested declaration expanded repeatedly', () => {
+    var warnings = unusedMixinWarnings(
+      'mixin outer\n  mixin helper\n    p unused\n+outer\n+outer',
+    );
+
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.line),
+      [2],
     );
   });
 

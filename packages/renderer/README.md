@@ -126,6 +126,14 @@ valueless contribution is preserved as `class`.
 eventually emits bytes. It therefore renders for an explicitly supplied empty
 named block and skips when the caller did not name the block at all.
 
+Each mixin invocation has an own, null-prototype parameter environment. A
+callee cannot capture an undeclared caller parameter; a nested call forwards a
+caller value explicitly with `#{name}` in its argument. Mixin declarations bind
+in source order and declarations evaluated inside an invocation are scoped to
+that invocation. Recursion, use tracking, and `UNUSED_MIXIN` warnings follow
+declaration identity, so same-name shadowing and redefinition do not conflate
+distinct declarations.
+
 ### `options`
 
 - `warnings` — an array the caller supplies to collect compiler

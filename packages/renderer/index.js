@@ -104,6 +104,28 @@ function sourceOrigin(sources, filename) {
     : filename;
 }
 
+function createMixinScope(parent) {
+  return {bindings: Object.create(null), parent};
+}
+
+function resolveMixinBinding(scope, name) {
+  while (scope) {
+    if (Object.prototype.hasOwnProperty.call(scope.bindings, name)) {
+      return scope.bindings[name];
+    }
+    scope = scope.parent;
+  }
+}
+
+function mixinIdentity(identities, mixin) {
+  let identity = identities.get(mixin);
+  if (!identity) {
+    identity = {};
+    identities.set(mixin, identity);
+  }
+  return identity;
+}
+
 function nameSet(names) {
   return names.split(', ').reduce(function (set, element) {
     set[element] = true;
@@ -144,9 +166,11 @@ class Compiler {
     }
     this.node = node;
     this.namespace = 'html';
-    this.mixins = Object.create(null);
-    this.mixinSlots = new WeakMap();
-    this.usedMixins = new Set();
+    this.mixinIdentities = new WeakMap();
+    this.mixinDeclarations = new Map();
+    this.usedMixinDeclarations = new Set();
+    this.rootMixinScope = createMixinScope(null);
+    this.mixinScope = this.rootMixinScope;
     this.warnings = options.warnings === undefined ? [] : options.warnings;
     this.callStack = [];
   }
@@ -188,15 +212,14 @@ class Compiler {
   warnUnusedMixins() {
     const entry = this.options.filename;
     const sources = this.options.sources;
-    for (const name in this.mixins) {
-      const mixin = this.mixins[name];
+    for (const [identity, mixin] of this.mixinDeclarations) {
       if (
-        !this.usedMixins.has(name) &&
+        !this.usedMixinDeclarations.has(identity) &&
         sourceOrigin(sources, mixin.filename) === sourceOrigin(sources, entry)
       ) {
         this.warn(
           'UNUSED_MIXIN',
-          "Mixin '" + name + "' is defined but never called",
+          "Mixin '" + mixin.name + "' is defined but never called",
           mixin,
         );
       }
@@ -220,9 +243,12 @@ class Compiler {
 
   withCallerScope(callback) {
     const current = this.callStack.pop();
+    const activeScope = this.mixinScope;
+    this.mixinScope = current.callerScope;
     try {
       return callback(current);
     } finally {
+      this.mixinScope = activeScope;
       this.callStack.push(current);
     }
   }
@@ -554,16 +580,19 @@ class Compiler {
       );
     }
     const frame = this.callStack.at(-1);
-    const value = frame.environment[name];
-    if (value === undefined) {
+    if (!Object.prototype.hasOwnProperty.call(frame.environment, name)) {
       this.error('UNDEFINED_VARIABLE', `Variable '${name}' is undefined`, node);
     }
-    return value;
+    return frame.environment[name];
   }
 
   resolveAttrValue(str, attr) {
     if (attr[attributeInterpolationResolved]) return str;
-    const retained = attr[attributeInterpolationSource];
+    return this.resolveInterpolatedValue(str, attr);
+  }
+
+  resolveInterpolatedValue(str, record) {
+    const retained = record[attributeInterpolationSource];
     const source = typeof retained === 'string' ? retained : str;
     if (!source.includes('#{')) return source;
 
@@ -582,7 +611,7 @@ class Compiler {
         if (backslashes % 2 !== 0) {
           pieces.push(source.slice(marker, variable.end));
         } else {
-          const value = this.resolveVariable(variable.name, attr);
+          const value = this.resolveVariable(variable.name, record);
           if (value === null) {
             hasNull = true;
           } else {
@@ -615,12 +644,13 @@ class Compiler {
 
   visitMixin(mixin) {
     if (mixin.call) {
-      const declared = this.mixins[mixin.name];
-      if (!declared) {
+      const binding = resolveMixinBinding(this.mixinScope, mixin.name);
+      if (!binding) {
         this.error('UNDEFINED_MIXIN', `Undefined mixin '${mixin.name}'`, mixin);
       }
-      this.usedMixins.add(mixin.name);
-      const slots = this.mixinSlots.get(declared);
+      const declared = binding.declaration;
+      this.usedMixinDeclarations.add(binding.identity);
+      const slots = binding.slots;
 
       // Class/id/attribute shorthand on a call (e.g. +box.highlight, +box#main)
       // is parsed onto mixin.attrs but has no defined target element, so it
@@ -638,19 +668,19 @@ class Compiler {
         );
       }
 
-      const args = mixin.args,
+      const rawArgs = mixin.args,
         len = declared.args.length;
 
-      if (args.length > len) {
+      if (rawArgs.length > len) {
         this.error(
           'MIXIN_ARGUMENT_COUNT_MISMATCH',
-          `Too many arguments: mixin '${mixin.name}' declared ${len} called ${args.length}`,
+          `Too many arguments: mixin '${mixin.name}' declared ${len} called ${rawArgs.length}`,
           mixin,
         );
       }
 
       for (const frame of this.callStack) {
-        if (frame.name === mixin.name) {
+        if (frame.declarationIdentity === binding.identity) {
           this.error(
             'RECURSIVE_MIXIN',
             `Recursive call to mixin '${mixin.name}' detected`,
@@ -667,9 +697,13 @@ class Compiler {
         );
       }
 
-      const frame = this.callStack.at(-1);
-      const parentEnvironment = (frame && frame.environment) || null;
-      const environment = Object.create(parentEnvironment);
+      const args =
+        this.callStack.length === 0
+          ? rawArgs
+          : rawArgs.map((argument) =>
+              this.resolveInterpolatedValue(String(argument), mixin),
+            );
+      const environment = Object.create(null);
 
       for (let i = 0; i < len; ++i) {
         const param = declared.args[i];
@@ -720,24 +754,39 @@ class Compiler {
         this.validateNamedBlocks(declared, namedBlocks, slots.namedBlockNames);
       }
 
+      const callerScope = this.mixinScope;
+      const calleeScope = createMixinScope(binding.scope);
       this.callStack.push({
         name: mixin.name,
+        declarationIdentity: binding.identity,
         environment,
         block,
         namedBlocks,
         unnamedBlock,
+        callerScope,
+        calleeScope,
       });
+      this.mixinScope = calleeScope;
       try {
         this.visit(declared.block);
       } finally {
+        this.mixinScope = callerScope;
         this.callStack.pop();
       }
     } else {
-      this.mixins[mixin.name] = mixin;
+      const identity = mixinIdentity(this.mixinIdentities, mixin);
+      if (!this.mixinDeclarations.has(identity)) {
+        this.mixinDeclarations.set(identity, mixin);
+      }
       // Parser flags describe the declaration when it was first parsed, but
       // includes and structured filters can replace its body before render.
       // Cache capabilities from the final declaration shape instead.
-      this.mixinSlots.set(mixin, this.inspectMixinSlots(mixin.block));
+      this.mixinScope.bindings[mixin.name] = {
+        declaration: mixin,
+        identity,
+        scope: this.mixinScope,
+        slots: this.inspectMixinSlots(mixin.block),
+      };
     }
   }
 

@@ -121,7 +121,7 @@ describe('README examples', () => {
   });
 
   test('every Pugneum fence compiles', () => {
-    assert.strictEqual(pugneumExamples.length, 41);
+    assert.strictEqual(pugneumExamples.length, 42);
     for (const example of pugneumExamples) {
       assert.doesNotThrow(
         () => renderExample(example),
@@ -140,6 +140,9 @@ describe('README examples', () => {
     const inlineMixins = pugneumExamples.find((example) =>
       example.source.includes('#(+icon(settings))'),
     );
+    const forwardedMixinArgument = pugneumExamples.find((example) =>
+      example.source.includes('+label(#{text})'),
+    );
     const yieldedBlock = pugneumExamples.find((example) =>
       example.source.includes('include wrapper.pg'),
     );
@@ -156,6 +159,10 @@ describe('README examples', () => {
       renderExample(inlineMixins),
       '<p>Click the <span class="icon icon-settings" aria-hidden="true"></span> button to open preferences.</p>' +
         '<p>I am <strong>very</strong> <strong>happy</strong> today.</p>',
+    );
+    assert.strictEqual(
+      renderExample(forwardedMixinArgument),
+      '<button><strong>Save</strong></button>',
     );
     assert.strictEqual(
       renderExample(yieldedBlock),

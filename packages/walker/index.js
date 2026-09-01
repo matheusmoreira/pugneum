@@ -147,7 +147,7 @@ function walkNode(ast, before, after, context) {
   const replace = function replace(replacement) {
     if (Array.isArray(replacement) && !arrayAllowed) {
       throw new Error(
-        'replace() can only be called with an array if the last parent is a Block or NamedBlock',
+        'replace() arrays require a Block or NamedBlock parent, or an IncludeFilter directly inside a RawInclude',
       );
     }
     validateAST(replacement, {
@@ -190,36 +190,38 @@ function walkNode(ast, before, after, context) {
         ast.nodes = walkAndMergeNodes(ast.nodes);
         break;
       case 'Filter':
+        walkOptionalChild(ast, 'block', null, before, after, context);
+        break;
       case 'Mixin':
+        if (ast.call) {
+          walkOptionalChild(ast, 'block', null, before, after, context);
+        } else {
+          walkRequiredChild(ast, 'block', null, before, after, context);
+        }
+        break;
       case 'Tag':
       case 'InterpolatedTag':
       case 'BlockComment':
-        if (ast.block) {
-          ast.block = walkNode(ast.block, before, after, context);
-        }
+        walkRequiredChild(ast, 'block', null, before, after, context);
         break;
       case 'Include':
-        assertField(ast, 'block', isNode(ast.block), 'a node object');
-        assertField(ast, 'file', isNode(ast.file), 'a node object');
-        ast.block = walkNode(ast.block, before, after, context);
-        ast.file = walkNode(ast.file, before, after, context);
+        walkRequiredChild(ast, 'block', 'Block', before, after, context);
+        walkRequiredChild(ast, 'file', 'FileReference', before, after, context);
         break;
       case 'Extends':
-        assertField(ast, 'file', isNode(ast.file), 'a node object');
-        ast.file = walkNode(ast.file, before, after, context);
+        walkRequiredChild(ast, 'file', 'FileReference', before, after, context);
         break;
       case 'RawInclude':
         assertField(ast, 'filters', Array.isArray(ast.filters), 'an array');
-        assertField(ast, 'file', isNode(ast.file), 'a node object');
         ast.filters = walkAndMergeNodes(ast.filters);
-        ast.file = walkNode(ast.file, before, after, context);
+        walkRequiredChild(ast, 'file', 'FileReference', before, after, context);
         break;
       case 'ReferenceLink':
       case 'ReferenceImage':
+        walkRequiredChild(ast, 'block', 'Block', before, after, context);
+        break;
       case 'FootnoteRef':
-        if (ast.block) {
-          ast.block = walkNode(ast.block, before, after, context);
-        }
+        walkOptionalChild(ast, 'block', null, before, after, context);
         break;
       case 'Footnotes':
         assertField(
@@ -229,15 +231,11 @@ function walkNode(ast, before, after, context) {
           'an array',
         );
         for (const def of ast.definitions) {
-          if (def.block) {
-            def.block = walkNode(def.block, before, after, context);
-          }
+          walkRequiredChild(def, 'block', 'Block', before, after, context);
         }
         break;
       case 'Given':
-        if (ast.block) {
-          ast.block = walkNode(ast.block, before, after, context);
-        }
+        walkRequiredChild(ast, 'block', 'Block', before, after, context);
         break;
       case 'Toc':
       case 'References':
@@ -249,8 +247,8 @@ function walkNode(ast, before, after, context) {
       case 'Variable':
         break;
       case 'FileReference':
-        if (context.includeDependencies && ast.ast) {
-          ast.ast = walkNode(ast.ast, before, after, context);
+        if (context.includeDependencies) {
+          walkOptionalChild(ast, 'ast', 'Block', before, after, context);
         }
         break;
       default:
@@ -296,6 +294,38 @@ function walkNode(ast, before, after, context) {
     }
     return merged || nodes;
   }
+}
+
+function walkRequiredChild(
+  parent,
+  field,
+  expectedType,
+  before,
+  after,
+  context,
+) {
+  const child = parent[field];
+  const valid =
+    isNode(child) && (expectedType === null || child.type === expectedType);
+  assertField(
+    parent,
+    field,
+    valid,
+    expectedType === null ? 'a node object' : 'a ' + expectedType + ' node',
+  );
+  parent[field] = walkNode(child, before, after, context);
+}
+
+function walkOptionalChild(
+  parent,
+  field,
+  expectedType,
+  before,
+  after,
+  context,
+) {
+  if (parent[field] == null) return;
+  walkRequiredChild(parent, field, expectedType, before, after, context);
 }
 
 function createTraversalControl(context) {

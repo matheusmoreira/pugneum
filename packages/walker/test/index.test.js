@@ -203,7 +203,7 @@ describe('replace([])', function () {
       {
         name: 'Error',
         message:
-          'replace() can only be called with an array if the last parent is a Block or NamedBlock',
+          'replace() arrays require a Block or NamedBlock parent, or an IncludeFilter directly inside a RawInclude',
       },
     );
     assert.strictEqual(callbackHits, 1);
@@ -729,6 +729,35 @@ describe('child dispatch coverage', function () {
       }
     });
   });
+});
+
+test('required child types are rechecked after before-hook mutation', function () {
+  var include = {
+    type: 'Include',
+    block: {type: 'Block', nodes: []},
+    file: {type: 'FileReference', path: 'child.pg'},
+  };
+  var callbackHits = 0;
+
+  assert.throws(
+    function () {
+      walk(include, function before(node) {
+        callbackHits++;
+        if (node === include) node.block = {type: 'Text', val: 'not a block'};
+      });
+    },
+    function (err) {
+      return (
+        err.name === 'ASTValidationError' &&
+        err.code === 'INVALID_AST' &&
+        err.kind === 'shape' &&
+        err.path === '$.block' &&
+        err.message ===
+          'Invalid AST at $.block: expected a Block node on Include'
+      );
+    },
+  );
+  assert.strictEqual(callbackHits, 1);
 });
 
 test('parents array is cleaned up when before hook throws', (t) => {

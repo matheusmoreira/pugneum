@@ -392,8 +392,20 @@ describe('successful optional syntax forms', () => {
 });
 
 test('exported attribute-name validation matches lexer boundaries', () => {
-  assert.strictEqual(lex.isValidAttributeName('data-value'), true);
-  ['x/y', 'x>y', 'x\0y', '', 'two words'].forEach((name) => {
+  const accepted = ['data-value', 'foo.bar', 'data:x', '@x', '_x', '-x'];
+  const rejected = ['x/y', 'x>y', 'x\0y', '', 'two words'];
+
+  accepted.forEach((name) => {
+    assert.strictEqual(lex.isValidAttributeName(name), true, name);
+    const attribute = lex('div(' + name + '=value)').find(
+      (token) => token.type === 'attribute',
+    );
+    assert.deepStrictEqual(
+      {name: attribute.name, val: attribute.val},
+      {name, val: 'value'},
+    );
+  });
+  rejected.forEach((name) => {
     assert.strictEqual(lex.isValidAttributeName(name), false, name);
   });
 });
@@ -498,7 +510,7 @@ fs.readdirSync(edir).forEach(function (testCase) {
 describe('complete diagnostic contract', () => {
   test('one public error has an independently pinned full message', () => {
     var error = assertLexerDiagnostic('#ä', {
-      filename: 'invalid-id.pg',
+      filename: 'invalid-id-non-ascii.pg',
       code: 'INVALID_ID',
       msg: '"ä" is not a valid ID.',
       line: 1,
@@ -507,7 +519,7 @@ describe('complete diagnostic contract', () => {
 
     assert.strictEqual(
       error.message,
-      'invalid-id.pg:1:1\n  > 1| #ä\n-------^\n\n"ä" is not a valid ID.',
+      'invalid-id-non-ascii.pg:1:1\n  > 1| #ä\n-------^\n\n"ä" is not a valid ID.',
     );
   });
 
@@ -2031,7 +2043,7 @@ describe('non-ASCII whitespace in indentation', () => {
   });
 });
 
-describe('bare # / . error contract', () => {
+describe('id and dot/class shorthand boundaries', () => {
   // Regression: a bare '#' at end of line/input used to throw an uncaught
   // V8 TypeError (null[0]) instead of a PUGNEUM-coded error, breaking the
   // error contract the pipeline and the error-test harness rely on.
@@ -2054,6 +2066,56 @@ describe('bare # / . error contract', () => {
       () => lex('#\np x', {filename: 't.pg'}),
       (err) => err.code === 'PUGNEUM:INVALID_ID',
     );
+  });
+
+  test('a bare dot is the pipeless-text marker, not an empty class', () => {
+    const tokens = lex('.', {filename: 'dot.pg'});
+    assert.deepStrictEqual(
+      tokens.map((token) => ({
+        type: token.type,
+        val: token.val,
+        start: token.loc.start,
+        end: token.loc.end,
+      })),
+      [
+        {
+          type: 'dot',
+          val: undefined,
+          start: {line: 1, column: 1},
+          end: {line: 1, column: 2},
+        },
+        {
+          type: 'eos',
+          val: undefined,
+          start: {line: 1, column: 2},
+          end: {line: 1, column: 2},
+        },
+      ],
+    );
+  });
+
+  test('a dot followed by a valid name is a class shorthand', () => {
+    const tokens = lex('.card', {filename: 'dot.pg'});
+    assert.deepStrictEqual(
+      tokens.map((token) => [token.type, token.val]),
+      [
+        ['class', 'card'],
+        ['eos', undefined],
+      ],
+    );
+  });
+
+  [
+    ['leading digit', '.95'],
+    ['lone hyphen', '.-'],
+    ['non-ASCII letter', '.ä'],
+  ].forEach(([label, source]) => {
+    test('rejects class shorthand with ' + label, () => {
+      assert.throws(
+        () => lex(source, {filename: 'dot.pg'}),
+        (err) => err.code === 'PUGNEUM:INVALID_CLASS_NAME',
+      );
+    });
   });
 });
 

@@ -700,7 +700,7 @@ function interpolationsAreClosed(str, state) {
  */
 function mergeMultiLineInterpolations(
   tokens,
-  token_indent,
+  tokenIndents,
   interpolationAllowed,
 ) {
   if (!interpolationAllowed) {
@@ -708,9 +708,9 @@ function mergeMultiLineInterpolations(
     // literal, so every physical line is a complete group.
     return tokens.map((text, index) => ({
       text,
-      indented: token_indent[index],
+      indented: tokenIndents[index],
       lines: 1,
-      segments: [{text, indented: token_indent[index]}],
+      segments: [{text, indented: tokenIndents[index]}],
     }));
   }
 
@@ -731,13 +731,13 @@ function mergeMultiLineInterpolations(
       pendingText = tokens[j];
       pendingIndentIdx = j;
     }
-    pendingSegments.push({text: tokens[j], indented: token_indent[j]});
+    pendingSegments.push({text: tokens[j], indented: tokenIndents[j]});
     pendingLines++;
 
     if (interpolationsAreClosed(tokens[j], state)) {
       result.push({
         text: pendingText,
-        indented: token_indent[pendingIndentIdx],
+        indented: tokenIndents[pendingIndentIdx],
         lines: pendingLines,
         segments: pendingSegments,
       });
@@ -750,7 +750,7 @@ function mergeMultiLineInterpolations(
   if (pendingText !== null) {
     result.push({
       text: pendingText,
-      indented: token_indent[pendingIndentIdx],
+      indented: tokenIndents[pendingIndentIdx],
       lines: pendingLines,
       segments: pendingSegments,
     });
@@ -3087,7 +3087,7 @@ class Lexer {
 
       // outdent
       if (indents < this.indentStack[0]) {
-        let outdent_count = 0;
+        let outdentCount = 0;
         while (this.indentStack[0] > indents) {
           if (this.indentStack[1] < indents) {
             this.error(
@@ -3099,11 +3099,11 @@ class Lexer {
                 ' spaces/tabs.',
             );
           }
-          outdent_count++;
+          outdentCount++;
           this.indentStack.shift();
         }
         this.colno = indents + 1;
-        while (outdent_count--) {
+        while (outdentCount--) {
           this.tokens.push(this.tokEnd(this.tok('outdent')));
         }
         // indent
@@ -3148,7 +3148,7 @@ class Lexer {
 
       this.tokens.push(this.tokEnd(this.tok('start-pipeless-text')));
       const tokens = [];
-      const token_indent = [];
+      const tokenIndents = [];
       let isMatch;
       let stringPtr = 0;
       do {
@@ -3158,7 +3158,7 @@ class Lexer {
         const lineCaptures = this.indentRe.exec('\n' + str);
         const lineIndents = lineCaptures && lineCaptures[1].length;
         isMatch = lineIndents >= indents;
-        token_indent.push(isMatch);
+        tokenIndents.push(isMatch);
         isMatch = isMatch || !str.trim();
         if (isMatch) {
           stringPtr += str.length + 1;
@@ -3174,7 +3174,7 @@ class Lexer {
       // inline elements can span multiple lines in text blocks.
       const merged = mergeMultiLineInterpolations(
         tokens,
-        token_indent,
+        tokenIndents,
         this.interpolationAllowed,
       );
 

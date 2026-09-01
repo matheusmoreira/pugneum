@@ -207,7 +207,7 @@ function smokeLeaves() {
   const transformed = walk(ast, function (node, replace) {
     visited.push(node.type);
     if (node.type === 'Text' && node.val === 'replace-me') {
-      replace(text('replaced'));
+      replace.final(text('replaced'));
     }
   });
   assert.strictEqual(transformed.nodes[0].val, 'replaced');

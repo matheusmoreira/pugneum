@@ -24,11 +24,12 @@ const walk = require('pugneum-walker');
 Traverse and optionally transform an abstract syntax tree
 returned by the pugneum parser.
 
-`ast` is not cloned, so descendant changes are made directly on the provided
-object. Always use the return value (`ast = walk(ast, ...)`), however: replacing
-the root changes the returned root reference and cannot update the caller's
-original variable in place. Without a root replacement, the return value is
-the original `ast` object.
+By default, descendant changes are made directly on the provided `ast`. Always
+use the return value (`ast = walk(ast, ...)`), however: replacing the root
+changes the returned root reference and cannot update the caller's original
+variable in place. Without a root replacement, the return value is the original
+`ast` object. Set `options.clone` to `true` for a clone-before-walk transaction;
+the returned tree then owns all changes and the input graph stays untouched.
 
 The supported call forms are:
 
@@ -46,22 +47,28 @@ the four-argument form to supply both `after` and `options`. An array or any
 other non-nullish, non-function hook value is rejected with a `TypeError`
 before a callback runs, the AST changes, or the options object is touched.
 
-The `replace` parameter is a function that can be used
-to replace the node in the AST. It takes either an object
-or an array as its only parameter. If an object is specified,
-the current node is replaced by the parameter in the AST.
-If an array is specified and the ancestor of the current node
-allows such an operation, the node is replaced by all of the
-nodes in the specified array. This way, you can remove and add
-new nodes adjacent to the current node.
-Whether the parent node allows array operation is indicated
-by the read-only property `replace.arrayAllowed`, which is set to true
-when the parent is a Block or NamedBlock and when the parent is a RawInclude
-and the node is an IncludeFilter.
+The `replace` parameter is a frozen controller with two explicit operations:
+
+- `replace.revisit(nodeOrNodes)` substitutes the current node and traverses the
+  replacement. Each replacement node receives its own balanced `before` and
+  `after` lifecycle, subject to ordinary pruning, stopping, or another explicit
+  replacement requested by those hooks.
+- `replace.final(nodeOrNodes)` substitutes the current node without invoking
+  either hook on the replacement. Use this for already-final output, removals,
+  and post-order rewrites that must not re-enter the transform.
+
+Both operations accept one node or an array. An array splices its members into
+the containing node list, which can remove or add adjacent nodes. Array
+replacement is legal only when the read-only boolean
+`replace.arrayAllowed` is `true`: in a `Block` or `NamedBlock` node list, or in
+the `IncludeFilter` list of a `RawInclude`. A hook may request at most one
+replacement. Replacing a node with itself (or the one-member splice `[node]`)
+is a terminating no-op.
 
 Every scalar replacement and every member of an array replacement is
 recursively validated before the current tree is changed. Unknown or malformed
-nodes, structural cycles, and invalid collection members throw an
+nodes, wrong node types for typed attachment slots, structural aliases or
+cycles, and invalid collection members throw an
 `ASTValidationError`; a rejected replacement leaves the original position
 unchanged. A replacement also cannot insert one of the current node's ancestors
 and thereby create a cycle at attachment time. Changing `replace.arrayAllowed`
@@ -70,39 +77,49 @@ walk's private traversal state.
 
 If `before` returns `false`, the children of this node
 will not be traversed and will be left unchanged
-unless `replace` has been called.
+unless an explicit replacement has been requested.
 The matching `after` hook is also skipped for that node; traversal continues
 normally with its siblings and ancestors.
 Otherwise, the returned value of `before` is ignored.
 The returned value of `after` is always ignored.
 
+A replacement request takes precedence over `before` returning `false`.
+`revisit` always revisits and `final` never does, regardless of whether it was
+requested by `before` or `after`. The complete event contract is:
+
+| Hook action | Current node events | Replacement events | Result |
+| --- | --- | --- | --- |
+| none | `before`, descendants, `after` | — | current node |
+| `before` returns `false` | `before` only | — | current node, pruned |
+| `before`: `revisit(value)` | `before` only | balanced walk | visited substitution/splice |
+| `before`: `final(value)` | `before` only | none | final substitution/splice |
+| `after`: `revisit(value)` | `before`, descendants, `after` | balanced walk | visited substitution/splice |
+| `after`: `final(value)` | `before`, descendants, `after` | none | final substitution/splice |
+| either hook: self-replacement | normal current lifecycle | no second visit | unchanged node |
+
+For an empty array, “balanced walk” and “none” both produce no replacement
+events; `replace.final([])` is the clearest removal idiom.
+
 The same frozen `control` object is passed to every hook in one walk. Calling
 `control.stop()` ends the whole traversal: no remaining descendants, siblings,
-or unfinished ancestor `after` hooks run. A replacement requested by the hook
-that stops traversal is still committed. The read-only boolean
+or unfinished ancestor `after` hooks run. A final replacement requested by the
+hook that stops traversal is still committed. `replace.revisit()` and
+`control.stop()` are incompatible in one hook because a stopped walk cannot
+deliver the requested balanced lifecycle; that combination throws. The
+read-only boolean
 `control.stopped` reports whether a hook has requested a stop. Complete graph
 validation still happens before the first hook, so stopping affects traversal,
 not schema preflight.
 
-Whether the nodes of an array replacement are themselves
-traversed depends on where and how `replace` is called.
-There are three distinct cases:
-
-- `replace([...])` in `before` without returning `false`:
-  the inserted nodes **are** traversed
-  (`before`/`after` run for each of them).
-- `replace([...])` in `before` followed by `return false`:
-  the inserted nodes are spliced in but **not** traversed,
-  because returning `false` skips this node's children.
-  The empty-array removal idiom `replace([]); return false`
-  is the canonical use of this case.
-- `replace([...])` in `after`:
-  the inserted nodes are spliced in but **not** re-traversed,
-  because `after` runs after the subtree is already done
-  and re-descending could fail to terminate.
-
 `options` can contain the following properties:
 
+- `aliasMode` (`'reject'` or `'per-edge'`): reject shared node/record objects
+  before mutation by default. Use `'per-edge'` only when the caller deliberately
+  owns graph semantics and wants a shared object visited once for every incoming
+  structural edge; a non-idempotent hook will then affect that object repeatedly.
+- `clone` (boolean): clone the complete reachable AST value graph before hooks
+  run and return the transformed clone; default `false`. Prototypes, property
+  descriptors, symbol fields, aliases, and `Buffer` bytes are preserved.
 - `includeDependencies` (boolean): walk the syntax trees of dependencies (includes and extends); default `false`
 - `maxDepth` (integer): maximum total structural edge depth across syntax and
   traversed dependencies; defaults to `walk.MAX_AST_DEPTH` (`512`) and may be
@@ -122,8 +139,9 @@ There are three distinct cases:
   at the file boundary.
 
 When supplied, `options` must be a non-null, non-array object.
-`includeDependencies` must be a boolean or `undefined`, and `parents` must be
-an array or `undefined`. `maxDepth` must be an integer from `0` through `512`.
+`aliasMode` must be `'reject'`, `'per-edge'`, or `undefined`; `clone` and
+`includeDependencies` must be booleans or `undefined`; and `parents` must be an
+array or `undefined`. `maxDepth` must be an integer from `0` through `512`.
 Invalid option shapes throw a `TypeError` before any hook runs or caller-owned
 state changes. The walker never adds properties to or otherwise writes the
 options object itself, so frozen and sealed options are supported.
@@ -170,6 +188,10 @@ reachable AST graph before the first hook runs:
 - Under `includeDependencies`, the dependency graph must be
   acyclic. The loader enforces this in the pipeline, and walker preflight
   rejects a direct cycle before hooks run with `kind === 'cycle'`.
+- Mutating walks require a single-owner input tree by default. A shared-node or
+  shared-record diamond fails preflight with `kind === 'alias'`, before any hook
+  can apply a non-idempotent transform twice. `aliasMode: 'per-edge'` is the
+  explicit graph-walking opt-in.
 
 Unknown node types and known nodes whose fields or collection members have the
 wrong shape throw an `ASTValidationError` before hooks can prune or mutate the
@@ -178,6 +200,15 @@ tree. The error has `code === 'INVALID_AST'`, a stable `kind` and structural
 available from that node or its containing record. Its message includes both
 the source location and structural path. A rejected input leaves the AST and
 options untouched.
+
+The walker can preflight package-detectable input and replacement failures, but
+it cannot predict an arbitrary exception thrown by user hook code. Because the
+default contract preserves in-place identity, treat an input AST as
+**discard-only** after such a failure: earlier hook mutations may already be
+visible. Use `clone: true` when the caller needs transactional publication. If
+the walk throws, the original AST graph then remains unchanged; publish only a
+successfully returned clone. This isolation covers the AST value graph, not
+unrelated external state that a hook mutates through its own closure.
 
 In particular, `Tag.name` and `InterpolatedTag.expr` must begin with an ASCII
 letter. Later characters may be ASCII letters, digits, underscores, hyphens,
@@ -207,7 +238,7 @@ ast = walk(
 
       // Alternatively, you can replace the entire node
       // while preserving all parser-owned fields.
-      // replace(Object.assign({}, node, {val: 'bar'}));
+      // replace.final(Object.assign({}, node, {val: 'bar'}));
     }
   },
   {
@@ -234,7 +265,7 @@ ast = walk(
       // Make sure that the Tag only has one child -- the text
       if (children.length === 1 && children[0].type === 'Text') {
         // Reuse the complete parser-produced Text node, including location.
-        replace(children[0]);
+        replace.revisit(children[0]);
       }
     }
   },
@@ -292,7 +323,7 @@ var dest = {
 ast = walk(ast, null, function after(node, replace) {
   if (node.type === 'Block' && replace.arrayAllowed) {
     // Replace the block with its contents
-    replace(node.nodes);
+    replace.final(node.nodes);
   }
 });
 

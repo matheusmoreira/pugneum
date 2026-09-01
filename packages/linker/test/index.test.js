@@ -399,7 +399,11 @@ describe('large flat collections', () => {
       column: reference.column,
       filename: reference.filename,
     };
-    reference.attrs = new Array(aboveHistoricalArgumentLimit).fill(attr);
+    reference.attrs = Array.from(
+      {length: aboveHistoricalArgumentLimit},
+      () => ({...attr}),
+    );
+    const lastInputAttr = reference.attrs.at(-1);
 
     const linked = link(loaded, options);
     let output = null;
@@ -407,8 +411,8 @@ describe('large flat collections', () => {
       if (node.type === 'Tag' && node.name === outputTag) output = node;
     });
     assert(output);
-    assert.deepStrictEqual(output.attrs.at(-1), attr);
-    assert.notStrictEqual(output.attrs.at(-1), attr);
+    assert.deepStrictEqual(output.attrs.at(-1), lastInputAttr);
+    assert.notStrictEqual(output.attrs.at(-1), lastInputAttr);
     return output.attrs.length;
   }
 

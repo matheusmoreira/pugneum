@@ -76,24 +76,20 @@ function isolateCommentBlock(block) {
       return false;
     }
     if (node.type === 'ReferenceLink') {
-      replace(commentBlock(node, node.name));
-      return false;
+      replace.final(commentBlock(node, node.name));
     }
     if (node.type === 'ReferenceImage') {
-      replace(commentBlock(node, ''));
-      return false;
+      replace.final(commentBlock(node, ''));
     }
     if (node.type === 'FootnoteRef') {
-      replace(commentText(node, '^[' + node.name + ']'));
-      return false;
+      replace.final(commentText(node, '^[' + node.name + ']'));
     }
     if (
       node.type === 'References' ||
       node.type === 'Footnotes' ||
       node.type === 'Toc'
     ) {
-      replace(commentBlock(node, ''));
-      return false;
+      replace.final(commentBlock(node, ''));
     }
   });
 }
@@ -443,8 +439,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
 
   function resolveReferenceNode(node, replace) {
     if (node.type === 'References') {
-      replace([]);
-      return false;
+      replace.final([]);
     }
     if (node.type === 'ReferenceLink' || node.type === 'ReferenceImage') {
       used[node.name] = true;
@@ -470,7 +465,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
         sources,
       );
 
-      replace(
+      replace.revisit(
         nodes.tag(node, {
           name: 'a',
           attrs,
@@ -506,7 +501,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
         sources,
       );
 
-      replace(
+      replace.revisit(
         nodes.tag(node, {
           name: 'img',
           attrs,
@@ -670,7 +665,7 @@ function resolveFootnotes(ast, sources, warnings) {
       nodes: [nodes.text(node, '[' + num + ']')],
     });
 
-    replace(
+    replace.final(
       nodes.tag(node, {
         name: 'sup',
         isInline: true,
@@ -683,7 +678,6 @@ function resolveFootnotes(ast, sources, warnings) {
   ast = walkDocumentContent(ast, function before(node, replace) {
     if (node.type === 'FootnoteRef') {
       resolveRef(node, replace);
-      return false;
     }
     if (node.type === 'Footnotes') {
       return false;
@@ -703,7 +697,6 @@ function resolveFootnotes(ast, sources, warnings) {
         function (innerNode, innerReplace) {
           if (innerNode.type === 'FootnoteRef') {
             resolveRef(innerNode, innerReplace);
-            return false;
           }
         },
       );
@@ -729,8 +722,8 @@ function resolveFootnotes(ast, sources, warnings) {
       const referenced = numberedNames;
 
       if (referenced.length === 0) {
-        replace([]);
-        return false;
+        replace.final([]);
+        return;
       }
 
       const listItems = referenced.map(function (name) {
@@ -781,14 +774,13 @@ function resolveFootnotes(ast, sources, warnings) {
         nodes: listItems,
       });
 
-      replace(
+      replace.final(
         nodes.tag(node, {
           name: 'section',
           attrs: [nodes.attribute(node, 'role', 'doc-endnotes')],
           nodes: [olNode],
         }),
       );
-      return false;
     }
   });
 }
@@ -830,8 +822,7 @@ function resolveToc(ast, sources, warnings) {
           sources,
           warnings,
         );
-        replace([]);
-        return false;
+        replace.final([]);
       }
     });
   }
@@ -839,8 +830,7 @@ function resolveToc(ast, sources, warnings) {
   // Pass 2: replace Toc nodes with nav structure
   return walkDocumentContent(ast, function before(node, replace) {
     if (node.type === 'Toc') {
-      replace(buildTocNav(headings, node));
-      return false;
+      replace.final(buildTocNav(headings, node));
     }
   });
 }

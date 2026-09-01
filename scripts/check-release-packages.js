@@ -60,7 +60,7 @@ const packages = Object.freeze([
     'index.js',
     'package.json',
   ]),
-  packagePolicy('packages/walker', 'pugneum-walker', '1.0.3', [
+  packagePolicy('packages/walker', 'pugneum-walker', '2.0.0', [
     'LICENSE.MIT',
     'README.md',
     'index.js',
@@ -406,12 +406,12 @@ function scenarios(tarballs) {
         'pugneum-lexer': localSpec(tarballs, 'pugneum-lexer'),
         'pugneum-loader': localSpec(tarballs, 'pugneum-loader'),
         'pugneum-parser': localSpec(tarballs, 'pugneum-parser'),
-        'pugneum-walker': '1.0.0',
+        'pugneum-walker': localSpec(tarballs, 'pugneum-walker'),
       },
       overrides: lexerErrorOverride,
       resolutions: [
         resolution('pugneum-loader', 'pugneum-error', '1.0.0'),
-        resolution('pugneum-loader', 'pugneum-walker', '1.0.0'),
+        localResolution('pugneum-loader', 'pugneum-walker'),
       ],
     },
     {
@@ -422,11 +422,11 @@ function scenarios(tarballs) {
         'pugneum-lexer': localSpec(tarballs, 'pugneum-lexer'),
         'pugneum-linker': localSpec(tarballs, 'pugneum-linker'),
         'pugneum-parser': localSpec(tarballs, 'pugneum-parser'),
-        'pugneum-walker': '1.0.2',
+        'pugneum-walker': localSpec(tarballs, 'pugneum-walker'),
       },
       resolutions: [
         localResolution('pugneum-linker', 'pugneum-error'),
-        resolution('pugneum-linker', 'pugneum-walker', '1.0.2'),
+        localResolution('pugneum-linker', 'pugneum-walker'),
       ],
     },
     {

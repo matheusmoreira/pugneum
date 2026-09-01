@@ -1,5 +1,6 @@
 const AST_SCHEMA_VERSION = 1;
 const activeParentSeeds = new WeakMap();
+const collectValidatedObjects = Symbol('collectValidatedObjects');
 const validateDependencyASTs = Symbol('validateDependencyASTs');
 // The parser permits 256 nested expressions. Each nested element contributes
 // a semantic node plus its Block container, so its deepest valid tree has 512
@@ -43,8 +44,7 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  * Depth-first traversal of a pugneum AST with before/after hooks.
  *
  * Used internally by the loader, linker, and filterer, and published as a
- * reusable utility. The AST is mutated in place (not cloned); callers that need
- * to preserve the input must clone it first.
+ * reusable utility. The AST is mutated in place unless `options.clone` is true.
  *
  * Arguments
  *   walkAST(ast, before, after, options)
@@ -59,22 +59,12 @@ walkAST.MAX_AST_DEPTH = MAX_AST_DEPTH;
  *   reports whether a hook has already requested that stop.
  *   Invalid hook values are rejected before traversal or options mutation.
  *
- * The `replace` callback substitutes the current node. Passing a single node
- * replaces it; passing an array splices those nodes into the parent's node list
- * but is only permitted when `replace.arrayAllowed` is true (parent is a
- * Block/NamedBlock, or an IncludeFilter directly inside a RawInclude).
- * `replace.arrayAllowed` is a boolean evaluated once, against the node and
- * parent as they entered the walk.
- *
- * Re-walking of array replacements (three distinct, deliberate fates):
- *   - `before` calls replace([...]) and does NOT return false -> the inserted
- *     nodes ARE walked (before/after run for each).
- *   - `before` calls replace([...]) and returns false -> children are skipped,
- *     so the inserted nodes are spliced in but NOT walked. (The empty-array
- *     removal idiom `replace([]); return false` is the canonical use.)
- *   - `after` calls replace([...]) -> post-order, so the inserted nodes are
- *     spliced in but NOT re-walked (re-descending after the subtree is done
- *     would risk non-termination).
+ * The frozen `replace` controller has two explicit operations:
+ *   - `replace.revisit(value)` substitutes a node or splice and walks the new
+ *     value with balanced before/after events.
+ *   - `replace.final(value)` substitutes a node or splice without visiting it.
+ * Arrays are permitted only when `replace.arrayAllowed` is true. The phase and
+ * callback return value never change the requested replacement lifecycle.
  *
  * Input contract: `ast` must be well-formed parser output (a single node, not a
  * bare array). Reachable structure and cycles are validated before hooks run.
@@ -102,39 +92,55 @@ function walkAST(ast, before, after, options) {
   const context = createWalkContext(options);
   context.stopped = false;
   context.control = createTraversalControl(context);
+  context.ownedObjects =
+    context.aliasMode === 'reject' ? new WeakSet() : undefined;
   validateAST(ast, {
+    allowAliases: context.aliasMode === 'per-edge',
+    [collectValidatedObjects]: context.clone ? undefined : context.ownedObjects,
     maxDepth: context.maxDepth,
     [validateDependencyASTs]: context.includeDependencies,
   });
-  if (!context.callerParents) return walkNode(ast, before, after, context);
-
-  activeParentSeeds.set(context.callerParents, context.parentSeed);
-  try {
-    return walkNode(ast, before, after, context);
-  } finally {
-    activeParentSeeds.delete(context.callerParents);
+  if (context.clone) {
+    ast = cloneGraph(ast);
+    if (context.ownedObjects) {
+      validateAST(ast, {
+        allowAliases: false,
+        maxDepth: context.maxDepth,
+        [collectValidatedObjects]: context.ownedObjects,
+        [validateDependencyASTs]: context.includeDependencies,
+      });
+    }
   }
+
+  let result;
+  const attachment = rootAttachment(ast, context);
+  if (!context.callerParents) {
+    result = walkNode(ast, before, after, context, attachment);
+  } else {
+    activeParentSeeds.set(context.callerParents, context.parentSeed);
+    try {
+      result = walkNode(ast, before, after, context, attachment);
+    } finally {
+      activeParentSeeds.delete(context.callerParents);
+    }
+  }
+
+  // Hooks may mutate arbitrary fields directly. Recheck the successful result
+  // so a hook cannot silently publish malformed or multiply-owned output.
+  validateAST(result, {
+    allowAliases: context.aliasMode === 'per-edge',
+    allowRootArray: Array.isArray(result),
+    maxDepth: context.maxDepth,
+    [validateDependencyASTs]: context.includeDependencies,
+  });
+  return result;
 }
 
-function walkNode(ast, before, after, context) {
+function walkNode(ast, before, after, context, attachment) {
   if (context.stopped) return ast;
 
   const parents = context.parents;
   const currentDepth = Math.max(0, parents.length - context.parentSeedLength);
-  const parent = context.parentsAreNearestFirst
-    ? parents[0]
-    : parents[parents.length - 1];
-
-  // String compares rather than a per-call RegExp: arrayAllowed is recomputed
-  // on every node and the walker is the linker's hottest inner loop. Equivalent
-  // to the previous /^(Named)?Block$/ test.
-  const parentType = parent && parent.type;
-  const arrayAllowed = Boolean(
-    parent &&
-      (parentType === 'Block' ||
-        parentType === 'NamedBlock' ||
-        (parentType === 'RawInclude' && ast.type === 'IncludeFilter')),
-  );
   // Capture ancestry at callback creation. The public `parents` array is a
   // traversal aid and may be shared by callers, but replacement safety must
   // not depend on its later contents. Installing an ancestor at this position
@@ -144,39 +150,25 @@ function walkNode(ast, before, after, context) {
     if (isNode(parent)) forbiddenReplacementNodes.add(parent);
   }
 
-  const replace = function replace(replacement) {
-    if (Array.isArray(replacement) && !arrayAllowed) {
-      throw new Error(
-        'replace() arrays require a Block or NamedBlock parent, or an IncludeFilter directly inside a RawInclude',
-      );
-    }
-    validateAST(replacement, {
-      allowRootArray: Array.isArray(replacement),
-      forbiddenNodes: forbiddenReplacementNodes,
-      maxDepth: context.maxDepth - currentDepth,
-    });
-    ast = replacement;
-  };
-  Object.defineProperty(replace, 'arrayAllowed', {
-    enumerable: true,
-    value: arrayAllowed,
-  });
-
   if (before) {
-    const result = before(ast, replace, context.control);
-    if (context.stopped) return ast;
-    if (result === false) {
-      // Children are skipped. If `before` replaced the node with an array, it
-      // is spliced into the parent by the caller's walkAndMergeNodes but is NOT
-      // re-walked (see the contract above); the empty-array removal idiom is the
-      // canonical use of this path.
-      return ast;
-    } else if (Array.isArray(ast)) {
-      // `before` replaced this node with an array of nodes: re-walk them so the
-      // hooks run for each, then return right here to skip the after() call on
-      // an array (after() only runs for single nodes).
-      return walkAndMergeNodes(ast);
-    }
+    const hook = invokeHook(
+      before,
+      ast,
+      attachment,
+      context,
+      currentDepth,
+      forbiddenReplacementNodes,
+    );
+    const replacement = applyReplacementRequest(
+      hook.request,
+      ast,
+      before,
+      after,
+      context,
+      attachment,
+    );
+    if (replacement.applied) return replacement.value;
+    if (context.stopped || hook.result === false) return ast;
   }
 
   if (context.parentsAreNearestFirst) parents.unshift(ast);
@@ -187,7 +179,7 @@ function walkNode(ast, before, after, context) {
       case 'NamedBlock':
       case 'Block':
         assertField(ast, 'nodes', Array.isArray(ast.nodes), 'an array');
-        ast.nodes = walkAndMergeNodes(ast.nodes);
+        ast.nodes = walkAndMergeNodes(ast.nodes, before, after, context, null);
         break;
       case 'Filter':
         walkOptionalChild(ast, 'block', null, before, after, context);
@@ -213,7 +205,13 @@ function walkNode(ast, before, after, context) {
         break;
       case 'RawInclude':
         assertField(ast, 'filters', Array.isArray(ast.filters), 'an array');
-        ast.filters = walkAndMergeNodes(ast.filters);
+        ast.filters = walkAndMergeNodes(
+          ast.filters,
+          before,
+          after,
+          context,
+          'IncludeFilter',
+        );
         walkRequiredChild(ast, 'file', 'FileReference', before, after, context);
         break;
       case 'ReferenceLink':
@@ -264,36 +262,247 @@ function walkNode(ast, before, after, context) {
     else parents.pop();
   }
 
-  if (after && !context.stopped) after(ast, replace, context.control);
-  return ast;
-
-  function walkAndMergeNodes(nodes) {
-    let merged;
-    for (let index = 0; index < nodes.length; index++) {
-      const node = nodes[index];
-      const result = walkNode(node, before, after, context);
-      if (Array.isArray(result)) {
-        if (!merged) merged = nodes.slice(0, index);
-        for (const replacement of result) {
-          merged.push(replacement);
-        }
-      } else if (merged) {
-        merged.push(result);
-      } else if (result !== node) {
-        merged = nodes.slice(0, index);
-        merged.push(result);
-      }
-      if (context.stopped) {
-        if (merged) {
-          for (let rest = index + 1; rest < nodes.length; rest++) {
-            merged.push(nodes[rest]);
-          }
-        }
-        break;
-      }
-    }
-    return merged || nodes;
+  if (after && !context.stopped) {
+    const hook = invokeHook(
+      after,
+      ast,
+      attachment,
+      context,
+      currentDepth,
+      forbiddenReplacementNodes,
+    );
+    const replacement = applyReplacementRequest(
+      hook.request,
+      ast,
+      before,
+      after,
+      context,
+      attachment,
+    );
+    if (replacement.applied) return replacement.value;
   }
+  return ast;
+}
+
+function invokeHook(
+  hook,
+  ast,
+  attachment,
+  context,
+  currentDepth,
+  forbiddenReplacementNodes,
+) {
+  let active = true;
+  let request = null;
+
+  function requestReplacement(kind, replacement) {
+    if (!active) {
+      throw new Error('replacement controller is no longer active');
+    }
+    if (request) {
+      throw new Error('a hook may request only one replacement');
+    }
+    if (isSelfReplacement(ast, replacement, attachment.arrayAllowed)) {
+      request = {kind: 'self', value: ast};
+      return;
+    }
+    const ownership = validateReplacement(
+      ast,
+      replacement,
+      attachment,
+      context,
+      currentDepth,
+      forbiddenReplacementNodes,
+    );
+    request = {kind, ownership, value: replacement};
+  }
+
+  const replace = Object.freeze({
+    arrayAllowed: attachment.arrayAllowed,
+    final(replacement) {
+      requestReplacement('final', replacement);
+    },
+    revisit(replacement) {
+      if (context.stopped) {
+        throw new Error(
+          'replace.revisit() cannot be combined with control.stop()',
+        );
+      }
+      requestReplacement('revisit', replacement);
+    },
+  });
+
+  try {
+    const result = hook(ast, replace, context.control);
+    return {request, result};
+  } finally {
+    active = false;
+  }
+}
+
+function applyReplacementRequest(
+  request,
+  ast,
+  before,
+  after,
+  context,
+  attachment,
+) {
+  if (!request || request.kind === 'self') {
+    return {applied: false};
+  }
+  updateOwnership(context, request.ownership);
+  if (request.kind === 'revisit') {
+    if (context.stopped) {
+      throw new Error(
+        'replace.revisit() cannot be combined with control.stop()',
+      );
+    }
+    if (Array.isArray(request.value)) {
+      return {
+        applied: true,
+        value: walkAndMergeNodes(
+          request.value,
+          before,
+          after,
+          context,
+          attachment.expectedType,
+        ),
+      };
+    }
+    return {
+      applied: true,
+      value: walkNode(request.value, before, after, context, attachment),
+    };
+  }
+  return {applied: true, value: request.value};
+}
+
+function validateReplacement(
+  ast,
+  replacement,
+  attachment,
+  context,
+  currentDepth,
+  forbiddenReplacementNodes,
+) {
+  const isArray = Array.isArray(replacement);
+  if (isArray && !attachment.arrayAllowed) {
+    throw new TypeError(
+      'replacement arrays require a Block or NamedBlock node list, or the IncludeFilter list of a RawInclude',
+    );
+  }
+  let outgoing;
+  let incoming;
+  let forbiddenNodes = forbiddenReplacementNodes;
+  if (context.ownedObjects) {
+    outgoing = collectASTObjects(ast, context, currentDepth);
+    incoming = createObjectCollection();
+    forbiddenNodes = {
+      has(value) {
+        return (
+          forbiddenReplacementNodes.has(value) ||
+          (context.ownedObjects.has(value) && !outgoing.has(value))
+        );
+      },
+    };
+  }
+  validateAST(replacement, {
+    allowAliases: context.aliasMode === 'per-edge',
+    allowRootArray: isArray,
+    forbiddenNodes,
+    maxDepth: context.maxDepth - currentDepth,
+    [collectValidatedObjects]: incoming,
+    [validateDependencyASTs]: context.includeDependencies,
+  });
+  if (attachment.expectedType === null) return {incoming, outgoing};
+  const roots = isArray ? replacement : [replacement];
+  for (let index = 0; index < roots.length; index++) {
+    if (roots[index].type !== attachment.expectedType) {
+      const path = isArray ? '$[' + index + ']' : '$';
+      throw invalidAST(
+        'shape',
+        path,
+        'expected a ' + attachment.expectedType + ' node at this position',
+        roots[index],
+      );
+    }
+  }
+  return {incoming, outgoing};
+}
+
+function collectASTObjects(ast, context, currentDepth) {
+  const objects = createObjectCollection();
+  validateAST(ast, {
+    allowAliases: false,
+    maxDepth: context.maxDepth - currentDepth,
+    [collectValidatedObjects]: objects,
+    [validateDependencyASTs]: context.includeDependencies,
+  });
+  return objects;
+}
+
+function createObjectCollection() {
+  const seen = new WeakSet();
+  const values = [];
+  return {
+    add(value) {
+      if (seen.has(value)) return;
+      seen.add(value);
+      values.push(value);
+    },
+    has(value) {
+      return seen.has(value);
+    },
+    values,
+  };
+}
+
+function updateOwnership(context, ownership) {
+  if (!context.ownedObjects || !ownership) return;
+  for (const value of ownership.outgoing.values) {
+    context.ownedObjects.delete(value);
+  }
+  for (const value of ownership.incoming.values) {
+    context.ownedObjects.add(value);
+  }
+}
+
+function isSelfReplacement(ast, replacement, arrayAllowed) {
+  return (
+    replacement === ast ||
+    (arrayAllowed &&
+      Array.isArray(replacement) &&
+      replacement.length === 1 &&
+      replacement[0] === ast)
+  );
+}
+
+function walkAndMergeNodes(nodes, before, after, context, expectedType) {
+  let merged;
+  const attachment = {arrayAllowed: true, expectedType};
+  for (let index = 0; index < nodes.length; index++) {
+    const node = nodes[index];
+    const result = walkNode(node, before, after, context, attachment);
+    if (Array.isArray(result)) {
+      if (!merged) merged = nodes.slice(0, index);
+      for (const replacement of result) merged.push(replacement);
+    } else if (merged) {
+      merged.push(result);
+    } else if (result !== node) {
+      merged = nodes.slice(0, index);
+      merged.push(result);
+    }
+    if (context.stopped) {
+      if (merged) {
+        for (let rest = index + 1; rest < nodes.length; rest++) {
+          merged.push(nodes[rest]);
+        }
+      }
+      break;
+    }
+  }
+  return merged || nodes;
 }
 
 function walkRequiredChild(
@@ -313,7 +522,10 @@ function walkRequiredChild(
     valid,
     expectedType === null ? 'a node object' : 'a ' + expectedType + ' node',
   );
-  parent[field] = walkNode(child, before, after, context);
+  parent[field] = walkNode(child, before, after, context, {
+    arrayAllowed: false,
+    expectedType,
+  });
 }
 
 function walkOptionalChild(
@@ -368,6 +580,18 @@ function normalizeOptions(options) {
       'options.includeDependencies must be a boolean or undefined',
     );
   }
+  if (
+    options.aliasMode !== undefined &&
+    options.aliasMode !== 'reject' &&
+    options.aliasMode !== 'per-edge'
+  ) {
+    throw new TypeError(
+      'options.aliasMode must be "reject", "per-edge", or undefined',
+    );
+  }
+  if (options.clone !== undefined && typeof options.clone !== 'boolean') {
+    throw new TypeError('options.clone must be a boolean or undefined');
+  }
   if (options.parents !== undefined && !Array.isArray(options.parents)) {
     throw new TypeError('options.parents must be an array or undefined');
   }
@@ -385,12 +609,16 @@ function normalizeOptions(options) {
 }
 
 function createWalkContext(options) {
+  const aliasMode = options.aliasMode || 'reject';
+  const clone = options.clone === true;
   const includeDependencies = options.includeDependencies === true;
   const maxDepth =
     options.maxDepth === undefined ? MAX_AST_DEPTH : options.maxDepth;
   const callerParents = options.parents;
   if (callerParents === undefined) {
     return {
+      aliasMode,
+      clone,
       includeDependencies,
       maxDepth,
       parentSeedLength: 0,
@@ -406,6 +634,8 @@ function createWalkContext(options) {
   // nearest-first callback-time ancestry view for compatibility.
   if (!Object.isExtensible(callerParents)) {
     return {
+      aliasMode,
+      clone,
       includeDependencies,
       maxDepth,
       parentSeedLength: callerParents.length,
@@ -416,6 +646,8 @@ function createWalkContext(options) {
   const activeSeed = activeParentSeeds.get(callerParents);
   if (activeSeed) {
     return {
+      aliasMode,
+      clone,
       includeDependencies,
       maxDepth,
       parentSeedLength: activeSeed.length,
@@ -424,7 +656,9 @@ function createWalkContext(options) {
     };
   }
   return {
+    aliasMode,
     callerParents,
+    clone,
     includeDependencies,
     maxDepth,
     parents: callerParents,
@@ -432,6 +666,66 @@ function createWalkContext(options) {
     parentSeed: callerParents.slice(),
     parentSeedLength: callerParents.length,
   };
+}
+
+function rootAttachment(ast, context) {
+  const parents = context.parents;
+  const parent = context.parentsAreNearestFirst
+    ? parents[0]
+    : parents[parents.length - 1];
+  const parentType = parent && parent.type;
+  if (parentType === 'Block' || parentType === 'NamedBlock') {
+    return {arrayAllowed: true, expectedType: null};
+  }
+  if (parentType === 'RawInclude' && ast.type === 'IncludeFilter') {
+    return {arrayAllowed: true, expectedType: 'IncludeFilter'};
+  }
+  return {arrayAllowed: false, expectedType: null};
+}
+
+// Clone the complete reachable AST value graph before hooks run. Property
+// descriptors, prototypes, symbols, aliases, and Buffer bytes are preserved so
+// the clone is a faithful transaction workspace rather than a JSON projection.
+function cloneGraph(value, copies) {
+  if (value === null || typeof value !== 'object') return value;
+  copies = copies || new Map();
+  if (copies.has(value)) return copies.get(value);
+
+  if (Buffer.isBuffer(value)) {
+    const copy = Buffer.from(value);
+    copies.set(value, copy);
+    return copy;
+  }
+  if (value instanceof Date) {
+    const copy = new Date(value.getTime());
+    copies.set(value, copy);
+    return copy;
+  }
+  if (value instanceof RegExp) {
+    const copy = new RegExp(value.source, value.flags);
+    copy.lastIndex = value.lastIndex;
+    copies.set(value, copy);
+    return copy;
+  }
+  if (value instanceof ArrayBuffer) {
+    const copy = value.slice(0);
+    copies.set(value, copy);
+    return copy;
+  }
+
+  const copy = Array.isArray(value)
+    ? []
+    : Object.create(Object.getPrototypeOf(value));
+  copies.set(value, copy);
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
+      descriptor.value = cloneGraph(descriptor.value, copies);
+    }
+    Object.defineProperty(copy, key, descriptor);
+  }
+  if (!Object.isExtensible(value)) Object.preventExtensions(copy);
+  return copy;
 }
 
 function assertRootNode(ast) {
@@ -462,6 +756,7 @@ function validateAST(ast, options) {
   const allowRootArray = options.allowRootArray === true;
   const allowAliases = options.allowAliases !== false;
   const allowedTypes = options.allowedTypes;
+  const objectCollector = options[collectValidatedObjects];
   const forbiddenNodes = options.forbiddenNodes;
   const maxDepth = options.maxDepth === undefined ? Infinity : options.maxDepth;
 
@@ -473,6 +768,12 @@ function validateAST(ast, options) {
   }
   if (allowedTypes !== undefined && typeof allowedTypes.has !== 'function') {
     throw new TypeError('validateAST allowedTypes must provide has(type)');
+  }
+  if (
+    objectCollector !== undefined &&
+    typeof objectCollector.add !== 'function'
+  ) {
+    throw new TypeError('validateAST object collector must provide add(value)');
   }
   if (
     forbiddenNodes !== undefined &&
@@ -497,6 +798,7 @@ function validateAST(ast, options) {
   const validationState = {
     active,
     allowAliases,
+    objectCollector,
     completed,
     forbiddenNodes,
     validateDependencyASTs: options[validateDependencyASTs] !== false,
@@ -585,6 +887,7 @@ function validateAST(ast, options) {
       throw err;
     }
 
+    if (objectCollector) objectCollector.add(node);
     active.add(node);
     const children = validateNodeShape(node, entry.path, validationState);
     stack.push({exit: true, node});
@@ -964,6 +1267,7 @@ function validateRecord(record, path, expected, state, locationNode) {
       record,
     );
   }
+  if (state.objectCollector) state.objectCollector.add(record);
   state.recordObjects.add(record);
 }
 

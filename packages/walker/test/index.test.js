@@ -15,7 +15,7 @@ test('simple', function () {
     parse(lex('.my-class foo')),
     function before(node, replace) {
       if (node.type === 'Text') {
-        replace({
+        replace.final({
           type: 'Text',
           val: 'bar',
           line: node.line,
@@ -35,7 +35,7 @@ test('README strong-to-text example preserves complete parser nodes', function (
     if (node.type === 'Tag' && node.name === 'strong') {
       var children = node.block.nodes;
       if (children.length === 1 && children[0].type === 'Text') {
-        replace(children[0]);
+        replace.revisit(children[0]);
       }
     }
   });
@@ -50,7 +50,7 @@ test('README strong-to-text example preserves complete parser nodes', function (
   assert.deepStrictEqual(textValues, ['abc ', 'NO', 'on its own line']);
 });
 
-describe('replace([])', function () {
+describe('replacement arrays', function () {
   test('block flattening', function () {
     var called = [];
     var ast = walk(
@@ -90,7 +90,7 @@ describe('replace([])', function () {
           called.push('before ' + node.val);
           if (node.val === 'a') {
             assert(replace.arrayAllowed, 'replace.arrayAllowed set wrongly');
-            replace([
+            replace.revisit([
               {
                 type: 'Text',
                 val: 'e',
@@ -105,7 +105,7 @@ describe('replace([])', function () {
       },
       function (node, replace) {
         if (node.type === 'Block' && replace.arrayAllowed) {
-          replace(node.nodes);
+          replace.final(node.nodes);
         } else if (node.type === 'Text') {
           called.push('after ' + node.val);
         }
@@ -156,7 +156,7 @@ describe('replace([])', function () {
           if (node.name === 'filter1') {
             var firstFilter = 'filter3';
 
-            replace([
+            replace.revisit([
               {
                 type: 'IncludeFilter',
                 name: firstFilter,
@@ -173,7 +173,7 @@ describe('replace([])', function () {
               },
             ]);
           } else if (node.name === 'filter2') {
-            replace([]);
+            replace.final([]);
           }
         }
       },
@@ -197,13 +197,13 @@ describe('replace([])', function () {
           if (node !== block) return;
           callbackHits++;
           assert.strictEqual(replace.arrayAllowed, false);
-          replace([]);
+          replace.final([]);
         });
       },
       {
-        name: 'Error',
+        name: 'TypeError',
         message:
-          'replace() arrays require a Block or NamedBlock parent, or an IncludeFilter directly inside a RawInclude',
+          'replacement arrays require a Block or NamedBlock node list, or the IncludeFilter list of a RawInclude',
       },
     );
     assert.strictEqual(callbackHits, 1);
@@ -252,9 +252,10 @@ test('control.stop ends the whole walk and restores traversal state', function (
       function before(node, replace, control) {
         events.push('before ' + (node.val || node.type));
         assert(Object.isFrozen(control));
+        assert(Object.isFrozen(replace));
         if (node === target) {
           assert.strictEqual(control.stopped, false);
-          replace(replacement);
+          replace.final(replacement);
           control.stop();
           assert.strictEqual(control.stopped, true);
         }
@@ -306,6 +307,21 @@ test('control.stop from after suppresses later siblings and ancestor after', fun
   ]);
 });
 
+test('a revisited replacement cannot be combined with stopping', function () {
+  var original = {type: 'Text', val: 'original'};
+  var replacement = {type: 'Text', val: 'replacement'};
+  assert.throws(
+    () =>
+      walk(original, function before(node, replace, control) {
+        replace.revisit(replacement);
+        control.stop();
+      }),
+    {
+      message: 'replace.revisit() cannot be combined with control.stop()',
+    },
+  );
+});
+
 test('all non-false before returns and every after return are ignored', function () {
   [undefined, null, true, 0, '', {}, []].forEach(function (beforeReturn) {
     var ast = {type: 'Block', nodes: [{type: 'Text', val: 'x'}]};
@@ -338,8 +354,7 @@ test('the return value preserves identity unless the root is replaced', function
   var replacement = {type: 'Text', val: 'replacement'};
   var result = walk(original, function before(node, replace) {
     if (node === original) {
-      replace(replacement);
-      return false;
+      replace.final(replacement);
     }
   });
   assert.strictEqual(result, replacement);
@@ -434,8 +449,7 @@ test('frozen and non-extensible options preserve parent-sensitive replacement', 
       function before(node, replace) {
         if (node === text) {
           assert.strictEqual(replace.arrayAllowed, true);
-          replace([]);
-          return false;
+          replace.final([]);
         }
       },
       options,
@@ -461,8 +475,7 @@ test('immutable parent arrays are read-only ancestry seeds', function () {
       function before(node, replace) {
         if (node === text) {
           assert.strictEqual(replace.arrayAllowed, true);
-          replace([]);
-          return false;
+          replace.final([]);
         }
       },
       options,
@@ -532,14 +545,18 @@ test('includeDependencies follows only a preloaded FileReference.ast', function 
   assert.deepStrictEqual(options.parents, []);
 });
 
-test('a shared dependency is walked once per reference with local ancestry', function () {
+test('a shared dependency requires explicit per-edge traversal', function () {
   var dependencyText = {type: 'Text', val: 'shared'};
   var dependency = {type: 'Block', nodes: [dependencyText]};
   var left = {type: 'FileReference', path: 'left.pg', ast: dependency};
   var right = {type: 'FileReference', path: 'right.pg', ast: dependency};
   var root = {type: 'Block', nodes: [left, right]};
   var parents = [];
-  var options = {includeDependencies: true, parents: parents};
+  var options = {
+    aliasMode: 'per-edge',
+    includeDependencies: true,
+    parents: parents,
+  };
   var dependencyParents = [];
 
   walk(
@@ -560,6 +577,27 @@ test('a shared dependency is walked once per reference with local ancestry', fun
     ['Block', 'right.pg', 'Block'],
   ]);
   assert.deepStrictEqual(parents, []);
+});
+
+test('the default walk rejects a shared-node diamond before hooks', function () {
+  var shared = {type: 'Text', val: 'shared', filename: 'shared.pg', line: 2};
+  var ast = {type: 'Block', nodes: [shared, shared]};
+  var beforeRan = false;
+
+  assert.throws(
+    () =>
+      walk(ast, function before() {
+        beforeRan = true;
+      }),
+    function (err) {
+      assert.strictEqual(err.code, 'INVALID_AST');
+      assert.strictEqual(err.kind, 'alias');
+      assert.strictEqual(err.path, '$.nodes[1]');
+      assert.strictEqual(err.filename, 'shared.pg');
+      return true;
+    },
+  );
+  assert.strictEqual(beforeRan, false);
 });
 
 test('dependency hook failures restore the caller parent seed', function () {
@@ -797,6 +835,93 @@ test('parents array is cleaned up when before hook throws', (t) => {
   t.assert.deepStrictEqual(options.parents, []);
 });
 
+describe('failure lifecycle', function () {
+  test('an in-place tree is discard-only after an arbitrary hook throws', function () {
+    var first = {type: 'Text', val: 'first'};
+    var second = {type: 'Text', val: 'second'};
+    var ast = {type: 'Block', nodes: [first, second]};
+
+    assert.throws(
+      () =>
+        walk(ast, function before(node) {
+          if (node === first) node.val = 'changed';
+          if (node === second) throw new Error('later failure');
+        }),
+      {message: 'later failure'},
+    );
+    assert.strictEqual(first.val, 'changed');
+  });
+
+  test('clone mode leaves the complete input graph untouched on failure', function () {
+    var marker = Symbol('marker');
+    var bytes = Buffer.from([1, 2, 3]);
+    var first = {type: 'Text', val: 'first', bytes};
+    first[marker] = {value: 'original'};
+    var second = {type: 'Text', val: 'second'};
+    var ast = {type: 'Block', nodes: [first, second]};
+
+    assert.throws(
+      () =>
+        walk(
+          ast,
+          function before(node) {
+            if (node.val === 'first') {
+              node.val = 'changed';
+              node.bytes[0] = 9;
+              node[marker].value = 'changed';
+            }
+            if (node.val === 'second') throw new Error('later failure');
+          },
+          {clone: true},
+        ),
+      {message: 'later failure'},
+    );
+    assert.strictEqual(first.val, 'first');
+    assert.deepStrictEqual([...bytes], [1, 2, 3]);
+    assert.strictEqual(first[marker].value, 'original');
+  });
+
+  test('clone mode returns the transformed clone on success', function () {
+    var originalText = {type: 'Text', val: 'original'};
+    var ast = {type: 'Block', nodes: [originalText]};
+    var result = walk(
+      ast,
+      function before(node) {
+        if (node.type === 'Text') node.val = 'clone';
+      },
+      {clone: true},
+    );
+
+    assert.notStrictEqual(result, ast);
+    assert.notStrictEqual(result.nodes[0], originalText);
+    assert.strictEqual(result.nodes[0].val, 'clone');
+    assert.strictEqual(originalText.val, 'original');
+  });
+
+  test('clone mode enforces ownership against cloned siblings', function () {
+    var first = {type: 'Text', val: 'first'};
+    var second = {type: 'Text', val: 'second'};
+    var ast = {type: 'Block', nodes: [first, second]};
+    var parents = [];
+
+    assert.throws(
+      () =>
+        walk(
+          ast,
+          function before(node, replace) {
+            if (node.val === 'first') {
+              replace.revisit(parents[0].nodes[1]);
+            }
+          },
+          {clone: true, parents},
+        ),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'ownership',
+    );
+    assert.deepStrictEqual(ast.nodes, [first, second]);
+    assert.deepStrictEqual(parents, []);
+  });
+});
+
 test('unknown node type throws', function () {
   var beforeRan = false;
   assert.throws(
@@ -979,6 +1104,24 @@ describe('input contract', function () {
       assert.strictEqual(walk(ast, null, {includeDependencies}), ast);
     });
 
+    [null, false, true, 0, '', 'once', {}].forEach(function (aliasMode) {
+      assert.throws(() => walk({type: 'Text', val: 'x'}, null, {aliasMode}), {
+        name: 'TypeError',
+        message: 'options.aliasMode must be "reject", "per-edge", or undefined',
+      });
+    });
+    ['reject', 'per-edge'].forEach(function (aliasMode) {
+      var ast = {type: 'Text', val: 'x'};
+      assert.strictEqual(walk(ast, null, {aliasMode}), ast);
+    });
+
+    [null, 0, 1, '', 'true', {}, []].forEach(function (clone) {
+      assert.throws(() => walk({type: 'Text', val: 'x'}, null, {clone}), {
+        name: 'TypeError',
+        message: 'options.clone must be a boolean or undefined',
+      });
+    });
+
     [null, false, 0, '', {}].forEach(function (parents) {
       var options = Object.freeze({parents});
       assert.throws(() => walk({type: 'Text', val: 'x'}, null, options), {
@@ -1098,6 +1241,66 @@ describe('replace.arrayAllowed truth table', function () {
 });
 
 describe('replacement validation', function () {
+  test('rejects a node still owned by another tree position before revisiting it', function () {
+    var first = {type: 'Text', val: 'first'};
+    var second = {type: 'Text', val: 'second'};
+    var ast = {type: 'Block', nodes: [first, second]};
+    var secondVisits = 0;
+
+    assert.throws(
+      () =>
+        walk(ast, function before(node, replace) {
+          if (node === first) replace.revisit(second);
+          if (node === second) secondVisits++;
+        }),
+      (err) => err.code === 'INVALID_AST' && err.kind === 'ownership',
+    );
+    assert.strictEqual(secondVisits, 0);
+    assert.deepStrictEqual(ast.nodes, [first, second]);
+  });
+
+  test('rejects a scalar whose type is invalid for its attachment', function () {
+    var file = {type: 'FileReference', path: 'child.pg'};
+    var ast = {
+      type: 'Include',
+      block: {type: 'Block', nodes: []},
+      file,
+    };
+
+    assert.throws(
+      () =>
+        walk(ast, function before(node, replace) {
+          if (node === file) replace.final({type: 'Text', val: 'wrong'});
+        }),
+      (err) =>
+        err.code === 'INVALID_AST' && err.kind === 'shape' && err.path === '$',
+    );
+    assert.strictEqual(ast.file, file);
+  });
+
+  test('rejects the wrong type in a typed replacement splice', function () {
+    var filter = {type: 'IncludeFilter', name: 'text', attrs: []};
+    var ast = {
+      type: 'RawInclude',
+      filters: [filter],
+      file: {type: 'FileReference', path: 'child.txt'},
+    };
+
+    assert.throws(
+      () =>
+        walk(ast, function before(node, replace) {
+          if (node === filter) {
+            replace.final([{type: 'Text', val: 'wrong'}]);
+          }
+        }),
+      (err) =>
+        err.code === 'INVALID_AST' &&
+        err.kind === 'shape' &&
+        err.path === '$[0]',
+    );
+    assert.deepStrictEqual(ast.filters, [filter]);
+  });
+
   test('rejects a malformed scalar before a pruned replacement mutates the tree', function () {
     var original = {type: 'Text', val: 'x'};
     var ast = {type: 'Block', nodes: [original]};
@@ -1105,22 +1308,21 @@ describe('replacement validation', function () {
     assert.throws(function () {
       walk(ast, function before(node, replace) {
         if (node === original) {
-          replace({type: 'Block', nodes: [null]});
-          return false;
+          replace.final({type: 'Block', nodes: [null]});
         }
       });
     }, /invalid AST|expected a node|nodes\[0\]/i);
     assert.strictEqual(ast.nodes[0], original);
   });
 
-  test('rejects a mixed array atomically when after replacements are not re-walked', function () {
+  test('rejects a mixed final array atomically', function () {
     var original = {type: 'Text', val: 'x'};
     var ast = {type: 'Block', nodes: [original]};
 
     assert.throws(function () {
       walk(ast, null, function after(node, replace) {
         if (node === original) {
-          replace([{type: 'Text', val: 'valid'}, null]);
+          replace.final([{type: 'Text', val: 'valid'}, null]);
         }
       });
     }, /invalid AST|expected a node|\[1\]/i);
@@ -1137,7 +1339,7 @@ describe('replacement validation', function () {
         // A read-only property may reject the assignment in strict mode.
       }
       assert.throws(
-        () => replace([{type: 'Text', val: 'bypass'}]),
+        () => replace.final([{type: 'Text', val: 'bypass'}]),
         /array.*Block|array replacement/i,
       );
       return false;
@@ -1154,8 +1356,7 @@ describe('replacement validation', function () {
     assert.throws(function () {
       walk(ast, function before(node, replace) {
         if (node === original) {
-          replace(cyclic);
-          return false;
+          replace.final(cyclic);
         }
       });
     }, /cycle|cyclic/i);
@@ -1169,8 +1370,7 @@ describe('replacement validation', function () {
     assert.throws(function () {
       walk(ast, function before(node, replace) {
         if (node === original) {
-          replace(ast);
-          return false;
+          replace.final(ast);
         }
       });
     }, /owned|ancestor|cycle/i);
@@ -1182,8 +1382,7 @@ describe('replacement validation', function () {
     var replacement = {type: 'Text', val: 'y'};
     var result = walk(root, function before(node, replace) {
       if (node === root) {
-        replace(replacement);
-        return false;
+        replace.final(replacement);
       }
     });
     assert.strictEqual(result, replacement);
@@ -1518,7 +1717,7 @@ describe('traversal depth and cycles', function () {
         walk(
           ast,
           function before(node, replace) {
-            if (node === original) replace(replacement);
+            if (node === original) replace.final(replacement);
           },
           {maxDepth: 2},
         ),
@@ -1528,7 +1727,7 @@ describe('traversal depth and cycles', function () {
   });
 });
 
-describe('array replacement re-walk fates (documented contract)', function () {
+describe('explicit replacement lifecycle', function () {
   test('a large replacement array is spliced without an argument-count ceiling', function () {
     var original = {type: 'Text', val: 'original'};
     var replacements = Array.from({length: 150000}, function (_, index) {
@@ -1538,8 +1737,7 @@ describe('array replacement re-walk fates (documented contract)', function () {
       {type: 'Block', nodes: [original]},
       function before(node, replace) {
         if (node === original) {
-          replace(replacements);
-          return false;
+          replace.final(replacements);
         }
       },
     );
@@ -1550,7 +1748,7 @@ describe('array replacement re-walk fates (documented contract)', function () {
     assert.strictEqual(ast.nodes[149999], replacements[149999]);
   });
 
-  test('replace([...]) in after inserts nodes but does NOT re-walk them', function () {
+  test('revisit from after gives every inserted node balanced events', function () {
     var original = {type: 'Text', val: 'x'};
     var first = {type: 'Text', val: 'y'};
     var second = {type: 'Text', val: 'z'};
@@ -1564,7 +1762,7 @@ describe('array replacement re-walk fates (documented contract)', function () {
       function after(node, replace) {
         seen.push('after ' + (node.val || node.type));
         if (node.val === 'x') {
-          replace([first, second]);
+          replace.revisit([first, second]);
         }
       },
     );
@@ -1577,18 +1775,22 @@ describe('array replacement re-walk fates (documented contract)', function () {
       'before Block',
       'before x',
       'after x',
+      'before y',
+      'after y',
+      'before z',
+      'after z',
       'after Block',
     ]);
   });
 
-  test('replace([...]) in before followed by return false inserts nodes un-walked', function () {
+  test('revisit from before is independent of a false return', function () {
     var seen = [];
     var ast = walk(
       {type: 'Block', nodes: [{type: 'Text', val: 'x'}]},
       function before(node, replace) {
         seen.push('before ' + (node.val || node.type));
         if (node.val === 'x') {
-          replace([
+          replace.revisit([
             {type: 'Text', val: 'y'},
             {type: 'Text', val: 'z'},
           ]);
@@ -1600,11 +1802,110 @@ describe('array replacement re-walk fates (documented contract)', function () {
       {type: 'Text', val: 'y'},
       {type: 'Text', val: 'z'},
     ]);
-    // y and z must NOT be walked because before returned false.
-    assert(
-      !seen.includes('before y') && !seen.includes('before z'),
-      'before+return false must not re-walk the inserted array: ' +
-        JSON.stringify(seen),
+    assert.deepStrictEqual(seen, [
+      'before Block',
+      'before x',
+      'before y',
+      'before z',
+    ]);
+  });
+
+  test('final replacements receive no events in either phase', function () {
+    var beforeOriginal = {type: 'Text', val: 'before-original'};
+    var afterOriginal = {type: 'Text', val: 'after-original'};
+    var beforeReplacement = {type: 'Text', val: 'before-final'};
+    var afterReplacement = {type: 'Text', val: 'after-final'};
+    var ast = {
+      type: 'Block',
+      nodes: [beforeOriginal, afterOriginal],
+    };
+    var events = [];
+
+    walk(
+      ast,
+      function before(node, replace) {
+        events.push('before ' + (node.val || node.type));
+        if (node === beforeOriginal) replace.final(beforeReplacement);
+      },
+      function after(node, replace) {
+        events.push('after ' + (node.val || node.type));
+        if (node === afterOriginal) replace.final(afterReplacement);
+      },
     );
+
+    assert.deepStrictEqual(ast.nodes, [beforeReplacement, afterReplacement]);
+    assert.deepStrictEqual(events, [
+      'before Block',
+      'before before-original',
+      'before after-original',
+      'after after-original',
+      'after Block',
+    ]);
+  });
+
+  test('scalar revisit from before gives the replacement balanced events', function () {
+    var original = {type: 'Text', val: 'original'};
+    var replacement = {type: 'Text', val: 'replacement'};
+    var events = [];
+    var result = walk(
+      original,
+      function before(node, replace) {
+        events.push('before ' + node.val);
+        if (node === original) replace.revisit(replacement);
+      },
+      function after(node) {
+        events.push('after ' + node.val);
+      },
+    );
+
+    assert.strictEqual(result, replacement);
+    assert.deepStrictEqual(events, [
+      'before original',
+      'before replacement',
+      'after replacement',
+    ]);
+  });
+
+  test('scalar revisit from after gives both identities balanced events', function () {
+    var original = {type: 'Text', val: 'original'};
+    var replacement = {type: 'Text', val: 'replacement'};
+    var events = [];
+    var result = walk(
+      original,
+      function before(node) {
+        events.push('before ' + node.val);
+      },
+      function after(node, replace) {
+        events.push('after ' + node.val);
+        if (node === original) replace.revisit(replacement);
+      },
+    );
+
+    assert.strictEqual(result, replacement);
+    assert.deepStrictEqual(events, [
+      'before original',
+      'after original',
+      'before replacement',
+      'after replacement',
+    ]);
+  });
+
+  test('self-replacement is a terminating no-op', function () {
+    var ast = {type: 'Text', val: 'self'};
+    var events = [];
+    assert.strictEqual(
+      walk(
+        ast,
+        function before(node, replace) {
+          events.push('before');
+          replace.revisit(node);
+        },
+        function after() {
+          events.push('after');
+        },
+      ),
+      ast,
+    );
+    assert.deepStrictEqual(events, ['before', 'after']);
   });
 });

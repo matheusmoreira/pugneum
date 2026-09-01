@@ -53,7 +53,7 @@ const expectedReleaseManifests = Object.freeze({
     files: ['index.js'],
     dependencies: {
       'pugneum-error': '^1.0.0',
-      'pugneum-walker': '^1.0.0',
+      'pugneum-walker': '^2.0.0',
     },
     devDependencies: {
       'pugneum-lexer': '^1.2.1',
@@ -72,7 +72,7 @@ const expectedReleaseManifests = Object.freeze({
     ],
     dependencies: {
       'pugneum-error': '^1.1.0',
-      'pugneum-walker': '^1.0.2',
+      'pugneum-walker': '^2.0.0',
     },
     devDependencies: {
       'pugneum-lexer': '^1.2.1',
@@ -89,7 +89,7 @@ const expectedReleaseManifests = Object.freeze({
       'pugneum-lexer': '^1.2.0',
       'pugneum-parser': '^1.1.0',
       'pugneum-renderer': '^1.1.0',
-      'pugneum-walker': '^1.0.3',
+      'pugneum-walker': '^2.0.0',
     },
     devDependencies: {
       'pugneum-filter-highlight.js': '^1.1.1',
@@ -104,7 +104,7 @@ const expectedReleaseManifests = Object.freeze({
   },
   'packages/walker': {
     name: 'pugneum-walker',
-    version: '1.0.3',
+    version: '2.0.0',
     files: ['index.js'],
     devDependencies: {
       'pugneum-lexer': '^1.2.1',

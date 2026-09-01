@@ -216,7 +216,7 @@ function applyIncludes(ast, options, state, depth) {
     ast,
     function before(node, replace) {
       if (node.type === 'RawInclude' && node.filters.length === 0) {
-        replace(nodes.text(node, normalizeTextNewlines(node.file.str)));
+        replace.final(nodes.text(node, normalizeTextNewlines(node.file.str)));
       }
     },
     function after(node, replace) {
@@ -233,7 +233,7 @@ function applyIncludes(ast, options, state, depth) {
         if (state.extendedTrees.has(childAST)) {
           childAST = removeBlocks(childAST);
         }
-        replace(applyYield(childAST, node.block, node, options));
+        replace.final(applyYield(childAST, node.block, node, options));
       }
     },
   );
@@ -245,7 +245,7 @@ function removeBlocks(ast) {
     // inheritance wrappers of the included, already-extended document.
     if (node.type === 'Mixin') return false;
     if (node.type === 'NamedBlock') {
-      replace(nodes.block(node, node.nodes));
+      replace.revisit(nodes.block(node, node.nodes));
     }
   });
 }

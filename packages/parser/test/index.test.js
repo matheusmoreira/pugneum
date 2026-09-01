@@ -363,7 +363,10 @@ describe('error paths', () => {
 
   test('INVALID_TOKEN for unexpected token in tag-content position', () => {
     var tokens = lex('div', {filename: 'test.pg'});
-    tokens.splice(1, 0, {type: 'bogus', loc: {start: {line: 1, column: 4}}});
+    tokens.splice(1, 0, {
+      type: 'bogus',
+      loc: {start: {line: 1, column: 4}, filename: 'test.pg'},
+    });
     assert.throws(
       () => parse(tokens, {filename: 'test.pg'}),
       (err) =>
@@ -834,16 +837,79 @@ describe('parser structure and boundary regressions', () => {
     );
   });
 
-  test('HTML inline classification is ASCII-case-insensitive without rewriting names', () => {
-    const source = 'SPAN text\nDiv block';
+  test('HTML inline classification follows the complete documented metadata table', () => {
+    const inlineNames = [
+      'a',
+      'abbr',
+      'area',
+      'audio',
+      'b',
+      'bdi',
+      'bdo',
+      'br',
+      'button',
+      'canvas',
+      'cite',
+      'code',
+      'data',
+      'datalist',
+      'del',
+      'dfn',
+      'em',
+      'embed',
+      'i',
+      'iframe',
+      'img',
+      'input',
+      'ins',
+      'kbd',
+      'label',
+      'link',
+      'map',
+      'mark',
+      'math',
+      'meta',
+      'meter',
+      'noscript',
+      'object',
+      'output',
+      'picture',
+      'progress',
+      'q',
+      'ruby',
+      's',
+      'samp',
+      'script',
+      'select',
+      'selectedcontent',
+      'slot',
+      'small',
+      'span',
+      'strong',
+      'sub',
+      'sup',
+      'svg',
+      'template',
+      'textarea',
+      'time',
+      'u',
+      'var',
+      'video',
+      'wbr',
+    ];
+    const nonInlineNames = ['address', 'article', 'div', 'p', 'unknown'];
+    const authoredNames = inlineNames
+      .map((name, index) => (index % 2 === 0 ? name : name.toUpperCase()))
+      .concat(nonInlineNames.map((name) => name.toUpperCase()));
+    const source = authoredNames.join('\n');
     const ast = parseSource(source, 'case.pg');
 
     assert.deepStrictEqual(
       ast.nodes.map((node) => ({name: node.name, isInline: node.isInline})),
-      [
-        {name: 'SPAN', isInline: true},
-        {name: 'Div', isInline: false},
-      ],
+      authoredNames.map((name, index) => ({
+        name,
+        isInline: index < inlineNames.length,
+      })),
     );
   });
 

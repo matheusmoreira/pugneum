@@ -193,7 +193,7 @@ exports[`pugneum-loader 1`] = `
           },
           "attrs": [],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "foo.pg"

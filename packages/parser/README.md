@@ -24,7 +24,9 @@ Convert pugneum tokens into an abstract syntax tree (AST).
 
 `options` can contain the following properties:
 
- - `filename` (string): pugneum file name; included in AST nodes and used in error handling
+ - `filename` (string): pugneum file name; included in AST nodes and used in
+   error handling. When omitted, the parser inherits the token stream's one
+   consistent `loc.filename`
  - `source` (string): pugneum source code before tokenization; used in error handling
  - `mixinContext` (`Array<'def' | 'call'>`): lexical context inherited by a
    fragment parse, ordered outermost to innermost. Pipeline stages use this
@@ -88,11 +90,13 @@ as a non-array object. Other values throw a `TypeError`.
 
 The parser validates that `tokens` is an array, but it does not revalidate the
 lexer's complete structural balance. It does validate every token's object
-shape, string `type`, and one-based safe-integer `loc.start`, and requires
-exactly one `eos` as the final token. A malformed hand-built stream throws a
-stable, indexed `TypeError` before parsing; a complete stream that violates the
-parser grammar throws the coded diagnostic documented below. Use the lexer
-contract when another producer needs to construct compatible tokens.
+shape, string `type`, one-based safe-integer `loc.start`, and optional string
+`loc.filename`, and requires exactly one `eos` as the final token. Every token
+must carry the same filename value, including consistently carrying none. A
+malformed or mixed-filename hand-built stream throws a stable, indexed
+`TypeError` before parsing; a complete stream that violates the parser grammar
+throws the coded diagnostic documented below. Use the lexer contract when
+another producer needs to construct compatible tokens.
 
 Current lexer streams delimit footnote definitions with `start-footnote-def`
 and `end-footnote-def`. For compatibility with older hand-built streams, the
@@ -110,7 +114,7 @@ Except for `Block`, every node has these location fields:
 | `type` | `string` | Node discriminator. |
 | `line` | `number` | One-based start line. |
 | `column` | `number` | One-based start column. |
-| `filename` | `string \| undefined` | Exactly `options.filename`; token filenames are not copied. |
+| `filename` | `string \| undefined` | `options.filename` when supplied; otherwise the token stream's consistent `loc.filename`. |
 
 Locations identify starts only. Parser AST nodes have no end location and no
 `loc` wrapper. A `Block` has `line` and `filename` but no `column`; the root
@@ -190,17 +194,28 @@ A `Mixin` definition has `name: string`, `args: MixinParameter[]`,
 `null` when it has no body or inline content.
 
 `attributeBlocks` is a reserved downstream compatibility slot and is always an
-empty array at the parser boundary. `isInline` is the parser's fixed HTML
-tag-name classification, using ASCII-case-insensitive identity while `name`
-retains its authored spelling. `textOnly` is absent unless immediate
-dot/pipeless syntax sets it to `true`. The two `uses*Block` flags inspect a
-mixin definition's own body and stop at nested mixins. The parser does not emit
-downstream fields such as `selfClosing` or a loaded `FileReference.ast`.
+empty array at the parser boundary. `isInline` is the parser's context-free,
+name-only HTML phrasing-content classification. It uses ASCII-case-insensitive
+identity while `name` retains its authored spelling; it does not validate the
+attribute or ancestry conditions that apply to some HTML content categories.
+The complete built-in table is: `a`, `abbr`, `area`, `audio`, `b`, `bdi`,
+`bdo`, `br`, `button`, `canvas`, `cite`, `code`, `data`, `datalist`, `del`,
+`dfn`, `em`, `embed`, `i`, `iframe`, `img`, `input`, `ins`, `kbd`, `label`,
+`link`, `map`, `mark`, `math`, `meta`, `meter`, `noscript`, `object`, `output`,
+`picture`, `progress`, `q`, `ruby`, `s`, `samp`, `script`, `select`,
+`selectedcontent`, `slot`, `small`, `span`, `strong`, `sub`, `sup`, `svg`,
+`template`, `textarea`, `time`, `u`, `var`, `video`, and `wbr`. Other names,
+including custom and direct interpolated tags, receive `false` because the
+parser cannot infer their content model from a built-in name table.
+`textOnly` is absent unless immediate dot/pipeless syntax sets it to `true`.
+The two `uses*Block` flags inspect a mixin definition's own body and stop at
+nested mixins. The parser does not emit downstream fields such as `selfClosing`
+or a loaded `FileReference.ast`.
 
 The only parser-emitted `null` values are an empty mixin call's `block` and a
 reference definition without `defaultText`. Optional fields are absent rather
 than set to `undefined`; `filename` is always present, but its value is
-`undefined` when no filename option was supplied.
+`undefined` when neither the options nor token stream supplies one.
 
 ### Errors and limits
 
@@ -223,12 +238,13 @@ Their `code` values and conditions are:
 | `PUGNEUM:RESERVED_FILTER_OPTION` | A filter uses the infrastructure-owned `filename` option. |
 | `PUGNEUM:VARIABLE_OUTSIDE_MIXIN` | A mixin variable appears outside a mixin definition. |
 
-Coded diagnostics use the current token's start location plus
-`options.filename` and `options.source`. The fixed parser nesting limit is 256;
-the lexer reserves one level for an inline chain's containing expression and
-therefore accepts up to 255 nested inline elements. Invalid API argument types
-and malformed streams are not grammar diagnostics, so callers must not rely on
-them having a `PUGNEUM:*` code.
+Coded diagnostics use the current token's start location, the resolved filename
+(explicit option or inherited token filename), and `options.source`.
+The fixed parser nesting limit is 256; the lexer reserves one level for an
+inline chain's containing expression and therefore accepts up to 255 nested
+inline elements.
+Invalid API argument types and malformed streams are not grammar diagnostics.
+Callers must not rely on them having a `PUGNEUM:*` code.
 
 ## License
 

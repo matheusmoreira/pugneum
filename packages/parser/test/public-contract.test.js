@@ -274,6 +274,31 @@ test('parse validates the complete token and location envelope up front', () => 
         'token at index 0 must have a one-based safe-integer "loc.start.column"',
     },
     {
+      tokens: [
+        {
+          type: 'eos',
+          loc: {start: {line: 1, column: 1}, filename: 42},
+        },
+      ],
+      message:
+        'token at index 0 must have a string or undefined "loc.filename"',
+    },
+    {
+      tokens: [
+        {
+          type: 'tag',
+          val: 'p',
+          loc: {start: {line: 1, column: 1}, filename: 'one.pg'},
+        },
+        {
+          type: 'eos',
+          loc: {start: {line: 1, column: 2}, filename: 'two.pg'},
+        },
+      ],
+      message:
+        'token at index 1 must have the same "loc.filename" as token at index 0',
+    },
+    {
       tokens: [{type: 'tag', val: 'p', loc}],
       message: 'the final token must have type "eos"',
     },
@@ -293,6 +318,67 @@ test('parse validates the complete token and location envelope up front', () => 
       (err) =>
         err instanceof TypeError &&
         err.message === 'Invalid token stream: ' + message,
+    );
+  });
+});
+
+test('parse inherits one token filename and permits an explicit override', () => {
+  var source = 'p text';
+  var tokens = lex(source, {filename: 'token.pg'});
+
+  var inherited = parse(tokens, {source});
+  assert.strictEqual(inherited.filename, 'token.pg');
+  assert.strictEqual(inherited.nodes[0].filename, 'token.pg');
+  assert.strictEqual(inherited.nodes[0].block.nodes[0].filename, 'token.pg');
+
+  var overridden = parse(tokens, {filename: 'override.pg', source});
+  assert.strictEqual(overridden.filename, 'override.pg');
+  assert.strictEqual(overridden.nodes[0].filename, 'override.pg');
+});
+
+test('inherited token filenames locate parser diagnostics', () => {
+  var source = 'block';
+  var tokens = lex(source, {filename: 'inherited.pg'});
+
+  assert.throws(
+    () => parse(tokens, {source}),
+    (err) =>
+      err.code === 'PUGNEUM:BLOCK_OUTSIDE_MIXIN' &&
+      err.filename === 'inherited.pg' &&
+      err.source === source &&
+      err.message.startsWith('inherited.pg:1:1\n'),
+  );
+});
+
+test('mixed token filenames are rejected even when options override output', () => {
+  var start = {line: 1, column: 1};
+  var tokens = [
+    {type: 'tag', val: 'p', loc: {start, filename: 'one.pg'}},
+    {type: 'eos', loc: {start, filename: 'two.pg'}},
+  ];
+
+  assert.throws(
+    () => parse(tokens, {filename: 'override.pg'}),
+    (err) =>
+      err instanceof TypeError &&
+      err.message ===
+        'Invalid token stream: token at index 1 must have the same ' +
+          '"loc.filename" as token at index 0',
+  );
+});
+
+test('parse rejects a supplied non-string filename option', () => {
+  var tokens = lex('');
+
+  [null, false, 0, {}, []].forEach((filename) => {
+    assert.throws(
+      () => parse(tokens, {filename}),
+      (err) =>
+        err instanceof TypeError &&
+        err.message ===
+          'Expected "options.filename" to be a string but got "' +
+            typeof filename +
+            '"',
     );
   });
 });

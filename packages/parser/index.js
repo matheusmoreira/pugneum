@@ -57,6 +57,7 @@ function validateTokenStream(tokens) {
     invalidTokenStream('expected at least one terminal "eos" token');
   }
 
+  let filename;
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     if (!token || typeof token !== 'object' || Array.isArray(token)) {
@@ -95,6 +96,25 @@ function validateTokenStream(tokens) {
         );
       }
     }
+    if (
+      token.loc.filename !== undefined &&
+      typeof token.loc.filename !== 'string'
+    ) {
+      invalidTokenStream(
+        'token at index ' +
+          i +
+          ' must have a string or undefined "loc.filename"',
+      );
+    }
+    if (i === 0) {
+      filename = token.loc.filename;
+    } else if (token.loc.filename !== filename) {
+      invalidTokenStream(
+        'token at index ' +
+          i +
+          ' must have the same "loc.filename" as token at index 0',
+      );
+    }
     if (token.type === 'eos' && i !== tokens.length - 1) {
       invalidTokenStream(
         '"eos" token at index ' + i + ' must be the final token',
@@ -105,6 +125,8 @@ function validateTokenStream(tokens) {
   if (tokens[tokens.length - 1].type !== 'eos') {
     invalidTokenStream('the final token must have type "eos"');
   }
+
+  return filename;
 }
 
 function asciiLowerCase(value) {
@@ -153,44 +175,74 @@ function mixinSlotFlags(block) {
   return flags;
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Element#inline_text_semantics
-// https://developer.mozilla.org/en-US/docs/Learn/HTML/Cheatsheet#inline_elements
-const inlineTags = new Set([
-  'a',
-  'abbr',
-  'acronym',
-  'address',
-  'audio',
-  'b',
-  'bdi',
-  'bdo',
-  'br',
-  'cite',
-  'code',
-  'data',
-  'dfn',
-  'em',
-  'i',
-  'img',
-  'kbd',
-  'mark',
-  'q',
-  'rp',
-  'rt',
-  'ruby',
-  's',
-  'samp',
-  'small',
-  'span',
-  'strong',
-  'sub',
-  'sup',
-  'time',
-  'u',
-  'var',
-  'video',
-  'wbr',
-]);
+// A context-free tag-name classification for the public Tag.isInline field.
+// These are the built-in HTML phrasing-content names, plus the MathML and SVG
+// roots admitted as phrasing content. Conditional content-model requirements
+// still belong to an HTML validator; this table deliberately answers by name.
+// https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2
+const htmlTagMetadata = Object.freeze({
+  a: true,
+  abbr: true,
+  area: true,
+  audio: true,
+  b: true,
+  bdi: true,
+  bdo: true,
+  br: true,
+  button: true,
+  canvas: true,
+  cite: true,
+  code: true,
+  data: true,
+  datalist: true,
+  del: true,
+  dfn: true,
+  em: true,
+  embed: true,
+  i: true,
+  iframe: true,
+  img: true,
+  input: true,
+  ins: true,
+  kbd: true,
+  label: true,
+  link: true,
+  map: true,
+  mark: true,
+  math: true,
+  meta: true,
+  meter: true,
+  noscript: true,
+  object: true,
+  output: true,
+  picture: true,
+  progress: true,
+  q: true,
+  ruby: true,
+  s: true,
+  samp: true,
+  script: true,
+  select: true,
+  selectedcontent: true,
+  slot: true,
+  small: true,
+  span: true,
+  strong: true,
+  sub: true,
+  sup: true,
+  svg: true,
+  template: true,
+  textarea: true,
+  time: true,
+  u: true,
+  var: true,
+  video: true,
+  wbr: true,
+});
+
+function isInlineHtmlTag(name) {
+  return htmlTagMetadata[asciiLowerCase(name)] === true;
+}
 
 // One inline grammar descriptor drives expression/tag admission, pipeless and
 // ordinary text collection, and the narrower reference-label/footnote-body
@@ -255,7 +307,7 @@ class Parser {
           '"',
       );
     }
-    validateTokenStream(tokens);
+    const tokenFilename = validateTokenStream(tokens);
     let mixinContext = options.mixinContext;
     if (mixinContext === undefined) mixinContext = [];
     if (
@@ -266,8 +318,17 @@ class Parser {
         'Expected "options.mixinContext" to be an array containing only "def" or "call"',
       );
     }
+    const optionFilename = options.filename;
+    if (optionFilename !== undefined && typeof optionFilename !== 'string') {
+      throw new TypeError(
+        'Expected "options.filename" to be a string but got "' +
+          typeof optionFilename +
+          '"',
+      );
+    }
     this.tokens = new TokenStream(tokens);
-    this.filename = options.filename;
+    this.filename =
+      optionFilename === undefined ? tokenFilename : optionFilename;
     this.source = options.source;
     this.inMixin = mixinContext.reduce(
       (count, kind) => count + (kind === 'def' ? 1 : 0),
@@ -1055,7 +1116,7 @@ class Parser {
       block: this.emptyBlock(tok.loc.start.line),
       attrs: [],
       attributeBlocks: [],
-      isInline: inlineTags.has(asciiLowerCase(tok.val)),
+      isInline: isInlineHtmlTag(tok.val),
     });
 
     return this.tag(tag);

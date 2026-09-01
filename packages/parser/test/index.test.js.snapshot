@@ -656,7 +656,7 @@ exports[`attrs.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 7,
       "column": 1,
       "filename": "attrs.pg"
@@ -704,7 +704,7 @@ exports[`attrs.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 11,
       "column": 1,
       "filename": "attrs.pg"
@@ -1146,7 +1146,7 @@ exports[`attrs.unescaped.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "attrs.unescaped.pg"
@@ -4147,7 +4147,7 @@ exports[`del-shorthand.pg 1`] = `
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 1,
             "column": 13,
             "filename": "del-shorthand.pg"
@@ -4588,7 +4588,7 @@ exports[`escape-chars.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "escape-chars.pg",
@@ -5161,7 +5161,7 @@ exports[`filters.coffeescript.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "filters.coffeescript.pg"
@@ -5370,7 +5370,7 @@ exports[`filters.include.pg 1`] = `
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false,
+                  "isInline": true,
                   "line": 4,
                   "column": 5,
                   "filename": "filters.include.pg"
@@ -5426,7 +5426,7 @@ exports[`filters.include.pg 1`] = `
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false,
+                  "isInline": true,
                   "line": 6,
                   "column": 5,
                   "filename": "filters.include.pg"
@@ -5816,7 +5816,7 @@ exports[`filters.nested.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "filters.nested.pg"
@@ -5913,7 +5913,7 @@ exports[`filters.nested.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 6,
       "column": 1,
       "filename": "filters.nested.pg"
@@ -6164,7 +6164,7 @@ exports[`fixtures/append-without-block/app-layout.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "fixtures/append-without-block/app-layout.pg"
@@ -6221,7 +6221,7 @@ exports[`fixtures/append/app-layout.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "fixtures/append/app-layout.pg"
@@ -6280,7 +6280,7 @@ exports[`fixtures/layout-mutation-base.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
+                "isInline": true,
                 "line": 3,
                 "column": 5,
                 "filename": "fixtures/layout-mutation-base.pg"
@@ -6304,7 +6304,7 @@ exports[`fixtures/layout-mutation-base.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
+                "isInline": true,
                 "line": 4,
                 "column": 5,
                 "filename": "fixtures/layout-mutation-base.pg"
@@ -6467,7 +6467,7 @@ exports[`fixtures/multi-append-prepend-block/root.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 2,
           "filename": "fixtures/multi-append-prepend-block/root.pg"
@@ -6524,7 +6524,7 @@ exports[`fixtures/prepend-without-block/app-layout.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "fixtures/prepend-without-block/app-layout.pg"
@@ -6581,7 +6581,7 @@ exports[`fixtures/prepend/app-layout.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "fixtures/prepend/app-layout.pg"
@@ -7285,7 +7285,7 @@ exports[`html5.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "html5.pg"
@@ -8334,7 +8334,7 @@ exports[`include-with-text-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 2,
             "column": 3,
             "filename": "include-with-text-head.pg",
@@ -8407,7 +8407,7 @@ exports[`include-with-text.pg 1`] = `
                     }
                   ],
                   "attributeBlocks": [],
-                  "isInline": false,
+                  "isInline": true,
                   "line": 3,
                   "column": 5,
                   "filename": "include-with-text.pg"
@@ -8431,7 +8431,7 @@ exports[`include-with-text.pg 1`] = `
                     }
                   ],
                   "attributeBlocks": [],
-                  "isInline": false,
+                  "isInline": true,
                   "line": 4,
                   "column": 5,
                   "filename": "include-with-text.pg"
@@ -8508,7 +8508,7 @@ exports[`include.script.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "include.script.pg"
@@ -8767,7 +8767,7 @@ exports[`includes.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 9,
             "column": 3,
             "filename": "includes.pg"
@@ -8908,7 +8908,7 @@ exports[`inheritance.defaults.pg 1`] = `
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
+                      "isInline": true,
                       "line": 4,
                       "column": 7,
                       "filename": "inheritance.defaults.pg"
@@ -8932,7 +8932,7 @@ exports[`inheritance.defaults.pg 1`] = `
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
+                      "isInline": true,
                       "line": 5,
                       "column": 7,
                       "filename": "inheritance.defaults.pg"
@@ -8956,7 +8956,7 @@ exports[`inheritance.defaults.pg 1`] = `
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
+                      "isInline": true,
                       "line": 6,
                       "column": 7,
                       "filename": "inheritance.defaults.pg"
@@ -9035,7 +9035,7 @@ exports[`inheritance.extend.include.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "inheritance.extend.include.pg"
@@ -9283,7 +9283,7 @@ exports[`inheritance.extend.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "inheritance.extend.pg"
@@ -9455,7 +9455,7 @@ exports[`inheritance.extend.whitespace.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 6,
           "column": 3,
           "filename": "inheritance.extend.whitespace.pg"
@@ -10542,7 +10542,7 @@ exports[`ins-shorthand.pg 1`] = `
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 1,
             "column": 21,
             "filename": "ins-shorthand.pg"
@@ -10573,7 +10573,7 @@ exports[`ins-shorthand.pg 1`] = `
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 1,
             "column": 29,
             "filename": "ins-shorthand.pg"
@@ -10973,7 +10973,7 @@ exports[`layout.append.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "layout.append.pg"
@@ -10997,7 +10997,7 @@ exports[`layout.append.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 6,
           "column": 3,
           "filename": "layout.append.pg"
@@ -11054,7 +11054,7 @@ exports[`layout.append.without-block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "layout.append.without-block.pg"
@@ -11078,7 +11078,7 @@ exports[`layout.append.without-block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 6,
           "column": 3,
           "filename": "layout.append.without-block.pg"
@@ -11331,7 +11331,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 16,
           "column": 2,
           "filename": "layout.multi.append.prepend.block.pg"
@@ -11365,7 +11365,7 @@ exports[`layout.multi.append.prepend.block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 19,
           "column": 2,
           "filename": "layout.multi.append.prepend.block.pg"
@@ -11422,7 +11422,7 @@ exports[`layout.prepend.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "layout.prepend.pg"
@@ -11446,7 +11446,7 @@ exports[`layout.prepend.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 6,
           "column": 3,
           "filename": "layout.prepend.pg"
@@ -11503,7 +11503,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 5,
           "column": 3,
           "filename": "layout.prepend.without-block.pg"
@@ -11527,7 +11527,7 @@ exports[`layout.prepend.without-block.pg 1`] = `
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
+          "isInline": true,
           "line": 6,
           "column": 3,
           "filename": "layout.prepend.without-block.pg"
@@ -12988,7 +12988,7 @@ exports[`mixin-optional-args.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 13,
             "column": 3,
             "filename": "mixin-optional-args.pg"
@@ -13507,7 +13507,7 @@ exports[`mixin-optional-question-mark.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 14,
             "column": 3,
             "filename": "mixin-optional-question-mark.pg"
@@ -17768,7 +17768,7 @@ exports[`script.whitespace.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "script.whitespace.pg",
@@ -17884,7 +17884,7 @@ exports[`scripts.non-js.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "scripts.non-js.pg"
@@ -17951,7 +17951,7 @@ exports[`scripts.non-js.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 6,
       "column": 1,
       "filename": "scripts.non-js.pg",
@@ -18014,7 +18014,7 @@ exports[`scripts.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "scripts.pg",
@@ -18039,7 +18039,7 @@ exports[`scripts.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 5,
       "column": 1,
       "filename": "scripts.pg"
@@ -18055,7 +18055,7 @@ exports[`scripts.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 6,
       "column": 1,
       "filename": "scripts.pg"
@@ -20163,7 +20163,7 @@ exports[`svg-basic.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "svg-basic.pg"
@@ -20906,7 +20906,7 @@ exports[`template.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 1,
       "column": 1,
       "filename": "template.pg"
@@ -20966,7 +20966,7 @@ exports[`template.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 6,
       "column": 1,
       "filename": "template.pg",
@@ -21021,7 +21021,7 @@ exports[`text-block.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 3,
             "column": 3,
             "filename": "text-block.pg"
@@ -21032,7 +21032,7 @@ exports[`text-block.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 2,
       "column": 1,
       "filename": "text-block.pg"
@@ -21076,7 +21076,7 @@ exports[`text-block.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 6,
             "column": 3,
             "filename": "text-block.pg"
@@ -21087,7 +21087,7 @@ exports[`text-block.pg 1`] = `
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
+      "isInline": true,
       "line": 5,
       "column": 1,
       "filename": "text-block.pg"
@@ -21836,7 +21836,7 @@ exports[`yield-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 2,
             "column": 3,
             "filename": "yield-head.pg"
@@ -21866,7 +21866,7 @@ exports[`yield-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 4,
             "column": 3,
             "filename": "yield-head.pg"
@@ -21940,7 +21940,7 @@ exports[`yield-title-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 4,
             "column": 3,
             "filename": "yield-title-head.pg"
@@ -21964,7 +21964,7 @@ exports[`yield-title-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "line": 5,
             "column": 3,
             "filename": "yield-title-head.pg"
@@ -22107,7 +22107,7 @@ exports[`yield.pg 1`] = `
                           }
                         ],
                         "attributeBlocks": [],
-                        "isInline": false,
+                        "isInline": true,
                         "line": 4,
                         "column": 7,
                         "filename": "yield.pg"
@@ -22131,7 +22131,7 @@ exports[`yield.pg 1`] = `
                           }
                         ],
                         "attributeBlocks": [],
-                        "isInline": false,
+                        "isInline": true,
                         "line": 5,
                         "column": 7,
                         "filename": "yield.pg"

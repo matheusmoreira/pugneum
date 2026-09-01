@@ -349,7 +349,7 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false
+                  "isInline": true
                 },
                 {
                   "type": "Tag",
@@ -381,7 +381,7 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false
+                  "isInline": true
                 }
               ]
             },
@@ -530,7 +530,7 @@ exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
+            "isInline": true,
             "textOnly": true
           },
           {
@@ -584,7 +584,7 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
+                      "isInline": true,
                       "textOnly": true
                     },
                     {
@@ -607,7 +607,7 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                                 }
                               ],
                               "attributeBlocks": [],
-                              "isInline": false
+                              "isInline": true
                             },
                             {
                               "type": "Tag",
@@ -623,7 +623,7 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                                 }
                               ],
                               "attributeBlocks": [],
-                              "isInline": false
+                              "isInline": true
                             }
                           ]
                         }
@@ -724,7 +724,7 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
         }
       ],
       "attributeBlocks": [],
-      "isInline": false
+      "isInline": true
     }
   ]
 }
@@ -1014,7 +1014,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
               }
             ],
             "attributeBlocks": [],
-            "isInline": false
+            "isInline": true
           }
         ]
       },
@@ -1053,7 +1053,7 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1069,7 +1069,7 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1085,7 +1085,7 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1101,7 +1101,7 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1117,7 +1117,7 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               }
             ],
             "name": "head",
@@ -1178,7 +1178,7 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1194,7 +1194,7 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1210,7 +1210,7 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1226,7 +1226,7 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1242,7 +1242,7 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               }
             ],
             "name": "head",
@@ -1425,7 +1425,7 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             }
           ],
           "attributeBlocks": [],
-          "isInline": false
+          "isInline": true
         },
         {
           "type": "Tag",
@@ -1441,7 +1441,7 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             }
           ],
           "attributeBlocks": [],
-          "isInline": false
+          "isInline": true
         },
         {
           "type": "Tag",
@@ -1457,7 +1457,7 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             }
           ],
           "attributeBlocks": [],
-          "isInline": false
+          "isInline": true
         }
       ],
       "name": "head",
@@ -1494,7 +1494,7 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1510,7 +1510,7 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1526,7 +1526,7 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1542,7 +1542,7 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1558,7 +1558,7 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               }
             ],
             "name": "head",
@@ -1619,7 +1619,7 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1635,7 +1635,7 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1651,7 +1651,7 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1667,7 +1667,7 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               },
               {
                 "type": "Tag",
@@ -1683,7 +1683,7 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false
+                "isInline": true
               }
             ],
             "name": "head",

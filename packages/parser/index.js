@@ -248,16 +248,29 @@ class Parser {
       );
     }
     validateTokenStream(tokens);
+    let mixinContext = options.mixinContext;
+    if (mixinContext === undefined) mixinContext = [];
+    if (
+      !Array.isArray(mixinContext) ||
+      mixinContext.some((kind) => kind !== 'def' && kind !== 'call')
+    ) {
+      throw new TypeError(
+        'Expected "options.mixinContext" to be an array containing only "def" or "call"',
+      );
+    }
     this.tokens = new TokenStream(tokens);
     this.filename = options.filename;
     this.source = options.source;
-    this.inMixin = 0;
+    this.inMixin = mixinContext.reduce(
+      (count, kind) => count + (kind === 'def' ? 1 : 0),
+      0,
+    );
     // Stack of the enclosing mixin constructs in lexical nesting order: 'def'
     // for a mixin definition body, 'call' for a mixin call block. The top of
     // the stack is the innermost enclosing mixin construct, which is what
     // decides `given` validity. Cumulative counters cannot express "innermost"
     // and mis-decide nested definition-inside-call / call-inside-definition.
-    this.mixinCtx = [];
+    this.mixinCtx = mixinContext.slice();
     this.depth = 0;
   }
 

@@ -68,6 +68,13 @@ arrays, primitives, `null`, and collection objects are rejected with
 `options.warnings` array, if provided, collects warnings raised while
 re-lexing `pugneum`-type filter output.
 
+`options.mixinContext`, when applying the filterer to an AST fragment rather
+than a complete document, is an outermost-to-innermost array containing `def`
+and `call`. Both `pugneum` source output and direct `syntax` output inherit that
+context plus the filter invocation's AST ancestry. This keeps variables,
+anonymous blocks, and `given` subject to the same lexical rules whether they
+are written inline or generated inside a mixin.
+
 The callback's second argument is assembled in a fixed precedence order:
 template attributes, then `filterOptions[name]`, then the reserved `filename`
 field. For a block filter, `filename` is the invocation's source filename. For

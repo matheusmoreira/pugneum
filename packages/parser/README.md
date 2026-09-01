@@ -26,6 +26,10 @@ Convert pugneum tokens into an abstract syntax tree (AST).
 
  - `filename` (string): pugneum file name; included in AST nodes and used in error handling
  - `source` (string): pugneum source code before tokenization; used in error handling
+ - `mixinContext` (`Array<'def' | 'call'>`): lexical context inherited by a
+   fragment parse, ordered outermost to innermost. Pipeline stages use this
+   when included or generated source will be inserted into an existing mixin;
+   omit it for a complete standalone document
 
 ```js
 const lex = require('pugneum-lexer');

@@ -666,6 +666,76 @@ p
   assert.strictEqual(block.nodes[0].name, 'em');
 });
 
+test('pugneum output inherits its surrounding mixin definition context', () => {
+  const cases = [
+    ['Variable', 'p #{name}'],
+    ['MixinBlock', 'block'],
+    ['Given', 'given header'],
+  ];
+
+  for (const [type, generatedSource] of cases) {
+    const source = 'mixin wrapper(name)\n  :emit\n    ignored';
+    const options = {filename, source, warnings: []};
+    const ast = parseSource(source, options);
+    const emit = {type: 'pugneum', filter: () => generatedSource};
+
+    assert.doesNotThrow(() => filter(ast, {emit}, options), type);
+    assert.strictEqual(ast.nodes[0].block.nodes[0].type, 'Block', type);
+  }
+});
+
+test('syntax output inherits its surrounding mixin definition context', () => {
+  const cases = [
+    ['Variable', () => ({type: 'Variable', name: 'name'})],
+    ['MixinBlock', () => ({type: 'MixinBlock'})],
+    [
+      'Given',
+      () => ({
+        type: 'Given',
+        name: 'header',
+        block: {type: 'Block', nodes: []},
+      }),
+    ],
+  ];
+
+  for (const [type, makeNode] of cases) {
+    const source = 'mixin wrapper(name)\n  :emit\n    ignored';
+    const options = {filename, source, warnings: []};
+    const ast = parseSource(source, options);
+    const emit = {type: 'syntax', filter: () => [makeNode()]};
+
+    filter(ast, {emit}, options);
+    assert.strictEqual(ast.nodes[0].block.nodes[0].nodes[0].type, type);
+  }
+});
+
+test('generated mixin-only constructs remain invalid without a definition', () => {
+  for (const source of [
+    ':emit\n  ignored',
+    '+wrapper()\n  :emit\n    ignored',
+  ]) {
+    const options = {filename, source, warnings: []};
+    const ast = parseSource(source, options);
+    const emit = {type: 'syntax', filter: () => [{type: 'MixinBlock'}]};
+
+    assert.throws(
+      () => filter(ast, {emit}, options),
+      (err) => err.code === 'PUGNEUM:UNSUPPORTED_FILTER_CONSTRUCT',
+      source,
+    );
+  }
+});
+
+test('rejects malformed inherited mixin contexts before filtering', () => {
+  const ast = {type: 'Block', nodes: []};
+  for (const mixinContext of [null, 'def', {}, ['definition']]) {
+    assert.throws(
+      () => filter(ast, {}, {mixinContext}),
+      /mixinContext.*"def" or "call"/,
+    );
+  }
+});
+
 test('rendering derives mixin slots after syntax filters rewrite the body', () => {
   const generatedSource = [
     'mixin layout',

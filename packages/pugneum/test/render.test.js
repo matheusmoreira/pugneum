@@ -906,6 +906,83 @@ describe('public custom filters', () => {
   });
 });
 
+describe('mixin-scoped fragments', () => {
+  var cases = [
+    {
+      name: 'variable',
+      fragment: 'p Hello #{name}',
+      inline: 'mixin greeting(name)\n  p Hello #{name}\n+greeting(World)',
+      include: 'mixin greeting(name)\n  include partial.pg\n+greeting(World)',
+      filter: 'mixin greeting(name)\n  :emit\n+greeting(World)',
+      expected: '<p>Hello World</p>',
+    },
+    {
+      name: 'unnamed block',
+      fragment: 'block',
+      inline: 'mixin wrapper()\n  block\n+wrapper()\n  p Body',
+      include: 'mixin wrapper()\n  include partial.pg\n+wrapper()\n  p Body',
+      filter: 'mixin wrapper()\n  :emit\n+wrapper()\n  p Body',
+      expected: '<p>Body</p>',
+    },
+    {
+      name: 'given',
+      fragment: 'given header\n  p supplied',
+      inline:
+        'mixin card()\n  given header\n    p supplied\n+card()\n  block header\n    p Header',
+      include:
+        'mixin card()\n  include partial.pg\n+card()\n  block header\n    p Header',
+      filter: 'mixin card()\n  :emit\n+card()\n  block header\n    p Header',
+      expected: '<p>supplied</p>',
+    },
+  ];
+
+  for (const example of cases) {
+    it(
+      example.name + ' behaves identically inline, included, and filtered',
+      () => {
+        var includeOptions = {
+          filename: '/virtual/entry.pg',
+          warnings: [],
+          resolve() {
+            return '/virtual/partial.pg';
+          },
+          canonicalize(filename) {
+            return filename;
+          },
+          read() {
+            return Buffer.from(example.fragment);
+          },
+        };
+        var filterOptions = {
+          filename: '/virtual/entry.pg',
+          warnings: [],
+          filters: {
+            emit: {
+              type: 'pugneum',
+              filter() {
+                return example.fragment;
+              },
+            },
+          },
+        };
+
+        assert.strictEqual(
+          pg.render(example.inline, {warnings: []}),
+          example.expected,
+        );
+        assert.strictEqual(
+          pg.render(example.include, includeOptions),
+          example.expected,
+        );
+        assert.strictEqual(
+          pg.render(example.filter, filterOptions),
+          example.expected,
+        );
+      },
+    );
+  }
+});
+
 describe('variables in attributes', () => {
   function interpolationResult(backslashes, value) {
     return (

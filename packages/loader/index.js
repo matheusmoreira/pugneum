@@ -133,6 +133,15 @@ function cloneAST(ast) {
   return copy;
 }
 
+function mixinContextAt(options, parents) {
+  const context = options.mixinContext.slice();
+  for (let i = parents.length - 1; i >= 0; i--) {
+    const parent = parents[i];
+    if (parent.type === 'Mixin') context.push(parent.call ? 'call' : 'def');
+  }
+  return context;
+}
+
 function load(ast, options) {
   return loadWithOwnership(ast, options, false);
 }
@@ -191,13 +200,18 @@ function loadWithOwnership(ast, options, ownsAst) {
 }
 
 function loadAST(ast, options, depth) {
-  return walk(ast, function (node) {
-    if (!node.filename && options.filename) node.filename = options.filename;
-    if (
-      node.type === 'Include' ||
-      node.type === 'RawInclude' ||
-      node.type === 'Extends'
-    ) {
+  const parents = [];
+  return walk(
+    ast,
+    function (node) {
+      if (!node.filename && options.filename) node.filename = options.filename;
+      if (
+        node.type !== 'Include' &&
+        node.type !== 'RawInclude' &&
+        node.type !== 'Extends'
+      ) {
+        return;
+      }
       const file = node.file;
       if (
         file == null ||
@@ -309,21 +323,22 @@ function loadAST(ast, options, depth) {
 
         if (structured) {
           const str = file.str;
+          const mixinContext = mixinContextAt(options, parents);
           const opts = Object.assign({}, options, {
             filename: filePath,
+            mixinContext,
             source: str,
           });
           Object.defineProperty(opts, loadState, {
             value: options[loadState],
           });
           let fileAst;
-          if (
-            cacheEntry &&
-            Object.prototype.hasOwnProperty.call(cacheEntry, 'ast')
-          ) {
-            fileAst = cloneAST(cacheEntry.ast);
-            if (Array.isArray(options.warnings) && cacheEntry.warnings) {
-              for (const warning of cacheEntry.warnings) {
+          const parseKey = JSON.stringify(mixinContext);
+          const parsedEntry = cacheEntry && cacheEntry.parses?.get(parseKey);
+          if (parsedEntry) {
+            fileAst = cloneAST(parsedEntry.ast);
+            if (Array.isArray(options.warnings) && parsedEntry.warnings) {
+              for (const warning of parsedEntry.warnings) {
                 options.warnings.push(Object.assign({}, warning));
               }
             }
@@ -334,12 +349,15 @@ function loadAST(ast, options, depth) {
             const tokens = options.lex(str, opts);
             fileAst = options.parse(tokens, opts);
             if (cacheEntry) {
-              cacheEntry.ast = cloneAST(fileAst);
-              if (Array.isArray(options.warnings)) {
-                cacheEntry.warnings = options.warnings
-                  .slice(warningStart)
-                  .map((warning) => Object.assign({}, warning));
-              }
+              if (!cacheEntry.parses) cacheEntry.parses = new Map();
+              cacheEntry.parses.set(parseKey, {
+                ast: cloneAST(fileAst),
+                warnings: Array.isArray(options.warnings)
+                  ? options.warnings
+                      .slice(warningStart)
+                      .map((warning) => Object.assign({}, warning))
+                  : undefined,
+              });
             }
           }
           file.ast = loadAST(fileAst, opts, depth + 1);
@@ -347,8 +365,9 @@ function loadAST(ast, options, depth) {
       } finally {
         if (structured) visiting.delete(canonical);
       }
-    }
-  });
+    },
+    {parents},
+  );
 }
 
 function validateResolvedPath(filePath) {
@@ -757,6 +776,15 @@ function validateOptions(options) {
     throw new TypeError('options.dependencyCache must be a Map');
   }
   if (
+    options.mixinContext !== undefined &&
+    (!Array.isArray(options.mixinContext) ||
+      options.mixinContext.some((kind) => kind !== 'def' && kind !== 'call'))
+  ) {
+    throw new TypeError(
+      'options.mixinContext must be an array containing only "def" or "call"',
+    );
+  }
+  if (
     options.canonicalize !== undefined &&
     typeof options.canonicalize !== 'function'
   ) {
@@ -796,6 +824,7 @@ function validateOptions(options) {
 
 function getOptions(options) {
   const normalized = Object.assign({}, options);
+  if (normalized.mixinContext === undefined) normalized.mixinContext = [];
   if (normalized.resolve === undefined) normalized.resolve = resolve;
   if (normalized.read === undefined) normalized.read = read;
   if (normalized.maxLoadDepth === undefined) {

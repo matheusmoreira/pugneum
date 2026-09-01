@@ -118,6 +118,16 @@ describe('option validation', () => {
     });
   }
 
+  for (const invalid of [null, 'def', {}, ['definition']]) {
+    test(`rejects mixinContext=${JSON.stringify(invalid)}`, () => {
+      assert.throws(
+        () =>
+          load({type: 'Block', nodes: []}, {lex, parse, mixinContext: invalid}),
+        /mixinContext.*"def" or "call"/,
+      );
+    });
+  }
+
   test('undefined optional hooks select their defaults', () => {
     const ast = parseSource('include bing.pg', __dirname + '/test.pg');
     const loaded = load(ast, {
@@ -922,6 +932,49 @@ describe('custom resolve and read', () => {
     assert.notStrictEqual(firstFile.ast, secondFile.ast);
     findNode(firstFile.ast, 'Text').val = 'changed';
     assert.strictEqual(findNode(secondFile.ast, 'Text').val, 'shared');
+  });
+
+  test('a build cache keeps parses from different mixin contexts separate', () => {
+    const dependencyCache = new Map();
+    const sharedPath = '/virtual/shared.pg';
+    const contexts = [];
+    let reads = 0;
+    let lexes = 0;
+    let parses = 0;
+    const source = [
+      'include shared.pg',
+      'mixin wrapper()',
+      '  include shared.pg',
+    ].join('\n');
+
+    load.loadOwned(parseSource(source, '/virtual/entry.pg'), {
+      dependencyCache,
+      warnings: [],
+      resolve() {
+        return sharedPath;
+      },
+      canonicalize(filename) {
+        return filename;
+      },
+      read() {
+        reads++;
+        return Buffer.from('p shared');
+      },
+      lex(nestedSource, nestedOptions) {
+        lexes++;
+        return lex(nestedSource, nestedOptions);
+      },
+      parse(tokens, nestedOptions) {
+        parses++;
+        contexts.push(nestedOptions.mixinContext.slice());
+        return parse(tokens, nestedOptions);
+      },
+    });
+
+    assert.strictEqual(reads, 1, 'raw bytes are canonical-path cached');
+    assert.strictEqual(lexes, 2, 'each lexical context is parsed once');
+    assert.strictEqual(parses, 2, 'each lexical context is parsed once');
+    assert.deepStrictEqual(contexts, [[], ['def']]);
   });
 
   test('custom resolve return value drives resolution', () => {

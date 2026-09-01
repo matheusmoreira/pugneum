@@ -32,7 +32,29 @@ const earlierPhaseTypes = new Set([
 // nearest-parent-first ancestry during `before`, so a NamedBlock remains legal
 // only under a Mixin (definition or call), while Given/MixinBlock/Variable
 // retain the parser's mixin-context restrictions.
-function inspectGeneratedAst(ast) {
+function normalizeMixinContext(value) {
+  if (value === undefined) return [];
+  if (
+    !Array.isArray(value) ||
+    value.some((kind) => kind !== 'def' && kind !== 'call')
+  ) {
+    throw new TypeError(
+      'options.mixinContext must be an array containing only "def" or "call"',
+    );
+  }
+  return value.slice();
+}
+
+function extendMixinContext(inherited, parents) {
+  const context = inherited.slice();
+  for (let i = parents.length - 1; i >= 0; i--) {
+    const parent = parents[i];
+    if (parent.type === 'Mixin') context.push(parent.call ? 'call' : 'def');
+  }
+  return context;
+}
+
+function inspectGeneratedAst(ast, inheritedMixinContext) {
   const root = generatedRoot(ast);
   const parents = [];
   const records = [];
@@ -40,20 +62,23 @@ function inspectGeneratedAst(ast) {
   walk(
     root,
     function (node, replace, control) {
-      let nearestMixin;
-      let insideMixinDefinition = false;
+      let nearestMixinKind = inheritedMixinContext.at(-1);
+      let foundGeneratedMixin = false;
+      let insideMixinDefinition = inheritedMixinContext.includes('def');
       for (const parent of parents) {
         if (parent.type !== 'Mixin') continue;
-        if (!nearestMixin) nearestMixin = parent;
+        if (!foundGeneratedMixin) {
+          nearestMixinKind = parent.call ? 'call' : 'def';
+          foundGeneratedMixin = true;
+        }
         if (parent.call === false) insideMixinDefinition = true;
       }
-      const insideMixin = nearestMixin !== undefined;
+      const insideMixin = nearestMixinKind !== undefined;
 
       if (
         earlierPhaseTypes.has(node.type) ||
         (node.type === 'NamedBlock' && !insideMixin) ||
-        (node.type === 'Given' &&
-          (!nearestMixin || nearestMixin.call !== false)) ||
+        (node.type === 'Given' && nearestMixinKind !== 'def') ||
         ((node.type === 'MixinBlock' || node.type === 'Variable') &&
           !insideMixinDefinition)
       ) {
@@ -85,6 +110,7 @@ function validateGeneratedAst(
   options,
   context,
   invocationDepth,
+  mixinContext,
 ) {
   const root = generatedRoot(ast);
   try {
@@ -107,7 +133,7 @@ function validateGeneratedAst(
     );
   }
 
-  const inspection = inspectGeneratedAst(root);
+  const inspection = inspectGeneratedAst(root, mixinContext);
   if (inspection.unsupported) {
     throw error(
       'UNSUPPORTED_FILTER_CONSTRUCT',
@@ -478,6 +504,7 @@ function applyFilterResult(
   options,
   context,
   nodeDepth,
+  mixinContext,
 ) {
   switch (type) {
     case 'text':
@@ -502,6 +529,7 @@ function applyFilterResult(
         node,
         options,
         context.sourceState,
+        mixinContext,
       );
       const ast = generated.ast;
       const generatedRecords = validateGeneratedAst(
@@ -512,6 +540,7 @@ function applyFilterResult(
         options,
         context,
         nodeDepth,
+        mixinContext,
       );
       const generatedLocation = {
         filename: generated.filename,
@@ -543,6 +572,7 @@ function applyFilterResult(
         options,
         context,
         nodeDepth,
+        mixinContext,
       );
       stampGeneratedProvenance(generatedRecords, node, context.ownedNodes);
       rememberNode(node, context);
@@ -577,7 +607,7 @@ function applyFilterResult(
 // resolution. A loader construct (include/extends/raw-include) cannot be
 // resolved downstream because loading already ran. Both this parsed tree and
 // direct syntax output pass through validateGeneratedAst before insertion.
-function parsePugneum(result, name, node, options, sourceState) {
+function parsePugneum(result, name, node, options, sourceState, mixinContext) {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
   const filename = registerGeneratedSource(
@@ -589,6 +619,7 @@ function parsePugneum(result, name, node, options, sourceState) {
   );
   const reopts = Object.assign({}, options, {
     filename,
+    mixinContext,
     source: result,
   });
   const tokens = lex(result, reopts);
@@ -672,6 +703,7 @@ function applyFilters(ast, filters, options, context) {
     collectOwnedNodes(ast, ownedNodes);
     context = {
       baseDepth: 0,
+      mixinContext: normalizeMixinContext(options.mixinContext),
       ownedNodes,
       sourceState: createSourceState(options),
       rollback: {nodes: [], seen: new WeakSet()},
@@ -683,8 +715,16 @@ function applyFilters(ast, filters, options, context) {
       ast,
       function (node) {
         const nodeDepth = context.baseDepth + parents.length;
+        const mixinContext = extendMixinContext(context.mixinContext, parents);
         if (node.type === 'Filter') {
-          handleNestedFilters(node, filters, options, context, nodeDepth);
+          handleNestedFilters(
+            node,
+            filters,
+            options,
+            context,
+            nodeDepth,
+            mixinContext,
+          );
           const text = getBodyAsText(node, options);
           const attrs = getAttributes(node, options);
           attrs.filename = node.filename;
@@ -708,6 +748,7 @@ function applyFilters(ast, filters, options, context) {
             options,
             context,
             nodeDepth,
+            mixinContext,
           );
         } else if (node.type === 'RawInclude' && node.filters.length) {
           // Source order [a, b, c] applies right-to-left: c (innermost) wraps the
@@ -774,7 +815,14 @@ function applyFilters(ast, filters, options, context) {
 // reassignment needed. The block guard mirrors getBodyAsText so a blockless
 // Filter node (only reachable from a syntax filter emitting one) does not crash
 // with a raw TypeError.
-function handleNestedFilters(node, filters, options, context, nodeDepth) {
+function handleNestedFilters(
+  node,
+  filters,
+  options,
+  context,
+  nodeDepth,
+  mixinContext,
+) {
   if (
     node.block &&
     node.block.nodes[0] &&
@@ -782,6 +830,7 @@ function handleNestedFilters(node, filters, options, context, nodeDepth) {
   ) {
     applyFilters(node.block, filters, options, {
       baseDepth: nodeDepth + 1,
+      mixinContext,
       ownedNodes: context.ownedNodes,
       sourceState: context.sourceState,
       rollback: context.rollback,

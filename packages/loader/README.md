@@ -64,6 +64,9 @@ cloned, so callers must use the return value).
    chain throws `LOAD_DEPTH_EXCEEDED` before resolving or reading that edge
  - `filename` (string) / `source` (string): the entry file's path and source
    text; used to seed error context
+ - `mixinContext` (`Array<'def' | 'call'>`): inherited lexical context for an
+   entry fragment. The loader extends it from each include's AST ancestry
+   before parsing that dependency
  - `warnings` (array): a shared diagnostics array threaded through to the
    lexer/parser of included files
  - `sources` (object): **output** — a map of resolved path → source text that

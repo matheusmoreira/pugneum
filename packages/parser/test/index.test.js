@@ -21,9 +21,12 @@ function read(filename) {
   return fs.readFileSync(path.join(testCasesDir, filename), 'utf8');
 }
 
-function parseSource(source, filename) {
+function parseSource(source, filename, options) {
   filename = filename || 'test.pg';
-  return parse(lex(source, {filename}), {filename, source});
+  return parse(
+    lex(source, {filename}),
+    Object.assign({filename, source}, options),
+  );
 }
 
 function parseFixture(filename) {
@@ -745,6 +748,68 @@ describe('given keyword', () => {
       () => parseSource(source, 'test'),
       (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
     );
+  });
+});
+
+describe('fragment mixin context', () => {
+  test('a definition fragment admits variables, block, and given', () => {
+    const ast = parseSource(
+      'p #{name}\nblock\ngiven header\n  p supplied',
+      'fragment.pg',
+      {mixinContext: ['def']},
+    );
+
+    assert.deepStrictEqual(
+      typedNodes(ast)
+        .map((node) => node.type)
+        .filter((type) => ['Variable', 'MixinBlock', 'Given'].includes(type)),
+      ['Given', 'MixinBlock', 'Variable'],
+    );
+  });
+
+  test('a call nested in a definition keeps variable and block capability', () => {
+    const ast = parseSource('p #{name}\nblock', 'fragment.pg', {
+      mixinContext: ['def', 'call'],
+    });
+    const types = typedNodes(ast).map((node) => node.type);
+    assert.ok(types.includes('Variable'));
+    assert.ok(types.includes('MixinBlock'));
+  });
+
+  test('given follows the innermost inherited mixin construct', () => {
+    assert.throws(
+      () =>
+        parseSource('given header', 'fragment.pg', {
+          mixinContext: ['def', 'call'],
+        }),
+      (err) => err.code === 'PUGNEUM:GIVEN_OUTSIDE_MIXIN',
+    );
+    assert.doesNotThrow(() =>
+      parseSource('given header', 'fragment.pg', {
+        mixinContext: ['call', 'def'],
+      }),
+    );
+  });
+
+  test('call-only context does not invent a definition scope', () => {
+    for (const source of ['p #{name}', 'block']) {
+      assert.throws(
+        () => parseSource(source, 'fragment.pg', {mixinContext: ['call']}),
+        (err) =>
+          err.code === 'PUGNEUM:VARIABLE_OUTSIDE_MIXIN' ||
+          err.code === 'PUGNEUM:BLOCK_OUTSIDE_MIXIN',
+        source,
+      );
+    }
+  });
+
+  test('rejects malformed inherited mixin contexts', () => {
+    for (const mixinContext of [null, 'def', {}, ['definition']]) {
+      assert.throws(
+        () => parseSource('p text', 'fragment.pg', {mixinContext}),
+        /options\.mixinContext.*"def" or "call"/,
+      );
+    }
   });
 });
 

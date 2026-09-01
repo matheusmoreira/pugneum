@@ -9,7 +9,32 @@ const MAX_INLINE_ELEMENT_DEPTH = MAX_TEMPLATE_DEPTH - 1;
 module.exports = lex;
 
 function lex(str, options) {
-  const lexer = new Lexer(str, options);
+  if (typeof str !== 'string') {
+    throw new Error(
+      'Expected source code to be a string but got "' + typeof str + '"',
+    );
+  }
+  if (options == null) options = {};
+  if (typeof options !== 'object' || Array.isArray(options)) {
+    throw new Error(
+      'Expected "options" to be an object but got "' + typeof options + '"',
+    );
+  }
+
+  const warnings = options.warnings;
+  if (
+    warnings !== undefined &&
+    (!Array.isArray(warnings) ||
+      !Object.isExtensible(warnings) ||
+      !Object.getOwnPropertyDescriptor(warnings, 'length').writable)
+  ) {
+    throw new Error('Expected "options.warnings" to be a mutable array');
+  }
+
+  const lexer = new Lexer(str, {
+    filename: options.filename,
+    warnings,
+  });
   return lexer.getTokens();
 }
 
@@ -759,36 +784,20 @@ function mergeMultiLineInterpolations(
 }
 
 class Lexer {
-  constructor(str, options) {
-    if (typeof str !== 'string') {
-      throw new Error(
-        'Expected source code to be a string but got "' + typeof str + '"',
-      );
-    }
-    if (options == null) options = {};
-    if (typeof options !== 'object' || Array.isArray(options)) {
-      throw new Error(
-        'Expected "options" to be an object but got "' + typeof options + '"',
-      );
-    }
-    if (
-      options.warnings !== undefined &&
-      (!Array.isArray(options.warnings) ||
-        !Object.isExtensible(options.warnings) ||
-        !Object.getOwnPropertyDescriptor(options.warnings, 'length').writable)
-    ) {
-      throw new Error('Expected "options.warnings" to be a mutable array');
-    }
+  constructor(str, options, childContext) {
+    childContext = childContext || {};
     //Strip any UTF-8 BOM off of the start of `str`, if it exists.
     str = str.replace(/^\uFEFF/, '');
     this.input = str.replace(/\r\n|\r/g, '\n');
     this.generatedInput = this.input;
     this.originalInput =
-      options.originalInput === undefined ? str : options.originalInput;
+      childContext.originalInput === undefined
+        ? str
+        : childContext.originalInput;
     // Mapped child lexers scan normalized or generated input while publishing
     // locations and diagnostics in the root source coordinate space. Each
     // entry maps one generated string boundary, including the final boundary.
-    this.locationMap = options.locationMap || null;
+    this.locationMap = childContext.locationMap || null;
     this.generatedLineStarts = [0];
     if (this.locationMap) {
       for (let i = 0; i < this.generatedInput.length; i++) {
@@ -801,17 +810,17 @@ class Lexer {
     // through the loader and child lexers so warnings from included files
     // and nested inline content are collected in one place.
     this.warnings = options.warnings === undefined ? [] : options.warnings;
-    this.interpolated = options.interpolated || false;
-    this.depth = options.depth || 0;
-    this.lineno = options.startingLine || 1;
-    this.colno = options.startingColumn || 1;
+    this.interpolated = childContext.interpolated || false;
+    this.depth = childContext.depth || 0;
+    this.lineno = 1;
+    this.colno = 1;
     this.indentStack = [0];
     this.indentRe = null;
     // If #{} or inline shorthand syntax is allowed when adding text
     this.interpolationAllowed =
-      options.interpolationAllowed === undefined
+      childContext.interpolationAllowed === undefined
         ? true
-        : options.interpolationAllowed;
+        : childContext.interpolationAllowed;
 
     this.tokens = [];
     this.ended = false;
@@ -1565,15 +1574,17 @@ class Lexer {
         `Template nesting exceeds maximum depth of ${MAX_TEMPLATE_DEPTH}`,
       );
     }
-    const child = new this.constructor(input, {
-      filename: this.filename,
-      interpolated: options.interpolated,
-      interpolationAllowed: this.interpolationAllowed,
-      depth: this.depth + (options.nested ? 1 : 0),
-      originalInput: this.originalInput,
-      locationMap,
-      warnings: this.warnings,
-    });
+    const child = new Lexer(
+      input,
+      {filename: this.filename, warnings: this.warnings},
+      {
+        interpolated: options.interpolated,
+        interpolationAllowed: this.interpolationAllowed,
+        depth: this.depth + (options.nested ? 1 : 0),
+        originalInput: this.originalInput,
+        locationMap,
+      },
+    );
     return child;
   }
 

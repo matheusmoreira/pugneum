@@ -203,6 +203,34 @@ describe('public argument boundary', () => {
   });
 });
 
+test('child-lexer controls cannot be supplied through public options', () => {
+  const source = 'p *(text)';
+  const tokens = lex(source, {
+    filename: 'public.pg',
+    startingLine: 99,
+    startingColumn: 99,
+    startingDepth: 99,
+    depth: Number.MAX_SAFE_INTEGER,
+    _nested: true,
+    interpolated: true,
+    interpolationAllowed: false,
+    originalInput: 'not the source',
+    locationMap: Array.from({length: source.length + 1}, () => ({
+      line: 99,
+      column: 99,
+    })),
+  });
+
+  assert.deepStrictEqual(tokens[0].loc.start, {line: 1, column: 1});
+  assert.ok(tokens.some((token) => token.type === 'start-interpolation'));
+  assert.ok(
+    tokens.some((token) => token.type === 'tag' && token.val === 'strong'),
+  );
+  tokens.forEach((token) => {
+    assert.strictEqual(token.loc.filename, 'public.pg');
+  });
+});
+
 test('shared streams satisfy the documented v1 envelope and balance', () => {
   sharedCases.forEach((filename) => {
     assertDocumentedTokenStreamContract(

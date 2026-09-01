@@ -108,6 +108,7 @@ const packages = Object.freeze([
     'lib/date.js',
     'lib/error.js',
     'lib/extract.js',
+    'lib/model.js',
     'lib/rss.js',
     'lib/urls.js',
     'lib/xml.js',

@@ -174,13 +174,14 @@ text with its generated line and column, rather than pairing those coordinates
 with an unrelated caller line. The synthetic name retains the caller filename
 and invocation location so the origin remains visible.
 
-Nested block filters such as `:outer:inner` run from the inside out. When an
-inner `pugneum` or `syntax` filter feeds a string-consuming `text` or `html`
-outer filter, the inner subtree is serialized to HTML before the outer callback
-runs. That early serialization precedes document-wide resolution, so the inner
-result cannot depend on references, footnotes, or TOC facts defined elsewhere
-in the document. Keep document-global constructs in a structured result that
-remains in the AST until the later resolve phase.
+Nested block filters such as `:outer:inner` run from the inside out. A structured
+inner result is serialized to HTML before the outer callback runs, regardless
+of the outer filter's declared result type. That structure-to-string boundary
+precedes document-wide resolution. If the inner result still contains a
+reference, footnote, or TOC construct, filtering stops with a located
+`UNSUPPORTED_FILTER_CONSTRUCT` error; the outer callback is not invoked. Keep
+document-global constructs in a structured result that remains in the AST
+until the later resolve phase.
 
 If `binary` is specified as true on the rightmost (innermost) include filter,
 that callback receives the exact raw file `Buffer` (`file.raw`) instead of

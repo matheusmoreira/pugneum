@@ -1263,6 +1263,62 @@ p
   assert.strictEqual(textNode.val, '&lt;em&gt;x&lt;/em&gt;');
 });
 
+test('nested structured output rejects constructs that need document resolution', () => {
+  const constructs = [
+    {source: 'references\n  docs /docs', type: 'References'},
+    {source: 'p @[docs link]', type: 'ReferenceLink'},
+    {source: 'p ![docs image]', type: 'ReferenceImage'},
+    {source: 'footnotes\n  n note', type: 'Footnotes'},
+    {source: 'p note^[n]', type: 'FootnoteRef'},
+    {source: 'toc', type: 'Toc'},
+  ];
+
+  for (const innerType of ['pugneum', 'syntax']) {
+    for (const outerType of ['text', 'html', 'pugneum', 'syntax']) {
+      for (const construct of constructs) {
+        let outerCalls = 0;
+        const filters = {
+          inner: {
+            type: innerType,
+            filter() {
+              return innerType === 'pugneum'
+                ? construct.source
+                : parseSource(construct.source, {
+                    filename: 'nested-syntax-output.pg',
+                  }).nodes;
+            },
+          },
+          outer: {
+            type: outerType,
+            filter() {
+              outerCalls++;
+              return outerType === 'syntax' ? [] : '';
+            },
+          },
+        };
+        const source = ':outer:inner\n  ignored';
+        const options = {filename, source, warnings: []};
+        const ast = parseSource(source, options);
+
+        assert.throws(
+          () => filter(ast, filters, options),
+          (err) =>
+            err.code === 'PUGNEUM:UNSUPPORTED_FILTER_CONSTRUCT' &&
+            err.message.includes("Filter 'outer'") &&
+            err.message.includes(construct.type) &&
+            err.message.includes('document resolution') &&
+            typeof err.filename === 'string' &&
+            Number.isSafeInteger(err.line) &&
+            Number.isSafeInteger(err.column),
+          `${innerType} -> ${outerType} with ${construct.type}`,
+        );
+        assert.strictEqual(outerCalls, 0);
+        assert.strictEqual(ast.nodes[0].type, 'Filter');
+      }
+    }
+  }
+});
+
 test('nested early rendering retains generated warning provenance', () => {
   const generated = 'mixin unused\n  p hidden\np visible';
   const filters = {

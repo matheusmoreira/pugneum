@@ -27,6 +27,19 @@ const earlierPhaseTypes = new Set([
   'YieldBlock',
 ]);
 
+// These constructs are meaningful only while the result remains in the final
+// document AST. A nested structured result must cross a structure-to-string
+// boundary before its outer callback can run, which is too early for the
+// linker's document-wide pass.
+const documentResolutionTypes = new Set([
+  'References',
+  'ReferenceLink',
+  'ReferenceImage',
+  'Footnotes',
+  'FootnoteRef',
+  'Toc',
+]);
+
 // Inspect a validated generated tree once for post-assembly ownership and
 // collect the records that need invocation provenance. The walker exposes
 // nearest-parent-first ancestry during `before`, so a NamedBlock remains legal
@@ -602,11 +615,11 @@ function applyFilterResult(
 //
 // When this structured result remains in the AST, reference/footnote/toc nodes
 // reach the document-level resolve pass that runs after filtering. A structured
-// inner result nested under a text/html outer filter is instead serialized by
-// getBodyAsText before that pass and cannot depend on document-global
-// resolution. A loader construct (include/extends/raw-include) cannot be
-// resolved downstream because loading already ran. Both this parsed tree and
-// direct syntax output pass through validateGeneratedAst before insertion.
+// inner result is instead checked and serialized by getBodyAsText before that
+// pass; document-global constructs are rejected at that explicit boundary. A
+// loader construct (include/extends/raw-include) cannot be resolved downstream
+// because loading already ran. Both this parsed tree and direct syntax output
+// pass through validateGeneratedAst before insertion.
 function parsePugneum(result, name, node, options, sourceState, mixinContext) {
   const lex = require('pugneum-lexer');
   const parse = require('pugneum-parser');
@@ -876,14 +889,31 @@ function runFilter(resolved, name, input, attrs, node, options, context) {
 // consume the inner filter's structured result instead of silently dropping it.
 function getBodyAsText(node, options) {
   if (!node.block) return '';
-  return node.block.nodes.map((n) => bodyNodeToText(n, options)).join('');
+  return node.block.nodes.map((n) => bodyNodeToText(n, node, options)).join('');
 }
 
-function bodyNodeToText(node, options) {
+function bodyNodeToText(node, invocation, options) {
   if (node.type === 'Text') return node.val || '';
   // Any non-Text node (a Block produced by a nested pugneum/syntax filter, or
   // any other structured node) is rendered to its HTML serialization so a
-  // string-consuming outer filter receives the inner output as HTML.
+  // string-consuming outer filter receives the inner output as HTML. Refuse
+  // nodes whose meaning depends on the later document-wide linker pass rather
+  // than letting the renderer fail on an unresolved implementation detail.
+  let unresolved = null;
+  walk(node, function (candidate, replace, control) {
+    if (documentResolutionTypes.has(candidate.type)) {
+      unresolved = candidate;
+      control.stop();
+    }
+  });
+  if (unresolved) {
+    throw error(
+      'UNSUPPORTED_FILTER_CONSTRUCT',
+      `Filter '${invocation.name}' cannot serialize nested ${unresolved.type} ` +
+        'before document resolution; keep document-global constructs in structured output',
+      nodeLocation(unresolved, options),
+    );
+  }
   const render = require('pugneum-renderer');
   return render(node, {
     warnings: options && options.warnings,

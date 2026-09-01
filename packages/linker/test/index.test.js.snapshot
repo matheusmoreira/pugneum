@@ -25,39 +25,23 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 3,
-                            "column": 11,
-                            "filename": "layout.pg",
                             "val": "My Application"
                           }
-                        ],
-                        "line": 3,
-                        "filename": "layout.pg"
+                        ]
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 3,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      "isInline": false
                     },
                     {
                       "type": "Block",
-                      "nodes": [],
-                      "line": 4,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      "nodes": []
                     }
-                  ],
-                  "line": 2,
-                  "filename": "layout.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 2,
-                "column": 3,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
@@ -79,61 +63,33 @@ exports[`cases from pugneum sources > include-extends-from-root.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "line": 1,
-                                    "column": 4,
-                                    "filename": "include-from-root.pg",
                                     "val": "hello"
                                   }
-                                ],
-                                "line": 1,
-                                "filename": "include-from-root.pg"
+                                ]
                               },
                               "attrs": [],
                               "attributeBlocks": [],
-                              "isInline": false,
-                              "line": 1,
-                              "column": 1,
-                              "filename": "include-from-root.pg"
+                              "isInline": false
                             }
-                          ],
-                          "line": 0,
-                          "filename": "include-from-root.pg"
+                          ]
                         }
-                      ],
-                      "line": 6,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      ]
                     }
-                  ],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.pg"
+                "isInline": false
               }
-            ],
-            "line": 1,
-            "filename": "layout.pg"
+            ]
           },
           "attrs": [],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 1,
-          "column": 1,
-          "filename": "layout.pg"
+          "isInline": false
         }
-      ],
-      "line": 0,
-      "filename": "layout.pg",
-      "hasExtends": true
+      ]
     }
-  ],
-  "line": 0,
-  "filename": "include-extends-from-root.pg"
+  ]
 }
 `;
 
@@ -155,31 +111,17 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                 "nodes": [
                   {
                     "type": "Text",
-                    "line": 4,
-                    "column": 9,
-                    "filename": "extends-empty-block-1.pg",
                     "val": "test1"
                   }
-                ],
-                "line": 4,
-                "filename": "extends-empty-block-1.pg"
+                ]
               },
               "attrs": [],
               "attributeBlocks": [],
-              "isInline": false,
-              "line": 4,
-              "column": 5,
-              "filename": "extends-empty-block-1.pg"
+              "isInline": false
             }
-          ],
-          "line": 1,
-          "column": 1,
-          "filename": "empty-block.pg"
+          ]
         }
-      ],
-      "line": 0,
-      "filename": "empty-block.pg",
-      "hasExtends": true
+      ]
     },
     {
       "type": "Block",
@@ -195,35 +137,19 @@ exports[`cases from pugneum sources > include-extends-of-common-template.pg 1`] 
                 "nodes": [
                   {
                     "type": "Text",
-                    "line": 4,
-                    "column": 9,
-                    "filename": "extends-empty-block-2.pg",
                     "val": "test2"
                   }
-                ],
-                "line": 4,
-                "filename": "extends-empty-block-2.pg"
+                ]
               },
               "attrs": [],
               "attributeBlocks": [],
-              "isInline": false,
-              "line": 4,
-              "column": 5,
-              "filename": "extends-empty-block-2.pg"
+              "isInline": false
             }
-          ],
-          "line": 1,
-          "column": 1,
-          "filename": "empty-block.pg"
+          ]
         }
-      ],
-      "line": 0,
-      "filename": "empty-block.pg",
-      "hasExtends": true
+      ]
     }
-  ],
-  "line": 0,
-  "filename": "include-extends-of-common-template.pg"
+  ]
 }
 `;
 
@@ -254,39 +180,23 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 3,
-                            "column": 11,
-                            "filename": "layout.pg",
                             "val": "My Application"
                           }
-                        ],
-                        "line": 3,
-                        "filename": "layout.pg"
+                        ]
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 3,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      "isInline": false
                     },
                     {
                       "type": "Block",
-                      "nodes": [],
-                      "line": 4,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      "nodes": []
                     }
-                  ],
-                  "line": 2,
-                  "filename": "layout.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 2,
-                "column": 3,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
@@ -308,61 +218,33 @@ exports[`cases from pugneum sources > include-extends-relative.pg 1`] = `
                                 "nodes": [
                                   {
                                     "type": "Text",
-                                    "line": 1,
-                                    "column": 4,
-                                    "filename": "include-from-root.pg",
                                     "val": "hello"
                                   }
-                                ],
-                                "line": 1,
-                                "filename": "include-from-root.pg"
+                                ]
                               },
                               "attrs": [],
                               "attributeBlocks": [],
-                              "isInline": false,
-                              "line": 1,
-                              "column": 1,
-                              "filename": "include-from-root.pg"
+                              "isInline": false
                             }
-                          ],
-                          "line": 0,
-                          "filename": "include-from-root.pg"
+                          ]
                         }
-                      ],
-                      "line": 6,
-                      "column": 5,
-                      "filename": "layout.pg"
+                      ]
                     }
-                  ],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.pg"
+                "isInline": false
               }
-            ],
-            "line": 1,
-            "filename": "layout.pg"
+            ]
           },
           "attrs": [],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 1,
-          "column": 1,
-          "filename": "layout.pg"
+          "isInline": false
         }
-      ],
-      "line": 0,
-      "filename": "layout.pg",
-      "hasExtends": true
+      ]
     }
-  ],
-  "line": 0,
-  "filename": "include-extends-relative.pg"
+  ]
 }
 `;
 
@@ -380,78 +262,29 @@ exports[`cases from pugneum sources > include-filter-stylus.pg 1`] = `
             "type": "RawInclude",
             "file": {
               "type": "FileReference",
-              "filename": "include-filter-stylus.pg",
               "path": "some.styl",
-              "line": 2,
-              "column": 18,
-              "fullPath": "some.styl",
-              "str": "@import \\"some-included\\"\\n",
-              "raw": {
-                "type": "Buffer",
-                "data": [
-                  64,
-                  105,
-                  109,
-                  112,
-                  111,
-                  114,
-                  116,
-                  32,
-                  34,
-                  115,
-                  111,
-                  109,
-                  101,
-                  45,
-                  105,
-                  110,
-                  99,
-                  108,
-                  117,
-                  100,
-                  101,
-                  100,
-                  34,
-                  10
-                ]
-              }
+              "str": "@import \\"some-included\\"\\n"
             },
-            "line": 2,
-            "column": 3,
-            "filename": "include-filter-stylus.pg",
             "filters": [
               {
                 "type": "IncludeFilter",
                 "name": "stylus",
-                "attrs": [],
-                "line": 2,
-                "column": 10,
-                "filename": "include-filter-stylus.pg"
+                "attrs": []
               }
             ]
           }
-        ],
-        "line": 1,
-        "filename": "include-filter-stylus.pg"
+        ]
       },
       "attrs": [
         {
           "name": "type",
-          "val": "text/css",
-          "line": 1,
-          "column": 7,
-          "filename": "include-filter-stylus.pg"
+          "val": "text/css"
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include-filter-stylus.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include-filter-stylus.pg"
+  ]
 }
 `;
 
@@ -475,77 +308,14 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                   "type": "RawInclude",
                   "file": {
                     "type": "FileReference",
-                    "filename": "include-filter.pg",
                     "path": "some.md",
-                    "line": 3,
-                    "column": 25,
-                    "fullPath": "some.md",
-                    "str": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n",
-                    "raw": {
-                      "type": "Buffer",
-                      "data": [
-                        74,
-                        117,
-                        115,
-                        116,
-                        32,
-                        95,
-                        115,
-                        111,
-                        109,
-                        101,
-                        95,
-                        32,
-                        109,
-                        97,
-                        114,
-                        107,
-                        100,
-                        111,
-                        119,
-                        110,
-                        32,
-                        42,
-                        42,
-                        116,
-                        101,
-                        115,
-                        116,
-                        115,
-                        42,
-                        42,
-                        46,
-                        10,
-                        10,
-                        87,
-                        105,
-                        116,
-                        104,
-                        32,
-                        110,
-                        101,
-                        119,
-                        32,
-                        108,
-                        105,
-                        110,
-                        101,
-                        46,
-                        10
-                      ]
-                    }
+                    "str": "Just _some_ markdown **tests**.\\n\\nWith new line.\\n"
                   },
-                  "line": 3,
-                  "column": 5,
-                  "filename": "include-filter.pg",
                   "filters": [
                     {
                       "type": "IncludeFilter",
                       "name": "markdown-it",
-                      "attrs": [],
-                      "line": 3,
-                      "column": 12,
-                      "filename": "include-filter.pg"
+                      "attrs": []
                     }
                   ]
                 },
@@ -559,63 +329,9 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                         "type": "RawInclude",
                         "file": {
                           "type": "FileReference",
-                          "filename": "include-filter.pg",
                           "path": "include-filter-coffee.coffee",
-                          "line": 5,
-                          "column": 42,
-                          "fullPath": "include-filter-coffee.coffee",
-                          "str": "math =\\n  square: (value) -> value * value\\n",
-                          "raw": {
-                            "type": "Buffer",
-                            "data": [
-                              109,
-                              97,
-                              116,
-                              104,
-                              32,
-                              61,
-                              10,
-                              32,
-                              32,
-                              115,
-                              113,
-                              117,
-                              97,
-                              114,
-                              101,
-                              58,
-                              32,
-                              40,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              41,
-                              32,
-                              45,
-                              62,
-                              32,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              32,
-                              42,
-                              32,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              10
-                            ]
-                          }
+                          "str": "math =\\n  square: (value) -> value * value\\n"
                         },
-                        "line": 5,
-                        "column": 7,
-                        "filename": "include-filter.pg",
                         "filters": [
                           {
                             "type": "IncludeFilter",
@@ -623,28 +339,17 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                             "attrs": [
                               {
                                 "name": "minify",
-                                "val": "true",
-                                "line": 5,
-                                "column": 29,
-                                "filename": "include-filter.pg"
+                                "val": "true"
                               }
-                            ],
-                            "line": 5,
-                            "column": 14,
-                            "filename": "include-filter.pg"
+                            ]
                           }
                         ]
                       }
-                    ],
-                    "line": 4,
-                    "filename": "include-filter.pg"
+                    ]
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false,
-                  "line": 4,
-                  "column": 5,
-                  "filename": "include-filter.pg"
+                  "isInline": false
                 },
                 {
                   "type": "Tag",
@@ -656,63 +361,9 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                         "type": "RawInclude",
                         "file": {
                           "type": "FileReference",
-                          "filename": "include-filter.pg",
                           "path": "include-filter-coffee.coffee",
-                          "line": 7,
-                          "column": 43,
-                          "fullPath": "include-filter-coffee.coffee",
-                          "str": "math =\\n  square: (value) -> value * value\\n",
-                          "raw": {
-                            "type": "Buffer",
-                            "data": [
-                              109,
-                              97,
-                              116,
-                              104,
-                              32,
-                              61,
-                              10,
-                              32,
-                              32,
-                              115,
-                              113,
-                              117,
-                              97,
-                              114,
-                              101,
-                              58,
-                              32,
-                              40,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              41,
-                              32,
-                              45,
-                              62,
-                              32,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              32,
-                              42,
-                              32,
-                              118,
-                              97,
-                              108,
-                              117,
-                              101,
-                              10
-                            ]
-                          }
+                          "str": "math =\\n  square: (value) -> value * value\\n"
                         },
-                        "line": 7,
-                        "column": 7,
-                        "filename": "include-filter.pg",
                         "filters": [
                           {
                             "type": "IncludeFilter",
@@ -720,54 +371,31 @@ exports[`cases from pugneum sources > include-filter.pg 1`] = `
                             "attrs": [
                               {
                                 "name": "minify",
-                                "val": "false",
-                                "line": 7,
-                                "column": 29,
-                                "filename": "include-filter.pg"
+                                "val": "false"
                               }
-                            ],
-                            "line": 7,
-                            "column": 14,
-                            "filename": "include-filter.pg"
+                            ]
                           }
                         ]
                       }
-                    ],
-                    "line": 6,
-                    "filename": "include-filter.pg"
+                    ]
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false,
-                  "line": 6,
-                  "column": 5,
-                  "filename": "include-filter.pg"
+                  "isInline": false
                 }
-              ],
-              "line": 2,
-              "filename": "include-filter.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 2,
-            "column": 3,
-            "filename": "include-filter.pg"
+            "isInline": false
           }
-        ],
-        "line": 1,
-        "filename": "include-filter.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include-filter.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include-filter.pg"
+  ]
 }
 `;
 
@@ -777,27 +405,16 @@ exports[`cases from pugneum sources > include-only-text-body.pg 1`] = `
   "nodes": [
     {
       "type": "Text",
-      "line": 1,
-      "column": 3,
-      "filename": "include-only-text-body.pg",
       "val": "The message is \\""
     },
     {
-      "type": "YieldBlock",
-      "line": 2,
-      "column": 1,
-      "filename": "include-only-text-body.pg"
+      "type": "YieldBlock"
     },
     {
       "type": "Text",
-      "line": 3,
-      "column": 3,
-      "filename": "include-only-text-body.pg",
       "val": "\\""
     }
-  ],
-  "line": 0,
-  "filename": "include-only-text-body.pg"
+  ]
 }
 `;
 
@@ -828,16 +445,10 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 1,
-                            "column": 3,
-                            "filename": "include-only-text-body.pg",
                             "val": "The message is \\""
                           },
                           {
                             "type": "Block",
-                            "line": 2,
-                            "column": 1,
-                            "filename": "include-only-text-body.pg",
                             "nodes": [
                               {
                                 "type": "Block",
@@ -850,75 +461,43 @@ exports[`cases from pugneum sources > include-only-text.pg 1`] = `
                                       "nodes": [
                                         {
                                           "type": "Text",
-                                          "line": 5,
-                                          "column": 12,
-                                          "filename": "include-only-text.pg",
                                           "val": "hello world"
                                         }
-                                      ],
-                                      "line": 5,
-                                      "filename": "include-only-text.pg"
+                                      ]
                                     },
                                     "attrs": [],
                                     "attributeBlocks": [],
-                                    "isInline": true,
-                                    "line": 5,
-                                    "column": 9,
-                                    "filename": "include-only-text.pg"
+                                    "isInline": true
                                   }
-                                ],
-                                "line": 5,
-                                "filename": "include-only-text.pg"
+                                ]
                               }
                             ]
                           },
                           {
                             "type": "Text",
-                            "line": 3,
-                            "column": 3,
-                            "filename": "include-only-text-body.pg",
                             "val": "\\""
                           }
-                        ],
-                        "line": 0,
-                        "filename": "include-only-text-body.pg"
+                        ]
                       }
-                    ],
-                    "line": 3,
-                    "filename": "include-only-text.pg"
+                    ]
                   },
                   "attrs": [],
                   "attributeBlocks": [],
-                  "isInline": false,
-                  "line": 3,
-                  "column": 5,
-                  "filename": "include-only-text.pg"
+                  "isInline": false
                 }
-              ],
-              "line": 2,
-              "filename": "include-only-text.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 2,
-            "column": 3,
-            "filename": "include-only-text.pg"
+            "isInline": false
           }
-        ],
-        "line": 1,
-        "filename": "include-only-text.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include-only-text.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include-only-text.pg"
+  ]
 }
 `;
 
@@ -940,51 +519,30 @@ exports[`cases from pugneum sources > include-with-text-head.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "line": 3,
-                  "column": 5,
-                  "filename": "include-with-text-head.pg",
                   "val": "alert('hello world');"
                 }
-              ],
-              "line": 2,
-              "filename": "include-with-text-head.pg"
+              ]
             },
             "attrs": [
               {
                 "name": "type",
-                "val": "text/javascript",
-                "line": 2,
-                "column": 10,
-                "filename": "include-with-text-head.pg"
+                "val": "text/javascript"
               }
             ],
             "attributeBlocks": [],
             "isInline": false,
-            "line": 2,
-            "column": 3,
-            "filename": "include-with-text-head.pg",
             "textOnly": true
           },
           {
-            "type": "YieldBlock",
-            "line": 4,
-            "column": 3,
-            "filename": "include-with-text-head.pg"
+            "type": "YieldBlock"
           }
-        ],
-        "line": 1,
-        "filename": "include-with-text-head.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include-with-text-head.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include-with-text-head.pg"
+  ]
 }
 `;
 
@@ -1015,36 +573,22 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 3,
-                            "column": 5,
-                            "filename": "include-with-text-head.pg",
                             "val": "alert('hello world');"
                           }
-                        ],
-                        "line": 2,
-                        "filename": "include-with-text-head.pg"
+                        ]
                       },
                       "attrs": [
                         {
                           "name": "type",
-                          "val": "text/javascript",
-                          "line": 2,
-                          "column": 10,
-                          "filename": "include-with-text-head.pg"
+                          "val": "text/javascript"
                         }
                       ],
                       "attributeBlocks": [],
                       "isInline": false,
-                      "line": 2,
-                      "column": 3,
-                      "filename": "include-with-text-head.pg",
                       "textOnly": true
                     },
                     {
                       "type": "Block",
-                      "line": 4,
-                      "column": 3,
-                      "filename": "include-with-text-head.pg",
                       "nodes": [
                         {
                           "type": "Block",
@@ -1054,84 +598,52 @@ exports[`cases from pugneum sources > include-with-text.pg 1`] = `
                               "name": "script",
                               "block": {
                                 "type": "Block",
-                                "nodes": [],
-                                "line": 3,
-                                "filename": "include-with-text.pg"
+                                "nodes": []
                               },
                               "attrs": [
                                 {
                                   "name": "src",
-                                  "val": "/caustic.js",
-                                  "line": 3,
-                                  "column": 12,
-                                  "filename": "include-with-text.pg"
+                                  "val": "/caustic.js"
                                 }
                               ],
                               "attributeBlocks": [],
-                              "isInline": false,
-                              "line": 3,
-                              "column": 5,
-                              "filename": "include-with-text.pg"
+                              "isInline": false
                             },
                             {
                               "type": "Tag",
                               "name": "script",
                               "block": {
                                 "type": "Block",
-                                "nodes": [],
-                                "line": 4,
-                                "filename": "include-with-text.pg"
+                                "nodes": []
                               },
                               "attrs": [
                                 {
                                   "name": "src",
-                                  "val": "/app.js",
-                                  "line": 4,
-                                  "column": 12,
-                                  "filename": "include-with-text.pg"
+                                  "val": "/app.js"
                                 }
                               ],
                               "attributeBlocks": [],
-                              "isInline": false,
-                              "line": 4,
-                              "column": 5,
-                              "filename": "include-with-text.pg"
+                              "isInline": false
                             }
-                          ],
-                          "line": 3,
-                          "filename": "include-with-text.pg"
+                          ]
                         }
                       ]
                     }
-                  ],
-                  "line": 1,
-                  "filename": "include-with-text-head.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 1,
-                "column": 1,
-                "filename": "include-with-text-head.pg"
+                "isInline": false
               }
-            ],
-            "line": 0,
-            "filename": "include-with-text-head.pg"
+            ]
           }
-        ],
-        "line": 1,
-        "filename": "include-with-text.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include-with-text.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include-with-text.pg"
+  ]
 }
 `;
 
@@ -1162,21 +674,13 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 2,
-                            "column": 6,
-                            "filename": "pet.pg",
                             "val": "{{name}}"
                           }
-                        ],
-                        "line": 2,
-                        "filename": "pet.pg"
+                        ]
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 2,
-                      "column": 3,
-                      "filename": "pet.pg"
+                      "isInline": false
                     },
                     {
                       "type": "Tag",
@@ -1186,74 +690,43 @@ exports[`cases from pugneum sources > include.script.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 3,
-                            "column": 5,
-                            "filename": "pet.pg",
                             "val": "{{name}} is a {{species}} that is {{age}} old"
                           }
-                        ],
-                        "line": 3,
-                        "filename": "pet.pg"
+                        ]
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 3,
-                      "column": 3,
-                      "filename": "pet.pg"
+                      "isInline": false
                     }
-                  ],
-                  "line": 1,
-                  "filename": "pet.pg"
+                  ]
                 },
                 "attrs": [
                   {
                     "name": "class",
-                    "val": "pet",
-                    "line": 1,
-                    "column": 1,
-                    "filename": "pet.pg"
+                    "val": "pet"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 1,
-                "column": 1,
-                "filename": "pet.pg"
+                "isInline": false
               }
-            ],
-            "line": 0,
-            "filename": "pet.pg"
+            ]
           }
-        ],
-        "line": 1,
-        "filename": "include.script.pg"
+        ]
       },
       "attrs": [
         {
           "name": "id",
-          "val": "pet-template",
-          "line": 1,
-          "column": 7,
-          "filename": "include.script.pg"
+          "val": "pet-template"
         },
         {
           "name": "type",
-          "val": "text/x-template",
-          "line": 1,
-          "column": 21,
-          "filename": "include.script.pg"
+          "val": "text/x-template"
         }
       ],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "include.script.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "include.script.pg"
+  ]
 }
 `;
 
@@ -1281,27 +754,17 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                       "name": "title",
                       "block": {
                         "type": "Block",
-                        "nodes": [],
-                        "line": 3,
-                        "filename": "yield-nested.pg"
+                        "nodes": []
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 3,
-                      "column": 5,
-                      "filename": "yield-nested.pg"
+                      "isInline": false
                     }
-                  ],
-                  "line": 2,
-                  "filename": "yield-nested.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 2,
-                "column": 3,
-                "filename": "yield-nested.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
@@ -1317,21 +780,13 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                         "nodes": [
                           {
                             "type": "Text",
-                            "line": 5,
-                            "column": 8,
-                            "filename": "yield-nested.pg",
                             "val": "Page"
                           }
-                        ],
-                        "line": 5,
-                        "filename": "yield-nested.pg"
+                        ]
                       },
                       "attrs": [],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 5,
-                      "column": 5,
-                      "filename": "yield-nested.pg"
+                      "isInline": false
                     },
                     {
                       "type": "Tag",
@@ -1347,9 +802,6 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                               "nodes": [
                                 {
                                   "type": "Block",
-                                  "line": 8,
-                                  "column": 9,
-                                  "filename": "yield-nested.pg",
                                   "nodes": [
                                     {
                                       "type": "Block",
@@ -1362,21 +814,13 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                                             "nodes": [
                                               {
                                                 "type": "Text",
-                                                "line": 3,
-                                                "column": 5,
-                                                "filename": "include.yield.nested.pg",
                                                 "val": "some content"
                                               }
-                                            ],
-                                            "line": 3,
-                                            "filename": "include.yield.nested.pg"
+                                            ]
                                           },
                                           "attrs": [],
                                           "attributeBlocks": [],
-                                          "isInline": false,
-                                          "line": 3,
-                                          "column": 3,
-                                          "filename": "include.yield.nested.pg"
+                                          "isInline": false
                                         },
                                         {
                                           "type": "Tag",
@@ -1386,65 +830,39 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                                             "nodes": [
                                               {
                                                 "type": "Text",
-                                                "line": 4,
-                                                "column": 5,
-                                                "filename": "include.yield.nested.pg",
                                                 "val": "and some more"
                                               }
-                                            ],
-                                            "line": 4,
-                                            "filename": "include.yield.nested.pg"
+                                            ]
                                           },
                                           "attrs": [],
                                           "attributeBlocks": [],
-                                          "isInline": false,
-                                          "line": 4,
-                                          "column": 3,
-                                          "filename": "include.yield.nested.pg"
+                                          "isInline": false
                                         }
-                                      ],
-                                      "line": 3,
-                                      "filename": "include.yield.nested.pg"
+                                      ]
                                     }
                                   ]
                                 }
-                              ],
-                              "line": 7,
-                              "filename": "yield-nested.pg"
+                              ]
                             },
                             "attrs": [
                               {
                                 "name": "id",
-                                "val": "content-wrapper",
-                                "line": 7,
-                                "column": 7,
-                                "filename": "yield-nested.pg"
+                                "val": "content-wrapper"
                               }
                             ],
                             "attributeBlocks": [],
-                            "isInline": false,
-                            "line": 7,
-                            "column": 7,
-                            "filename": "yield-nested.pg"
+                            "isInline": false
                           }
-                        ],
-                        "line": 6,
-                        "filename": "yield-nested.pg"
+                        ]
                       },
                       "attrs": [
                         {
                           "name": "id",
-                          "val": "content",
-                          "line": 6,
-                          "column": 5,
-                          "filename": "yield-nested.pg"
+                          "val": "content"
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 6,
-                      "column": 5,
-                      "filename": "yield-nested.pg"
+                      "isInline": false
                     },
                     {
                       "type": "Tag",
@@ -1457,65 +875,38 @@ exports[`cases from pugneum sources > include.yield.nested.pg 1`] = `
                             "name": "stuff",
                             "block": {
                               "type": "Block",
-                              "nodes": [],
-                              "line": 10,
-                              "filename": "yield-nested.pg"
+                              "nodes": []
                             },
                             "attrs": [],
                             "attributeBlocks": [],
-                            "isInline": false,
-                            "line": 10,
-                            "column": 7,
-                            "filename": "yield-nested.pg"
+                            "isInline": false
                           }
-                        ],
-                        "line": 9,
-                        "filename": "yield-nested.pg"
+                        ]
                       },
                       "attrs": [
                         {
                           "name": "id",
-                          "val": "footer",
-                          "line": 9,
-                          "column": 5,
-                          "filename": "yield-nested.pg"
+                          "val": "footer"
                         }
                       ],
                       "attributeBlocks": [],
-                      "isInline": false,
-                      "line": 9,
-                      "column": 5,
-                      "filename": "yield-nested.pg"
+                      "isInline": false
                     }
-                  ],
-                  "line": 4,
-                  "filename": "yield-nested.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 3,
-                "filename": "yield-nested.pg"
+                "isInline": false
               }
-            ],
-            "line": 1,
-            "filename": "yield-nested.pg"
+            ]
           },
           "attrs": [],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 1,
-          "column": 1,
-          "filename": "yield-nested.pg"
+          "isInline": false
         }
-      ],
-      "line": 0,
-      "filename": "yield-nested.pg"
+      ]
     }
-  ],
-  "line": 0,
-  "filename": "include.yield.nested.pg"
+  ]
 }
 `;
 
@@ -1537,36 +928,21 @@ exports[`cases from pugneum sources > includes-with-ext-js.pg 1`] = `
               "nodes": [
                 {
                   "type": "Text",
-                  "val": "var x = '\\\\n here is some \\\\n new lined text';\\n",
-                  "line": 3,
-                  "column": 5,
-                  "filename": "includes-with-ext-js.pg"
+                  "val": "var x = '\\\\n here is some \\\\n new lined text';\\n"
                 }
-              ],
-              "line": 2,
-              "filename": "includes-with-ext-js.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": true,
-            "line": 2,
-            "column": 3,
-            "filename": "includes-with-ext-js.pg"
+            "isInline": true
           }
-        ],
-        "line": 1,
-        "filename": "includes-with-ext-js.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 1,
-      "column": 1,
-      "filename": "includes-with-ext-js.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "includes-with-ext-js.pg"
+  ]
 }
 `;
 
@@ -1592,36 +968,21 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
                   "nodes": [
                     {
                       "type": "Text",
-                      "line": 3,
-                      "column": 5,
-                      "filename": "mixins.pg",
                       "val": "bar"
                     }
-                  ],
-                  "line": 3,
-                  "filename": "mixins.pg"
+                  ]
                 },
                 "attrs": [],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 3,
-                "column": 3,
-                "filename": "mixins.pg"
+                "isInline": false
               }
-            ],
-            "line": 3,
-            "filename": "mixins.pg"
+            ]
           },
           "call": false,
           "usesNamedBlocks": false,
-          "usesUnnamedBlock": false,
-          "line": 2,
-          "column": 1,
-          "filename": "mixins.pg"
+          "usesUnnamedBlock": false
         }
-      ],
-      "line": 0,
-      "filename": "mixins.pg"
+      ]
     },
     {
       "type": "Mixin",
@@ -1630,10 +991,7 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
       "block": null,
       "call": true,
       "attrs": [],
-      "attributeBlocks": [],
-      "line": 4,
-      "column": 1,
-      "filename": "includes.pg"
+      "attributeBlocks": []
     },
     {
       "type": "Tag",
@@ -1643,17 +1001,11 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
         "nodes": [
           {
             "type": "Text",
-            "val": "<p>:)</p>\\n",
-            "line": 7,
-            "column": 3,
-            "filename": "includes.pg"
+            "val": "<p>:)</p>\\n"
           },
           {
             "type": "Text",
-            "val": "<script>\\n  console.log(\\"foo\\\\nbar\\")\\n</script>\\n",
-            "line": 8,
-            "column": 3,
-            "filename": "includes.pg"
+            "val": "<script>\\n  console.log(\\"foo\\\\nbar\\")\\n</script>\\n"
           },
           {
             "type": "Tag",
@@ -1665,210 +1017,35 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
                   "type": "RawInclude",
                   "file": {
                     "type": "FileReference",
-                    "filename": "includes.pg",
                     "path": "auxiliary/includable.js",
-                    "line": 10,
-                    "column": 22,
-                    "fullPath": "includable.js",
-                    "str": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n",
-                    "raw": {
-                      "type": "Buffer",
-                      "data": [
-                        118,
-                        97,
-                        114,
-                        32,
-                        83,
-                        84,
-                        82,
-                        73,
-                        78,
-                        71,
-                        95,
-                        83,
-                        85,
-                        66,
-                        83,
-                        84,
-                        73,
-                        84,
-                        85,
-                        84,
-                        73,
-                        79,
-                        78,
-                        83,
-                        32,
-                        61,
-                        32,
-                        123,
-                        10,
-                        32,
-                        32,
-                        47,
-                        47,
-                        32,
-                        116,
-                        97,
-                        98,
-                        108,
-                        101,
-                        32,
-                        111,
-                        102,
-                        32,
-                        99,
-                        104,
-                        97,
-                        114,
-                        97,
-                        99,
-                        116,
-                        101,
-                        114,
-                        32,
-                        115,
-                        117,
-                        98,
-                        115,
-                        116,
-                        105,
-                        116,
-                        117,
-                        116,
-                        105,
-                        111,
-                        110,
-                        115,
-                        10,
-                        32,
-                        32,
-                        39,
-                        92,
-                        116,
-                        39,
-                        58,
-                        32,
-                        39,
-                        92,
-                        92,
-                        116,
-                        39,
-                        44,
-                        10,
-                        32,
-                        32,
-                        39,
-                        92,
-                        114,
-                        39,
-                        58,
-                        32,
-                        39,
-                        92,
-                        92,
-                        114,
-                        39,
-                        44,
-                        10,
-                        32,
-                        32,
-                        39,
-                        92,
-                        110,
-                        39,
-                        58,
-                        32,
-                        39,
-                        92,
-                        92,
-                        110,
-                        39,
-                        44,
-                        10,
-                        32,
-                        32,
-                        39,
-                        34,
-                        39,
-                        58,
-                        32,
-                        39,
-                        92,
-                        92,
-                        34,
-                        39,
-                        44,
-                        10,
-                        32,
-                        32,
-                        39,
-                        92,
-                        92,
-                        39,
-                        58,
-                        32,
-                        39,
-                        92,
-                        92,
-                        92,
-                        92,
-                        39,
-                        44,
-                        10,
-                        125,
-                        59,
-                        10
-                      ]
-                    }
+                    "str": "var STRING_SUBSTITUTIONS = {\\n  // table of character substitutions\\n  '\\\\t': '\\\\\\\\t',\\n  '\\\\r': '\\\\\\\\r',\\n  '\\\\n': '\\\\\\\\n',\\n  '\\"': '\\\\\\\\\\"',\\n  '\\\\\\\\': '\\\\\\\\\\\\\\\\',\\n};\\n"
                   },
-                  "line": 10,
-                  "column": 5,
-                  "filename": "includes.pg",
                   "filters": [
                     {
                       "type": "IncludeFilter",
                       "name": "verbatim",
-                      "attrs": [],
-                      "line": 10,
-                      "column": 12,
-                      "filename": "includes.pg"
+                      "attrs": []
                     }
                   ]
                 }
-              ],
-              "line": 9,
-              "filename": "includes.pg"
+              ]
             },
             "attrs": [
               {
                 "name": "type",
-                "val": "text/javascript",
-                "line": 9,
-                "column": 10,
-                "filename": "includes.pg"
+                "val": "text/javascript"
               }
             ],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 9,
-            "column": 3,
-            "filename": "includes.pg"
+            "isInline": false
           }
-        ],
-        "line": 6,
-        "filename": "includes.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 6,
-      "column": 1,
-      "filename": "includes.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "includes.pg"
+  ]
 }
 `;
 
@@ -1890,127 +1067,84 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/jquery.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/caustic.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "app-layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "app.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "app-layout.pg"
+                    "val": "app.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "app-layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.append.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "foo.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "layout.append.pg"
+                    "val": "foo.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.append.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 6,
-                  "filename": "layout.append.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "bar.js",
-                    "line": 6,
-                    "column": 10,
-                    "filename": "layout.append.pg"
+                    "val": "bar.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 6,
-                "column": 3,
-                "filename": "layout.append.pg"
+                "isInline": false
               }
             ],
-            "line": 3,
-            "filename": "layout.pg",
             "name": "head",
-            "mode": "replace",
-            "column": 3
+            "mode": "replace"
           },
           {
             "type": "Tag",
@@ -2021,38 +1155,22 @@ exports[`cases from pugneum sources > layout.append.pg 1`] = `
                 {
                   "type": "NamedBlock",
                   "nodes": [],
-                  "line": 7,
-                  "filename": "layout.pg",
                   "name": "body",
-                  "mode": "replace",
-                  "column": 5
+                  "mode": "replace"
                 }
-              ],
-              "line": 6,
-              "filename": "layout.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.pg"
+            "isInline": false
           }
-        ],
-        "line": 2,
-        "filename": "layout.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "layout.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "layout.pg",
-  "hasExtends": true
+  ]
 }
 `;
 
@@ -2074,127 +1192,84 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/jquery.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/caustic.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "app-layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "app.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "app-layout.pg"
+                    "val": "app.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "app-layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.append.without-block.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "foo.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "layout.append.without-block.pg"
+                    "val": "foo.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.append.without-block.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 6,
-                  "filename": "layout.append.without-block.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "bar.js",
-                    "line": 6,
-                    "column": 10,
-                    "filename": "layout.append.without-block.pg"
+                    "val": "bar.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 6,
-                "column": 3,
-                "filename": "layout.append.without-block.pg"
+                "isInline": false
               }
             ],
-            "line": 3,
-            "filename": "layout.pg",
             "name": "head",
-            "mode": "replace",
-            "column": 3
+            "mode": "replace"
           },
           {
             "type": "Tag",
@@ -2205,38 +1280,22 @@ exports[`cases from pugneum sources > layout.append.without-block.pg 1`] = `
                 {
                   "type": "NamedBlock",
                   "nodes": [],
-                  "line": 7,
-                  "filename": "layout.pg",
                   "name": "body",
-                  "mode": "replace",
-                  "column": 5
+                  "mode": "replace"
                 }
-              ],
-              "line": 6,
-              "filename": "layout.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.pg"
+            "isInline": false
           }
-        ],
-        "line": 2,
-        "filename": "layout.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "layout.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "layout.pg",
-  "hasExtends": true
+  ]
 }
 `;
 
@@ -2255,36 +1314,22 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "line": 13,
-                "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg",
                 "val": "Last prepend must appear at top"
               }
-            ],
-            "line": 13,
-            "filename": "layout.multi.append.prepend.block.pg"
+            ]
           },
           "attrs": [
             {
               "name": "class",
-              "val": "last",
-              "line": 13,
-              "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "last"
             },
             {
               "name": "class",
-              "val": "prepend",
-              "line": 13,
-              "column": 8,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "prepend"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 13,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
@@ -2294,36 +1339,22 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "line": 7,
-                "column": 18,
-                "filename": "layout.multi.append.prepend.block.pg",
                 "val": "Something prepended to content"
               }
-            ],
-            "line": 7,
-            "filename": "layout.multi.append.prepend.block.pg"
+            ]
           },
           "attrs": [
             {
               "name": "class",
-              "val": "first",
-              "line": 7,
-              "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "first"
             },
             {
               "name": "class",
-              "val": "prepend",
-              "line": 7,
-              "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "prepend"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 7,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
@@ -2333,29 +1364,18 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "line": 5,
-                "column": 5,
-                "filename": "redefine.pg",
                 "val": "Defined content"
               }
-            ],
-            "line": 4,
-            "filename": "redefine.pg"
+            ]
           },
           "attrs": [
             {
               "name": "class",
-              "val": "content",
-              "line": 4,
-              "column": 2,
-              "filename": "redefine.pg"
+              "val": "content"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 4,
-          "column": 2,
-          "filename": "redefine.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
@@ -2365,36 +1385,22 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "line": 4,
-                "column": 17,
-                "filename": "layout.multi.append.prepend.block.pg",
                 "val": "Something appended to content"
               }
-            ],
-            "line": 4,
-            "filename": "layout.multi.append.prepend.block.pg"
+            ]
           },
           "attrs": [
             {
               "name": "class",
-              "val": "first",
-              "line": 4,
-              "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "first"
             },
             {
               "name": "class",
-              "val": "append",
-              "line": 4,
-              "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "append"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 4,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
@@ -2404,43 +1410,26 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
             "nodes": [
               {
                 "type": "Text",
-                "line": 10,
-                "column": 16,
-                "filename": "layout.multi.append.prepend.block.pg",
                 "val": "Last append must be most last"
               }
-            ],
-            "line": 10,
-            "filename": "layout.multi.append.prepend.block.pg"
+            ]
           },
           "attrs": [
             {
               "name": "class",
-              "val": "last",
-              "line": 10,
-              "column": 3,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "last"
             },
             {
               "name": "class",
-              "val": "append",
-              "line": 10,
-              "column": 8,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "append"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 10,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         }
       ],
-      "line": 1,
-      "filename": "root.pg",
       "name": "content",
-      "mode": "replace",
-      "column": 1
+      "mode": "replace"
     },
     {
       "type": "NamedBlock",
@@ -2450,84 +1439,54 @@ exports[`cases from pugneum sources > layout.multi.append.prepend.block.pg 1`] =
           "name": "script",
           "block": {
             "type": "Block",
-            "nodes": [],
-            "line": 19,
-            "filename": "layout.multi.append.prepend.block.pg"
+            "nodes": []
           },
           "attrs": [
             {
               "name": "src",
-              "val": "foo.js",
-              "line": 19,
-              "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "foo.js"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 19,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
           "name": "script",
           "block": {
             "type": "Block",
-            "nodes": [],
-            "line": 5,
-            "filename": "root.pg"
+            "nodes": []
           },
           "attrs": [
             {
               "name": "src",
-              "val": "/app.js",
-              "line": 5,
-              "column": 9,
-              "filename": "root.pg"
+              "val": "/app.js"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 5,
-          "column": 2,
-          "filename": "root.pg"
+          "isInline": false
         },
         {
           "type": "Tag",
           "name": "script",
           "block": {
             "type": "Block",
-            "nodes": [],
-            "line": 16,
-            "filename": "layout.multi.append.prepend.block.pg"
+            "nodes": []
           },
           "attrs": [
             {
               "name": "src",
-              "val": "jquery.js",
-              "line": 16,
-              "column": 9,
-              "filename": "layout.multi.append.prepend.block.pg"
+              "val": "jquery.js"
             }
           ],
           "attributeBlocks": [],
-          "isInline": false,
-          "line": 16,
-          "column": 2,
-          "filename": "layout.multi.append.prepend.block.pg"
+          "isInline": false
         }
       ],
-      "line": 4,
-      "filename": "root.pg",
       "name": "head",
-      "mode": "replace",
-      "column": 1
+      "mode": "replace"
     }
-  ],
-  "line": 0,
-  "filename": "root.pg",
-  "hasExtends": true
+  ]
 }
 `;
 
@@ -2549,127 +1508,84 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.prepend.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "foo.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "layout.prepend.pg"
+                    "val": "foo.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.prepend.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 6,
-                  "filename": "layout.prepend.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "bar.js",
-                    "line": 6,
-                    "column": 10,
-                    "filename": "layout.prepend.pg"
+                    "val": "bar.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 6,
-                "column": 3,
-                "filename": "layout.prepend.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "app-layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "app.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "app-layout.pg"
+                    "val": "app.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "app-layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/jquery.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/caustic.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               }
             ],
-            "line": 3,
-            "filename": "layout.pg",
             "name": "head",
-            "mode": "replace",
-            "column": 3
+            "mode": "replace"
           },
           {
             "type": "Tag",
@@ -2680,38 +1596,22 @@ exports[`cases from pugneum sources > layout.prepend.pg 1`] = `
                 {
                   "type": "NamedBlock",
                   "nodes": [],
-                  "line": 7,
-                  "filename": "layout.pg",
                   "name": "body",
-                  "mode": "replace",
-                  "column": 5
+                  "mode": "replace"
                 }
-              ],
-              "line": 6,
-              "filename": "layout.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.pg"
+            "isInline": false
           }
-        ],
-        "line": 2,
-        "filename": "layout.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "layout.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "layout.pg",
-  "hasExtends": true
+  ]
 }
 `;
 
@@ -2733,127 +1633,84 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.prepend.without-block.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "foo.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "layout.prepend.without-block.pg"
+                    "val": "foo.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "layout.prepend.without-block.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 6,
-                  "filename": "layout.prepend.without-block.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "bar.js",
-                    "line": 6,
-                    "column": 10,
-                    "filename": "layout.prepend.without-block.pg"
+                    "val": "bar.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 6,
-                "column": 3,
-                "filename": "layout.prepend.without-block.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "app-layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "app.js",
-                    "line": 5,
-                    "column": 10,
-                    "filename": "app-layout.pg"
+                    "val": "app.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 3,
-                "filename": "app-layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 4,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/jquery.js",
-                    "line": 4,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/jquery.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 4,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               },
               {
                 "type": "Tag",
                 "name": "script",
                 "block": {
                   "type": "Block",
-                  "nodes": [],
-                  "line": 5,
-                  "filename": "layout.pg"
+                  "nodes": []
                 },
                 "attrs": [
                   {
                     "name": "src",
-                    "val": "vendor/caustic.js",
-                    "line": 5,
-                    "column": 12,
-                    "filename": "layout.pg"
+                    "val": "vendor/caustic.js"
                   }
                 ],
                 "attributeBlocks": [],
-                "isInline": false,
-                "line": 5,
-                "column": 5,
-                "filename": "layout.pg"
+                "isInline": false
               }
             ],
-            "line": 3,
-            "filename": "layout.pg",
             "name": "head",
-            "mode": "replace",
-            "column": 3
+            "mode": "replace"
           },
           {
             "type": "Tag",
@@ -2864,37 +1721,21 @@ exports[`cases from pugneum sources > layout.prepend.without-block.pg 1`] = `
                 {
                   "type": "NamedBlock",
                   "nodes": [],
-                  "line": 7,
-                  "filename": "layout.pg",
                   "name": "body",
-                  "mode": "replace",
-                  "column": 5
+                  "mode": "replace"
                 }
-              ],
-              "line": 6,
-              "filename": "layout.pg"
+              ]
             },
             "attrs": [],
             "attributeBlocks": [],
-            "isInline": false,
-            "line": 6,
-            "column": 3,
-            "filename": "layout.pg"
+            "isInline": false
           }
-        ],
-        "line": 2,
-        "filename": "layout.pg"
+        ]
       },
       "attrs": [],
       "attributeBlocks": [],
-      "isInline": false,
-      "line": 2,
-      "column": 1,
-      "filename": "layout.pg"
+      "isInline": false
     }
-  ],
-  "line": 0,
-  "filename": "layout.pg",
-  "hasExtends": true
+  ]
 }
 `;

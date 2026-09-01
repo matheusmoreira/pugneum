@@ -1,2 +1,2 @@
 mixin image(src)
-  img(cl-src=src)&attributes(attributes)
+  img(cl-src=src)

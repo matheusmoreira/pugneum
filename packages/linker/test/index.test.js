@@ -24,10 +24,23 @@ function linkFile(filename) {
   return JSON.parse(
     JSON.stringify(linked, function (key, value) {
       if (
-        (key === 'filename' || key === 'fullPath') &&
-        typeof value === 'string'
+        key === 'line' ||
+        key === 'column' ||
+        key === 'filename' ||
+        key === 'fullPath' ||
+        key === 'raw'
       ) {
-        return path.basename(value);
+        return undefined;
+      }
+      if (
+        key === 'hasExtends' ||
+        key === 'declaredBlocks' ||
+        key === 'parents' ||
+        key === 'ignore'
+      ) {
+        throw new Error(
+          'linker-private field escaped into the public AST: ' + key,
+        );
       }
       return value;
     }),
@@ -45,6 +58,42 @@ function testDir(dir) {
 
 describe('cases from pugneum sources', function () {
   testDir(__dirname + '/cases');
+});
+
+function findPugneumFiles(dir) {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+    const filename = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...findPugneumFiles(filename));
+    } else if (/\.pg$/.test(entry.name)) {
+      files.push(filename);
+    }
+  }
+  return files.sort();
+}
+
+test('every owned auxiliary and positive fixture is executable', () => {
+  const fixtureDir = path.join(__dirname, 'fixtures');
+  const expectedFailures = new Set([
+    path.join(fixtureDir, 'multi-file-error', 'child.pg'),
+    path.join(fixtureDir, 'multi-file-error', 'main.pg'),
+  ]);
+  const files = findPugneumFiles(
+    path.join(__dirname, 'cases', 'auxiliary'),
+  ).concat(findPugneumFiles(fixtureDir));
+
+  for (const filename of files) {
+    if (expectedFailures.has(filename)) continue;
+    assert.doesNotThrow(
+      () => linkFile(filename),
+      path.relative(__dirname, filename),
+    );
+  }
+  assert.deepStrictEqual(
+    files.filter((filename) => expectedFailures.has(filename)),
+    [...expectedFailures].sort(),
+  );
 });
 
 describe('duplicate reference definitions', () => {
@@ -196,7 +245,12 @@ describe('RawInclude with filters', () => {
 
 describe('error handling', () => {
   test('top level must be a Block', () => {
-    assert.throws(() => link({type: 'Tag', name: 'div'}), /top level.*block/i);
+    assert.throws(
+      () => link({type: 'Tag', name: 'div'}),
+      (err) =>
+        err.code === 'PUGNEUM:INVALID_AST' &&
+        /top level.*block/i.test(err.message),
+    );
   });
 
   test('UNDEFINED_REFERENCE for unknown @[ref]', () => {
@@ -633,6 +687,129 @@ function instrumentLinkerWalks() {
   };
 }
 
+describe('document-global resolution across physical files', () => {
+  for (const {name, files} of [
+    {
+      name: 'an including file definition resolves an included use',
+      files: {
+        'main.pg': 'references\n  docs /from-main\n\ninclude child.pg',
+        'child.pg': 'p @[docs child link]',
+      },
+    },
+    {
+      name: 'an included definition resolves an including-file use',
+      files: {
+        'main.pg': 'include definitions.pg\np @[docs main link]',
+        'definitions.pg': 'references\n  docs /from-child',
+      },
+    },
+    {
+      name: 'a parent definition resolves an extending-page use',
+      files: {
+        'layout.pg': 'references\n  docs /from-layout\n\nblock content',
+        'page.pg': 'extends layout.pg\nblock content\n  p @[docs page link]',
+      },
+    },
+    {
+      name: 'an extending-page definition resolves a parent use',
+      files: {
+        'layout.pg': 'block content\n  p @[docs layout link]',
+        'page.pg':
+          'extends layout.pg\nreferences\n  docs /from-page\nblock append content',
+      },
+    },
+  ]) {
+    test(name, () => {
+      const {linked, warnings} = linkProject(
+        files,
+        'main.pg' in files ? 'main.pg' : 'page.pg',
+      );
+      const links = [];
+      walk(linked, function (node) {
+        if (node.type !== 'Tag' || node.name !== 'a') return;
+        const href = node.attrs.find((attr) => attr.name === 'href');
+        if (href) links.push(href.val);
+      });
+      assert.strictEqual(links.length, 1);
+      assert.match(links[0], /^\/from-/);
+      assert.deepStrictEqual(warnings, []);
+    });
+  }
+
+  for (const {name, files, code} of [
+    {
+      name: 'duplicate references collide across include boundaries',
+      files: {
+        'main.pg': 'references\n  docs /main\n\ninclude definitions.pg',
+        'definitions.pg': 'references\n  docs /child',
+      },
+      code: 'PUGNEUM:DUPLICATE_REFERENCE',
+    },
+    {
+      name: 'footnote containers collide across include boundaries',
+      files: {
+        'main.pg': 'include notes.pg\n\nfootnotes\n  main Main definition',
+        'notes.pg': 'footnotes\n  child Child definition',
+      },
+      code: 'PUGNEUM:DUPLICATE_FOOTNOTES_BLOCK',
+    },
+  ]) {
+    test(name, () => {
+      assert.throws(
+        () => linkProject(files, 'main.pg'),
+        (err) => err.code === code,
+      );
+    });
+  }
+
+  for (const {name, files} of [
+    {
+      name: 'an included footnote definition resolves an outer use',
+      files: {
+        'main.pg': 'p outer^[note]\n\ninclude notes.pg',
+        'notes.pg': 'footnotes\n  note Included definition',
+      },
+    },
+    {
+      name: 'an included footnote use resolves an outer definition',
+      files: {
+        'main.pg': 'include child.pg\n\nfootnotes\n  note Outer definition',
+        'child.pg': 'p child^[note]',
+      },
+    },
+  ]) {
+    test(name, () => {
+      const {linked, warnings} = linkProject(files, 'main.pg');
+      const roles = [];
+      walk(linked, function (node) {
+        if (node.type !== 'Tag') return;
+        const role = node.attrs.find((attr) => attr.name === 'role');
+        if (role) roles.push(role.val);
+      });
+      assert.deepStrictEqual(roles.sort(), [
+        'doc-backlink',
+        'doc-endnote',
+        'doc-endnotes',
+        'doc-noteref',
+      ]);
+      assert.deepStrictEqual(warnings, []);
+    });
+  }
+
+  test('toc collects headings contributed by an included file', () => {
+    const result = linkProject(
+      {
+        'main.pg': 'toc\ninclude section.pg',
+        'section.pg': 'h2#included Included section',
+      },
+      'main.pg',
+    );
+    assert.deepStrictEqual(tocOutline(result.linked), [
+      {href: '#included', text: 'Included section', children: []},
+    ]);
+  });
+});
+
 function tocOutline(ast) {
   let nav;
   walk(ast, function (node) {
@@ -749,10 +926,7 @@ describe('linker pass and inheritance scaling', () => {
     walk(result.linked, function (node) {
       if (node.type === 'Text') contentText.push(node.val);
     });
-    assert.ok(
-      contentText.includes('override' + depth),
-      'final override should win, got: ' + JSON.stringify(contentText),
-    );
+    assert.deepStrictEqual(contentText, ['override' + depth]);
   });
 
   test('the public linked tree serializes without inheritance ancestry growth', () => {
@@ -773,7 +947,10 @@ describe('linker pass and inheritance scaling', () => {
         ' bytes grew to ' +
         deepJson.length,
     );
-    assert.doesNotMatch(deepJson, /"(?:declaredBlocks|parents)"/);
+    assert.doesNotMatch(
+      deepJson,
+      /"(?:declaredBlocks|parents|hasExtends|ignore)"/,
+    );
   });
 });
 
@@ -1645,6 +1822,47 @@ describe('public boundary, depth, and ownership contracts', () => {
         err.column === 5,
     );
     assert.doesNotThrow(() => link(block([]), {warnings: [], maxLinkDepth: 0}));
+  });
+
+  test('include and extends edges consume one shared depth budget', () => {
+    const leaf = block(
+      [Object.assign({type: 'Text', val: 'leaf'}, loc)],
+      'leaf.pg',
+    );
+    const include = Object.assign(
+      {
+        type: 'Include',
+        file: fileReference(leaf, 'leaf.pg'),
+        block: block([]),
+      },
+      loc,
+      {line: 11, column: 4, filename: 'middle.pg'},
+    );
+    const middle = block([include], 'middle.pg');
+    const root = block([
+      Object.assign(
+        {
+          type: 'Extends',
+          file: fileReference(middle, 'middle.pg'),
+        },
+        loc,
+      ),
+    ]);
+
+    assert.throws(
+      () =>
+        link(root, {
+          warnings: [],
+          maxLinkDepth: 1,
+          sources: {'middle.pg': 'include leaf.pg'},
+        }),
+      (err) =>
+        err.code === 'PUGNEUM:LINK_DEPTH_EXCEEDED' &&
+        err.filename === 'middle.pg' &&
+        err.line === 11 &&
+        err.column === 4,
+    );
+    assert.doesNotThrow(() => link(root, {warnings: [], maxLinkDepth: 2}));
   });
 
   test('the same dependency AST can be included twice with independent yields', () => {

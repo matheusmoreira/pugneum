@@ -3,6 +3,6 @@ doctype
 html
   head
     block head
-      <title>Hello world!</title>
+      title Hello world!
   body
     block body

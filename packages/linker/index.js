@@ -387,6 +387,7 @@ function validateRoot(ast, sources) {
 function createLinkState(options) {
   return {
     declaredBlocks: new WeakMap(),
+    extendedTrees: new WeakSet(),
     maxDepth:
       options.maxLinkDepth === undefined
         ? DEFAULT_MAX_LINK_DEPTH
@@ -463,7 +464,7 @@ function linkInner(ast, options, state, depth) {
     // targets rendered occurrences, including newly introduced nested slots,
     // rather than detached override nodes or ancestry aliases.
     state.declaredBlocks.set(parent, findDeclaredBlocks(parent));
-    parent.hasExtends = true;
+    state.extendedTrees.add(parent);
     return parent;
   }
   return ast;
@@ -576,7 +577,7 @@ function applyIncludes(ast, options, state, depth) {
         // final assembled tree by the top-level link() wrapper. Calling link()
         // here would lint it again, multiplying warnings by include depth.
         let childAST = linkInner(node.file.ast, options, state, depth + 1);
-        if (childAST.hasExtends) {
+        if (state.extendedTrees.has(childAST)) {
           childAST = removeBlocks(childAST);
         }
         replace(applyYield(childAST, node.block, node, options));

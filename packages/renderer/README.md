@@ -67,6 +67,13 @@ references, footnotes, and TOC nodes also require `link.resolve`. Prefer the
 example below contains only `Block`, `Tag`, and `Text` nodes, so it can be
 rendered directly.
 
+Before emitting bytes, the renderer iteratively validates the complete direct
+AST against `pugneum-walker`'s schema and 512-edge structural-depth ceiling.
+Malformed, cyclic, over-deep, or unknown-node trees fail with a located
+`PUGNEUM:INVALID_AST` instead of reaching recursive dispatch as a raw native
+error. Established specialized diagnostics such as `INVALID_TAG_NAME` and
+`UNKNOWN_BLOCK_MODE` remain specialized.
+
 `Tag.name` and `InterpolatedTag.expr` must use the lexer-supported name syntax:
 an ASCII-letter start, followed by ASCII letters, digits, underscores, hyphens,
 or colons, with a hyphen or colon only between word characters. The renderer
@@ -146,6 +153,10 @@ distinct declarations.
   context to thrown errors and collected warnings. `sources` is a
   map keyed by filename (populated by the loader); `source` is the
   single-source fallback.
+- `compilationLimits` / `compilationContext` — a local limit override object or
+  the build-wide context created by `pugneum-error`. Direct-AST validation,
+  rendered AST visits, UTF-8 output bytes, mixin calls, and warnings consume
+  the shared budget.
 
 Located template/AST diagnostics throw `Error` instances whose `code` begins
 with `PUGNEUM:` and which carry available `filename`, `line`, `column`, and

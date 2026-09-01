@@ -23,4 +23,11 @@ describe('feed documentation contract', () => {
     assert.match(readme, /exports this one generation function/);
     assert.deepStrictEqual(Object.keys(generateFeeds), []);
   });
+
+  test('publishes the shared bounded and transactional generation contract', () => {
+    assert.match(readme, /`compilationLimits`/);
+    assert.match(readme, /`compilationContext`/);
+    assert.match(readme, /`PUGNEUM:COMPILATION_LIMIT_EXCEEDED`/);
+    assert.match(readme, /transaction/);
+  });
 });

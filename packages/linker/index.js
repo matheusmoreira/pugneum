@@ -1,4 +1,5 @@
 const walk = require('pugneum-walker');
+const makeError = require('pugneum-error');
 const assemble = require('./assembly');
 const diagnostics = require('./diagnostics');
 const expandMixinInstances = require('./mixins');
@@ -282,14 +283,43 @@ function resolveDocument(ast, options) {
 }
 link.resolve = function (ast, options) {
   options = prepareLink(ast, options);
-  return resolveDocument(assemble.cloneAst(ast), options);
+  return resolveDocument(
+    assemble.cloneAst(
+      ast,
+      undefined,
+      false,
+      options.compilationContext,
+      diagnostics.context(ast, diagnosticSources(options)),
+      'taking ownership for document resolution',
+    ),
+    options,
+  );
 };
 
 function prepareLink(ast, options) {
   options = validateOptions(options);
   assemble.validateRoot(ast, diagnosticSources(options));
   if (options.warnings === undefined) options.warnings = [];
-  return options;
+  const normalized = Object.assign({}, options);
+  const compilation = makeError.getCompilationContext(normalized);
+  delete normalized.compilationLimits;
+  normalized.compilationContext = compilation;
+  normalized.warnings = compilation.wrapWarnings(options.warnings);
+  try {
+    walk.validate(ast, {
+      compilationContext: compilation,
+      maxDepth: walk.MAX_AST_DEPTH,
+    });
+  } catch (failure) {
+    if (!failure || failure.code !== 'INVALID_AST') throw failure;
+    error(
+      'INVALID_AST',
+      failure.message,
+      failure.node || ast,
+      diagnosticSources(normalized),
+    );
+  }
+  return normalized;
 }
 
 function validateOptions(options) {

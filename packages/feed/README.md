@@ -187,6 +187,8 @@ The top-level options (siblings of `feeds`) are:
 | `outputDirectory` | — (required) | Directory of compiled HTML to read from |
 | `writeDirectory` | `outputDirectory` | Directory to write the feed files to |
 | `feeds` | `{}` | The `feeds.*` configuration above |
+| `compilationLimits` | Pugneum defaults | Per-resource overrides for this feed run |
+| `compilationContext` | New local context | Shared build-wide context created by `pugneum-error`; cannot be combined with `compilationLimits` |
 
 `outputDirectory`/`writeDirectory` are top-level options, distinct from the
 `feeds.*` keys (which live under the `"feeds"` object in `pugneum.json`).
@@ -203,6 +205,14 @@ must be non-empty, and `selector` must be one element tag name. Atom and RSS nam
 also resolve to different destinations after path normalization. Invalid
 configuration fails consistently with the `PUGNEUM:FEED_INVALID_OPTIONS` error
 code before filesystem access.
+
+Feed generation charges source bytes before allocating verified regular-file
+contents, discovered entries before article reads, and each Atom/RSS UTF-8
+chunk before it is staged. Exact repeated article path+URL pairs reuse one
+read and parse. Exceeding `sourceBytes`, `feedEntries`, or cumulative
+`outputBytes` throws `PUGNEUM:COMPILATION_LIMIT_EXCEEDED` with `resource`,
+`attempted`, and `limit`; transactional cleanup leaves both feed destinations
+unchanged.
 
 ## License
 

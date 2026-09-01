@@ -7,6 +7,7 @@ var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var load = require('pugneum-loader');
 var walk = require('pugneum-walker');
+var makeError = require('pugneum-error');
 var link = require('../');
 
 // Project root for these tests = the test/ dir, which contains both cases/ and
@@ -619,6 +620,7 @@ function instrumentLinkerWalks() {
       options,
     );
   }
+  Object.assign(countedWalk, originalWalk);
 
   let instrumentedLinker;
   try {
@@ -1812,6 +1814,77 @@ describe('public boundary, depth, and ownership contracts', () => {
     assert.deepStrictEqual(text, ['first', 'second']);
     assert.deepStrictEqual(ast, before);
     assert.strictEqual(child.nodes[0].type, 'YieldBlock');
+  });
+
+  test('yield fan-out consumes one aggregate materialization budget', () => {
+    function project(yieldCount) {
+      const child = block(
+        Array.from({length: yieldCount}, () =>
+          Object.assign({type: 'YieldBlock'}, loc, {filename: 'child.pg'}),
+        ),
+        'child.pg',
+      );
+      return block([
+        Object.assign(
+          {
+            type: 'Include',
+            file: fileReference(child, 'child.pg'),
+            block: block([Object.assign({type: 'Text', val: 'shared'}, loc)]),
+          },
+          loc,
+        ),
+      ]);
+    }
+
+    const oneContext = makeError.createCompilationContext();
+    link.assemble(project(1), {
+      warnings: [],
+      compilationContext: oneContext,
+    });
+    const oneUse = oneContext.snapshot().used.materializedNodes;
+
+    const twoContext = makeError.createCompilationContext();
+    link.assemble(project(2), {
+      warnings: [],
+      compilationContext: twoContext,
+    });
+    const twoUse = twoContext.snapshot().used.materializedNodes;
+    assert.ok(twoUse > oneUse, 'a second yield must materialize another copy');
+
+    assert.throws(
+      () =>
+        link.assemble(project(2), {
+          warnings: [],
+          compilationLimits: {materializedNodes: twoUse - 1},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'materializedNodes' &&
+        failure.attempted === twoUse &&
+        failure.limit === twoUse - 1,
+    );
+  });
+
+  test('mixin calls share a cumulative invocation budget', () => {
+    const source = 'mixin item()\n  p item\n\n+item()\n+item()';
+    const options = {filename: 'mixins.pg', source, warnings: []};
+    const ast = parse(lex(source, options), options);
+
+    assert.throws(
+      () =>
+        link.resolve(ast, {
+          filename: 'mixins.pg',
+          source,
+          warnings: [],
+          compilationLimits: {mixinInvocations: 1},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'mixinInvocations' &&
+        failure.attempted === 2 &&
+        failure.limit === 1 &&
+        failure.filename === 'mixins.pg',
+    );
   });
 
   test('resolve returns a new tree and keeps scalar source context', () => {

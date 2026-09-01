@@ -83,6 +83,92 @@ function serializeWarning(warning) {
 }
 
 describe('render()', () => {
+  it('shares one compilation context across every pipeline stage', () => {
+    var context = pg.createCompilationContext();
+    var html = pg.render(':identity\n  <em>value</em>', {
+      compilationContext: context,
+      filters: {
+        identity: {type: 'html', filter: (input) => input},
+      },
+      warnings: [],
+    });
+
+    assert.strictEqual(html, '<em>value</em>');
+    var used = context.snapshot().used;
+    for (const resource of [
+      'sourceBytes',
+      'astNodes',
+      'materializedNodes',
+      'filterInvocations',
+      'generatedBytes',
+      'outputBytes',
+    ]) {
+      assert.ok(used[resource] > 0, resource + ' was not charged');
+    }
+  });
+
+  it('accumulates source bytes across completed render calls', () => {
+    var context = pg.createCompilationContext({sourceBytes: 5});
+    assert.strictEqual(
+      pg.render('p x', {compilationContext: context, warnings: []}),
+      '<p>x</p>',
+    );
+    assert.throws(
+      () => pg.render('p x', {compilationContext: context, warnings: []}),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'sourceBytes' &&
+        failure.attempted === 6 &&
+        failure.limit === 5,
+    );
+  });
+
+  it('accumulates output bytes across completed render calls', () => {
+    var context = pg.createCompilationContext({outputBytes: 8});
+    assert.strictEqual(
+      pg.render('p x', {compilationContext: context, warnings: []}),
+      '<p>x</p>',
+    );
+    assert.throws(
+      () => pg.render('p x', {compilationContext: context, warnings: []}),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'outputBytes' &&
+        failure.attempted === 9 &&
+        failure.limit === 8,
+    );
+  });
+
+  it('renderFile preflights the source byte budget before reading', (t) => {
+    var directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pugneum-budget-'));
+    var filename = path.join(directory, 'page.pg');
+    fs.writeFileSync(filename, 'p abc');
+    t.after(() => fs.rmSync(directory, {recursive: true}));
+    var originalReadFileSync = fs.readFileSync;
+    var reads = 0;
+    fs.readFileSync = function (candidate) {
+      if (path.resolve(String(candidate)) === filename) reads++;
+      return Reflect.apply(originalReadFileSync, this, arguments);
+    };
+    t.after(() => {
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    assert.throws(
+      () =>
+        pg.renderFile(filename, {
+          compilationLimits: {sourceBytes: 4},
+          warnings: [],
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'sourceBytes' &&
+        failure.attempted === 5 &&
+        failure.limit === 4,
+    );
+    assert.strictEqual(reads, 0);
+  });
+
   it('releases diagnostic source indexes after a failed render', () => {
     var source = [
       'p lifecycle-one',

@@ -1330,20 +1330,22 @@ describe('error handling', () => {
     assert.match(readme, /selfClosing.*never suppresses the end tag/s);
     assert.match(readme, /explicitly supplied empty\s+named block/);
     assert.match(readme, /code` begins\s+with `PUGNEUM:`/);
-  });
-
-  test('null node throws TypeError', () => {
-    assert.throws(
-      () => render(block([null])),
-      (err) => err instanceof TypeError && /is null/.test(err.message),
+    assert.match(readme, /`compilationLimits` \/ `compilationContext`/);
+    assert.match(
+      readme,
+      /renderer iteratively validates the complete direct\s+AST/,
     );
   });
 
-  test('undefined node throws TypeError', () => {
-    assert.throws(
-      () => render(block([undefined])),
-      (err) => err instanceof TypeError && /is undefined/.test(err.message),
-    );
+  test('null and undefined nodes fail direct-AST validation', () => {
+    [null, undefined].forEach((node) => {
+      assert.throws(
+        () => render(block([node])),
+        (err) =>
+          err.code === 'PUGNEUM:INVALID_AST' &&
+          /expected a node object/.test(err.message),
+      );
+    });
   });
 
   test('direct AST tag names require an ASCII-letter start', () => {
@@ -1447,19 +1449,41 @@ describe('error handling', () => {
   });
 
   test('upstream-only nodes name the required pipeline stage', () => {
+    var file = () => ({
+      type: 'FileReference',
+      path: 'dependency.pg',
+      line: 2,
+      column: 3,
+      filename: 'dependency.pg',
+    });
     var cases = [
-      ['Extends', 'load -> link.assemble'],
-      ['Include', 'load -> link.assemble'],
-      ['FileReference', 'load -> link.assemble'],
-      ['RawInclude', 'load -> link.assemble', {filters: []}],
-      ['Filter', 'filter'],
-      ['IncludeFilter', 'filter'],
-      ['RawInclude', 'filter', {filters: [{type: 'IncludeFilter'}]}],
-      ['References', 'link.resolve'],
-      ['ReferenceLink', 'link.resolve'],
-      ['ReferenceImage', 'link.resolve'],
-      ['Footnotes', 'link.resolve'],
-      ['FootnoteRef', 'link.resolve'],
+      ['Extends', 'load -> link.assemble', {file: file()}],
+      ['Include', 'load -> link.assemble', {block: block([]), file: file()}],
+      ['FileReference', 'load -> link.assemble', {path: 'dependency.pg'}],
+      ['RawInclude', 'load -> link.assemble', {filters: [], file: file()}],
+      ['Filter', 'filter', {name: 'test', attrs: [], block: block([])}],
+      ['IncludeFilter', 'filter', {name: 'test', attrs: []}],
+      [
+        'RawInclude',
+        'filter',
+        {
+          filters: [{type: 'IncludeFilter', name: 'test', attrs: []}],
+          file: file(),
+        },
+      ],
+      ['References', 'link.resolve', {definitions: []}],
+      [
+        'ReferenceLink',
+        'link.resolve',
+        {name: 'test', attrs: [], block: block([])},
+      ],
+      [
+        'ReferenceImage',
+        'link.resolve',
+        {name: 'test', attrs: [], block: block([])},
+      ],
+      ['Footnotes', 'link.resolve', {definitions: []}],
+      ['FootnoteRef', 'link.resolve', {name: 'test'}],
       ['Toc', 'link.resolve'],
     ];
     var source = 'first\nunresolved\nthird';
@@ -1492,7 +1516,7 @@ describe('error handling', () => {
     });
   });
 
-  test('unknown extension node remains an unsupported-type TypeError', () => {
+  test('unknown extension nodes fail direct-AST validation', () => {
     ['PluginWidget', 'toString'].forEach((type) => {
       var node = {
         type,
@@ -1503,10 +1527,8 @@ describe('error handling', () => {
       assert.throws(
         () => render(block([node])),
         (err) =>
-          err instanceof TypeError &&
-          err.code === undefined &&
-          new RegExp(`type ${type}`).test(err.message) &&
-          /not supported by the pugneum compiler/.test(err.message),
+          err.code === 'PUGNEUM:INVALID_AST' &&
+          new RegExp(`unknown node type '${type}'`).test(err.message),
         type,
       );
     });
@@ -2696,6 +2718,68 @@ describe('mixin depth and recursion boundaries', () => {
     const b = mixinDef('b', [], [mixinCall('h', [])]);
     const w = mixinDef('w', [], [mixinCall('a', []), mixinCall('b', [])]);
     assert.strictEqual(render(block([h, a, b, w, mixinCall('w', [])])), 'hh');
+  });
+});
+
+describe('aggregate compilation limits', () => {
+  test('bounds direct-AST validation before recursive rendering', () => {
+    const ast = block([text('first'), text('second'), text('third')]);
+
+    assert.throws(
+      () => render(ast, {compilationLimits: {astNodes: 2}}),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'astNodes' &&
+        failure.attempted === 4 &&
+        failure.limit === 2,
+    );
+  });
+
+  test('counts rendered output as UTF-8 bytes', () => {
+    assert.throws(
+      () => render(block([text('é')]), {compilationLimits: {outputBytes: 1}}),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'outputBytes' &&
+        failure.attempted === 2 &&
+        failure.limit === 1 &&
+        failure.filename === 'test',
+    );
+  });
+
+  test('bounds cumulative mixin calls across completed siblings', () => {
+    const ast = block([
+      mixinDef('item', [], [text('item')]),
+      mixinCall('item', []),
+      mixinCall('item', []),
+    ]);
+
+    assert.throws(
+      () => render(ast, {compilationLimits: {mixinInvocations: 1}}),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'mixinInvocations' &&
+        failure.attempted === 2 &&
+        failure.limit === 1,
+    );
+  });
+
+  test('bounds warnings before mutating the caller collector', () => {
+    const warnings = [];
+    assert.throws(
+      () =>
+        render(mixinDef('unused', [], [text('body')]), {
+          filename: 'test',
+          warnings,
+          compilationLimits: {diagnostics: 0},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'diagnostics' &&
+        failure.attempted === 1 &&
+        failure.limit === 0,
+    );
+    assert.deepStrictEqual(warnings, []);
   });
 });
 

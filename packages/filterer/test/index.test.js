@@ -1263,6 +1263,98 @@ p
   assert.strictEqual(textNode.val, '&lt;em&gt;x&lt;/em&gt;');
 });
 
+test('block filter edges preserve text and html types without double escaping', () => {
+  const payload = '<strong>&amp; "quoted"</strong>';
+  const escaped = '&lt;strong&gt;&amp;amp; &quot;quoted&quot;&lt;/strong&gt;';
+
+  for (const innerType of ['text', 'html']) {
+    for (const outerType of ['text', 'html']) {
+      let outerInput;
+      const filters = {
+        inner: {type: innerType, filter: () => payload},
+        outer: {
+          type: outerType,
+          filter(input) {
+            outerInput = input;
+            return input;
+          },
+        },
+      };
+      const ast = parseSource(':outer:inner\n  ignored', {filename});
+      const output = filter(ast, filters);
+      const crossesTextBoundary = innerType === 'text' && outerType !== 'text';
+
+      assert.strictEqual(
+        outerInput,
+        crossesTextBoundary ? escaped : payload,
+        `${innerType} -> ${outerType} input`,
+      );
+      assert.strictEqual(
+        output.nodes[0].val,
+        innerType === 'html' && outerType === 'html' ? payload : escaped,
+        `${innerType} -> ${outerType} output`,
+      );
+    }
+  }
+});
+
+test('typed segments escape only the nested text portion at an html edge', () => {
+  let received;
+  const filters = {
+    inner: {type: 'text', filter: () => '<generated>&amp;'},
+    outer: {
+      type: 'html',
+      filter(input) {
+        received = input;
+        return input;
+      },
+    },
+  };
+
+  const location = {line: 1, column: 1, filename};
+  const output = filter(
+    Object.assign({}, location, {
+      type: 'Block',
+      nodes: [
+        Object.assign({}, location, {
+          type: 'Filter',
+          name: 'outer',
+          attrs: [],
+          block: Object.assign({}, location, {
+            type: 'Block',
+            nodes: [
+              Object.assign({}, location, {
+                type: 'Filter',
+                name: 'inner',
+                attrs: [],
+                block: Object.assign({}, location, {
+                  type: 'Block',
+                  nodes: [
+                    Object.assign({}, location, {
+                      type: 'Text',
+                      val: 'ignored',
+                    }),
+                  ],
+                }),
+              }),
+              Object.assign({}, location, {
+                type: 'Text',
+                val: 'authored <raw>',
+              }),
+            ],
+          }),
+        }),
+      ],
+    }),
+    filters,
+  );
+
+  assert.match(received, /authored <raw>/);
+  assert.match(received, /&lt;generated&gt;&amp;amp;/);
+  assert.doesNotMatch(received, /authored &lt;raw&gt;/);
+  assert.strictEqual(output.nodes[0].val, received);
+});
+
 test('nested structured output rejects constructs that need document resolution', () => {
   const constructs = [
     {source: 'references\n  docs /docs', type: 'References'},
@@ -1536,6 +1628,113 @@ p
   );
 });
 
+test('generated filters detect self and mutual expansion cycles', () => {
+  const invocation = (name) => [{type: 'Filter', name, attrs: []}];
+  const cases = [
+    {
+      filters: {
+        loop: {type: 'syntax', filter: () => invocation('loop')},
+      },
+      source: ':loop\n  input',
+      chain: 'loop -> loop',
+    },
+    {
+      filters: {
+        alpha: {type: 'syntax', filter: () => invocation('beta')},
+        beta: {type: 'syntax', filter: () => invocation('alpha')},
+      },
+      source: ':alpha\n  input',
+      chain: 'alpha -> beta -> alpha',
+    },
+  ];
+
+  for (const item of cases) {
+    const ast = parseSource(item.source, {filename});
+    assert.throws(
+      () => filter(ast, item.filters),
+      (failure) =>
+        failure.code === 'PUGNEUM:FILTER_CYCLE' &&
+        failure.msg.includes(item.chain),
+      item.chain,
+    );
+  }
+});
+
+test('completed uses of the same filter are not mistaken for a cycle', () => {
+  let calls = 0;
+  const source = ':same\n  first\n:same\n  second';
+  const ast = parseSource(source, {filename});
+  const output = filter(ast, {
+    same: {
+      type: 'html',
+      filter(input) {
+        calls++;
+        return '[' + input + ']';
+      },
+    },
+  });
+
+  assert.strictEqual(calls, 2);
+  assert.deepStrictEqual(
+    output.nodes.map((node) => node.val),
+    ['[first]', '[second]'],
+  );
+});
+
+test('generated filter depth has a deterministic located failure', () => {
+  const invocation = (name) => [{type: 'Filter', name, attrs: []}];
+  const source = ':alpha\n  input';
+  const ast = parseSource(source, {filename});
+  const filters = {
+    alpha: {type: 'syntax', filter: () => invocation('beta')},
+    beta: {type: 'syntax', filter: () => invocation('gamma')},
+    gamma: {type: 'html', filter: () => 'done'},
+  };
+
+  assert.throws(
+    () => filter(ast, filters, {compilationLimits: {filterDepth: 2}}),
+    (failure) => {
+      assert.strictEqual(failure.code, 'PUGNEUM:FILTER_DEPTH_EXCEEDED');
+      assert.match(failure.msg, /maximum of 2/);
+      assert.match(failure.msg, /alpha -> beta -> gamma/);
+      assert.strictEqual(failure.filename, filename);
+      return true;
+    },
+  );
+});
+
+test('filter invocation and generated byte budgets are cumulative', () => {
+  const two = parseSource(':same\n  first\n:same\n  second', {filename});
+  assert.throws(
+    () =>
+      filter(
+        two,
+        {same: {type: 'html', filter: (input) => input}},
+        {compilationLimits: {filterInvocations: 1}},
+      ),
+    (failure) =>
+      failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+      failure.resource === 'filterInvocations' &&
+      failure.attempted === 2 &&
+      failure.limit === 1,
+  );
+
+  const bytes = parseSource(':large\n  input', {filename});
+  assert.throws(
+    () =>
+      filter(
+        bytes,
+        {large: {type: 'html', filter: () => '12345'}},
+        {compilationLimits: {generatedBytes: 4}},
+      ),
+    (failure) =>
+      failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+      failure.resource === 'generatedBytes' &&
+      failure.attempted === 5 &&
+      failure.limit === 4,
+  );
+});
+
 // --- Positive include-filter coverage (the RawInclude chain path) ---
 
 function rawIncludeAst(filters, str, raw) {
@@ -1701,6 +1900,47 @@ test('include filter chain applies right-to-left (innermost wraps file first)', 
   );
   const output = filter(ast, filters);
   assert.strictEqual(output.nodes[0].val, 'A(B(C(X)))');
+});
+
+test('include filter edges preserve text and html types without double escaping', () => {
+  const payload = '<strong>&amp; "quoted"</strong>';
+  const escaped = '&lt;strong&gt;&amp;amp; &quot;quoted&quot;&lt;/strong&gt;';
+
+  for (const innerType of ['text', 'html']) {
+    for (const outerType of ['text', 'html']) {
+      let outerInput;
+      const filters = {
+        inner: {type: innerType, filter: () => payload},
+        outer: {
+          type: outerType,
+          filter(input) {
+            outerInput = input;
+            return input;
+          },
+        },
+      };
+      const ast = rawIncludeAst(
+        [
+          {name: 'outer', attrs: []},
+          {name: 'inner', attrs: []},
+        ],
+        'ignored',
+      );
+      const output = filter(ast, filters);
+      const crossesTextBoundary = innerType === 'text' && outerType !== 'text';
+
+      assert.strictEqual(
+        outerInput,
+        crossesTextBoundary ? escaped : payload,
+        `${innerType} -> ${outerType} input`,
+      );
+      assert.strictEqual(
+        output.nodes[0].val,
+        innerType === 'html' && outerType === 'html' ? payload : escaped,
+        `${innerType} -> ${outerType} output`,
+      );
+    }
+  }
 });
 
 test('include chain output-validation error names the failing (outermost) filter', () => {

@@ -50,6 +50,13 @@ function normalizeOptions(options, overrides) {
   return {options: normalized, ownsWarnings: !hasWarnings};
 }
 
+function attachCompilationContext(options) {
+  const context = error.getCompilationContext(options);
+  delete options.compilationLimits;
+  options.compilationContext = context;
+  return context;
+}
+
 function renderPugneum(string, options) {
   // If the caller supplies a warnings array we collect into it and let them
   // surface the diagnostics; otherwise we own them and emit them ourselves so
@@ -65,6 +72,14 @@ function renderPugneum(string, options) {
   const ownsWarnings = normalized.ownsWarnings;
   options = normalized.options;
   if (ownsWarnings) options.warnings = [];
+  const compilation = attachCompilationContext(options);
+  options.warnings = compilation.wrapWarnings(options.warnings);
+  compilation.charge(
+    'sourceBytes',
+    Buffer.byteLength(string, 'utf8'),
+    {filename: options.filename, line: 1, column: 1, source: string},
+    'reading the entry source',
+  );
 
   try {
     let tokens = lex(string, options);
@@ -197,7 +212,16 @@ function emitWarnings(warnings) {
 
 function renderPugneumFile(filename, options) {
   options = normalizeOptions(options).options;
+  const compilation = attachCompilationContext(options);
   filename = resolve(filename);
+  const expectedSize = fs.statSync(filename).size;
+  const sourceUsage = compilation.snapshot().used.sourceBytes;
+  compilation.assertWithin(
+    'sourceBytes',
+    sourceUsage + expectedSize,
+    {filename},
+    'reading the entry source',
+  );
   const source = load.decodeSource(fs.readFileSync(filename), filename);
   options.filename = filename;
   return renderPugneum(source, options);
@@ -207,3 +231,5 @@ exports.render = renderPugneum;
 exports.renderFile = renderPugneumFile;
 exports.createWarningCollector = createWarningCollector;
 exports.emitWarnings = emitWarnings;
+exports.createCompilationContext = error.createCompilationContext;
+exports.DEFAULT_COMPILATION_LIMITS = error.DEFAULT_COMPILATION_LIMITS;

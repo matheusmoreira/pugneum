@@ -71,6 +71,12 @@ cloned, so callers must use the return value).
  - `maxLoadDepth` (number): maximum include/extends recursion depth
    (an integer from `0` through `256`, default `256`); a deeper non-cyclic
    chain throws `LOAD_DEPTH_EXCEEDED` before resolving or reading that edge
+ - `compilationLimits` (object) or `compilationContext` (created by
+   `pugneum-error`): a local budget or a build-wide shared budget. The loader
+   charges pre-clone/schema work, traversed AST nodes, dependency edges, and
+   source bytes. Default filesystem reads preflight remaining bytes before
+   allocation; custom readers are charged immediately after returning and
+   before their result is decoded or parsed
  - `filename` (string) / `source` (string): the entry file's path and source
    text; used to seed error context
  - `mixinContext` (`Array<'def' | 'call'>`): inherited lexical context for an
@@ -208,6 +214,8 @@ The loader throws coded `PUGNEUM:` errors that callers may discriminate on via
  - `INVALID_UTF8` — a text source contains a malformed UTF-8 byte sequence
  - `DISALLOWED_SOURCE_CONTROL` — a text source contains a forbidden C0/DEL
    control; tab and line-ending controls remain valid
+ - `COMPILATION_LIMIT_EXCEEDED` — cumulative loader work exceeded its shared
+   resource limit (`resource`, `attempted`, and `limit` identify the boundary)
  - `INVALID_LIBRARY_PATH` — a malformed `@`-prefixed library reference
  - `PACKAGE_NOT_FOUND` — an `@`-prefixed package that is not installed
  - `LIBRARY_PATH_UNAVAILABLE` — the package exists but its requested subpath

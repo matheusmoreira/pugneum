@@ -2,6 +2,7 @@ const AST_SCHEMA_VERSION = 1;
 const activeParentSeeds = new WeakMap();
 const collectValidatedObjects = Symbol('collectValidatedObjects');
 const validateDependencyASTs = Symbol('validateDependencyASTs');
+const collectValidatedTypes = Symbol.for('pugneum.collectValidatedTypes');
 // The parser permits 256 nested expressions. Each nested element contributes
 // a semantic node plus its Block container, so its deepest valid tree has 512
 // structural edges. Generated-source boundaries use the same ceiling.
@@ -97,6 +98,7 @@ function walkAST(ast, before, after, options) {
   validateAST(ast, {
     allowAliases: context.aliasMode === 'per-edge',
     [collectValidatedObjects]: context.clone ? undefined : context.ownedObjects,
+    compilationContext: context.compilationContext,
     maxDepth: context.maxDepth,
     [validateDependencyASTs]: context.includeDependencies,
   });
@@ -105,6 +107,7 @@ function walkAST(ast, before, after, options) {
     if (context.ownedObjects) {
       validateAST(ast, {
         allowAliases: false,
+        compilationContext: context.compilationContext,
         maxDepth: context.maxDepth,
         [collectValidatedObjects]: context.ownedObjects,
         [validateDependencyASTs]: context.includeDependencies,
@@ -130,6 +133,7 @@ function walkAST(ast, before, after, options) {
   validateAST(result, {
     allowAliases: context.aliasMode === 'per-edge',
     allowRootArray: Array.isArray(result),
+    compilationContext: context.compilationContext,
     maxDepth: context.maxDepth,
     [validateDependencyASTs]: context.includeDependencies,
   });
@@ -596,6 +600,15 @@ function normalizeOptions(options) {
     throw new TypeError('options.parents must be an array or undefined');
   }
   if (
+    options.compilationContext !== undefined &&
+    (!options.compilationContext ||
+      typeof options.compilationContext.charge !== 'function')
+  ) {
+    throw new TypeError(
+      'options.compilationContext must provide charge(resource, amount)',
+    );
+  }
+  if (
     options.maxDepth !== undefined &&
     (!Number.isSafeInteger(options.maxDepth) ||
       options.maxDepth < 0 ||
@@ -611,6 +624,7 @@ function normalizeOptions(options) {
 function createWalkContext(options) {
   const aliasMode = options.aliasMode || 'reject';
   const clone = options.clone === true;
+  const compilationContext = options.compilationContext;
   const includeDependencies = options.includeDependencies === true;
   const maxDepth =
     options.maxDepth === undefined ? MAX_AST_DEPTH : options.maxDepth;
@@ -619,6 +633,7 @@ function createWalkContext(options) {
     return {
       aliasMode,
       clone,
+      compilationContext,
       includeDependencies,
       maxDepth,
       parentSeedLength: 0,
@@ -636,6 +651,7 @@ function createWalkContext(options) {
     return {
       aliasMode,
       clone,
+      compilationContext,
       includeDependencies,
       maxDepth,
       parentSeedLength: callerParents.length,
@@ -648,6 +664,7 @@ function createWalkContext(options) {
     return {
       aliasMode,
       clone,
+      compilationContext,
       includeDependencies,
       maxDepth,
       parentSeedLength: activeSeed.length,
@@ -659,6 +676,7 @@ function createWalkContext(options) {
     aliasMode,
     callerParents,
     clone,
+    compilationContext,
     includeDependencies,
     maxDepth,
     parents: callerParents,
@@ -756,6 +774,8 @@ function validateAST(ast, options) {
   const allowRootArray = options.allowRootArray === true;
   const allowAliases = options.allowAliases !== false;
   const allowedTypes = options.allowedTypes;
+  const compilationContext = options.compilationContext;
+  const typeCollector = options[collectValidatedTypes];
   const objectCollector = options[collectValidatedObjects];
   const forbiddenNodes = options.forbiddenNodes;
   const maxDepth = options.maxDepth === undefined ? Infinity : options.maxDepth;
@@ -780,6 +800,19 @@ function validateAST(ast, options) {
     typeof forbiddenNodes.has !== 'function'
   ) {
     throw new TypeError('validateAST forbiddenNodes must provide has(node)');
+  }
+  if (typeCollector !== undefined && typeof typeCollector.set !== 'function') {
+    throw new TypeError(
+      'validateAST type collector must provide set(node, type)',
+    );
+  }
+  if (
+    compilationContext !== undefined &&
+    (!compilationContext || typeof compilationContext.charge !== 'function')
+  ) {
+    throw new TypeError(
+      'validateAST compilationContext must provide charge(resource, amount)',
+    );
   }
 
   const roots = Array.isArray(ast) ? ast : [ast];
@@ -825,6 +858,18 @@ function validateAST(ast, options) {
     if (!isNode(node)) {
       throw invalidAST('shape', entry.path, 'expected a node object', node);
     }
+    if (compilationContext) {
+      compilationContext.charge(
+        'astNodes',
+        1,
+        {
+          column: node.column,
+          filename: node.filename,
+          line: node.line,
+        },
+        'validating AST nodes',
+      );
+    }
     if (forbiddenNodes && forbiddenNodes.has(node)) {
       throw invalidAST(
         'ownership',
@@ -868,28 +913,46 @@ function validateAST(ast, options) {
       }
       continue;
     }
-    if (typeof node.type !== 'string' || !knownNodeTypes.has(node.type)) {
+    const type = node.type;
+    if (typeof type !== 'string' || !knownNodeTypes.has(type)) {
       throw invalidAST(
         'unknown-type',
         entry.path,
-        "unknown node type '" + String(node.type) + "'",
+        "unknown node type '" + String(type) + "'",
         node,
       );
     }
-    if (allowedTypes && !allowedTypes.has(node.type)) {
+    if (allowedTypes && !allowedTypes.has(type)) {
       const err = invalidAST(
         'disallowed-type',
         entry.path,
-        "node type '" + node.type + "' is not allowed at this stage",
+        "node type '" + type + "' is not allowed at this stage",
         node,
       );
-      err.nodeType = node.type;
+      err.nodeType = type;
       throw err;
     }
 
+    if (compilationContext) {
+      const fanout = validationArrayWork(node, type);
+      if (fanout > 0) {
+        compilationContext.charge(
+          'astNodes',
+          fanout,
+          {
+            column: node.column,
+            filename: node.filename,
+            line: node.line,
+          },
+          'validating AST collection entries',
+        );
+      }
+    }
+
+    if (typeCollector) typeCollector.set(node, type);
     if (objectCollector) objectCollector.add(node);
     active.add(node);
-    const children = validateNodeShape(node, entry.path, validationState);
+    const children = validateNodeShape(node, type, entry.path, validationState);
     stack.push({exit: true, node});
     for (let index = children.length - 1; index >= 0; index--) {
       const child = children[index];
@@ -904,10 +967,49 @@ function validateAST(ast, options) {
   return ast;
 }
 
-function validateNodeShape(node, path, state) {
+function validationArrayWork(node, type) {
+  const fields = [];
+  switch (type) {
+    case 'Block':
+    case 'NamedBlock':
+      fields.push('nodes');
+      break;
+    case 'RawInclude':
+      fields.push('filters');
+      break;
+    case 'Footnotes':
+    case 'References':
+      fields.push('definitions');
+      break;
+  }
+  switch (type) {
+    case 'Filter':
+    case 'IncludeFilter':
+    case 'ReferenceLink':
+    case 'ReferenceImage':
+    case 'Tag':
+    case 'InterpolatedTag':
+      fields.push('attrs');
+      break;
+    case 'Mixin':
+      fields.push('args', 'attrs', 'attributeBlocks');
+      break;
+  }
+  if (type === 'Tag' || type === 'InterpolatedTag') {
+    fields.push('attributeBlocks');
+  }
+
+  let work = 0;
+  for (const field of fields) {
+    if (Array.isArray(node[field])) work += node[field].length;
+  }
+  return work;
+}
+
+function validateNodeShape(node, type, path, state) {
   const children = [];
   validateLocation(node, path);
-  switch (node.type) {
+  switch (type) {
     case 'Block':
       expectOptionalBoolean(node, 'isFootnoteBody', path);
       addNodeArray(node, 'nodes', path, children);

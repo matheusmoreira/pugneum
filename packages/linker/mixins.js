@@ -39,6 +39,7 @@ function expandMixinInstances(ast, options, isolateCommentBlock) {
 class MixinExpander {
   constructor(options, isolateCommentBlock) {
     this.options = options;
+    this.compilation = makeError.getCompilationContext(options);
     this.isolateCommentBlock = isolateCommentBlock;
     this.mixinIdentities = new WeakMap();
     this.mixinDeclarations = new Map();
@@ -105,6 +106,12 @@ class MixinExpander {
   }
 
   expandNode(node) {
+    this.compilation.charge(
+      'astNodes',
+      1,
+      this.locate(node),
+      'expanding document AST nodes',
+    );
     if (node.type === 'Mixin') {
       return node.call ? this.expandMixinCall(node) : this.declareMixin(node);
     }
@@ -274,6 +281,12 @@ class MixinExpander {
         mixin,
       );
     }
+    this.compilation.charge(
+      'mixinInvocations',
+      1,
+      this.locate(mixin),
+      "expanding mixin '" + mixin.name + "'",
+    );
 
     const args =
       this.callStack.length === 0
@@ -335,15 +348,28 @@ class MixinExpander {
     });
     this.mixinScope = calleeScope;
     try {
-      return this.expandBlock(this.cloneAst(declared.block)).nodes;
+      return this.expandBlock(
+        this.cloneAst(
+          declared.block,
+          mixin,
+          "materializing mixin '" + mixin.name + "'",
+        ),
+      ).nodes;
     } finally {
       this.mixinScope = callerScope;
       this.callStack.pop();
     }
   }
 
-  cloneAst(value) {
-    return cloneAst(value, undefined, this.mixinIdentities);
+  cloneAst(value, node, detail) {
+    return cloneAst(
+      value,
+      undefined,
+      this.mixinIdentities,
+      this.compilation,
+      this.locate(node),
+      detail,
+    );
   }
 
   withCallerScope(callback) {
@@ -370,7 +396,13 @@ class MixinExpander {
       const target =
         current.namedBlocks !== null ? current.unnamedBlock : current.block;
       return target && target.nodes
-        ? this.expandNodes(this.cloneAst(target.nodes))
+        ? this.expandNodes(
+            this.cloneAst(
+              target.nodes,
+              mixinBlock,
+              'materializing an unnamed mixin block',
+            ),
+          )
         : [];
     });
   }
@@ -381,7 +413,13 @@ class MixinExpander {
     }
     const frame = this.callStack.at(-1);
     return frame.namedBlocks && frame.namedBlocks[given.name]
-      ? this.expandNodes(this.cloneAst(given.block.nodes))
+      ? this.expandNodes(
+          this.cloneAst(
+            given.block.nodes,
+            given,
+            "materializing given block '" + given.name + "'",
+          ),
+        )
       : [];
   }
 
@@ -428,11 +466,11 @@ class MixinExpander {
 
       const result = [];
       for (let index = prepends.length - 1; index >= 0; index--) {
-        appendItems(result, this.expandFragment(prepends[index]));
+        appendItems(result, this.expandFragment(prepends[index], namedBlock));
       }
-      appendItems(result, this.expandFragment(base));
+      appendItems(result, this.expandFragment(base, namedBlock));
       for (const fragment of appends) {
-        appendItems(result, this.expandFragment(fragment));
+        appendItems(result, this.expandFragment(fragment, namedBlock));
       }
       return result;
     } finally {
@@ -440,8 +478,12 @@ class MixinExpander {
     }
   }
 
-  expandFragment(fragment) {
-    const nodes = this.cloneAst(fragment.nodes);
+  expandFragment(fragment, namedBlock) {
+    const nodes = this.cloneAst(
+      fragment.nodes,
+      namedBlock,
+      "materializing named mixin block '" + namedBlock.name + "'",
+    );
     if (fragment.scope !== 'caller') return this.expandNodes(nodes);
     return this.withCallerScope(() => this.expandNodes(nodes));
   }
@@ -632,14 +674,38 @@ function sourceOrigin(sources, filename) {
     : filename;
 }
 
-function cloneAst(value, copies, mixinIdentities) {
+function cloneAst(
+  value,
+  copies,
+  mixinIdentities,
+  compilation,
+  location,
+  detail,
+) {
   if (value === null || typeof value !== 'object') return value;
   copies = copies || new Map();
   if (copies.has(value)) return copies.get(value);
   if (Buffer.isBuffer(value)) {
+    if (compilation) {
+      compilation.charge(
+        'generatedBytes',
+        value.length,
+        location,
+        detail || 'cloning binary mixin data',
+      );
+    }
     const copy = Buffer.from(value);
     copies.set(value, copy);
     return copy;
+  }
+
+  if (compilation) {
+    compilation.charge(
+      'materializedNodes',
+      1,
+      location,
+      detail || 'cloning mixin AST structure',
+    );
   }
 
   const copy = Array.isArray(value)
@@ -652,7 +718,14 @@ function cloneAst(value, copies, mixinIdentities) {
   for (const key of Reflect.ownKeys(value)) {
     const descriptor = Object.getOwnPropertyDescriptor(value, key);
     if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
-      descriptor.value = cloneAst(descriptor.value, copies, mixinIdentities);
+      descriptor.value = cloneAst(
+        descriptor.value,
+        copies,
+        mixinIdentities,
+        compilation,
+        location,
+        detail,
+      );
     }
     Object.defineProperty(copy, key, descriptor);
   }

@@ -37,6 +37,7 @@ function validateRoot(ast, sources) {
 // instead of exposing a repeated ancestry graph through enumerable metadata.
 function createState(options) {
   return {
+    compilation: options.compilationContext,
     declaredBlocks: new WeakMap(),
     extendedTrees: new WeakSet(),
     maxDepth:
@@ -53,7 +54,7 @@ function linkInner(ast, options, state, depth) {
   // values stay deferred until their own linkInner call, so the same child AST
   // can safely be used at multiple include/extends sites without preserving an
   // alias between rendered occurrences.
-  ast = cloneOwnedAst(ast);
+  ast = cloneOwnedAst(ast, state, diagnostics.context(ast, sources));
   let extendsNode = null;
   if (ast.nodes.length) {
     const hasExtends = ast.nodes[0].type === 'Extends';
@@ -108,7 +109,7 @@ function linkInner(ast, options, state, depth) {
       }
     }
 
-    extend(parentDeclaredBlocks, ast, sources);
+    extend(parentDeclaredBlocks, ast, sources, state);
     parent.nodes = declarations.concat(parent.nodes);
     // Composition cloned payloads into the actual parent slots. Recompute the
     // authoritative map from that output tree so a later inheritance level
@@ -161,7 +162,7 @@ function forEachInheritanceBlock(ast, visit) {
 // slots. `parentBlocks` maps each name directly to the current rendered block
 // occurrences. forEachInheritanceBlock applies the same mixin-scope and
 // nested-name rules used to construct that map.
-function extend(parentBlocks, ast, sources) {
+function extend(parentBlocks, ast, sources, state) {
   forEachInheritanceBlock(ast, function (node) {
     const parentBlockList = parentBlocks[node.name] || [];
     if (!parentBlockList.length) return;
@@ -169,7 +170,14 @@ function extend(parentBlocks, ast, sources) {
       // Every effective slot owns its occurrence. Later filters and document
       // resolution mutate subtrees, so sharing node.nodes here would process
       // one occurrence and merely alias the already-resolved result elsewhere.
-      const children = cloneAst(node.nodes);
+      const children = cloneAst(
+        node.nodes,
+        undefined,
+        false,
+        state.compilation,
+        diagnostics.context(node, sources),
+        'materializing inheritance block ' + node.name,
+      );
       switch (node.mode) {
         case 'append':
           parentBlock.nodes = parentBlock.nodes.concat(children);
@@ -254,15 +262,39 @@ function removeBlocks(ast) {
 // nodes. structuredClone preserves the graph, but converts those Buffers to
 // Uint8Arrays. Clone the AST graph explicitly so binary filters keep receiving
 // the loader's Buffer contract while aliases within one copy stay aliases.
-function cloneAst(value, copies, deferDependencies) {
+function cloneAst(
+  value,
+  copies,
+  deferDependencies,
+  compilation,
+  location,
+  detail,
+) {
   if (value === null || typeof value !== 'object') return value;
   copies = copies || new Map();
   if (copies.has(value)) return copies.get(value);
 
   if (Buffer.isBuffer(value)) {
+    if (compilation) {
+      compilation.charge(
+        'generatedBytes',
+        value.length,
+        location,
+        detail || 'cloning binary AST data',
+      );
+    }
     const copy = Buffer.from(value);
     copies.set(value, copy);
     return copy;
+  }
+
+  if (compilation) {
+    compilation.charge(
+      'materializedNodes',
+      1,
+      location,
+      detail || 'cloning AST structure',
+    );
   }
 
   const copy = Array.isArray(value)
@@ -275,7 +307,14 @@ function cloneAst(value, copies, deferDependencies) {
       descriptor.value =
         deferDependencies && value.type === 'FileReference' && key === 'ast'
           ? descriptor.value
-          : cloneAst(descriptor.value, copies, deferDependencies);
+          : cloneAst(
+              descriptor.value,
+              copies,
+              deferDependencies,
+              compilation,
+              location,
+              detail,
+            );
     }
     Object.defineProperty(copy, key, descriptor);
   }
@@ -286,8 +325,15 @@ function cloneAst(value, copies, deferDependencies) {
 // inputs. Each dependency is copied independently when its include/extends edge
 // is followed, which gives every rendered occurrence single ownership even if
 // a direct API caller reuses the same FileReference.ast object.
-function cloneOwnedAst(value) {
-  return cloneAst(value, undefined, true);
+function cloneOwnedAst(value, state, location) {
+  return cloneAst(
+    value,
+    undefined,
+    true,
+    state.compilation,
+    location,
+    'taking ownership of an assembled AST',
+  );
 }
 
 function applyYield(ast, block, includeNode, options) {
@@ -299,7 +345,16 @@ function applyYield(ast, block, includeNode, options) {
       // `yield`; every position gets an independent mutable occurrence.
       replaced = true;
       node.type = 'Block';
-      node.nodes = [cloneAst(block)];
+      node.nodes = [
+        cloneAst(
+          block,
+          undefined,
+          false,
+          options.compilationContext,
+          diagnostics.context(includeNode, diagnostics.sources(options)),
+          'materializing an include yield',
+        ),
+      ];
     }
   });
   if (!replaced) {

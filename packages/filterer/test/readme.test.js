@@ -29,3 +29,13 @@ test('README quick start executes against the public export', () => {
 
   assert.deepStrictEqual(logged, ['<strong>hello</strong>']);
 });
+
+test('README publishes typed filter edges and cumulative limits', () => {
+  var readme = fs.readFileSync(readmePath, 'utf8');
+
+  assert.match(readme, /`options\.compilationLimits`/);
+  assert.match(readme, /`options\.compilationContext`/);
+  assert.match(readme, /generated-filter cycle/);
+  assert.match(readme, /`text` result[\s\S]*escaped\s+exactly once/);
+  assert.match(readme, /`html` result stays raw/);
+});

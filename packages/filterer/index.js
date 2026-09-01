@@ -6,6 +6,7 @@ module.exports = applyFilters;
 
 const packagePrefix = 'pugneum-filter-';
 const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
+const filterOutputType = Symbol('pugneum.filterOutputType');
 
 const validFilterTypes = new Set(['text', 'html', 'pugneum', 'syntax']);
 
@@ -67,7 +68,7 @@ function extendMixinContext(inherited, parents) {
   return context;
 }
 
-function inspectGeneratedAst(ast, inheritedMixinContext) {
+function inspectGeneratedAst(ast, inheritedMixinContext, compilation) {
   const root = generatedRoot(ast);
   const parents = [];
   const records = [];
@@ -106,7 +107,7 @@ function inspectGeneratedAst(ast, inheritedMixinContext) {
         records.push(definition);
       }
     },
-    {parents},
+    {compilationContext: compilation, parents},
   );
   return {records, unsupported};
 }
@@ -135,10 +136,17 @@ function validateGeneratedAst(
     }
     walk.validate(root, {
       allowAliases: false,
+      compilationContext: context.compilation,
       forbiddenNodes: context.ownedNodes,
       maxDepth: remainingDepth,
     });
   } catch (validationError) {
+    if (
+      validationError &&
+      validationError.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED'
+    ) {
+      throw validationError;
+    }
     throw error(
       'INVALID_FILTER_OUTPUT',
       `Filter '${name}' (type ${type}) returned invalid AST: ${validationError.message}`,
@@ -146,7 +154,11 @@ function validateGeneratedAst(
     );
   }
 
-  const inspection = inspectGeneratedAst(root, mixinContext);
+  const inspection = inspectGeneratedAst(
+    root,
+    mixinContext,
+    context.compilation,
+  );
   if (inspection.unsupported) {
     throw error(
       'UNSUPPORTED_FILTER_CONSTRUCT',
@@ -478,6 +490,22 @@ function normalizeTextNewlines(value) {
   return value.replace(/\r\n|\r/g, '\n');
 }
 
+function chargeStringOutput(result, name, type, node, options, context) {
+  context.compilation.charge(
+    'generatedBytes',
+    Buffer.byteLength(result, 'utf8'),
+    nodeLocation(node, options),
+    `receiving output from filter '${name}' (type ${type})`,
+  );
+}
+
+function setFilterOutputType(node, type) {
+  Object.defineProperty(node, filterOutputType, {
+    configurable: true,
+    value: type,
+  });
+}
+
 function validateStringOutput(result, name, type, node, options) {
   if (typeof result !== 'string') {
     throw error(
@@ -522,20 +550,25 @@ function applyFilterResult(
   switch (type) {
     case 'text':
       validateStringOutput(result, name, type, node, options);
+      chargeStringOutput(result, name, type, node, options, context);
       rememberNode(node, context);
       node.type = 'Text';
-      node.val = escapeFilterText(result);
+      node.val = result;
+      setFilterOutputType(node, type);
       stripFilterFields(node);
       break;
     case 'html':
       validateStringOutput(result, name, type, node, options);
+      chargeStringOutput(result, name, type, node, options, context);
       rememberNode(node, context);
       node.type = 'Text';
       node.val = result;
+      setFilterOutputType(node, type);
       stripFilterFields(node);
       break;
     case 'pugneum': {
       validateStringOutput(result, name, type, node, options);
+      chargeStringOutput(result, name, type, node, options, context);
       const generated = parsePugneum(
         result,
         name,
@@ -554,6 +587,12 @@ function applyFilterResult(
         context,
         nodeDepth,
         mixinContext,
+      );
+      context.compilation.charge(
+        'astNodes',
+        generatedRecords.length + 1,
+        nodeLocation(node, options),
+        `accepting AST output from filter '${name}'`,
       );
       const generatedLocation = {
         filename: generated.filename,
@@ -587,6 +626,12 @@ function applyFilterResult(
         nodeDepth,
         mixinContext,
       );
+      context.compilation.charge(
+        'astNodes',
+        generatedRecords.length + 1,
+        nodeLocation(node, options),
+        `accepting AST output from filter '${name}'`,
+      );
       stampGeneratedProvenance(generatedRecords, node, context.ownedNodes);
       rememberNode(node, context);
       node.type = 'Block';
@@ -615,7 +660,7 @@ function applyFilterResult(
 //
 // When this structured result remains in the AST, reference/footnote/toc nodes
 // reach the document-level resolve pass that runs after filtering. A structured
-// inner result is instead checked and serialized by getBodyAsText before that
+// inner result is instead checked and serialized by getBodyAsTypedValue before that
 // pass; document-global constructs are rejected at that explicit boundary. A
 // loader construct (include/extends/raw-include) cannot be resolved downstream
 // because loading already ran. Both this parsed tree and direct syntax output
@@ -646,13 +691,23 @@ function parsePugneum(result, name, node, options, sourceState, mixinContext) {
 // RawInclude.file records without a `type`, and the RawInclude handler consumes
 // those records before the walker would descend into them. Generated output is
 // still subjected to the strict shared schema below.
-function collectOwnedNodes(ast, ownedNodes) {
+function collectOwnedNodes(ast, ownedNodes, compilation) {
   const pending = Array.isArray(ast) ? ast.slice() : [ast];
   while (pending.length > 0) {
     const node = pending.pop();
     if (node == null || typeof node !== 'object' || ownedNodes.has(node)) {
       continue;
     }
+    compilation.charge(
+      'astNodes',
+      1,
+      {
+        column: node.column,
+        filename: node.filename,
+        line: node.line,
+      },
+      'indexing filter input ownership',
+    );
     ownedNodes.add(node);
 
     switch (node.type) {
@@ -708,14 +763,139 @@ function collectOwnedNodes(ast, ownedNodes) {
   }
 }
 
+function enterFilter(node, name, options, context) {
+  const location = nodeLocation(node, options);
+  const cycleStart = context.filterStack.findIndex(
+    (entry) => entry.name === name,
+  );
+  if (cycleStart !== -1) {
+    const chain = context.filterStack
+      .slice(cycleStart)
+      .map((entry) => entry.name)
+      .concat(name);
+    throw error(
+      'FILTER_CYCLE',
+      'Filter expansion cycle detected: ' + chain.join(' -> '),
+      location,
+    );
+  }
+
+  const depth = context.filterStack.length + 1;
+  try {
+    context.compilation.assertWithin(
+      'filterDepth',
+      depth,
+      location,
+      'expanding filter chain ' +
+        context.filterStack
+          .map((entry) => entry.name)
+          .concat(name)
+          .join(' -> '),
+    );
+  } catch (failure) {
+    if (failure.code !== 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED') throw failure;
+    throw attachCause(
+      error(
+        'FILTER_DEPTH_EXCEEDED',
+        `Filter expansion depth exceeds maximum of ${context.compilation.limit(
+          'filterDepth',
+        )}: ` +
+          context.filterStack
+            .map((entry) => entry.name)
+            .concat(name)
+            .join(' -> '),
+        location,
+      ),
+      failure,
+    );
+  }
+  context.compilation.charge(
+    'filterInvocations',
+    1,
+    location,
+    `running filter '${name}'`,
+  );
+  const entry = {name, node};
+  context.filterStack.push(entry);
+  context.enteredFilters.set(node, entry);
+}
+
+function leaveFilter(node, context) {
+  const entry = context.enteredFilters.get(node);
+  if (!entry) return;
+  context.enteredFilters.delete(node);
+  const removed = context.filterStack.pop();
+  if (removed !== entry) {
+    throw new Error('Internal filter expansion stack mismatch');
+  }
+}
+
+function runIncludeFilter(
+  resolved,
+  name,
+  input,
+  attrs,
+  node,
+  options,
+  context,
+) {
+  enterFilter(node, name, options, context);
+  try {
+    const result = runFilter(
+      resolved,
+      name,
+      input,
+      attrs,
+      node,
+      options,
+      createFilterContext(node, options),
+    );
+    validateStringOutput(result, name, resolved.type, node, options);
+    chargeStringOutput(result, name, resolved.type, node, options, context);
+    return {type: resolved.type, value: result};
+  } finally {
+    leaveFilter(node, context);
+  }
+}
+
+function finalizeTypedFilterOutputs(ast, compilation) {
+  walk(
+    ast,
+    function (node) {
+      const type = node[filterOutputType];
+      if (type === undefined) return;
+      if (node.type !== 'Text') {
+        throw new Error('Internal typed filter output is not a Text node');
+      }
+      if (type === 'text') node.val = escapeFilterText(node.val);
+      Reflect.deleteProperty(node, filterOutputType);
+    },
+    {compilationContext: compilation},
+  );
+}
+
 function applyFilters(ast, filters, options, context) {
-  options = options || {};
   const rootCall = !context;
   if (!context) {
+    options = Object.assign({}, options || {});
+    const compilation = error.getCompilationContext(options);
+    delete options.compilationLimits;
+    options.compilationContext = compilation;
+    if (options.warnings !== undefined) {
+      options.warnings = compilation.wrapWarnings(options.warnings);
+    }
+    walk.validate(ast, {
+      allowAliases: false,
+      compilationContext: compilation,
+      maxDepth: walk.MAX_AST_DEPTH,
+    });
     const ownedNodes = new WeakSet();
-    collectOwnedNodes(ast, ownedNodes);
+    collectOwnedNodes(ast, ownedNodes, compilation);
     context = {
       baseDepth: 0,
+      compilation,
+      enteredFilters: new WeakMap(),
+      filterStack: [],
       mixinContext: normalizeMixinContext(options.mixinContext),
       ownedNodes,
       sourceState: createSourceState(options),
@@ -727,6 +907,12 @@ function applyFilters(ast, filters, options, context) {
     walk(
       ast,
       function (node) {
+        context.compilation.charge(
+          'astNodes',
+          1,
+          nodeLocation(node, options),
+          'applying filters to AST nodes',
+        );
         const nodeDepth = context.baseDepth + parents.length;
         const mixinContext = extendMixinContext(context.mixinContext, parents);
         if (node.type === 'Filter') {
@@ -738,12 +924,14 @@ function applyFilters(ast, filters, options, context) {
             nodeDepth,
             mixinContext,
           );
-          const text = getBodyAsText(node, options);
           const attrs = getAttributes(node, options);
           attrs.filename = node.filename;
           const filterContext = createFilterContext(node, options);
           const resolved = resolveFilter(node.name, filters, node, options);
           validateFilterType(resolved, node.name, node, options);
+          const body = getBodyAsTypedValue(node, options);
+          const text = transitionFilterInput(body, resolved.type);
+          enterFilter(node, node.name, options, context);
           const result = runFilter(
             resolved,
             node.name,
@@ -780,40 +968,52 @@ function applyFilters(ast, filters, options, context) {
           // The innermost filter reads the file; its `binary` flag chooses raw
           // bytes vs decoded text. Each later filter consumes the previous result.
           const innermost = descriptors[innermostIndex];
-          let result = innermost.binary
-            ? node.file.raw
-            : normalizeTextNewlines(node.file.str);
-          let lastType;
+          let typed = {
+            type: null,
+            value: innermost.binary
+              ? node.file.raw
+              : normalizeTextNewlines(node.file.str),
+          };
+          context.compilation.assertWithin(
+            'filterDepth',
+            node.filters.length,
+            nodeLocation(node, options),
+            'applying include filter chain',
+          );
           for (let index = innermostIndex; index >= 0; index--) {
             const f = node.filters[index];
             const resolved = descriptors[index];
             const filterAttrs = getAttributes(f, options);
             filterAttrs.filename = node.file.fullPath;
             validateIncludeFilterType(resolved, f.name, node, options);
-            result = runFilter(
+            typed = runIncludeFilter(
               resolved,
               f.name,
-              result,
+              transitionFilterInput(typed, resolved.type),
               filterAttrs,
               node,
               options,
-              createFilterContext(node, options),
+              context,
             );
-            // Validate every stage's output, not just the final one, so a
-            // misbehaving intermediate filter yields a clear INVALID_FILTER_OUTPUT
-            // naming the stage that failed rather than silent garbage downstream.
-            validateStringOutput(result, f.name, resolved.type, node, options);
-            lastType = resolved.type;
           }
           rememberNode(node, context);
           node.type = 'Text';
-          node.val = lastType === 'text' ? escapeFilterText(result) : result;
+          node.val =
+            typed.type === 'text' ? escapeFilterText(typed.value) : typed.value;
           delete node.filters;
           delete node.file;
         }
       },
-      {includeDependencies: true, parents},
+      function (node) {
+        leaveFilter(node, context);
+      },
+      {
+        compilationContext: context.compilation,
+        includeDependencies: true,
+        parents,
+      },
     );
+    if (rootCall) finalizeTypedFilterOutputs(ast, context.compilation);
     return ast;
   } catch (failure) {
     if (rootCall) rollbackFilterPass(context);
@@ -825,7 +1025,7 @@ function applyFilters(ast, filters, options, context) {
 // to a Filter node whose sole child at nodes[0] is the next Filter; recursing
 // through the walker resolves the whole chain inner-first. applyFilters mutates
 // the block in place, so calling it for its side effect is sufficient — no
-// reassignment needed. The block guard mirrors getBodyAsText so a blockless
+// reassignment needed. The block guard mirrors getBodyAsTypedValue so a blockless
 // Filter node (only reachable from a syntax filter emitting one) does not crash
 // with a raw TypeError.
 function handleNestedFilters(
@@ -842,7 +1042,10 @@ function handleNestedFilters(
     node.block.nodes[0].type === 'Filter'
   ) {
     applyFilters(node.block, filters, options, {
+      compilation: context.compilation,
       baseDepth: nodeDepth + 1,
+      enteredFilters: context.enteredFilters,
+      filterStack: context.filterStack,
       mixinContext,
       ownedNodes: context.ownedNodes,
       sourceState: context.sourceState,
@@ -882,18 +1085,54 @@ function runFilter(resolved, name, input, attrs, node, options, context) {
   }
 }
 
-// Flatten a filter body to text for a string-consuming (text/html) outer
-// filter. Plain pipeless text bodies are Text nodes carrying `.val`. A nested
-// pugneum/syntax inner filter, however, is rewritten by applyFilterResult into
-// a Block node (no `.val`); rendering that Block to HTML lets the outer filter
-// consume the inner filter's structured result instead of silently dropping it.
-function getBodyAsText(node, options) {
-  if (!node.block) return '';
-  return node.block.nodes.map((n) => bodyNodeToText(n, node, options)).join('');
+// A filter result keeps its semantic type until the next edge. Text remains
+// unescaped across text->text transitions and is escaped exactly once before
+// crossing into html/structured output. Structured values serialize as HTML at
+// their explicit string boundary. This prevents a later html filter from
+// erasing an inner text promise without double-encoding repeated text stages.
+function transitionFilterInput(typed, targetType) {
+  const segments = typed.segments || [typed];
+  if (segments.length === 1 && segments[0].type === null) {
+    return segments[0].value;
+  }
+  return segments
+    .map((segment) => {
+      if (segment.type === 'text' && targetType !== 'text') {
+        return escapeFilterText(segment.value);
+      }
+      return segment.value;
+    })
+    .join('');
 }
 
-function bodyNodeToText(node, invocation, options) {
-  if (node.type === 'Text') return node.val || '';
+function appendTypedValue(left, right) {
+  if (left === null) return right;
+  const segments = (left.segments || [left]).concat(right.segments || [right]);
+  const merged = [];
+  for (const segment of segments) {
+    const previous = merged.at(-1);
+    if (previous && previous.type === segment.type) {
+      previous.value += segment.value;
+    } else {
+      merged.push({type: segment.type, value: segment.value});
+    }
+  }
+  return merged.length === 1 ? merged[0] : {segments: merged};
+}
+
+function getBodyAsTypedValue(node, options) {
+  if (!node.block) return {type: null, value: ''};
+  let body = null;
+  for (const child of node.block.nodes) {
+    body = appendTypedValue(body, bodyNodeToTypedValue(child, node, options));
+  }
+  return body || {type: null, value: ''};
+}
+
+function bodyNodeToTypedValue(node, invocation, options) {
+  if (node.type === 'Text') {
+    return {type: node[filterOutputType] || null, value: node.val || ''};
+  }
   // Any non-Text node (a Block produced by a nested pugneum/syntax filter, or
   // any other structured node) is rendered to its HTML serialization so a
   // string-consuming outer filter receives the inner output as HTML. Refuse
@@ -915,12 +1154,16 @@ function bodyNodeToText(node, invocation, options) {
     );
   }
   const render = require('pugneum-renderer');
-  return render(node, {
-    warnings: options && options.warnings,
-    filename: node.filename,
-    source: options && options.source,
-    sources: options && options.sources,
-  });
+  return {
+    type: 'html',
+    value: render(node, {
+      compilationContext: options && options.compilationContext,
+      warnings: options && options.warnings,
+      filename: node.filename,
+      source: options && options.source,
+      sources: options && options.sources,
+    }),
+  };
 }
 
 function getAttributes(node, options) {

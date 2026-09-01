@@ -100,6 +100,66 @@ Keeping warnings as plain values lets a compiler collect several diagnostics
 without interrupting the build. The live and serialized `severity` fields
 preserve whether a value came from `error()` or `error.warning()`.
 
+### `error.createCompilationContext(limits?)`
+
+Creates the shared, synchronous work budget used by Pugneum's loader,
+filterer, linker, renderer, facade, CLI, and feed generator. A context is
+cumulative: pass the same instance through every stage and every page in one
+build so a sequence of individually small operations cannot evade the total.
+
+`limits` is an optional object containing exact overrides. Unknown keys and
+values that are not non-negative safe integers throw `TypeError`. Omitted keys
+use these generous local-build defaults, also exported as the frozen
+`error.DEFAULT_COMPILATION_LIMITS` object:
+
+| Resource | Default | Charged work |
+| --- | ---: | --- |
+| `sourceBytes` | 67,108,864 | Entry, dependency, and feed input bytes |
+| `dependencyFiles` | 4,096 | Followed include/extends edges, including cache hits |
+| `astNodes` | 2,000,000 | AST validation, traversal, and collection entries |
+| `materializedNodes` | 1,000,000 | Owned, inherited, yielded, and mixin-expanded copies |
+| `filterInvocations` | 10,000 | Filter callback calls |
+| `filterDepth` | 64 | Simultaneously active generated-filter chain |
+| `generatedBytes` | 67,108,864 | Filter strings and cloned binary payloads |
+| `mixinInvocations` | 100,000 | Linker and direct-render mixin calls |
+| `diagnostics` | 10,000 | Attempted warning insertions |
+| `feedEntries` | 10,000 | Discovered feed entries |
+| `outputBytes` | 268,435,456 | Rendered HTML plus serialized Atom/RSS bytes |
+
+```js
+var pugneumError = require('pugneum-error');
+
+var compilation = pugneumError.createCompilationContext({
+  sourceBytes: 8 * 1024 * 1024,
+  outputBytes: 32 * 1024 * 1024,
+});
+
+compilation.charge('sourceBytes', 1200, {filename: 'page.pg'});
+console.log(compilation.remaining('sourceBytes'));
+console.log(compilation.snapshot());
+```
+
+`charge(resource, amount, location?, detail?)` consumes work atomically.
+`assertWithin(resource, attempted, location?, detail?)` checks a prospective
+absolute amount without consuming it. `limit(resource)`, `remaining(resource)`,
+and `snapshot()` expose immutable numeric state. `wrapWarnings(array)` returns
+an append-forwarding array that charges `diagnostics` while preserving the
+caller's collector, including collectors with hardened or deduplicating
+`push` methods.
+
+Exceeding a limit throws a located
+`PUGNEUM:COMPILATION_LIMIT_EXCEEDED` diagnostic with enumerable `resource`,
+`attempted`, and `limit` fields. Work already completed remains charged; create
+a new context to begin a separate build.
+
+### `error.getCompilationContext(options?)`
+
+Returns `options.compilationContext` after validating that it came from
+`createCompilationContext()`, or creates a context from
+`options.compilationLimits`. Supplying both is an error. This helper lets
+individual pipeline packages accept the same two option forms without
+silently starting a fresh budget.
+
 ### `error.clearSourceCache()`
 
 Clears the bounded internal source-line index used to format repeated

@@ -1,4 +1,6 @@
 const makeError = require('pugneum-error');
+const walk = require('pugneum-walker');
+const collectValidatedTypes = Symbol.for('pugneum.collectValidatedTypes');
 const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
 const attributeInterpolationSource = Symbol.for(
   'pugneum.attributeInterpolationSource',
@@ -165,14 +167,52 @@ class Compiler {
       throw new Error('Expected "options.warnings" to be a mutable array');
     }
     this.node = node;
+    this.compilation = makeError.getCompilationContext(options);
+    this.validatedNodeTypes = new WeakMap();
     this.namespace = 'html';
     this.mixinIdentities = new WeakMap();
     this.mixinDeclarations = new Map();
     this.usedMixinDeclarations = new Set();
     this.rootMixinScope = createMixinScope(null);
     this.mixinScope = this.rootMixinScope;
-    this.warnings = options.warnings === undefined ? [] : options.warnings;
+    this.warnings = this.compilation.wrapWarnings(
+      options.warnings === undefined ? [] : options.warnings,
+    );
     this.callStack = [];
+    try {
+      walk.validate(node, {
+        compilationContext: this.compilation,
+        maxDepth: walk.MAX_AST_DEPTH,
+        [collectValidatedTypes]: this.validatedNodeTypes,
+      });
+    } catch (failure) {
+      if (!failure || failure.code !== 'INVALID_AST') throw failure;
+      const invalidNode = failure.node || node || {};
+      if (
+        failure.kind === 'shape' &&
+        (invalidNode.type === 'Tag' ||
+          invalidNode.type === 'InterpolatedTag') &&
+        /\.(?:name|expr)$/.test(failure.path)
+      ) {
+        throw makeError(
+          'INVALID_TAG_NAME',
+          'Tag names must start with an ASCII letter',
+          this.locate(invalidNode),
+        );
+      }
+      if (
+        failure.kind === 'shape' &&
+        invalidNode.type === 'NamedBlock' &&
+        /\.mode$/.test(failure.path)
+      ) {
+        throw makeError(
+          'UNKNOWN_BLOCK_MODE',
+          `Unknown block mode '${invalidNode.mode}'`,
+          this.locate(invalidNode),
+        );
+      }
+      throw makeError('INVALID_AST', failure.message, this.locate(invalidNode));
+    }
   }
 
   // Build the location/source descriptor for a node's diagnostic. The source
@@ -227,6 +267,12 @@ class Compiler {
   }
 
   buffer(str) {
+    this.compilation.charge(
+      'outputBytes',
+      Buffer.byteLength(str, 'utf8'),
+      this.currentNode ? this.locate(this.currentNode) : {},
+      'rendering HTML output',
+    );
     this.buf.push(str);
   }
 
@@ -254,6 +300,12 @@ class Compiler {
   }
 
   visit(node, parent) {
+    this.compilation.charge(
+      'astNodes',
+      1,
+      node && typeof node === 'object' ? this.locate(node) : {},
+      'rendering AST nodes',
+    );
     if (!node) {
       let msg;
       if (parent) {
@@ -271,7 +323,7 @@ class Compiler {
       throw new TypeError(msg);
     }
 
-    const type = node.type;
+    const type = this.validatedNodeTypes.get(node) || node.type;
     const visitor = this['visit' + type];
     if (!visitor) {
       const stage = requiredStage(node, type);
@@ -301,7 +353,13 @@ class Compiler {
       throw new TypeError(msg);
     }
 
-    return visitor.call(this, node);
+    const previousNode = this.currentNode;
+    this.currentNode = node;
+    try {
+      return visitor.call(this, node);
+    } finally {
+      this.currentNode = previousNode;
+    }
   }
 
   visitInterpolatedTag(interp) {
@@ -696,6 +754,12 @@ class Compiler {
           mixin,
         );
       }
+      this.compilation.charge(
+        'mixinInvocations',
+        1,
+        this.locate(mixin),
+        "rendering mixin '" + mixin.name + "'",
+      );
 
       const args =
         this.callStack.length === 0

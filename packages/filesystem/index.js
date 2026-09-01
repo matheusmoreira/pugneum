@@ -8,6 +8,7 @@ const ERROR_CODES = Object.freeze({
   PATH_ESCAPE: 'PUGNEUM:FILESYSTEM_PATH_ESCAPE',
   NOT_REGULAR_FILE: 'PUGNEUM:FILESYSTEM_NOT_REGULAR_FILE',
   NOT_DIRECTORY: 'PUGNEUM:FILESYSTEM_NOT_DIRECTORY',
+  LIMIT_EXCEEDED: 'PUGNEUM:FILESYSTEM_LIMIT_EXCEEDED',
   WRITE_FAILED: 'PUGNEUM:FILESYSTEM_WRITE_FAILED',
 });
 
@@ -47,6 +48,17 @@ function notDirectory(requestedPath) {
     `Expected a directory: ${requestedPath}`,
     requestedPath,
   );
+}
+
+function fileLimitExceeded(requestedPath, size, maxBytes) {
+  const failure = rootedError(
+    ERROR_CODES.LIMIT_EXCEEDED,
+    `File exceeds the ${maxBytes}-byte read limit: ${requestedPath}`,
+    requestedPath,
+  );
+  failure.size = size;
+  failure.maxBytes = maxBytes;
+  return failure;
 }
 
 function writeFailed(requestedPath, cause, detail) {
@@ -257,7 +269,7 @@ module.exports = function createRootedFilesystem(root) {
       if (!isWithinRoot(descriptor.realpath, rootHandle.realpath)) {
         throw pathEscaped(resolved.requestedPath);
       }
-      return;
+      return openedStat;
     }
 
     // Windows does not expose a portable /proc-style pathname for an open
@@ -280,9 +292,25 @@ module.exports = function createRootedFilesystem(root) {
     ) {
       throw pathEscaped(resolved.requestedPath);
     }
+    return openedStat;
   }
 
   function readFile(requestedPath, options) {
+    let maxBytes;
+    let readOptions = options;
+    if (options !== null && typeof options === 'object') {
+      maxBytes = options.maxBytes;
+      if (
+        maxBytes !== undefined &&
+        (!Number.isSafeInteger(maxBytes) || maxBytes < 0)
+      ) {
+        throw new TypeError('options.maxBytes must be a non-negative integer');
+      }
+      if (maxBytes !== undefined) {
+        readOptions = Object.assign({}, options);
+        delete readOptions.maxBytes;
+      }
+    }
     const resolved = resolveRequest(requestedPath);
     let rootHandle;
     let fd;
@@ -291,6 +319,13 @@ module.exports = function createRootedFilesystem(root) {
       rootHandle = openRoot(requestedPath);
       const expected = expectedFile(resolved, rootHandle);
       expectedReady = true;
+      if (maxBytes !== undefined && expected.expectedStat.size > maxBytes) {
+        throw fileLimitExceeded(
+          requestedPath,
+          expected.expectedStat.size,
+          maxBytes,
+        );
+      }
       fd = fs.openSync(
         path.join(rootHandle.basePath, resolved.relative),
         openFlags(fs.constants.O_RDONLY, [
@@ -298,8 +333,11 @@ module.exports = function createRootedFilesystem(root) {
           fs.constants.O_NONBLOCK,
         ]),
       );
-      verifyOpenedFile(fd, resolved, expected, rootHandle);
-      return fs.readFileSync(fd, options);
+      const openedStat = verifyOpenedFile(fd, resolved, expected, rootHandle);
+      if (maxBytes !== undefined && openedStat.size > maxBytes) {
+        throw fileLimitExceeded(requestedPath, openedStat.size, maxBytes);
+      }
+      return fs.readFileSync(fd, readOptions);
     } catch (error) {
       if (
         ['ELOOP', 'EMLINK'].includes(error.code) ||

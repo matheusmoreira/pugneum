@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const makeError = require('pugneum-error');
 const createRootedFilesystem = require('pugneum-filesystem');
 const filesystemErrors = createRootedFilesystem.ERROR_CODES;
 const extract = require('./lib/extract');
@@ -46,6 +47,8 @@ function validateOptions(options) {
   const outputDirectory = options.outputDirectory;
   const configuredWriteDirectory = options.writeDirectory;
   const configuredFeeds = options.feeds;
+  const configuredCompilationContext = options.compilationContext;
+  const configuredCompilationLimits = options.compilationLimits;
 
   validatePathString(outputDirectory, 'outputDirectory');
   if (configuredWriteDirectory !== undefined) {
@@ -100,7 +103,18 @@ function validateOptions(options) {
     );
   }
 
+  let compilationContext;
+  try {
+    compilationContext = makeError.getCompilationContext({
+      compilationContext: configuredCompilationContext,
+      compilationLimits: configuredCompilationLimits,
+    });
+  } catch (error) {
+    invalidOptions(error.message);
+  }
+
   return {
+    compilationContext,
     outputDirectory,
     writeDirectory,
     feeds: {
@@ -115,6 +129,77 @@ function validateOptions(options) {
       rss,
     },
   };
+}
+
+function cachedBoundedReader(inputFiles, compilation) {
+  const cache = new Map();
+  return function readFile(requestedPath, options) {
+    const normalized = path.normalize(requestedPath);
+    const identity =
+      process.platform === 'win32' ? normalized.toLowerCase() : normalized;
+    let raw = cache.get(identity);
+    if (raw === undefined) {
+      try {
+        raw = inputFiles.readFile(requestedPath, {
+          maxBytes: compilation.remaining('sourceBytes'),
+        });
+      } catch (error) {
+        if (error.code === filesystemErrors.LIMIT_EXCEEDED) {
+          compilation.charge(
+            'sourceBytes',
+            error.size,
+            {},
+            'reading feed input ' + requestedPath,
+          );
+        }
+        throw error;
+      }
+      compilation.charge(
+        'sourceBytes',
+        raw.length,
+        {},
+        'reading feed input ' + requestedPath,
+      );
+      cache.set(identity, raw);
+    }
+
+    const encoding =
+      typeof options === 'string' ? options : options && options.encoding;
+    return encoding ? raw.toString(encoding) : Buffer.from(raw);
+  };
+}
+
+function boundedChunks(chunks, format, compilation) {
+  return {
+    *[Symbol.iterator]() {
+      for (const chunk of chunks) {
+        compilation.charge(
+          'outputBytes',
+          Buffer.byteLength(chunk, 'utf8'),
+          {},
+          'serializing the ' + format + ' feed',
+        );
+        yield chunk;
+      }
+    },
+  };
+}
+
+function findCompilationLimit(error, seen) {
+  if (error === null || typeof error !== 'object') return undefined;
+  seen = seen || new Set();
+  if (seen.has(error)) return undefined;
+  seen.add(error);
+  if (error.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED') return error;
+
+  const cause = findCompilationLimit(error.cause, seen);
+  if (cause) return cause;
+  if (Array.isArray(error.errors)) {
+    for (const nested of error.errors) {
+      const found = findCompilationLimit(nested, seen);
+      if (found) return found;
+    }
+  }
 }
 
 function isFilesystemBoundary(error, includeNonRegular) {
@@ -262,6 +347,7 @@ function throwArticlePathTraversal(href) {
 module.exports = function generateFeeds(options) {
   const validatedOptions = validateOptions(options);
   const feedsConfig = validatedOptions.feeds;
+  const compilation = validatedOptions.compilationContext;
 
   if (feedsConfig.enabled === false) {
     return;
@@ -275,12 +361,13 @@ module.exports = function generateFeeds(options) {
   const rssPath = feedsConfig.rss;
 
   const inputFiles = createRootedFilesystem(outputDir);
+  const readInput = cachedBoundedReader(inputFiles, compilation);
 
   // Phase 1: Extract feed-level metadata from a regular, no-follow index file
   // rooted beneath outputDirectory.
   let indexData;
   try {
-    indexData = extract.indexPage(indexFile, inputFiles.readFile);
+    indexData = extract.indexPage(indexFile, readInput);
   } catch (error) {
     rethrowFilesystemBoundary(
       error,
@@ -289,6 +376,13 @@ module.exports = function generateFeeds(options) {
       true,
     );
   }
+
+  compilation.charge(
+    'feedEntries',
+    indexData.entries.length,
+    {},
+    'discovering feed entries',
+  );
 
   // Resolve metadata: config overrides HTML
   let url = feedsConfig.url || indexData.url;
@@ -333,18 +427,24 @@ module.exports = function generateFeeds(options) {
 
   // Phase 2: Enrich entries from article pages
   const entries = [];
+  const articleCache = new Map();
+  function readArticle(articlePath, articleUrl) {
+    const identity = articlePath + '\0' + articleUrl;
+    if (!articleCache.has(identity)) {
+      articleCache.set(
+        identity,
+        extract.articlePage(articlePath, tagName, readInput, articleUrl),
+      );
+    }
+    return articleCache.get(identity);
+  }
   for (let i = 0; i < indexData.entries.length; i++) {
     const entry = indexData.entries[i];
     const articleLocation = resolveArticleLocation(entry.href, baseUrl);
     let articlePath = articleLocation.path;
     let articleData;
     try {
-      articleData = extract.articlePage(
-        articlePath,
-        tagName,
-        inputFiles.readFile,
-        articleLocation.url,
-      );
+      articleData = readArticle(articlePath, articleLocation.url);
     } catch (error) {
       if (error.code === filesystemErrors.PATH_ESCAPE) {
         rethrowFilesystemBoundary(
@@ -363,12 +463,7 @@ module.exports = function generateFeeds(options) {
 
       const fallbackPath = articlePath + '.html';
       try {
-        articleData = extract.articlePage(
-          fallbackPath,
-          tagName,
-          inputFiles.readFile,
-          articleLocation.url,
-        );
+        articleData = readArticle(fallbackPath, articleLocation.url);
         articlePath = fallbackPath;
       } catch (fallbackError) {
         if (fallbackError.code === filesystemErrors.PATH_ESCAPE) {
@@ -425,8 +520,12 @@ module.exports = function generateFeeds(options) {
   // Construct both serializers before filesystem work so their eager
   // validation still fails before output setup. Their chunks are consumed one
   // format at a time while the transaction stages its temporary siblings.
-  const atomChunks = generateAtom.chunks(feed);
-  const rssChunks = generateRss.chunks(feed);
+  const atomChunks = boundedChunks(
+    generateAtom.chunks(feed),
+    'Atom',
+    compilation,
+  );
+  const rssChunks = boundedChunks(generateRss.chunks(feed), 'RSS', compilation);
 
   try {
     fs.mkdirSync(writeDir, {recursive: true});
@@ -442,6 +541,8 @@ module.exports = function generateFeeds(options) {
       {path: rssPath, chunks: rssChunks, options: {encoding: 'utf8'}},
     ]);
   } catch (error) {
+    const compilationLimit = findCompilationLimit(error);
+    if (compilationLimit) throw compilationLimit;
     if (isFilesystemBoundary(error, true)) {
       rethrowFilesystemBoundary(
         error,

@@ -59,6 +59,16 @@ describe('public documentation', function () {
     assert.match(readme, /trusted/);
   });
 
+  test('documents the cumulative compilation budget contract', function () {
+    assert.match(readme, /### `error\.createCompilationContext\(limits\?\)`/);
+    assert.match(readme, /`error\.DEFAULT_COMPILATION_LIMITS`/);
+    assert.match(readme, /`sourceBytes`/);
+    assert.match(readme, /`materializedNodes`/);
+    assert.match(readme, /`outputBytes`/);
+    assert.match(readme, /`PUGNEUM:COMPILATION_LIMIT_EXCEEDED`/);
+    assert.match(readme, /### `error\.getCompilationContext\(options\?\)`/);
+  });
+
   test('package metadata and prose name both diagnostic kinds', function () {
     assert.strictEqual(
       manifest.description,
@@ -68,6 +78,104 @@ describe('public documentation', function () {
     assert.ok(manifest.keywords.includes('warning'));
     assert.ok(manifest.keywords.includes('diagnostic'));
     assert.doesNotMatch(readme, /\buseby\b/i);
+  });
+});
+
+describe('compilation context', function () {
+  test('publishes frozen defaults and validates exact overrides', function () {
+    assert.ok(Object.isFrozen(error.DEFAULT_COMPILATION_LIMITS));
+    assert.ok(error.DEFAULT_COMPILATION_LIMITS.astNodes > 0);
+
+    var context = error.createCompilationContext({astNodes: 3});
+    assert.strictEqual(context.limit('astNodes'), 3);
+    assert.strictEqual(
+      context.limit('sourceBytes'),
+      error.DEFAULT_COMPILATION_LIMITS.sourceBytes,
+    );
+    assert.throws(function () {
+      error.createCompilationContext({unknown: 1});
+    }, /Unknown compilation limit: unknown/);
+    for (var value of [-1, 1.5, Number.MAX_SAFE_INTEGER + 1, '1']) {
+      assert.throws(function () {
+        error.createCompilationContext({astNodes: value});
+      }, /non-negative safe integer/);
+    }
+  });
+
+  test('charges cumulatively and fails with stable structured fields', function () {
+    var context = error.createCompilationContext({astNodes: 2});
+    assert.strictEqual(context.charge('astNodes', 1), 1);
+    assert.strictEqual(context.assertWithin('astNodes', 2), 2);
+    assert.strictEqual(context.remaining('astNodes'), 1);
+    assert.strictEqual(context.charge('astNodes', 1), 2);
+
+    assert.throws(
+      function () {
+        context.charge(
+          'astNodes',
+          1,
+          {filename: 'wide.pg', line: 4, column: 2},
+          'testing a wide tree',
+        );
+      },
+      function (failure) {
+        assert.strictEqual(failure.code, 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED');
+        assert.strictEqual(failure.resource, 'astNodes');
+        assert.strictEqual(failure.attempted, 3);
+        assert.strictEqual(failure.limit, 2);
+        assert.strictEqual(failure.filename, 'wide.pg');
+        assert.strictEqual(failure.line, 4);
+        assert.strictEqual(failure.column, 2);
+        assert.match(failure.message, /testing a wide tree/);
+        return true;
+      },
+    );
+
+    var snapshot = context.snapshot();
+    assert.ok(Object.isFrozen(snapshot));
+    assert.ok(Object.isFrozen(snapshot.limits));
+    assert.ok(Object.isFrozen(snapshot.used));
+    assert.strictEqual(snapshot.used.astNodes, 2);
+  });
+
+  test('bounds caller-owned and hardened warning collectors', function () {
+    var context = error.createCompilationContext({diagnostics: 1});
+    var warnings = [];
+    var seen = new Set();
+    Object.defineProperty(warnings, 'push', {
+      value: function (warning) {
+        if (!seen.has(warning.code)) {
+          seen.add(warning.code);
+          Array.prototype.push.call(warnings, warning);
+        }
+        return warnings.length;
+      },
+    });
+    var wrapped = context.wrapWarnings(warnings);
+    assert.ok(Array.isArray(wrapped));
+    wrapped.push(error.warning('FIRST', 'first'));
+    assert.strictEqual(warnings.length, 1);
+    assert.strictEqual(wrapped.length, 1);
+    assert.throws(
+      function () {
+        wrapped.push(error.warning('SECOND', 'second'));
+      },
+      function (failure) {
+        return (
+          failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+          failure.resource === 'diagnostics'
+        );
+      },
+    );
+    assert.strictEqual(warnings.length, 1);
+
+    // Reusing the caller's sink for a separate compilation is legal; only a
+    // wrapper already carrying another active context is rejected.
+    var next = error.createCompilationContext({diagnostics: 1});
+    assert.notStrictEqual(next.wrapWarnings(warnings), wrapped);
+    assert.throws(function () {
+      next.wrapWarnings(wrapped);
+    }, /already bound to another compilation context/);
   });
 });
 

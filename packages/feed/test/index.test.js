@@ -522,6 +522,106 @@ describe('feed generation work bounds', () => {
       'rss:end',
     ]);
   });
+
+  test('rejects oversized input before reading the index body', (t) => {
+    var fixture = boundaryFixture(t);
+    var indexSize = fs.statSync(path.join(fixture.input, 'index.html')).size;
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: fixture.input,
+          writeDirectory: fixture.output,
+          feeds: {enabled: true},
+          compilationLimits: {sourceBytes: indexSize - 1},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'sourceBytes' &&
+        failure.attempted === indexSize &&
+        failure.limit === indexSize - 1,
+    );
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('bounds entry discovery before reading article pages', (t) => {
+    var fixture = boundaryFixture(t);
+    var originalParseDocument = htmlparser2.parseDocument;
+    var parseCount = 0;
+    htmlparser2.parseDocument = function () {
+      parseCount++;
+      return Reflect.apply(originalParseDocument, this, arguments);
+    };
+    t.after(() => {
+      htmlparser2.parseDocument = originalParseDocument;
+    });
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: fixture.input,
+          writeDirectory: fixture.output,
+          feeds: {enabled: true},
+          compilationLimits: {feedEntries: 0},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'feedEntries' &&
+        failure.attempted === 1 &&
+        failure.limit === 0,
+    );
+    assert.strictEqual(parseCount, 1);
+    assertNoGeneratedFeeds(fixture);
+  });
+
+  test('bounds cumulative serialized bytes transactionally', (t) => {
+    var fixture = boundaryFixture(t);
+
+    assert.throws(
+      () =>
+        generateFeeds({
+          outputDirectory: fixture.input,
+          writeDirectory: fixture.output,
+          feeds: {enabled: true},
+          compilationLimits: {outputBytes: 0},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'outputBytes' &&
+        failure.attempted > 0 &&
+        failure.limit === 0,
+    );
+    assertNoGeneratedFeeds(fixture);
+    assert.deepStrictEqual(fs.readdirSync(fixture.output), []);
+  });
+
+  test('reuses an exact article href without reparsing the document', (t) => {
+    var fixture = boundaryFixture(t);
+    var indexPath = path.join(fixture.input, 'index.html');
+    var index = fs.readFileSync(indexPath, 'utf8');
+    fs.writeFileSync(
+      indexPath,
+      index.replace(
+        '</body>',
+        '<div data-published-at="2026-01-02"><a href="articles/post.html">Post again</a></div></body>',
+      ),
+    );
+    var originalParseDocument = htmlparser2.parseDocument;
+    var parseCount = 0;
+    htmlparser2.parseDocument = function () {
+      parseCount++;
+      return Reflect.apply(originalParseDocument, this, arguments);
+    };
+    t.after(() => {
+      htmlparser2.parseDocument = originalParseDocument;
+    });
+
+    fixture.generate();
+
+    assert.strictEqual(parseCount, 2, 'one index parse and one article parse');
+    var atom = fs.readFileSync(path.join(fixture.output, 'atom.xml'), 'utf8');
+    assert.strictEqual((atom.match(/<entry>/g) || []).length, 2);
+  });
 });
 
 describe('config overrides', () => {

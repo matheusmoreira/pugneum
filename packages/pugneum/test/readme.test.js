@@ -132,6 +132,13 @@ describe('README examples', () => {
     assert.match(readme, /zero-based `byteOffset`/);
   });
 
+  test('documents the shared build-wide compilation budget', () => {
+    assert.match(readme, /top-level `compilationLimits` object/);
+    assert.match(readme, /`pg\.createCompilationContext\(overrides\?\)`/);
+    assert.match(readme, /`pg\.DEFAULT_COMPILATION_LIMITS`/);
+    assert.match(readme, /`PUGNEUM:COMPILATION_LIMIT_EXCEEDED`/);
+  });
+
   test('every Pugneum fence compiles', () => {
     assert.strictEqual(pugneumExamples.length, 42);
     for (const example of pugneumExamples) {

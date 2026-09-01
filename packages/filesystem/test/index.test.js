@@ -99,6 +99,92 @@ describe('rooted regular-file reads', () => {
     assert.deepStrictEqual(files.readFile('index.html'), Buffer.from('hello'));
   });
 
+  test('rejects an oversized regular file before allocating its contents', (t) => {
+    const root = temporaryRoot(t);
+    fs.writeFileSync(path.join(root, 'large.txt'), '12345');
+    const files = createRootedFilesystem(root);
+    const originalReadFileSync = fs.readFileSync;
+    let reads = 0;
+    fs.readFileSync = function () {
+      reads++;
+      return Reflect.apply(originalReadFileSync, this, arguments);
+    };
+    t.after(() => {
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    assert.throws(
+      () => files.readFile('large.txt', {encoding: 'utf8', maxBytes: 4}),
+      (failure) => {
+        assert.strictEqual(failure.code, ERROR_CODES.LIMIT_EXCEEDED);
+        assert.strictEqual(failure.path, 'large.txt');
+        assert.strictEqual(failure.size, 5);
+        assert.strictEqual(failure.maxBytes, 4);
+        return true;
+      },
+    );
+    assert.strictEqual(reads, 0);
+    assert.strictEqual(
+      files.readFile('large.txt', {encoding: 'utf8', maxBytes: 5}),
+      '12345',
+    );
+    assert.strictEqual(reads, 1);
+  });
+
+  test('rechecks the opened file size before reading across a growth race', (t) => {
+    const root = temporaryRoot(t);
+    const target = path.join(root, 'growing.txt');
+    fs.writeFileSync(target, '1234');
+    const files = createRootedFilesystem(root);
+    const originalOpenSync = fs.openSync;
+    const originalReadFileSync = fs.readFileSync;
+    let opens = 0;
+    let reads = 0;
+    fs.openSync = function () {
+      opens++;
+      if (opens === 2) {
+        const appendDescriptor = originalOpenSync(target, 'a');
+        try {
+          fs.writeSync(appendDescriptor, '5');
+        } finally {
+          fs.closeSync(appendDescriptor);
+        }
+      }
+      return Reflect.apply(originalOpenSync, this, arguments);
+    };
+    fs.readFileSync = function () {
+      reads++;
+      return Reflect.apply(originalReadFileSync, this, arguments);
+    };
+    t.after(() => {
+      fs.openSync = originalOpenSync;
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    assert.throws(
+      () => files.readFile('growing.txt', {encoding: 'utf8', maxBytes: 4}),
+      (failure) => {
+        assert.strictEqual(failure.code, ERROR_CODES.LIMIT_EXCEEDED);
+        assert.strictEqual(failure.size, 5);
+        assert.strictEqual(failure.maxBytes, 4);
+        return true;
+      },
+    );
+    assert.strictEqual(reads, 0);
+  });
+
+  test('validates maxBytes without touching the filesystem', (t) => {
+    const root = temporaryRoot(t);
+    const files = createRootedFilesystem(root);
+
+    for (const maxBytes of [-1, 1.5, '1']) {
+      assert.throws(
+        () => files.readFile('missing.txt', {maxBytes}),
+        /options\.maxBytes must be a non-negative integer/,
+      );
+    }
+  });
+
   test('contains descendants when the configured root is a filesystem root', (t) => {
     const sandbox = temporaryRoot(t);
     const systemRoot = path.parse(sandbox).root;

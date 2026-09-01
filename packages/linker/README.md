@@ -62,6 +62,11 @@ All three return owned copies without mutating their input tree.
   `0` allows a plain root but no dependency edge, and a failure is reported at
   the edge that would exceed the limit. Caller properties that resemble private
   recursion state are ignored.
+- `compilationLimits` (object) or `compilationContext` (created by
+  `pugneum-error`): a local budget or a shared build-wide budget. Linking
+  charges AST validation, owned/inherited/yielded materialization, cloned
+  binary bytes, and mixin invocations. Every yield receives a separately
+  charged owned copy, so wide acyclic fan-out cannot bypass `maxLinkDepth`.
 
 ### Inheritance blocks
 

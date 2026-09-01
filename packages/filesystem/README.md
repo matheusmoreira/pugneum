@@ -19,7 +19,9 @@ The returned frozen object exposes:
 
 - `root`, the canonical configured root for diagnostics only;
 - `readFile(relative, options)`, which returns the same values as
-  `fs.readFileSync`;
+  `fs.readFileSync`. An object option may additionally contain a non-negative
+  safe-integer `maxBytes` limit, which is removed before forwarding the other
+  options to Node;
 - `ensureDirectory(relative)`, which creates checked descendant directories;
 - `assertWritableFile(relative)`, which validates a destination without
   publishing; and
@@ -30,7 +32,7 @@ The returned frozen object exposes:
 
 The module also exports `ERROR_CODES` and `RootedFilesystemError`. Callers
 should route failures by the stable codes `PATH_ESCAPE`, `NOT_REGULAR_FILE`,
-`NOT_DIRECTORY`, and `WRITE_FAILED`; error-message text and the canonical
+`NOT_DIRECTORY`, `LIMIT_EXCEEDED`, and `WRITE_FAILED`; error-message text and the canonical
 `root` string are not containment APIs. Transaction write/commit failures use
 `WRITE_FAILED` and expose the affected requested path as `error.path`.
 
@@ -49,6 +51,9 @@ to a FIFO from hanging before the descriptor type check. On systems exposing
 descriptors through `/proc/self/fd` or `/dev/fd`, the opened object's canonical
 location must still be inside the root. `ensureDirectory` creates descendant
 directories one component at a time through the same checked parent boundary.
+When `maxBytes` is present, the already-verified regular-file size is checked
+before `readFileSync` can allocate its contents. An oversized file throws
+`LIMIT_EXCEEDED` with `size`, `maxBytes`, and the requested `path`.
 
 `writeFileAtomic` opens an exclusive temporary regular file in the destination
 directory, writes and syncs it, atomically renames it over the final name, and

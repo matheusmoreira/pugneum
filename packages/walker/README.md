@@ -142,6 +142,10 @@ When supplied, `options` must be a non-null, non-array object.
 `aliasMode` must be `'reject'`, `'per-edge'`, or `undefined`; `clone` and
 `includeDependencies` must be booleans or `undefined`; and `parents` must be an
 array or `undefined`. `maxDepth` must be an integer from `0` through `512`.
+`compilationContext`, when supplied, must provide the shared
+`charge(resource, amount)` interface from `pugneum-error`; both schema
+preflights then charge `astNodes`, including collection fan-out, so rejecting a
+wide tree is itself bounded.
 Invalid option shapes throw a `TypeError` before any hook runs or caller-owned
 state changes. The walker never adds properties to or otherwise writes the
 options object itself, so frozen and sealed options are supported.
@@ -166,6 +170,9 @@ Validator options are:
   at a caller-defined pipeline stage.
 - `forbiddenNodes`: a set-like object identifying nodes already owned by a
   surrounding tree and therefore invalid at this ingress.
+- `compilationContext`: a shared Pugneum compilation context. Validation
+  charges AST nodes and collection entries before constructing wide traversal
+  worklists.
 
 ### Input contract
 

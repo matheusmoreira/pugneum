@@ -128,7 +128,13 @@ function transferAttributeInterpolationSources(source, target) {
   }
 }
 
-function cloneAST(ast) {
+function cloneAST(ast, compilation) {
+  if (compilation) {
+    walk.validate(ast, {
+      compilationContext: compilation,
+      maxDepth: walk.MAX_AST_DEPTH,
+    });
+  }
   const copy = structuredClone(ast);
   transferAttributeInterpolationSources(ast, copy);
   return copy;
@@ -171,10 +177,6 @@ function loadWithOwnership(ast, options, ownsAst) {
   }
   const entryFilename = options.filename || ast.filename;
   options = getOptions(options, entryFilename);
-  // Clone the caller's AST once: walk() mutates nodes in place, and the input
-  // tree belongs to the caller. Recursive loads work on freshly-parsed,
-  // single-owner ASTs and are not cloned again (see loadAST).
-  if (!ownsAst) ast = cloneAST(ast);
   const state = options[loadState];
   if (entryFilename) {
     try {
@@ -184,6 +186,12 @@ function loadWithOwnership(ast, options, ownsAst) {
     }
   }
   try {
+    // Clone the caller's AST once: walk() mutates nodes in place, and the input
+    // tree belongs to the caller. Recursive loads work on freshly-parsed,
+    // single-owner ASTs and are not cloned again (see loadAST). Validation is
+    // inside this boundary so malformed direct input retains the loader's
+    // located PUGNEUM:INVALID_AST contract.
+    if (!ownsAst) ast = cloneAST(ast, options.compilationContext);
     return loadAST(ast, options, 0);
   } catch (failure) {
     if (thrownProperty(failure, 'code') !== 'INVALID_AST') throw failure;
@@ -205,6 +213,12 @@ function loadAST(ast, options, depth) {
   return walk(
     ast,
     function (node) {
+      options.compilationContext.charge(
+        'astNodes',
+        1,
+        locationFor(options, node),
+        'loading AST nodes',
+      );
       if (!node.filename && options.filename) node.filename = options.filename;
       if (
         node.type !== 'Include' &&
@@ -283,7 +297,14 @@ function loadAST(ast, options, depth) {
       try {
         let raw;
         let cacheEntry;
+        let cacheEntryIsNew = false;
         const cache = options.dependencyCache;
+        options.compilationContext.charge(
+          'dependencyFiles',
+          1,
+          locationFor(options, node),
+          'loading ' + filePath,
+        );
         if (cache && cache.has(canonical)) {
           cacheEntry = cache.get(canonical);
           if (
@@ -295,17 +316,46 @@ function loadAST(ast, options, depth) {
               'options.dependencyCache contains an invalid loader entry',
             );
           }
+          assertSourceCapacity(
+            options.compilationContext,
+            cacheEntry.raw.length,
+            locationFor(options, node),
+            'copying cached source ' + filePath,
+          );
           raw = Buffer.from(cacheEntry.raw);
         } else {
+          if (options.read === read) {
+            let expectedSize;
+            try {
+              expectedSize = fs.statSync(filePath).size;
+            } catch (ex) {
+              throw wrapLoadFailure(ex, options, node);
+            }
+            assertSourceCapacity(
+              options.compilationContext,
+              expectedSize,
+              locationFor(options, node),
+              'reading source ' + filePath,
+            );
+          }
           try {
             raw = normalizeReadResult(options.read(filePath, options));
           } catch (ex) {
             throw wrapLoadFailure(ex, options, node);
           }
           if (cache) {
-            cacheEntry = {raw: Buffer.from(raw)};
-            cache.set(canonical, cacheEntry);
+            cacheEntryIsNew = true;
           }
+        }
+        options.compilationContext.charge(
+          'sourceBytes',
+          raw.length,
+          locationFor(options, node),
+          'loading source ' + filePath,
+        );
+        if (cacheEntryIsNew) {
+          cacheEntry = {raw: Buffer.from(raw)};
+          cache.set(canonical, cacheEntry);
         }
         file.fullPath = filePath;
         if (node.type === 'RawInclude' && node.filters.length > 0) {
@@ -338,7 +388,7 @@ function loadAST(ast, options, depth) {
           const parseKey = JSON.stringify(mixinContext);
           const parsedEntry = cacheEntry && cacheEntry.parses?.get(parseKey);
           if (parsedEntry) {
-            fileAst = cloneAST(parsedEntry.ast);
+            fileAst = cloneAST(parsedEntry.ast, options.compilationContext);
             if (Array.isArray(options.warnings) && parsedEntry.warnings) {
               for (const warning of parsedEntry.warnings) {
                 options.warnings.push(Object.assign({}, warning));
@@ -353,7 +403,7 @@ function loadAST(ast, options, depth) {
             if (cacheEntry) {
               if (!cacheEntry.parses) cacheEntry.parses = new Map();
               cacheEntry.parses.set(parseKey, {
-                ast: cloneAST(fileAst),
+                ast: cloneAST(fileAst, options.compilationContext),
                 warnings: Array.isArray(options.warnings)
                   ? options.warnings
                       .slice(warningStart)
@@ -368,8 +418,13 @@ function loadAST(ast, options, depth) {
         if (structured) visiting.delete(canonical);
       }
     },
-    {parents},
+    {compilationContext: options.compilationContext, parents},
   );
+}
+
+function assertSourceCapacity(compilation, byteLength, location, detail) {
+  const used = compilation.snapshot().used.sourceBytes;
+  compilation.assertWithin('sourceBytes', used + byteLength, location, detail);
 }
 
 function validateResolvedPath(filePath) {
@@ -983,6 +1038,12 @@ function validateOptions(options) {
 
 function getOptions(options, entryFilename) {
   const normalized = Object.assign({}, options);
+  const compilation = makeError.getCompilationContext(normalized);
+  delete normalized.compilationLimits;
+  normalized.compilationContext = compilation;
+  if (normalized.warnings !== undefined) {
+    normalized.warnings = compilation.wrapWarnings(normalized.warnings);
+  }
   if (normalized.mixinContext === undefined) normalized.mixinContext = [];
   if (normalized.resolve === undefined) normalized.resolve = resolve;
   if (normalized.read === undefined) normalized.read = read;

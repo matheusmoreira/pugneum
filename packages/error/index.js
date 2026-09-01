@@ -4,6 +4,26 @@ module.exports = makeError;
 module.exports.warning = makeWarning;
 module.exports.clearSourceCache = clearSourceCache;
 module.exports.DIAGNOSTIC_JSON_VERSION = DIAGNOSTIC_JSON_VERSION;
+module.exports.createCompilationContext = createCompilationContext;
+module.exports.getCompilationContext = getCompilationContext;
+
+var DEFAULT_COMPILATION_LIMITS = Object.freeze({
+  sourceBytes: 64 * 1024 * 1024,
+  dependencyFiles: 4096,
+  astNodes: 2 * 1000 * 1000,
+  materializedNodes: 1000 * 1000,
+  filterInvocations: 10 * 1000,
+  filterDepth: 64,
+  generatedBytes: 64 * 1024 * 1024,
+  mixinInvocations: 100 * 1000,
+  diagnostics: 10 * 1000,
+  feedEntries: 10 * 1000,
+  outputBytes: 256 * 1024 * 1024,
+});
+module.exports.DEFAULT_COMPILATION_LIMITS = DEFAULT_COMPILATION_LIMITS;
+
+var compilationContextBrand = Symbol.for('pugneum.compilationContext');
+var warningContextBrand = Symbol.for('pugneum.compilationWarningContext');
 
 var CONTEXT_RADIUS = 3;
 var TAB_SIZE = 8;
@@ -21,6 +41,219 @@ var MAX_CACHE_ENTRY_BYTES = 1024 * 1024;
 var MAX_CACHE_BYTES = 4 * 1024 * 1024;
 var sourceLineCache = new Map();
 var sourceLineCacheBytes = 0;
+
+function isPlainOptionsObject(value) {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.prototype.toString.call(value) === '[object Object]'
+  );
+}
+
+function normalizeCompilationLimits(overrides) {
+  if (overrides === undefined) overrides = {};
+  if (!isPlainOptionsObject(overrides)) {
+    throw new TypeError('compilationLimits must be an object-like option bag');
+  }
+
+  var limits = Object.assign({}, DEFAULT_COMPILATION_LIMITS);
+  for (var name of Object.keys(overrides)) {
+    if (!Object.prototype.hasOwnProperty.call(limits, name)) {
+      throw new TypeError('Unknown compilation limit: ' + name);
+    }
+    var value = overrides[name];
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new TypeError(
+        'compilationLimits.' + name + ' must be a non-negative safe integer',
+      );
+    }
+    limits[name] = value;
+  }
+  return Object.freeze(limits);
+}
+
+function compilationLimitError(resource, attempted, limit, location, detail) {
+  var suffix =
+    detail === undefined ? '' : ' (' + normalizeMessage(detail) + ')';
+  var diagnostic = makeError(
+    'COMPILATION_LIMIT_EXCEEDED',
+    'Compilation limit "' +
+      resource +
+      '" exceeded: attempted ' +
+      attempted +
+      ', maximum ' +
+      limit +
+      suffix,
+    location || {},
+  );
+  Object.defineProperties(diagnostic, {
+    resource: {enumerable: true, value: resource},
+    attempted: {enumerable: true, value: attempted},
+    limit: {enumerable: true, value: limit},
+  });
+  return diagnostic;
+}
+
+function createCompilationContext(overrides) {
+  var limits = normalizeCompilationLimits(overrides);
+  var used = Object.create(null);
+  var warningWrappers = new WeakMap();
+  for (var name of Object.keys(limits)) used[name] = 0;
+
+  function assertResource(resource) {
+    if (!Object.prototype.hasOwnProperty.call(limits, resource)) {
+      throw new TypeError('Unknown compilation resource: ' + resource);
+    }
+  }
+
+  function normalizeAmount(amount) {
+    if (!Number.isSafeInteger(amount) || amount < 0) {
+      throw new TypeError(
+        'Compilation charges must be non-negative safe integers',
+      );
+    }
+    return amount;
+  }
+
+  function assertWithin(resource, attempted, location, detail) {
+    assertResource(resource);
+    normalizeAmount(attempted);
+    if (attempted > limits[resource]) {
+      throw compilationLimitError(
+        resource,
+        attempted,
+        limits[resource],
+        location,
+        detail,
+      );
+    }
+    return attempted;
+  }
+
+  function charge(resource, amount, location, detail) {
+    assertResource(resource);
+    normalizeAmount(amount);
+    var attempted = used[resource] + amount;
+    if (!Number.isSafeInteger(attempted) || attempted > limits[resource]) {
+      throw compilationLimitError(
+        resource,
+        attempted,
+        limits[resource],
+        location,
+        detail,
+      );
+    }
+    used[resource] = attempted;
+    return attempted;
+  }
+
+  function remaining(resource) {
+    assertResource(resource);
+    return limits[resource] - used[resource];
+  }
+
+  function snapshot() {
+    return Object.freeze({
+      limits: Object.freeze(Object.assign({}, limits)),
+      used: Object.freeze(Object.assign({}, used)),
+    });
+  }
+
+  var context;
+  function wrapWarnings(warnings) {
+    if (
+      !Array.isArray(warnings) ||
+      !Object.isExtensible(warnings) ||
+      !Object.getOwnPropertyDescriptor(warnings, 'length').writable
+    ) {
+      throw new TypeError('warnings must be a mutable array');
+    }
+    var existingContextDescriptor = Object.getOwnPropertyDescriptor(
+      warnings,
+      warningContextBrand,
+    );
+    var existingContext =
+      existingContextDescriptor && existingContextDescriptor.value;
+    if (existingContext !== undefined) {
+      if (existingContext !== context) {
+        throw new TypeError(
+          'warnings are already bound to another compilation context',
+        );
+      }
+      return warnings;
+    }
+    var existing = warningWrappers.get(warnings);
+    if (existing) return existing;
+
+    // Use a forwarding Array instead of proxying the caller's collector.
+    // Hardened collectors may deliberately expose a non-configurable `push`;
+    // a Proxy is forbidden from returning a different function for such a
+    // property. Compiler stages only append diagnostics, so forwarding that
+    // operation preserves the caller-owned array and its validation/deduping
+    // behavior without weakening its property invariants.
+    var wrapper = warnings.slice();
+    Object.defineProperty(wrapper, warningContextBrand, {
+      value: context,
+    });
+    Object.defineProperty(wrapper, 'push', {
+      configurable: true,
+      value: function () {
+        var items = Array.from(arguments);
+        charge(
+          'diagnostics',
+          items.length,
+          items.length > 0 ? items[0] : undefined,
+          'recording diagnostics',
+        );
+        var result = Reflect.apply(warnings.push, warnings, items);
+
+        // A caller collector may deduplicate or otherwise normalize appended
+        // values. Mirror its resulting contents so later compiler stages see
+        // the same collector state while all durable writes remain caller
+        // owned.
+        wrapper.length = 0;
+        Reflect.apply(Array.prototype.push, wrapper, warnings);
+        return result;
+      },
+    });
+    warningWrappers.set(warnings, wrapper);
+    return wrapper;
+  }
+
+  context = Object.freeze({
+    assertWithin,
+    charge,
+    limit: function (resource) {
+      assertResource(resource);
+      return limits[resource];
+    },
+    remaining,
+    snapshot,
+    wrapWarnings,
+    [compilationContextBrand]: true,
+  });
+  return context;
+}
+
+function getCompilationContext(options) {
+  options = options || {};
+  var context = options.compilationContext;
+  if (context !== undefined) {
+    if (!context || context[compilationContextBrand] !== true) {
+      throw new TypeError(
+        'compilationContext must be created by createCompilationContext()',
+      );
+    }
+    if (options.compilationLimits !== undefined) {
+      throw new TypeError(
+        'compilationLimits cannot be combined with compilationContext',
+      );
+    }
+    return context;
+  }
+  return createCompilationContext(options.compilationLimits);
+}
 
 function clearSourceCache() {
   sourceLineCache.clear();

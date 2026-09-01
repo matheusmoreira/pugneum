@@ -100,7 +100,10 @@ const expectedReleaseManifests = Object.freeze({
     name: 'pugneum-renderer',
     version: '1.1.1',
     files: ['index.js'],
-    dependencies: {'pugneum-error': '^2.0.0'},
+    dependencies: {
+      'pugneum-error': '^2.0.0',
+      'pugneum-walker': '^2.0.0',
+    },
   },
   'packages/walker': {
     name: 'pugneum-walker',

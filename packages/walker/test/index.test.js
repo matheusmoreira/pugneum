@@ -1,10 +1,13 @@
 'use strict';
 
 var assert = require('node:assert/strict');
+var fs = require('node:fs');
+var path = require('node:path');
 var {describe, test} = require('node:test');
 var lex = require('pugneum-lexer');
 var parse = require('pugneum-parser');
 var walk = require('../');
+var readme = fs.readFileSync(path.join(__dirname, '..', 'README.md'), 'utf8');
 
 function plainAST(ast) {
   return JSON.parse(JSON.stringify(ast));
@@ -48,6 +51,56 @@ test('README strong-to-text example preserves complete parser nodes', function (
   });
   assert.strictEqual(strongTags, 0);
   assert.deepStrictEqual(textValues, ['abc ', 'NO', 'on its own line']);
+});
+
+describe('compilation budget', function () {
+  test('validation charges nodes and collection fan-out before descent', function () {
+    var charges = [];
+    var ast = {
+      type: 'Block',
+      nodes: [
+        {type: 'Text', val: 'first'},
+        {type: 'Text', val: 'second'},
+      ],
+    };
+
+    walk.validate(ast, {
+      compilationContext: {
+        charge(resource, amount) {
+          charges.push([resource, amount]);
+        },
+      },
+    });
+
+    assert.deepStrictEqual(charges, [
+      ['astNodes', 1],
+      ['astNodes', 2],
+      ['astNodes', 1],
+      ['astNodes', 1],
+    ]);
+  });
+
+  test('walking uses one shared context for both schema preflights', function () {
+    var used = 0;
+    var context = {
+      charge(resource, amount) {
+        assert.strictEqual(resource, 'astNodes');
+        used += amount;
+      },
+    };
+
+    walk({type: 'Block', nodes: [{type: 'Text', val: 'content'}]}, null, {
+      compilationContext: context,
+    });
+
+    assert.strictEqual(used, 6);
+  });
+
+  test('README publishes the shared bounded-preflight option', function () {
+    assert.match(readme, /`compilationContext`/);
+    assert.match(readme, /charge `astNodes`/);
+    assert.match(readme, /before constructing wide traversal\s+worklists/);
+  });
 });
 
 describe('replacement arrays', function () {

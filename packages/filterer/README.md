@@ -68,6 +68,15 @@ arrays, primitives, `null`, and collection objects are rejected with
 `options.warnings` array, if provided, collects warnings raised while
 re-lexing `pugneum`-type filter output.
 
+`options.compilationLimits` creates a local compilation budget;
+`options.compilationContext` accepts the shared context created by
+`pugneum-error`. Filters charge input validation/traversal, callback
+invocations, active generated-filter depth, generated strings, generated AST
+work, nested rendering, and warnings. A self or mutual generated-filter cycle
+throws `FILTER_CYCLE`; an active chain beyond `filterDepth` throws
+`FILTER_DEPTH_EXCEEDED`. Reusing the same filter after an earlier invocation
+has completed is allowed.
+
 `options.mixinContext`, when applying the filterer to an AST fragment rather
 than a complete document, is an outermost-to-innermost array containing `def`
 and `call`. Both `pugneum` source output and direct `syntax` output inherit that
@@ -115,6 +124,15 @@ Every filter must declare a `type` property:
 - `html` — raw HTML output, passed through as-is
 - `pugneum` — Pugneum source output, re-lexed/re-parsed into AST nodes
 - `syntax` — direct AST node array, inserted into the tree
+
+The filterer retains that type at every nested or include-filter edge. A
+`text` result remains unescaped across a following `text` filter and is escaped
+exactly once when it crosses into `html`/structured output or reaches the final
+document. An `html` result stays raw across `html`; if a later `text` filter
+returns it as text, that final text promise escapes it. Mixed authored and
+generated body segments retain separate types, so crossing an edge never
+escapes an unrelated authored segment or double-encodes an earlier text stage.
+Chained include filters use the identical four `text`/`html` transition rules.
 
 ### `require('pugneum-filterer/escape-text')`
 

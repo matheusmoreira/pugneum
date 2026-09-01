@@ -111,7 +111,13 @@ function readAndValidateInput(filename) {
     process.exit(EXIT_CODES.INVALID_INPUT);
   }
 
-  return {inputDirectory, outputDirectory, baseDirectory, feeds: json.feeds};
+  return {
+    inputDirectory,
+    outputDirectory,
+    baseDirectory,
+    compilationLimits: json.compilationLimits,
+    feeds: json.feeds,
+  };
 }
 
 // Deferred past the --help/--version fast paths above so trivial flag
@@ -297,8 +303,21 @@ function flushWarnings() {
 }
 
 try {
-  const {baseDirectory, inputDirectory, outputDirectory, feeds} =
-    readAndValidateInput('pugneum.json');
+  const {
+    baseDirectory,
+    inputDirectory,
+    outputDirectory,
+    compilationLimits,
+    feeds,
+  } = readAndValidateInput('pugneum.json');
+  try {
+    pgOptions.compilationContext =
+      pg.createCompilationContext(compilationLimits);
+  } catch (error) {
+    const inputError = new Error(errorMessage(error), {cause: error});
+    inputError.code = CLI_INPUT_ERROR;
+    throw inputError;
+  }
   // baseDirectory is the include-containment root; default it to the input
   // tree so default-deny is always on even when the config omits it.
   pgOptions.basedir = baseDirectory || inputDirectory;
@@ -372,6 +391,7 @@ try {
       try {
         const generateFeeds = require('pugneum-feed');
         generateFeeds({
+          compilationContext: pgOptions.compilationContext,
           outputDirectory: outputDirectory,
           feeds: feeds,
         });

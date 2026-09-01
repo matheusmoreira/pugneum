@@ -332,6 +332,18 @@ describe('CLI', () => {
     assert.match(result.stderr, /inputDirectory.*outputDirectory/);
   });
 
+  test('rejects invalid compilationLimits as configuration input', (t) => {
+    const tmp = makeTemporaryDirectory(t);
+    writeConfiguration(tmp, {compilationLimits: {unknownLimit: 1}});
+
+    const result = runExpectFail([], {cwd: tmp});
+
+    assert.strictEqual(result.status, 1);
+    assert.match(result.stderr, /Unknown compilation limit: unknownLimit/);
+    assert.doesNotMatch(result.stderr, /\n\s+at /);
+    assert.ok(!fs.existsSync(path.join(tmp, 'out')));
+  });
+
   test('compiles .pg templates to HTML', (t) => {
     const tmp = makeTemporaryDirectory(t);
     fs.mkdirSync(path.join(tmp, 'src'));

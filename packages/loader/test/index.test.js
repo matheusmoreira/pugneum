@@ -47,6 +47,12 @@ describe('public documentation', () => {
     assert.match(readme, /zero-based `byteOffset`/);
     assert.match(readme, /binary include filter can therefore consume `raw`/);
   });
+
+  test('documents the shared compilation budget boundary', () => {
+    assert.match(readme, /`compilationLimits`/);
+    assert.match(readme, /`compilationContext`/);
+    assert.match(readme, /`COMPILATION_LIMIT_EXCEEDED`/);
+  });
 });
 
 test('pugneum-loader', (t) => {
@@ -1550,6 +1556,92 @@ describe('recursion depth limit', () => {
     );
     assert.equal(resolves, 16);
     assert.equal(reads, 16);
+  });
+});
+
+describe('aggregate compilation limits', () => {
+  test('bounds direct-AST validation before cloning a wide input', () => {
+    const ast = {
+      type: 'Block',
+      nodes: [
+        {type: 'Text', val: 'first'},
+        {type: 'Text', val: 'second'},
+      ],
+    };
+
+    assert.throws(
+      () =>
+        load(ast, {
+          lex,
+          parse,
+          compilationLimits: {astNodes: 2},
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'astNodes' &&
+        failure.attempted === 3 &&
+        failure.limit === 2,
+    );
+  });
+
+  test('bounds custom-reader bytes before parsing dependency output', () => {
+    const filename = '/virtual/entry.pg';
+    const ast = parseSource('include child.pg', filename);
+    let reads = 0;
+    let parses = 0;
+
+    assert.throws(
+      () =>
+        load(ast, {
+          lex,
+          parse(tokens, options) {
+            parses++;
+            return parse(tokens, options);
+          },
+          resolve: () => '/virtual/child.pg',
+          read() {
+            reads++;
+            return Buffer.from('p child');
+          },
+          compilationLimits: {sourceBytes: 6},
+          allowUncontainedPathsForTrustedInput: true,
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'sourceBytes' &&
+        failure.attempted === 7 &&
+        failure.limit === 6,
+    );
+    assert.strictEqual(reads, 1);
+    assert.strictEqual(parses, 0);
+  });
+
+  test('charges repeated cached dependency edges while reading once', () => {
+    const filename = '/virtual/entry.pg';
+    const ast = parseSource('include child.pg\ninclude child.pg', filename);
+    let reads = 0;
+
+    assert.throws(
+      () =>
+        load(ast, {
+          lex,
+          parse,
+          resolve: () => '/virtual/child.pg',
+          read() {
+            reads++;
+            return Buffer.from('p child');
+          },
+          dependencyCache: new Map(),
+          compilationLimits: {dependencyFiles: 1},
+          allowUncontainedPathsForTrustedInput: true,
+        }),
+      (failure) =>
+        failure.code === 'PUGNEUM:COMPILATION_LIMIT_EXCEEDED' &&
+        failure.resource === 'dependencyFiles' &&
+        failure.attempted === 2 &&
+        failure.limit === 1,
+    );
+    assert.strictEqual(reads, 1);
   });
 });
 

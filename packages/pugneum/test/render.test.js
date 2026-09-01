@@ -123,6 +123,24 @@ describe('render()', () => {
     assert.strictEqual(pg.render('h1 Hello'), '<h1>Hello</h1>');
   });
 
+  it('does not defensively clone its fresh parser AST before loading', () => {
+    var originalStructuredClone = global.structuredClone;
+    var clones = 0;
+    global.structuredClone = function () {
+      clones++;
+      return Reflect.apply(originalStructuredClone, this, arguments);
+    };
+    try {
+      assert.strictEqual(
+        pg.render('p single owner', {warnings: []}),
+        '<p>single owner</p>',
+      );
+    } finally {
+      global.structuredClone = originalStructuredClone;
+    }
+    assert.strictEqual(clones, 0);
+  });
+
   it('rejects invalid tag starts while preserving supported names', () => {
     for (const source of ['1card Hello', '_panel Hello', 'p #(1shape Hello)']) {
       assert.throws(
@@ -2028,6 +2046,24 @@ describe('warnings', () => {
       pg.emitWarnings([Object.assign({}, dup), Object.assign({}, dup)]);
     });
     assert.strictEqual((out.match(/warning DUP/g) || []).length, 1);
+  });
+
+  it('createWarningCollector deduplicates on insertion in first-seen order', () => {
+    var first = warning({code: 'PUGNEUM:FIRST'});
+    var duplicate = Object.assign({}, first);
+    var second = warning({
+      code: 'PUGNEUM:SECOND',
+      message: 'f.pg:2:1\n\nsecond',
+      line: 2,
+    });
+    var warnings = pg.createWarningCollector();
+
+    assert.strictEqual(warnings.push(first, duplicate), 1);
+    for (var i = 0; i < 1024; i++) {
+      assert.strictEqual(warnings.push(Object.assign({}, first)), 1);
+    }
+    assert.strictEqual(warnings.push(second), 2);
+    assert.deepStrictEqual(warnings, [first, second]);
   });
 
   it('emitWarnings keeps warnings that differ in location', () => {

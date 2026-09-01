@@ -252,6 +252,28 @@ function writeAliasedDirectoryIdentity(directory) {
   return preload;
 }
 
+function writeDependencyReadCounter(directory, dependency) {
+  const preload = path.join(directory, 'count-dependency-reads.cjs');
+  const result = path.join(directory, 'dependency-read-count.txt');
+  fs.writeFileSync(
+    preload,
+    [
+      "const fs = require('node:fs');",
+      "const path = require('node:path');",
+      'const originalReadFile = fs.readFileSync;',
+      `const dependency = ${JSON.stringify(path.resolve(dependency))};`,
+      `const result = ${JSON.stringify(result)};`,
+      'let reads = 0;',
+      'fs.readFileSync = function (filename) {',
+      "  if (typeof filename === 'string' && path.resolve(filename) === dependency) reads++;",
+      '  return Reflect.apply(originalReadFile, this, arguments);',
+      '};',
+      "process.on('exit', () => fs.writeFileSync(result, String(reads)));",
+    ].join('\n'),
+  );
+  return {preload, result};
+}
+
 function parseXmlFile(filename, expectedRoot) {
   const source = fs.readFileSync(filename, 'utf8');
   const document = htmlparser2.parseDocument(source, {xmlMode: true});
@@ -883,7 +905,11 @@ describe('CLI', () => {
       inputDirectory: 'src/pages',
       baseDirectory: 'src',
     });
-    const result = spawnCli([], {cwd: tmp});
+    const reads = writeDependencyReadCounter(
+      tmp,
+      path.join(tmp, 'src', 'nav.pg'),
+    );
+    const result = spawnCli([], {cwd: tmp, preload: reads.preload});
     // Warnings are non-fatal: the build succeeds.
     assert.strictEqual(result.status, 0);
     // Both pages built.
@@ -895,6 +921,7 @@ describe('CLI', () => {
     const count = (result.stderr.match(/TYPOGRAPHIC_QUOTE_DELIMITER/g) || [])
       .length;
     assert.strictEqual(count, 1);
+    assert.strictEqual(fs.readFileSync(reads.result, 'utf8'), '1');
   });
 
   test('emits earlier warnings when a later output boundary fails', (t) => {

@@ -66,7 +66,10 @@ function renderPugneum(string, options) {
   try {
     let tokens = lex(string, options);
     let ast = parse(tokens, options);
-    let loaded = load(ast, options);
+    // parse() just created this tree for this invocation, so no caller can
+    // observe loader mutation. Preserve load()'s defensive public clone while
+    // taking its explicit single-owner path here.
+    let loaded = load.loadOwned(ast, options);
     // Assemble (inheritance/includes) BEFORE filtering, then resolve
     // references/footnotes/toc AFTER, so constructs a pugneum-type filter emits
     // (e.g. @[ref]/^[fn]/toc in a table cell) join the document-level resolution.
@@ -152,10 +155,28 @@ function validateWarnings(warnings) {
   return validated;
 }
 
-// Print each distinct diagnostic once. Dedup is an emission concern: one
-// shared array is threaded through every file in a build, so a layout included
-// by many pages collects the same warning once per page. Deduping here, rather
-// than after every render, keeps collection linear over the whole build.
+function createWarningCollector() {
+  const warnings = [];
+  const seen = new Set();
+  Object.defineProperty(warnings, 'push', {
+    value: function () {
+      const items = Array.from(arguments);
+      const validated = validateWarnings(items);
+      for (let i = 0; i < items.length; i++) {
+        const key = warningKey(validated[i]);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        Array.prototype.push.call(warnings, items[i]);
+      }
+      return warnings.length;
+    },
+  });
+  return warnings;
+}
+
+// Print each distinct diagnostic once. General caller arrays may contain
+// duplicates even though the CLI uses createWarningCollector() to discard
+// repeated diagnostics as they arrive.
 function emitWarnings(warnings) {
   warnings = validateWarnings(warnings);
   const seen = new Set();
@@ -181,4 +202,5 @@ function renderPugneumFile(filename, options) {
 
 exports.render = renderPugneum;
 exports.renderFile = renderPugneumFile;
+exports.createWarningCollector = createWarningCollector;
 exports.emitWarnings = emitWarnings;

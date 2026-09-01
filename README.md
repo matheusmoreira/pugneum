@@ -1002,6 +1002,7 @@ retains its Node.js filesystem error.
 | `resolve` | Default filesystem/package resolver | Synchronous hook `(requestedPath, includingFilename, options) => resolvedPath` for dependency resolution |
 | `read` | `fs.readFileSync` | Synchronous hook `(resolvedPath, options) => Buffer \| Uint8Array \| string` for dependency reads |
 | `canonicalize` | Real path or resolved virtual name | Hook `(resolvedPath, options) => identity` that gives aliases a stable identity for cycle detection |
+| `dependencyCache` | | A `Map` scoped to one immutable multi-render build; reuses canonical dependency bytes and pre-load parsed ASTs while cloning each attachment. Reuse only with stable hooks, parser options, and inputs |
 | `maxLoadDepth` | `256` | Maximum include/extends dependency depth; an integer from `0` through `256` |
 | `maxLinkDepth` | `256` | Maximum linker composition depth; an integer from `0` through `256` |
 | `warnings` | Automatic stderr emission | Mutable array to collect non-fatal diagnostics. If supplied, the caller owns emission and Pugneum does not write warnings to stderr |
@@ -1044,6 +1045,11 @@ the complete array before writing anything, deduplicates records by `code`,
 warning to stderr. It removes a leading `PUGNEUM:` from the displayed header,
 but does not mutate the records. A record requires non-empty string `code` and
 string `message` fields; `filename`, `line`, and `column` are optional.
+
+For a multi-page build, `createWarningCollector()` returns a mutable array that
+keeps only the first occurrence of each warning identity as records are pushed.
+It can be passed as `warnings` and later to `emitWarnings`, avoiding retention
+of duplicate formatted diagnostics while preserving first-seen order.
 
 Compiler warnings currently use these codes:
 

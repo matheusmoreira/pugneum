@@ -282,7 +282,11 @@ function exitWithFeedError(error) {
 
 // Declared outside the try so the catch can still surface diagnostics
 // collected from earlier files before a later file's hard error aborts.
-const pgOptions = {basedir: undefined, warnings: []};
+const pgOptions = {
+  basedir: undefined,
+  dependencyCache: new Map(),
+  warnings: pg.createWarningCollector(),
+};
 let warningsEmitted = false;
 
 function flushWarnings() {

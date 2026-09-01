@@ -40,8 +40,11 @@ const packages = Object.freeze([
   packagePolicy('packages/linker', 'pugneum-linker', '1.2.0', [
     'LICENSE.MIT',
     'README.md',
+    'assembly.js',
+    'diagnostics.js',
     'index.js',
     'mixins.js',
+    'nodes.js',
     'package.json',
   ]),
   packagePolicy('packages/filterer', 'pugneum-filterer', '1.2.0', [

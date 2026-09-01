@@ -7,8 +7,11 @@
     "linker"
   ],
   "files": [
+    "assembly.js",
+    "diagnostics.js",
     "index.js",
-    "mixins.js"
+    "mixins.js",
+    "nodes.js"
   ],
   "dependencies": {
     "pugneum-error": "^1.1.0",

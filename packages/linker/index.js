@@ -1,52 +1,15 @@
-const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
+const assemble = require('./assembly');
+const diagnostics = require('./diagnostics');
 const expandMixinInstances = require('./mixins');
+const nodes = require('./nodes');
 const resolveRetainedInterpolation =
   expandMixinInstances.resolveRetainedInterpolation;
-const attributeInterpolationResolved = Symbol.for(
-  'pugneum.attributeInterpolationResolved',
-);
 const mixinEnvironment = Symbol.for('pugneum.mixinEnvironment');
 
-function diagnosticSources(options) {
-  return {
-    byFilename: options && options.sources,
-    entryFilename: options && options.filename,
-    entrySource: options && options.source,
-  };
-}
-
-// Build the {line, column, filename, source} context both error() and warn()
-// attach to a diagnostic. The source line is looked up per-filename so an error
-// in an included/generated file shows that source. A filename-less entry still
-// uses the scalar source supplied by the programmatic facade.
-function locContext(node, sources) {
-  const filename = node && node.filename;
-  const byFilename = sources && sources.byFilename;
-  let source = (byFilename && byFilename[filename]) || '';
-  if (
-    !source &&
-    sources &&
-    (!filename || filename === sources.entryFilename) &&
-    typeof sources.entrySource === 'string'
-  ) {
-    source = sources.entrySource;
-  }
-  return {
-    line: node && node.line,
-    column: node && node.column,
-    filename,
-    source,
-  };
-}
-
-function error(code, message, node, sources) {
-  throw makeError(code, message, locContext(node, sources));
-}
-
-function warn(code, message, node, sources, warnings) {
-  warnings.push(makeError.warning(code, message, locContext(node, sources)));
-}
+const diagnosticSources = diagnostics.sources;
+const error = diagnostics.error;
+const warn = diagnostics.warn;
 
 function asciiLowerCase(value) {
   return value.replace(/[A-Z]/g, function (character) {
@@ -82,22 +45,6 @@ function resolvedReferenceUrl(definition, use, sources) {
   );
 }
 
-function resolvedAttribute(name, value, node) {
-  const attr = {
-    name,
-    val: value,
-    line: node.line,
-    column: node.column,
-    filename: node.filename,
-  };
-  Object.defineProperty(attr, attributeInterpolationResolved, {
-    configurable: true,
-    value: true,
-    writable: true,
-  });
-  return attr;
-}
-
 function appendItems(target, items) {
   for (let index = 0; index < items.length; index++) {
     target.push(items[index]);
@@ -105,25 +52,17 @@ function appendItems(target, items) {
 }
 
 function commentText(node, value) {
-  return {
-    type: 'Text',
-    val: value,
-    line: node.line,
-    column: node.column,
-    filename: node.filename,
-  };
+  return nodes.text(node, value);
 }
 
 function commentBlock(node, fallback) {
   if (node.block && node.block.nodes.length > 0) {
     return isolateCommentBlock(node.block);
   }
-  return {
-    type: 'Block',
-    nodes: fallback === '' ? [] : [commentText(node, fallback)],
-    line: node.line,
-    filename: node.filename,
-  };
+  return nodes.block(
+    node,
+    fallback === '' ? [] : [commentText(node, fallback)],
+  );
 }
 
 // A buffered comment's body is rendered locally into one HTML comment string,
@@ -185,15 +124,27 @@ function appendReferenceAttributes(target, attrs, reserved, sources) {
 const LINK_RESERVED_ATTRIBUTES = new Set(['href']);
 const IMAGE_RESERVED_ATTRIBUTES = new Set(['src', 'alt']);
 
-function normalizeTextNewlines(value) {
-  return value.replace(/\r\n|\r/g, '\n');
+function isIdAttribute(attribute) {
+  return asciiLowerCase(attribute.name) === 'id';
+}
+
+function isStringIdAttribute(attribute) {
+  return isIdAttribute(attribute) && typeof attribute.val === 'string';
+}
+
+function isUsableIdAttribute(attribute) {
+  return (
+    isStringIdAttribute(attribute) &&
+    attribute.val !== '' &&
+    !/[\t\n\f\r ]/.test(attribute.val)
+  );
 }
 
 function lintNode(node, sources, warnings, seenIds) {
   if (node.type !== 'Tag') return;
   const attrs = node.attrs || [];
   for (const attr of attrs) {
-    if (asciiLowerCase(attr.name) === 'id' && typeof attr.val === 'string') {
+    if (isStringIdAttribute(attr)) {
       const loc = attr.line != null ? attr : node;
       if (seenIds[attr.val]) {
         warn(
@@ -275,7 +226,7 @@ function censusDocumentSemantics(ast, sources) {
   return {ast, features, lintWarnings};
 }
 
-const DEFAULT_MAX_LINK_DEPTH = 256;
+const DEFAULT_MAX_LINK_DEPTH = assemble.DEFAULT_MAX_DEPTH;
 
 module.exports = link;
 
@@ -290,10 +241,7 @@ module.exports = link;
 // rather than per-include-level, so references/footnotes/toc cross include/extends.
 function link(ast, options) {
   options = prepareLink(ast, options);
-  return resolveDocument(
-    linkInner(ast, options, createLinkState(options), 0),
-    options,
-  );
+  return resolveDocument(assemble(ast, options), options);
 }
 
 // Assembly only: template inheritance (extends/blocks) + includes. No reference/
@@ -301,7 +249,7 @@ function link(ast, options) {
 // resolve(), over the fully assembled + filtered tree.
 link.assemble = function (ast, options) {
   options = prepareLink(ast, options);
-  return linkInner(ast, options, createLinkState(options), 0);
+  return assemble(ast, options);
 };
 
 // Document-level resolution over the final assembled + filtered tree: references,
@@ -338,12 +286,12 @@ function resolveDocument(ast, options) {
 }
 link.resolve = function (ast, options) {
   options = prepareLink(ast, options);
-  return resolveDocument(cloneAst(ast), options);
+  return resolveDocument(assemble.cloneAst(ast), options);
 };
 
 function prepareLink(ast, options) {
   options = validateOptions(options);
-  validateRoot(ast, diagnosticSources(options));
+  assemble.validateRoot(ast, diagnosticSources(options));
   if (options.warnings === undefined) options.warnings = [];
   return options;
 }
@@ -395,318 +343,6 @@ function validateOptions(options) {
     );
   }
   return options;
-}
-
-function validateRoot(ast, sources) {
-  if (
-    ast === null ||
-    typeof ast !== 'object' ||
-    Array.isArray(ast) ||
-    ast.type !== 'Block'
-  ) {
-    error(
-      'INVALID_AST',
-      'The top level element should always be a block',
-      ast,
-      sources,
-    );
-  }
-  if (!Array.isArray(ast.nodes)) {
-    error(
-      'INVALID_AST',
-      'The top level block should always contain a nodes array',
-      ast,
-      sources,
-    );
-  }
-}
-
-// Inheritance bookkeeping is needed only while one tree is being assembled.
-// Keep it off public AST nodes so the linked result remains a serializable tree
-// instead of exposing a repeated ancestry graph through enumerable metadata.
-function createLinkState(options) {
-  return {
-    declaredBlocks: new WeakMap(),
-    extendedTrees: new WeakSet(),
-    maxDepth:
-      options.maxLinkDepth === undefined
-        ? DEFAULT_MAX_LINK_DEPTH
-        : options.maxLinkDepth,
-  };
-}
-
-function linkInner(ast, options, state, depth) {
-  const sources = diagnosticSources(options);
-  validateRoot(ast, sources);
-  // Each physical AST is copied at its ownership boundary. FileReference.ast
-  // values stay deferred until their own linkInner call, so the same child AST
-  // can safely be used at multiple include/extends sites without preserving an
-  // alias between rendered occurrences.
-  ast = cloneOwnedAst(ast);
-  let extendsNode = null;
-  if (ast.nodes.length) {
-    const hasExtends = ast.nodes[0].type === 'Extends';
-    checkExtendPosition(ast, hasExtends, sources);
-    if (hasExtends) {
-      extendsNode = ast.nodes[0];
-      assertLinkEdge(depth, state.maxDepth, extendsNode, sources);
-      ast.nodes.shift();
-    }
-  }
-  ast = applyIncludes(ast, options, state, depth);
-  const declaredBlocks = findDeclaredBlocks(ast);
-  state.declaredBlocks.set(ast, declaredBlocks);
-  if (extendsNode) {
-    const declarations = [];
-    const expectedBlocks = [];
-    ast.nodes.forEach(function addNode(node) {
-      if (node.type === 'NamedBlock') {
-        expectedBlocks.push(node);
-      } else if (node.type === 'Block') {
-        node.nodes.forEach(addNode);
-      } else if (node.type === 'Mixin' && node.call === false) {
-        declarations.push(node);
-      } else if (node.type === 'References') {
-        declarations.push(node);
-      } else {
-        error(
-          'UNEXPECTED_NODES_IN_EXTENDING_ROOT',
-          'Only named blocks, mixins, and references can appear at the top level of an extending template',
-          node,
-          sources,
-        );
-      }
-    });
-
-    // Validate expected blocks BEFORE mutating parent via extend()
-    const parent = linkInner(extendsNode.file.ast, options, state, depth + 1);
-    const parentDeclaredBlocks = state.declaredBlocks.get(parent);
-    for (const expectedBlock of expectedBlocks) {
-      if (
-        !Object.prototype.hasOwnProperty.call(
-          parentDeclaredBlocks,
-          expectedBlock.name,
-        )
-      ) {
-        error(
-          'UNEXPECTED_BLOCK',
-          'Unexpected block ' + expectedBlock.name,
-          expectedBlock,
-          sources,
-        );
-      }
-    }
-
-    extend(parentDeclaredBlocks, ast, sources);
-    parent.nodes = declarations.concat(parent.nodes);
-    // Composition cloned payloads into the actual parent slots. Recompute the
-    // authoritative map from that output tree so a later inheritance level
-    // targets rendered occurrences, including newly introduced nested slots,
-    // rather than detached override nodes or ancestry aliases.
-    state.declaredBlocks.set(parent, findDeclaredBlocks(parent));
-    state.extendedTrees.add(parent);
-    return parent;
-  }
-  return ast;
-}
-
-function findDeclaredBlocks(ast) {
-  const definitions = Object.create(null);
-  forEachInheritanceBlock(ast, function (node) {
-    if (node.mode === 'replace') {
-      definitions[node.name] = definitions[node.name] || [];
-      definitions[node.name].push(node);
-    }
-  });
-  return definitions;
-}
-
-// NamedBlock is shared by template inheritance and mixin slots. Only blocks in
-// document structure belong to inheritance: a Mixin owns its entire subtree.
-// Within document structure, a same-named nested block is content of the outer
-// override rather than another target. Discovery and merging both route through
-// this helper so validation cannot accept a slot that composition will ignore.
-function forEachInheritanceBlock(ast, visit) {
-  const activeNames = new Set();
-  const enteredNames = new WeakMap();
-  walk(
-    ast,
-    function before(node) {
-      if (node.type === 'Mixin') return false;
-      if (node.type !== 'NamedBlock') return;
-      if (activeNames.has(node.name)) return false;
-      activeNames.add(node.name);
-      enteredNames.set(node, node.name);
-      visit(node);
-    },
-    function after(node) {
-      const name = enteredNames.get(node);
-      if (name !== undefined) activeNames.delete(name);
-    },
-  );
-}
-
-// Merge the child template's effective inheritance overrides into the parent's
-// slots. `parentBlocks` maps each name directly to the current rendered block
-// occurrences. forEachInheritanceBlock applies the same mixin-scope and
-// nested-name rules used to construct that map.
-function extend(parentBlocks, ast, sources) {
-  forEachInheritanceBlock(ast, function (node) {
-    const parentBlockList = parentBlocks[node.name] || [];
-    if (!parentBlockList.length) return;
-    parentBlockList.forEach(function (parentBlock) {
-      // Every effective slot owns its occurrence. Later filters and document
-      // resolution mutate subtrees, so sharing node.nodes here would process
-      // one occurrence and merely alias the already-resolved result elsewhere.
-      const nodes = cloneAst(node.nodes);
-      switch (node.mode) {
-        case 'append':
-          parentBlock.nodes = parentBlock.nodes.concat(nodes);
-          break;
-        case 'prepend':
-          parentBlock.nodes = nodes.concat(parentBlock.nodes);
-          break;
-        case 'replace':
-          parentBlock.nodes = nodes;
-          break;
-        default:
-          error(
-            'UNKNOWN_BLOCK_MODE',
-            "Unknown block mode '" + node.mode + "'",
-            node,
-            sources,
-          );
-      }
-    });
-  });
-}
-
-function assertLinkEdge(depth, maxDepth, node, sources) {
-  if (depth >= maxDepth) {
-    error(
-      'LINK_DEPTH_EXCEEDED',
-      `Template inheritance/include chain exceeds maximum depth of ${maxDepth}`,
-      node,
-      sources,
-    );
-  }
-}
-
-function applyIncludes(ast, options, state, depth) {
-  // RawInclude is handled in `before` (its content is a leaf string, nothing
-  // below it to descend into). Include is handled in `after` so the includer's
-  // passed-in `node.block` is fully walked before being yielded into the linked
-  // child subtree.
-  return walk(
-    ast,
-    function before(node, replace) {
-      if (node.type === 'RawInclude' && node.filters.length === 0) {
-        replace({
-          type: 'Text',
-          val: normalizeTextNewlines(node.file.str),
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        });
-      }
-    },
-    function after(node, replace) {
-      if (node.type === 'Include') {
-        assertLinkEdge(depth, state.maxDepth, node, diagnosticSources(options));
-        // linkInner, not link: the included subtree is linted as part of the
-        // final assembled tree by the top-level link() wrapper. Calling link()
-        // here would lint it again, multiplying warnings by include depth.
-        let childAST = linkInner(node.file.ast, options, state, depth + 1);
-        if (state.extendedTrees.has(childAST)) {
-          childAST = removeBlocks(childAST);
-        }
-        replace(applyYield(childAST, node.block, node, options));
-      }
-    },
-  );
-}
-
-function removeBlocks(ast) {
-  return walk(ast, function (node, replace) {
-    // Mixin declarations/calls own their NamedBlock slots. Only flatten the
-    // inheritance wrappers of the included, already-extended document.
-    if (node.type === 'Mixin') return false;
-    if (node.type === 'NamedBlock') {
-      replace({
-        type: 'Block',
-        nodes: node.nodes,
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      });
-    }
-  });
-}
-
-// ASTs are arrays/plain records plus Buffer payloads attached to RawInclude
-// nodes. structuredClone preserves the graph, but converts those Buffers to
-// Uint8Arrays. Clone the AST graph explicitly so binary filters keep receiving
-// the loader's Buffer contract while aliases within one copy stay aliases.
-function cloneAst(value, copies, deferDependencies) {
-  if (value === null || typeof value !== 'object') return value;
-  copies = copies || new Map();
-  if (copies.has(value)) return copies.get(value);
-
-  if (Buffer.isBuffer(value)) {
-    const copy = Buffer.from(value);
-    copies.set(value, copy);
-    return copy;
-  }
-
-  const copy = Array.isArray(value)
-    ? []
-    : Object.create(Object.getPrototypeOf(value));
-  copies.set(value, copy);
-  for (const key of Reflect.ownKeys(value)) {
-    const descriptor = Object.getOwnPropertyDescriptor(value, key);
-    if (Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
-      descriptor.value =
-        deferDependencies && value.type === 'FileReference' && key === 'ast'
-          ? descriptor.value
-          : cloneAst(descriptor.value, copies, deferDependencies);
-    }
-    Object.defineProperty(copy, key, descriptor);
-  }
-  return copy;
-}
-
-// Clone one physical syntax tree while retaining dependency ASTs as deferred
-// inputs. Each dependency is copied independently when its include/extends edge
-// is followed, which gives every rendered occurrence single ownership even if
-// a direct API caller reuses the same FileReference.ast object.
-function cloneOwnedAst(value) {
-  return cloneAst(value, undefined, true);
-}
-
-function applyYield(ast, block, includeNode, options) {
-  if (!block || !block.nodes.length) return ast;
-  let replaced = false;
-  ast = walk(ast, null, function (node, replace) {
-    if (node.type === 'YieldBlock') {
-      // Clone per yield site: an included template may contain more than one
-      // `yield`, and a shared mutable subtree would (a) duplicate any id-bearing
-      // node, tripping DUPLICATE_ID, and (b) be miscounted by later passes
-      // (e.g. a footnote ref in yielded content would render twice but get a
-      // single backlink). Each yield position gets an independent copy.
-      replaced = true;
-      node.type = 'Block';
-      node.nodes = [cloneAst(block)];
-    }
-  });
-  if (!replaced) {
-    error(
-      'MISSING_YIELD',
-      'Included template has no yield block but the include passes a block into it',
-      includeNode,
-      diagnosticSources(options),
-    );
-  }
-  return ast;
 }
 
 // Look up a reference definition by name, throwing the shared UNDEFINED_REFERENCE
@@ -820,26 +456,12 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
       let block = node.block;
       if (!block || block.nodes.length === 0) {
         const fallbackText = def.defaultText || node.name;
-        block = {
-          type: 'Block',
-          nodes: [
-            {
-              type: 'Text',
-              val: fallbackText,
-              line: node.line,
-              column: node.column,
-              filename: node.filename,
-            },
-          ],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        };
+        block = nodes.block(node, [nodes.text(node, fallbackText)]);
       }
 
       const attrs = [];
       if (url !== null) {
-        attrs.push(resolvedAttribute('href', url, node));
+        attrs.push(nodes.resolvedAttribute(node, 'href', url));
       }
       appendReferenceAttributes(
         attrs,
@@ -848,17 +470,14 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
         sources,
       );
 
-      replace({
-        type: 'Tag',
-        name: 'a',
-        attrs: attrs,
-        attributeBlocks: [],
-        block: block,
-        isInline: true,
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      });
+      replace(
+        nodes.tag(node, {
+          name: 'a',
+          attrs,
+          block,
+          isInline: true,
+        }),
+      );
     }
     if (node.type === 'ReferenceImage') {
       const def = resolveDefOrThrow(node, definitions, sources);
@@ -867,21 +486,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
       let altBlock = node.block;
       if (!altBlock || altBlock.nodes.length === 0) {
         const fallbackAlt = def.defaultText || '';
-        altBlock = {
-          type: 'Block',
-          nodes: [
-            {
-              type: 'Text',
-              val: fallbackAlt,
-              line: node.line,
-              column: node.column,
-              filename: node.filename,
-            },
-          ],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        };
+        altBlock = nodes.block(node, [nodes.text(node, fallbackAlt)]);
       }
 
       // Flatten the alt block to text via the same recursive helper TOC uses,
@@ -891,9 +496,9 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
 
       const attrs = [];
       if (url !== null) {
-        attrs.push(resolvedAttribute('src', url, node));
+        attrs.push(nodes.resolvedAttribute(node, 'src', url));
       }
-      attrs.push(resolvedAttribute('alt', altText, node));
+      attrs.push(nodes.resolvedAttribute(node, 'alt', altText));
       appendReferenceAttributes(
         attrs,
         node.attrs,
@@ -901,24 +506,14 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
         sources,
       );
 
-      replace({
-        type: 'Tag',
-        name: 'img',
-        attrs: attrs,
-        attributeBlocks: [],
-        block: {
-          type: 'Block',
-          nodes: [],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-        isInline: true,
-        selfClosing: true,
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      });
+      replace(
+        nodes.tag(node, {
+          name: 'img',
+          attrs,
+          isInline: true,
+          selfClosing: true,
+        }),
+      );
     }
   }
 
@@ -989,10 +584,7 @@ function resolveFootnotes(ast, sources, warnings) {
   walkDocumentContent(ast, function (node) {
     if (node.type === 'Tag') {
       for (const attr of node.attrs || []) {
-        if (
-          asciiLowerCase(attr.name) === 'id' &&
-          typeof attr.val === 'string'
-        ) {
+        if (isStringIdAttribute(attr)) {
           allocatedIds.add(attr.val);
         }
       }
@@ -1067,71 +659,24 @@ function resolveFootnotes(ast, sources, warnings) {
     );
     refIdsByName[name].push(refId);
 
-    const anchorNode = {
-      type: 'Tag',
+    const anchorNode = nodes.tag(node, {
       name: 'a',
       attrs: [
-        {
-          name: 'href',
-          val: '#' + defIdByName[name],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-        {
-          name: 'id',
-          val: refId,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-        {
-          name: 'role',
-          val: 'doc-noteref',
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
+        nodes.attribute(node, 'href', '#' + defIdByName[name]),
+        nodes.attribute(node, 'id', refId),
+        nodes.attribute(node, 'role', 'doc-noteref'),
       ],
-      attributeBlocks: [],
       isInline: true,
-      block: {
-        type: 'Block',
-        nodes: [
-          {
-            type: 'Text',
-            val: '[' + num + ']',
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-          },
-        ],
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      },
-      line: node.line,
-      column: node.column,
-      filename: node.filename,
-    };
-
-    replace({
-      type: 'Tag',
-      name: 'sup',
-      attrs: [],
-      attributeBlocks: [],
-      isInline: true,
-      block: {
-        type: 'Block',
-        nodes: [anchorNode],
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      },
-      line: node.line,
-      column: node.column,
-      filename: node.filename,
+      nodes: [nodes.text(node, '[' + num + ']')],
     });
+
+    replace(
+      nodes.tag(node, {
+        name: 'sup',
+        isInline: true,
+        nodes: [anchorNode],
+      }),
+    );
   }
 
   // Resolve refs in main document (skip into Footnotes definitions)
@@ -1196,46 +741,17 @@ function resolveFootnotes(ast, sources, warnings) {
         for (let i = 1; i <= totalRefs; i++) {
           const backId = refIdsByName[name][i - 1];
           const label = i === 1 ? '↩' : '↩' + toSuperscript(i);
-          backLinkNodes.push({
-            type: 'Tag',
-            name: 'a',
-            attrs: [
-              {
-                name: 'href',
-                val: '#' + backId,
-                line: def.line,
-                column: def.column,
-                filename: def.filename,
-              },
-              {
-                name: 'role',
-                val: 'doc-backlink',
-                line: def.line,
-                column: def.column,
-                filename: def.filename,
-              },
-            ],
-            attributeBlocks: [],
-            isInline: true,
-            block: {
-              type: 'Block',
-              nodes: [
-                {
-                  type: 'Text',
-                  val: label,
-                  line: def.line,
-                  column: def.column,
-                  filename: def.filename,
-                },
+          backLinkNodes.push(
+            nodes.tag(def, {
+              name: 'a',
+              attrs: [
+                nodes.attribute(def, 'href', '#' + backId),
+                nodes.attribute(def, 'role', 'doc-backlink'),
               ],
-              line: def.line,
-              column: def.column,
-              filename: def.filename,
-            },
-            line: def.line,
-            column: def.column,
-            filename: def.filename,
-          });
+              isInline: true,
+              nodes: [nodes.text(def, label)],
+            }),
+          );
         }
 
         // Parser-produced footnote bodies carry deferred line separators that
@@ -1250,83 +766,28 @@ function resolveFootnotes(ast, sources, warnings) {
           : [];
         appendItems(liContentNodes, backLinkNodes);
 
-        return {
-          type: 'Tag',
+        return nodes.tag(def, {
           name: 'li',
           attrs: [
-            {
-              name: 'id',
-              val: defIdByName[name],
-              line: def.line,
-              column: def.column,
-              filename: def.filename,
-            },
-            {
-              name: 'role',
-              val: 'doc-endnote',
-              line: def.line,
-              column: def.column,
-              filename: def.filename,
-            },
+            nodes.attribute(def, 'id', defIdByName[name]),
+            nodes.attribute(def, 'role', 'doc-endnote'),
           ],
-          attributeBlocks: [],
-          isInline: false,
-          block: {
-            type: 'Block',
-            nodes: liContentNodes,
-            line: def.line,
-            column: def.column,
-            filename: def.filename,
-          },
-          line: def.line,
-          column: def.column,
-          filename: def.filename,
-        };
+          nodes: liContentNodes,
+        });
       });
 
-      const olNode = {
-        type: 'Tag',
+      const olNode = nodes.tag(node, {
         name: 'ol',
-        attrs: [],
-        attributeBlocks: [],
-        isInline: false,
-        block: {
-          type: 'Block',
-          nodes: listItems,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
-      };
-
-      replace({
-        type: 'Tag',
-        name: 'section',
-        attrs: [
-          {
-            name: 'role',
-            val: 'doc-endnotes',
-            line: node.line,
-            column: node.column,
-            filename: node.filename,
-          },
-        ],
-        attributeBlocks: [],
-        isInline: false,
-        block: {
-          type: 'Block',
-          nodes: [olNode],
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-        line: node.line,
-        column: node.column,
-        filename: node.filename,
+        nodes: listItems,
       });
+
+      replace(
+        nodes.tag(node, {
+          name: 'section',
+          attrs: [nodes.attribute(node, 'role', 'doc-endnotes')],
+          nodes: [olNode],
+        }),
+      );
       return false;
     }
   });
@@ -1340,14 +801,10 @@ function resolveToc(ast, sources, warnings) {
     if (node.type === 'Tag') {
       const headingName = asciiLowerCase(node.name);
       if (!/^h[1-6]$/.test(headingName)) return;
-      const idAttr =
-        node.attrs &&
-        node.attrs.find(function (a) {
-          return asciiLowerCase(a.name) === 'id';
-        });
-      // Match lintDocument's id contract: a valueless/boolean id (val === true)
-      // is not a usable anchor target, so skip it rather than emit href="#true".
-      if (!idAttr || !isUsableId(idAttr.val)) return;
+      const idAttr = node.attrs && node.attrs.find(isIdAttribute);
+      // Duplicate-id linting sees every string id, while TOC links need a
+      // nonempty fragment without ASCII whitespace.
+      if (!idAttr || !isUsableIdAttribute(idAttr)) return;
 
       let text = '';
       if (node.block && node.block.nodes) {
@@ -1419,65 +876,22 @@ function extractText(nodes) {
   return text;
 }
 
-function isUsableId(value) {
-  return (
-    typeof value === 'string' && value !== '' && !/[\t\n\f\r ]/.test(value)
-  );
-}
-
 function buildTocNav(headings, tocNode) {
   const items = buildTocItems(headings, 0, headings.length, tocNode);
 
-  const ol = {
-    type: 'Tag',
+  const ol = nodes.tag(tocNode, {
     name: 'ol',
-    attrs: [],
-    attributeBlocks: [],
-    isInline: false,
-    block: {
-      type: 'Block',
-      nodes: items,
-      line: tocNode.line,
-      column: tocNode.column,
-      filename: tocNode.filename,
-    },
-    line: tocNode.line,
-    column: tocNode.column,
-    filename: tocNode.filename,
-  };
+    nodes: items,
+  });
 
-  return {
-    type: 'Tag',
+  return nodes.tag(tocNode, {
     name: 'nav',
     attrs: [
-      {
-        name: 'role',
-        val: 'doc-toc',
-        line: tocNode.line,
-        column: tocNode.column,
-        filename: tocNode.filename,
-      },
-      {
-        name: 'aria-label',
-        val: 'Table of contents',
-        line: tocNode.line,
-        column: tocNode.column,
-        filename: tocNode.filename,
-      },
+      nodes.attribute(tocNode, 'role', 'doc-toc'),
+      nodes.attribute(tocNode, 'aria-label', 'Table of contents'),
     ],
-    attributeBlocks: [],
-    isInline: false,
-    block: {
-      type: 'Block',
-      nodes: [ol],
-      line: tocNode.line,
-      column: tocNode.column,
-      filename: tocNode.filename,
-    },
-    line: tocNode.line,
-    column: tocNode.column,
-    filename: tocNode.filename,
-  };
+    nodes: [ol],
+  });
 }
 
 function buildTocItems(headings, start, end, tocNode) {
@@ -1495,95 +909,31 @@ function buildTocItems(headings, start, end, tocNode) {
     }
 
     // Build the <a> link
-    const link = {
-      type: 'Tag',
+    const link = nodes.tag(tocNode, {
       name: 'a',
-      attrs: [resolvedAttribute('href', '#' + heading.id, tocNode)],
-      attributeBlocks: [],
+      attrs: [nodes.resolvedAttribute(tocNode, 'href', '#' + heading.id)],
       isInline: true,
-      block: {
-        type: 'Block',
-        nodes: [
-          {
-            type: 'Text',
-            val: heading.text,
-            line: tocNode.line,
-            column: tocNode.column,
-            filename: tocNode.filename,
-          },
-        ],
-        line: tocNode.line,
-        column: tocNode.column,
-        filename: tocNode.filename,
-      },
-      line: tocNode.line,
-      column: tocNode.column,
-      filename: tocNode.filename,
-    };
+      nodes: [nodes.text(tocNode, heading.text)],
+    });
 
     // Build children (sub-headings)
     const liContent = [link];
     if (j > i + 1) {
       const childItems = buildTocItems(headings, i + 1, j, tocNode);
       if (childItems.length > 0) {
-        liContent.push({
-          type: 'Tag',
-          name: 'ol',
-          attrs: [],
-          attributeBlocks: [],
-          isInline: false,
-          block: {
-            type: 'Block',
+        liContent.push(
+          nodes.tag(tocNode, {
+            name: 'ol',
             nodes: childItems,
-            line: tocNode.line,
-            column: tocNode.column,
-            filename: tocNode.filename,
-          },
-          line: tocNode.line,
-          column: tocNode.column,
-          filename: tocNode.filename,
-        });
+          }),
+        );
       }
     }
 
-    items.push({
-      type: 'Tag',
-      name: 'li',
-      attrs: [],
-      attributeBlocks: [],
-      isInline: false,
-      block: {
-        type: 'Block',
-        nodes: liContent,
-        line: tocNode.line,
-        column: tocNode.column,
-        filename: tocNode.filename,
-      },
-      line: tocNode.line,
-      column: tocNode.column,
-      filename: tocNode.filename,
-    });
+    items.push(nodes.tag(tocNode, {name: 'li', nodes: liContent}));
 
     i = j;
   }
 
   return items;
-}
-
-function checkExtendPosition(ast, hasExtends, sources) {
-  let legitExtendsReached = false;
-  walk(ast, function (node) {
-    if (node.type === 'Extends') {
-      if (hasExtends && !legitExtendsReached) {
-        legitExtendsReached = true;
-      } else {
-        error(
-          'EXTENDS_NOT_FIRST',
-          'Declaration of template inheritance ("extends") should be the first thing in the file. There can only be one extends statement per file.',
-          node,
-          sources,
-        );
-      }
-    }
-  });
 }

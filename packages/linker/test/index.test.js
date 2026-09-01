@@ -14,13 +14,35 @@ var link = require('../');
 // containment allows that as long as it stays within this root.
 var basedir = __dirname;
 
+function loadSource(source, overrides) {
+  const options = Object.assign(
+    {
+      filename: 'test.pg',
+      source,
+      lex,
+      parse,
+      basedir,
+      warnings: [],
+    },
+    overrides,
+  );
+  const loaded = load(parse(lex(source, options), options), options);
+  return {loaded, options, warnings: options.warnings};
+}
+
+function linkSource(source, overrides, linker) {
+  const result = loadSource(source, overrides);
+  result.linked = (linker || link)(result.loaded, result.options);
+  return result;
+}
+
+function warningsFor(source, overrides) {
+  return linkSource(source, overrides).warnings;
+}
+
 function linkFile(filename) {
-  let source = fs.readFileSync(filename, 'utf8');
-  let options = {filename, source, lex, parse, basedir};
-  let tokens = lex(source, options);
-  let ast = parse(tokens, options);
-  let loaded = load(ast, options);
-  let linked = link(loaded);
+  const source = fs.readFileSync(filename, 'utf8');
+  const linked = linkSource(source, {filename}).linked;
   return JSON.parse(
     JSON.stringify(linked, function (key, value) {
       if (
@@ -105,13 +127,10 @@ describe('duplicate reference definitions', () => {
       '',
       'p @[ex]',
     ].join('\n');
-    var options = {filename: 'test.pg', source, lex, parse, basedir};
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    const {loaded, options} = loadSource(source);
 
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => {
         assert.strictEqual(err.code, 'PUGNEUM:DUPLICATE_REFERENCE');
         assert.match(err.message, /Duplicate reference 'ex'/);
@@ -140,8 +159,9 @@ describe('reference resolver-owned attributes', () => {
     },
   ]) {
     test(`direct ${type} AST rejects ${name} override`, () => {
-      const options = {filename: 'reserved.pg', source, lex, parse, basedir};
-      const loaded = load(parse(lex(source, options), options), options);
+      const {loaded, options} = loadSource(source, {
+        filename: 'reserved.pg',
+      });
       let reference;
       walk(loaded, function (node) {
         if (node.type === type) reference = node;
@@ -171,17 +191,10 @@ describe('RawInclude with filters', () => {
   test('RawInclude with filters is preserved for the filterer', () => {
     var dir = __dirname + '/cases';
     var source = 'include:markdown-it some.md';
-    var options = {
+    const {linked} = linkSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
-    var linked = link(loaded);
+    });
 
     // The linker must NOT replace RawInclude nodes that have filters.
     // Those are left for the filterer to process.
@@ -194,17 +207,10 @@ describe('RawInclude with filters', () => {
   test('RawInclude without filters is replaced with Text', () => {
     var dir = __dirname + '/cases';
     var source = 'include some.md';
-    var options = {
+    const {linked} = linkSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
-    var linked = link(loaded);
+    });
 
     // Without filters, the linker replaces RawInclude with a Text node
     var textNode = linked.nodes[0];
@@ -255,12 +261,9 @@ describe('error handling', () => {
 
   test('UNDEFINED_REFERENCE for unknown @[ref]', () => {
     var source = 'p @[missing]';
-    var options = {filename: 'test.pg', source, lex, parse, basedir};
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    const {loaded, options} = loadSource(source);
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => err.code === 'PUGNEUM:UNDEFINED_REFERENCE',
     );
   });
@@ -268,18 +271,12 @@ describe('error handling', () => {
   test('MISSING_YIELD when include passes block but template has no yield', () => {
     var dir = __dirname + '/cases';
     var includer = 'include auxiliary/pet.pg\n  p Extra content';
-    var options = {
+    const {loaded, options} = loadSource(includer, {
       filename: dir + '/test.pg',
-      source: includer,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(includer, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    });
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => err.code === 'PUGNEUM:MISSING_YIELD',
     );
   });
@@ -287,18 +284,12 @@ describe('error handling', () => {
   test('EXTENDS_NOT_FIRST when extends is not the first statement', () => {
     var dir = __dirname + '/cases';
     var source = 'p hello\nextends auxiliary/layout.pg';
-    var options = {
+    const {loaded, options} = loadSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    });
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => err.code === 'PUGNEUM:EXTENDS_NOT_FIRST',
     );
   });
@@ -306,18 +297,12 @@ describe('error handling', () => {
   test('UNEXPECTED_BLOCK for block not defined in parent', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\nblock nonexistent\n  p hello';
-    var options = {
+    const {loaded, options} = loadSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    });
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => err.code === 'PUGNEUM:UNEXPECTED_BLOCK',
     );
   });
@@ -325,17 +310,11 @@ describe('error handling', () => {
   test('LINK_DEPTH_EXCEEDED at the inheritance edge when no edges are allowed', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\nblock content\n  p hello';
-    var options = {
+    const {loaded, options} = loadSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
       maxLinkDepth: 0,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    });
     assert.throws(
       () => link(loaded, options),
       (err) =>
@@ -348,18 +327,12 @@ describe('error handling', () => {
   test('UNEXPECTED_NODES_IN_EXTENDING_ROOT for non-block content in extending template', () => {
     var dir = __dirname + '/cases';
     var source = 'extends auxiliary/layout.pg\np this is not allowed';
-    var options = {
+    const {loaded, options} = loadSource(source, {
       filename: dir + '/test.pg',
-      source,
-      lex,
-      parse,
       basedir: dir,
-    };
-    var tokens = lex(source, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    });
     assert.throws(
-      () => link(loaded),
+      () => link(loaded, options),
       (err) => err.code === 'PUGNEUM:UNEXPECTED_NODES_IN_EXTENDING_ROOT',
     );
   });
@@ -380,10 +353,7 @@ describe('error handling', () => {
     );
     var childSource = fs.readFileSync(childPath, 'utf8');
 
-    var options = {filename: mainPath, source: mainSource, lex, parse};
-    var tokens = lex(mainSource, options);
-    var ast = parse(tokens, options);
-    var loaded = load(ast, options);
+    const {loaded, options} = loadSource(mainSource, {filename: mainPath});
 
     assert.throws(
       () => link(loaded, options),
@@ -415,8 +385,7 @@ describe('large flat collections', () => {
   const aboveHistoricalArgumentLimit = 130000;
 
   function linkReferenceWithLargeAttrs(source, referenceType, outputTag) {
-    const options = {filename: 'large.pg', source, lex, parse, basedir};
-    const loaded = load(parse(lex(source, options), options), options);
+    const {loaded, options} = loadSource(source, {filename: 'large.pg'});
     let reference = null;
     walk(loaded, function (node) {
       if (node.type === referenceType) reference = node;
@@ -467,19 +436,6 @@ describe('large flat collections', () => {
 });
 
 describe('warnings', () => {
-  function warningsFor(source, extra) {
-    const warnings = [];
-    const options = Object.assign(
-      {filename: 't.pg', source, lex, parse, basedir, warnings},
-      extra,
-    );
-    const tokens = lex(source, options);
-    const ast = parse(tokens, options);
-    const loaded = load(ast, options);
-    link(loaded, options);
-    return warnings;
-  }
-
   function codes(warnings, code) {
     return warnings.filter((w) => w.code === 'PUGNEUM:' + code);
   }
@@ -593,17 +549,10 @@ describe('warnings', () => {
     test('img-without-alt is counted once per occurrence, not multiplied by include depth', () => {
       const dir = __dirname + '/fixtures';
       const source = 'div\n  include /img-no-alt.pg\n  img(src=/main.png)';
-      const warnings = [];
-      const options = {
+      const {warnings} = linkSource(source, {
         filename: dir + '/main.pg',
-        source,
-        lex,
-        parse,
         basedir: dir,
-        warnings,
-      };
-      const loaded = load(parse(lex(source, options), options), options);
-      link(loaded, options);
+      });
       // One img in the included file + one in the main file = exactly two.
       assert.strictEqual(codes(warnings, 'IMG_WITHOUT_ALT').length, 2);
     });
@@ -623,11 +572,12 @@ function linkProject(files, entry, linker) {
     });
     var filename = path.join(dir, entry);
     var source = fs.readFileSync(filename, 'utf8');
-    var warnings = [];
-    var options = {filename, source, lex, parse, basedir: dir, warnings};
-    var loaded = load(parse(lex(source, options), options), options);
-    var linked = (linker || link)(loaded, options);
-    return {linked: linked, warnings: warnings};
+    const result = linkSource(
+      source,
+      {filename, basedir: dir, warnings: []},
+      linker,
+    );
+    return {linked: result.linked, warnings: result.warnings};
   } finally {
     fs.rmSync(dir, {recursive: true, force: true});
   }
@@ -1240,12 +1190,6 @@ describe('applyYield clones the passed block per yield site', () => {
 });
 
 describe('footnote error paths', () => {
-  function linkSource(source) {
-    var options = {filename: 'fn.pg', source, lex, parse, basedir};
-    var loaded = load(parse(lex(source, options), options), options);
-    return link(loaded, options);
-  }
-
   test('UNDEFINED_FOOTNOTE for a ref with no matching definition', () => {
     assert.throws(
       () => linkSource('p text^[missing]\n\nfootnotes\n  other note'),
@@ -1276,13 +1220,6 @@ describe('footnote error paths', () => {
 });
 
 describe('reference reachability follows rendered footnotes', () => {
-  function linkSource(source) {
-    const warnings = [];
-    const options = {filename: 'reachable.pg', source, lex, parse, basedir};
-    const loaded = load(parse(lex(source, options), options), options);
-    return {linked: link(loaded, Object.assign(options, {warnings})), warnings};
-  }
-
   test('a missing reference inside an unreachable footnote is discarded', () => {
     const {linked, warnings} = linkSource(
       'p live\n\nfootnotes\n  dead See @[missing]',
@@ -1348,14 +1285,6 @@ describe('footnote transitive fixpoint and multi-reference rendering', () => {
   // footnoteRefId(-N) scheme need direct structural assertions. These pin
   // transitive reachability, discovery order, backlink labels, and ref-id
   // suffixing without relying only on a downstream HTML snapshot.
-  function linkSource(source) {
-    const warnings = [];
-    const options = {filename: 'fn.pg', source, lex, parse, basedir, warnings};
-    const loaded = load(parse(lex(source, options), options), options);
-    const linked = link(loaded, options);
-    return {linked, warnings};
-  }
-
   function footnoteListItemIds(ast) {
     const ids = [];
     walk(ast, function (node) {
@@ -1554,14 +1483,6 @@ describe('footnote transitive fixpoint and multi-reference rendering', () => {
 });
 
 describe('toc id-value handling', () => {
-  function warningsFor(source) {
-    const warnings = [];
-    const options = {filename: 't.pg', source, lex, parse, basedir, warnings};
-    const loaded = load(parse(lex(source, options), options), options);
-    link(loaded, options);
-    return warnings;
-  }
-
   test('a heading with a valueless (boolean) id is not used as a toc entry', () => {
     // A valueless id (val === true) must not produce href="#true"; matching
     // lintDocument's string-id contract, resolveToc skips it. With only such a
@@ -1914,14 +1835,7 @@ describe('public boundary, depth, and ownership contracts', () => {
 describe('warnings option robustness', () => {
   test('a non-array warnings option is rejected at the boundary', () => {
     var source = 'img(src=/x.png)';
-    var options = {
-      filename: 't.pg',
-      source,
-      lex,
-      parse,
-      basedir,
-    };
-    var loaded = load(parse(lex(source, options), options), options);
+    const {loaded, options} = loadSource(source, {filename: 't.pg'});
     // Set the malformed value only at the linker boundary under test. The
     // lexer deliberately rejects a non-array collector at its own boundary.
     options.warnings = 'oops';
@@ -1937,8 +1851,10 @@ describe('warnings option robustness', () => {
     // link() establishes options.warnings so a bare caller can read diagnostics
     // back rather than having them computed into a discarded throwaway array.
     var source = 'references\n  foo https://x.com\n\np#dup a\np#dup b';
-    var options = {filename: 't.pg', source, lex, parse, basedir};
-    var loaded = load(parse(lex(source, options), options), options);
+    const {loaded, options} = loadSource(source, {
+      filename: 't.pg',
+      warnings: undefined,
+    });
     link(loaded, options);
     assert.ok(Array.isArray(options.warnings));
     assert.ok(

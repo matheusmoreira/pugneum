@@ -4,6 +4,7 @@ var assert = require('node:assert/strict');
 var crypto = require('node:crypto');
 var {describe, it} = require('node:test');
 var fs = require('fs');
+var htmlparser2 = require('htmlparser2');
 var os = require('os');
 var path = require('path');
 var pugneumError = require('pugneum-error');
@@ -218,13 +219,37 @@ describe('render()', () => {
       'rect',
       '  span HTML sibling',
     ].join('\n');
+    var html = pg.render(source);
     assert.strictEqual(
-      pg.render(source),
+      html,
       '<svg><rect><title>A square</title></rect><circle />' +
         '<animateMotion><mpath href="#route"></mpath></animateMotion>' +
         '<foreignObject><rect><span>HTML child</span></rect></foreignObject>' +
         '</svg><rect><span>HTML sibling</span></rect>',
     );
+
+    var document = htmlparser2.parseDocument(html);
+    var topLevel = document.children.filter((node) => node.type === 'tag');
+    var svgChildren = topLevel[0].children.filter(
+      (node) => node.type === 'tag',
+    );
+    assert.deepStrictEqual(
+      topLevel.map((node) => node.name),
+      ['svg', 'rect'],
+    );
+    assert.deepStrictEqual(
+      svgChildren.map((node) => node.name),
+      ['rect', 'circle', 'animatemotion', 'foreignobject'],
+    );
+    assert.deepStrictEqual(
+      svgChildren.map((node) =>
+        node.children
+          .filter((child) => child.type === 'tag')
+          .map((child) => child.name),
+      ),
+      [['title'], [], ['mpath'], ['rect']],
+    );
+    assert.strictEqual(topLevel[1].children[0].name, 'span');
   });
 
   it('should render buffered comments', () => {

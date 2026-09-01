@@ -153,11 +153,15 @@ class Compiler {
   // options.source, then to '' (no ±3-line context).
   locate(node) {
     const sources = this.options.sources;
+    const hasMappedSource =
+      sources && Object.prototype.hasOwnProperty.call(sources, node.filename);
     return {
       line: node.line,
       column: node.column,
       filename: node.filename,
-      source: (sources && sources[node.filename]) || this.options.source || '',
+      source: hasMappedSource
+        ? sources[node.filename]
+        : this.options.source || '',
     };
   }
 

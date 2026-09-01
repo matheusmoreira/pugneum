@@ -103,8 +103,8 @@ function mixinDef(name, args, body, opts) {
   );
 }
 
-// Helper: Mixin call node (with opts support)
-function mixinCallOpts(name, args, children, opts) {
+// Helper: Mixin call node
+function mixinCall(name, args, children, opts) {
   return Object.assign(
     {
       type: 'Mixin',
@@ -242,11 +242,11 @@ describe('footnote line joining', () => {
     );
 
     assert.strictEqual(
-      render(block([declaration, mixinCallOpts('note', [])])),
+      render(block([declaration, mixinCall('note', [])])),
       'continuation',
     );
     assert.strictEqual(
-      render(block([declaration, mixinCallOpts('note', ['first'])])),
+      render(block([declaration, mixinCall('note', ['first'])])),
       'first continuation',
     );
   });
@@ -579,7 +579,7 @@ describe('comments', () => {
       mixinDef('hidden', [], [text('body')]),
     ]);
     assert.throws(
-      () => render(block([hidden, mixinCallOpts('hidden')])),
+      () => render(block([hidden, mixinCall('hidden')])),
       (err) => err.code === 'PUGNEUM:UNDEFINED_MIXIN',
     );
   });
@@ -815,8 +815,8 @@ describe('mixin errors', () => {
   test('class shorthand on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
     // +box.highlight — the .highlight is parsed onto the call's attrs and must
     // not be silently dropped.
-    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
-    var call = mixinCallOpts('box', [], null, {
+    var declaration = mixinDef('box', [], [tag('div', [], [])]);
+    var call = mixinCall('box', [], null, {
       attrs: [attr('class', 'highlight', 2)],
     });
     assert.throws(
@@ -827,8 +827,8 @@ describe('mixin errors', () => {
 
   test('id shorthand on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
     // +box#main
-    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
-    var call = mixinCallOpts('box', [], null, {
+    var declaration = mixinDef('box', [], [tag('div', [], [])]);
+    var call = mixinCall('box', [], null, {
       attrs: [attr('id', 'main', 2)],
     });
     assert.throws(
@@ -838,8 +838,8 @@ describe('mixin errors', () => {
   });
 
   test('attributeBlocks on a mixin call throws UNSUPPORTED_MIXIN_CALL_ATTRIBUTES', () => {
-    var declaration = mixinDecl('box', [], [tag('div', [], [])]);
-    var call = mixinCallOpts('box', [], null, {
+    var declaration = mixinDef('box', [], [tag('div', [], [])]);
+    var call = mixinCall('box', [], null, {
       attributeBlocks: [{}],
     });
     assert.throws(
@@ -849,8 +849,8 @@ describe('mixin errors', () => {
   });
 
   test('plain mixin call with no shorthand attributes still renders', () => {
-    var declaration = mixinDecl('box', [], [tag('div', [], [text('x')])]);
-    var call = mixinCallOpts('box', []);
+    var declaration = mixinDef('box', [], [tag('div', [], [text('x')])]);
+    var call = mixinCall('box', []);
     assert.strictEqual(render(block([declaration, call])), '<div>x</div>');
   });
 });
@@ -1335,6 +1335,70 @@ describe('error handling', () => {
     });
   });
 
+  test('errors and warnings route mapped, fallback, and absent sources', () => {
+    var mapped = 'mapped first\nmapped selection\nmapped third';
+    var fallback = 'fallback first\nfallback selection\nfallback third';
+    var routes = [
+      {
+        options: {source: fallback, sources: {'partial.pg': mapped}},
+        expected: mapped,
+        marker: 'mapped selection',
+      },
+      {
+        options: {source: fallback, sources: {'other.pg': mapped}},
+        expected: fallback,
+        marker: 'fallback selection',
+      },
+      {
+        options: {source: fallback, sources: {'partial.pg': ''}},
+        expected: '',
+      },
+      {options: {}, expected: ''},
+    ];
+
+    routes.forEach((route) => {
+      var options = Object.assign({filename: 'partial.pg'}, route.options);
+      var invalid = tag('1invalid');
+      Object.assign(invalid, {
+        line: 2,
+        column: 3,
+        filename: 'partial.pg',
+      });
+      var failure;
+      assert.throws(
+        () => render(block([invalid]), options),
+        (err) => {
+          failure = err;
+          return err.code === 'PUGNEUM:INVALID_TAG_NAME';
+        },
+      );
+
+      var declaration = mixinDef('unused', [], [text('body')]);
+      Object.assign(declaration, {
+        line: 2,
+        column: 3,
+        filename: 'partial.pg',
+      });
+      var warnings = [];
+      render(block([declaration]), Object.assign({}, options, {warnings}));
+
+      [failure, warnings[0]].forEach((diagnostic) => {
+        assert.strictEqual(diagnostic.filename, 'partial.pg');
+        assert.strictEqual(diagnostic.line, 2);
+        assert.strictEqual(diagnostic.column, 3);
+        assert.strictEqual(diagnostic.source, route.expected);
+        if (route.marker) {
+          assert.match(diagnostic.message, new RegExp(route.marker));
+        } else {
+          assert.doesNotMatch(
+            diagnostic.message,
+            /mapped selection|fallback selection/,
+          );
+        }
+      });
+    });
+  });
+
   test('upstream-only nodes name the required pipeline stage', () => {
     var cases = [
       ['Extends', 'load -> link.assemble'],
@@ -1404,7 +1468,7 @@ describe('error handling', () => {
   test('recursive mixin throws RECURSIVE_MIXIN', () => {
     // mixin loop calls +loop
     var call = mixinCall('loop', []);
-    var decl = mixinDecl('loop', [], [call]);
+    var decl = mixinDef('loop', [], [call]);
     assert.throws(
       () => render(block([decl, mixinCall('loop', [])])),
       (err) =>
@@ -1415,8 +1479,8 @@ describe('error handling', () => {
 
   test('mutual recursion throws RECURSIVE_MIXIN', () => {
     // mixin a calls +b, mixin b calls +a
-    var declA = mixinDecl('a', [], [mixinCall('b', [])]);
-    var declB = mixinDecl('b', [], [mixinCall('a', [])]);
+    var declA = mixinDef('a', [], [mixinCall('b', [])]);
+    var declB = mixinDef('b', [], [mixinCall('a', [])]);
     assert.throws(
       () => render(block([declA, declB, mixinCall('a', [])])),
       (err) => err.code === 'PUGNEUM:RECURSIVE_MIXIN',
@@ -1428,10 +1492,10 @@ describe('error handling', () => {
     var depth = 257;
     var nodes = [];
     for (var i = 0; i < depth; i++) {
-      nodes.push(mixinDecl('m' + i, [], [mixinCall('m' + (i + 1), [])]));
+      nodes.push(mixinDef('m' + i, [], [mixinCall('m' + (i + 1), [])]));
     }
     // Final mixin that doesn't call anything
-    nodes.push(mixinDecl('m' + depth, [], [text('end')]));
+    nodes.push(mixinDef('m' + depth, [], [text('end')]));
     // Kick off the chain
     nodes.push(mixinCall('m0', []));
     assert.throws(
@@ -1440,16 +1504,6 @@ describe('error handling', () => {
     );
   });
 });
-
-// Helper: mixin declaration node
-function mixinDecl(name, args, children) {
-  return mixinDef(name, args, children);
-}
-
-// Helper: mixin call node
-function mixinCall(name, args, children) {
-  return mixinCallOpts(name, args, children);
-}
 
 // Helper: variable node
 function variable(name) {
@@ -1463,7 +1517,7 @@ function attr(name, val, line) {
 
 describe('optional arguments', () => {
   test('omitted trailing args produce no text output', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'greet',
       [{name: 'name'}, {name: 'title'}],
       [tag('p', [], [variable('title'), text(' '), variable('name')])],
@@ -1473,7 +1527,7 @@ describe('optional arguments', () => {
   });
 
   test('omitted arg with default uses default value', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'greet',
       [{name: 'name'}, {name: 'title', default: 'friend'}],
       [
@@ -1492,7 +1546,7 @@ describe('optional arguments', () => {
   });
 
   test('explicit arg overrides default', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'greet',
       [{name: 'name'}, {name: 'title', default: 'friend'}],
       [tag('p', [], [variable('title'), text(' '), variable('name')])],
@@ -1502,7 +1556,7 @@ describe('optional arguments', () => {
   });
 
   test('all args can be omitted', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'empty',
       [{name: 'a'}, {name: 'b'}],
       [tag('p', [], [variable('a'), variable('b')])],
@@ -1512,7 +1566,7 @@ describe('optional arguments', () => {
   });
 
   test('all defaults used when no args provided', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'defaults',
       [
         {name: 'a', default: 'x'},
@@ -1525,7 +1579,7 @@ describe('optional arguments', () => {
   });
 
   test('too many args still throws MIXIN_ARGUMENT_COUNT_MISMATCH', () => {
-    var decl = mixinDecl('m', [{name: 'a'}], []);
+    var decl = mixinDef('m', [{name: 'a'}], []);
     var call = mixinCall('m', ['one', 'two', 'three']);
     assert.throws(
       () => render(block([decl, call])),
@@ -1534,7 +1588,7 @@ describe('optional arguments', () => {
   });
 
   test('explicit empty string overrides default', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'm',
       [{name: 'x', default: 'fallback'}],
       [tag('p', [], [variable('x')])],
@@ -1544,7 +1598,7 @@ describe('optional arguments', () => {
   });
 
   test('default with empty string default', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'm',
       [{name: 'x', default: ''}],
       [tag('p', [], [variable('x')])],
@@ -1556,7 +1610,7 @@ describe('optional arguments', () => {
 
 describe('optional arguments and attributes', () => {
   test('null variable omits entire attribute', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'link',
       [{name: 'href'}, {name: 'target'}],
       [
@@ -1575,7 +1629,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('null variable in composite attribute omits entire attribute', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'icon',
       [{name: 'name'}, {name: 'size'}],
       [
@@ -1593,7 +1647,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('default value used in attribute', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'link',
       [{name: 'href'}, {name: 'target', default: '_blank'}],
       [
@@ -1612,7 +1666,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('provided arg overrides default in attribute', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'link',
       [{name: 'href'}, {name: 'target', default: '_blank'}],
       [
@@ -1631,7 +1685,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('null class contribution is skipped, others preserved', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'item',
       [{name: 'kind'}],
       [
@@ -1650,7 +1704,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('all class contributions null omits class attribute', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'item',
       [{name: 'a'}, {name: 'b'}],
       [
@@ -1666,7 +1720,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('boolean attributes unaffected by optional args', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'input',
       [{name: 'type'}],
       [tag('input', [attr('type', '#{type}'), attr('disabled', true)])],
@@ -1676,7 +1730,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('static attributes unaffected when variable attribute omitted', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'm',
       [{name: 'x'}],
       [
@@ -1695,11 +1749,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('undeclared variable still throws UNDEFINED_VARIABLE', () => {
-    var decl = mixinDecl(
-      'm',
-      [{name: 'x'}],
-      [tag('p', [], [variable('typo')])],
-    );
+    var decl = mixinDef('m', [{name: 'x'}], [tag('p', [], [variable('typo')])]);
     var call = mixinCall('m', ['val']);
     assert.throws(
       () => render(block([decl, call])),
@@ -1708,7 +1758,7 @@ describe('optional arguments and attributes', () => {
   });
 
   test('undeclared variable in attribute still throws UNDEFINED_VARIABLE', () => {
-    var decl = mixinDecl(
+    var decl = mixinDef(
       'm',
       [{name: 'x'}],
       [tag('div', [attr('data-x', '#{typo}')])],
@@ -1724,12 +1774,12 @@ describe('optional arguments and attributes', () => {
     // Inner mixin has param 'x' not provided (null).
     // Outer mixin has param 'x' provided.
     // Inner's null should NOT fall through to outer's value.
-    var inner = mixinDecl(
+    var inner = mixinDef(
       'inner',
       [{name: 'x'}],
       [tag('span', [], [variable('x')])],
     );
-    var outer = mixinDecl('outer', [{name: 'x'}], [mixinCall('inner', [])]);
+    var outer = mixinDef('outer', [{name: 'x'}], [mixinCall('inner', [])]);
     outer.line = 2;
     var call = mixinCall('outer', ['hello']);
     call.line = 3;
@@ -1751,7 +1801,7 @@ describe('named mixin blocks', () => {
       ],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [
@@ -1772,7 +1822,7 @@ describe('named mixin blocks', () => {
       ],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [namedBlock('body', 'replace', [text('B')])],
@@ -1787,7 +1837,7 @@ describe('named mixin blocks', () => {
       [namedBlock('slot', 'replace', [text('fallback')])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts('wrap', []);
+    const call = mixinCall('wrap', []);
     assert.strictEqual(render(block([decl, call])), 'fallback');
   });
 
@@ -1798,7 +1848,7 @@ describe('named mixin blocks', () => {
       [namedBlock('links', 'replace', [text('A')])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'nav',
       [],
       [namedBlock('links', 'append', [text('B')])],
@@ -1813,7 +1863,7 @@ describe('named mixin blocks', () => {
       [namedBlock('links', 'replace', [text('A')])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'nav',
       [],
       [namedBlock('links', 'prepend', [text('B')])],
@@ -1832,7 +1882,7 @@ describe('named mixin blocks', () => {
     const contributions = Array.from({length: count}, (_, index) =>
       namedBlock('links', 'prepend', [text(index + ',')]),
     );
-    const call = mixinCallOpts('nav', [], contributions);
+    const call = mixinCall('nav', [], contributions);
     const originalUnshift = Array.prototype.unshift;
     let shifts = 0;
     let output;
@@ -1872,7 +1922,7 @@ describe('named mixin blocks', () => {
       const optional = given('optional', optionalNodes);
       const decl = mixinDef('card', [], [optional], {usesNamedBlocks: true});
       const calls = Array.from({length: callCount}, () =>
-        mixinCallOpts('card', []),
+        mixinCall('card', []),
       );
 
       assert.strictEqual(render(block([decl].concat(calls))), '');
@@ -1893,7 +1943,7 @@ describe('named mixin blocks', () => {
         [namedBlock('slot', 'replace', [text('default:'), variable('label')])],
         {usesNamedBlocks: true},
       );
-      const call = mixinCallOpts(
+      const call = mixinCall(
         'wrap',
         ['inner'],
         [
@@ -1918,14 +1968,14 @@ describe('named mixin blocks', () => {
       'outer',
       [{name: 'label'}],
       [
-        mixinCallOpts(
+        mixinCall(
           'inner',
           ['inner'],
           [namedBlock('slot', 'append', [text('|caller:'), variable('label')])],
         ),
       ],
     );
-    const call = mixinCallOpts('outer', ['outer']);
+    const call = mixinCall('outer', ['outer']);
 
     assert.strictEqual(
       render(block([inner, outer, call])),
@@ -1943,7 +1993,7 @@ describe('named mixin blocks', () => {
       ],
       {usesNamedBlocks: false, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'layout',
       [],
       [namedBlock('title', 'replace', [text('Title')]), text('Body')],
@@ -1960,7 +2010,7 @@ describe('named mixin blocks', () => {
       usesNamedBlocks: true,
       usesUnnamedBlock: true,
     });
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'fixed',
       [],
       [namedBlock('removed', 'replace', [text('ignored')])],
@@ -1976,7 +2026,7 @@ describe('named mixin blocks', () => {
     const relay = mixinDef(
       'relay',
       [],
-      [mixinCallOpts('leaf', [], [mixinBlock()])],
+      [mixinCall('leaf', [], [mixinBlock()])],
       {usesUnnamedBlock: false},
     );
     const page = mixinDef(
@@ -1984,11 +2034,11 @@ describe('named mixin blocks', () => {
       [],
       [
         namedBlock('title', 'replace', [text('default')]),
-        mixinCallOpts('relay', [], [mixinBlock()]),
+        mixinCall('relay', [], [mixinBlock()]),
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'page',
       [],
       [namedBlock('title', 'replace', [text('Title')]), text('Body')],
@@ -2025,7 +2075,7 @@ describe('named mixin blocks', () => {
       ],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       ['Hello'],
       [namedBlock('body', 'replace', [text('content')])],
@@ -2043,7 +2093,7 @@ describe('named mixin blocks', () => {
       [namedBlock('slot', 'replace', [text('default')])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts('wrap', [], [namedBlock('slot', 'replace')]);
+    const call = mixinCall('wrap', [], [namedBlock('slot', 'replace')]);
     assert.strictEqual(render(block([decl, call])), '');
   });
 
@@ -2057,7 +2107,7 @@ describe('named mixin blocks', () => {
       ],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'multi',
       [],
       [namedBlock('slot', 'replace', [text('X')])],
@@ -2074,7 +2124,7 @@ describe('named mixin block errors', () => {
     const decl = mixinDef('wrap', [], [namedBlock('header', 'replace')], {
       usesNamedBlocks: true,
     });
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [namedBlock('nonexistent', 'replace', [text('x')])],
@@ -2094,7 +2144,7 @@ describe('named mixin block errors', () => {
       [],
       [
         namedBlock('header', 'replace'),
-        mixinCallOpts(
+        mixinCall(
           'inner',
           [],
           [namedBlock('slot', 'replace', [text('inner default')])],
@@ -2102,7 +2152,7 @@ describe('named mixin block errors', () => {
       ],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'outer',
       [],
       [
@@ -2121,7 +2171,7 @@ describe('named mixin block errors', () => {
       usesNamedBlocks: true,
       usesUnnamedBlock: false,
     });
-    const call = mixinCallOpts('wrap', [], [text('loose content')]);
+    const call = mixinCall('wrap', [], [text('loose content')]);
     assert.throws(
       () => render(block([decl, call])),
       (err) => err.code === 'PUGNEUM:UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
@@ -2132,7 +2182,7 @@ describe('named mixin block errors', () => {
     const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
       usesNamedBlocks: true,
     });
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [
@@ -2150,7 +2200,7 @@ describe('named mixin block errors', () => {
       [tag('div', [], [namedBlock('slot', 'replace', [text('default')])])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [
@@ -2168,7 +2218,7 @@ describe('named mixin block errors', () => {
       [tag('div', [], [namedBlock('slot', 'replace', [text('default')])])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [
@@ -2189,7 +2239,7 @@ describe('named mixin block errors', () => {
       [tag('div', [], [namedBlock('header', 'replace', [text('default')])])],
       {usesNamedBlocks: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [
@@ -2210,7 +2260,7 @@ describe('mixed named + unnamed blocks', () => {
       [namedBlock('header', 'replace'), tag('div', [], [mixinBlock()])],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [namedBlock('header', 'replace', [text('Title')]), text('Body content')],
@@ -2231,7 +2281,7 @@ describe('mixed named + unnamed blocks', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [text('Body only')]);
+    const call = mixinCall('card', [], [text('Body only')]);
     assert.strictEqual(
       render(block([decl, call])),
       'Default Header<div>Body only</div>',
@@ -2248,7 +2298,7 @@ describe('mixed named + unnamed blocks', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [namedBlock('header', 'replace', [text('Custom Header')])],
@@ -2263,7 +2313,7 @@ describe('mixed named + unnamed blocks', () => {
       [namedBlock('nav', 'replace'), tag('main', [], [mixinBlock()])],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'page',
       [],
       [
@@ -2288,7 +2338,7 @@ describe('mixed named + unnamed blocks', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', []);
+    const call = mixinCall('card', []);
     assert.strictEqual(render(block([decl, call])), 'H<div></div>');
   });
 
@@ -2297,7 +2347,7 @@ describe('mixed named + unnamed blocks', () => {
       usesNamedBlocks: true,
       usesUnnamedBlock: false,
     });
-    const call = mixinCallOpts('wrap', [], [text('loose content')]);
+    const call = mixinCall('wrap', [], [text('loose content')]);
     assert.throws(
       () => render(block([decl, call])),
       (err) => err.code === 'PUGNEUM:UNEXPECTED_CONTENT_IN_NAMED_BLOCK_CALL',
@@ -2314,7 +2364,7 @@ describe('mixed named + unnamed blocks', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [namedBlock('footer', 'append', [text(' extra')]), text('body')],
@@ -2337,7 +2387,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [text('Body'), namedBlock('footer', 'replace', [text('Foot')])],
@@ -2358,7 +2408,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts('card', [], [text('Body only')]);
+    const call = mixinCall('card', [], [text('Body only')]);
     assert.strictEqual(render(block([decl, call])), 'Body only');
   });
 
@@ -2375,7 +2425,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'card',
       [],
       [text('Body'), namedBlock('footer', 'replace', [])],
@@ -2397,7 +2447,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [
@@ -2420,7 +2470,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: false},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [namedBlock('main', 'replace', [text('Main')])],
@@ -2439,7 +2489,7 @@ describe('given keyword', () => {
       ],
       {usesNamedBlocks: true, usesUnnamedBlock: true},
     );
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'page',
       [],
       [text('Content'), namedBlock('footer', 'replace', [text('Foot')])],
@@ -2461,7 +2511,7 @@ describe('given keyword', () => {
 
 describe('unused mixin warnings', () => {
   test('unused entry-file mixin pushes one UNUSED_MIXIN warning', () => {
-    const decl = mixinDecl('unused', [], [tag('p', [], [text('x')])]);
+    const decl = mixinDef('unused', [], [tag('p', [], [text('x')])]);
     const warnings = [];
     const out = render(block([decl, tag('p', [], [text('hi')])]), {
       filename: 'test',
@@ -2474,7 +2524,7 @@ describe('unused mixin warnings', () => {
   });
 
   test('a called mixin produces no warning', () => {
-    const decl = mixinDecl('used', [], [tag('p', [], [text('x')])]);
+    const decl = mixinDef('used', [], [tag('p', [], [text('x')])]);
     const call = mixinCall('used', []);
     const warnings = [];
     render(block([decl, call]), {filename: 'test', warnings});
@@ -2484,7 +2534,7 @@ describe('unused mixin warnings', () => {
   test('mixin defined in a different file is not flagged', () => {
     // filename !== options.filename means it is a library mixin from an
     // included file; it must not warn even though it is never called.
-    const decl = mixinDecl('lib', [], [tag('p', [], [text('x')])]);
+    const decl = mixinDef('lib', [], [tag('p', [], [text('x')])]);
     decl.filename = 'included.pg';
     const warnings = [];
     render(block([decl, tag('p', [], [text('hi')])]), {
@@ -2497,7 +2547,7 @@ describe('unused mixin warnings', () => {
   test('warnings are discarded when no collector is supplied', () => {
     // Must not throw when options/warnings is absent; the warning is collected
     // into an internal throwaway array.
-    const decl = mixinDecl('unused', [], [tag('p', [], [text('x')])]);
+    const decl = mixinDef('unused', [], [tag('p', [], [text('x')])]);
     assert.strictEqual(render(block([decl]), {filename: 'test'}), '');
   });
 });
@@ -2507,7 +2557,7 @@ describe('defensive error paths', () => {
     const decl = mixinDef('wrap', [], [namedBlock('slot', 'replace')], {
       usesNamedBlocks: true,
     });
-    const call = mixinCallOpts(
+    const call = mixinCall(
       'wrap',
       [],
       [namedBlock('slot', 'bogus', [text('X')])],
@@ -2534,9 +2584,9 @@ describe('mixin depth and recursion boundaries', () => {
   function chain(depth) {
     const nodes = [];
     for (let i = 0; i < depth; i++) {
-      nodes.push(mixinDecl('m' + i, [], [mixinCall('m' + (i + 1), [])]));
+      nodes.push(mixinDef('m' + i, [], [mixinCall('m' + (i + 1), [])]));
     }
-    nodes.push(mixinDecl('m' + depth, [], [text('end')]));
+    nodes.push(mixinDef('m' + depth, [], [text('end')]));
     nodes.push(mixinCall('m0', []));
     return block(nodes);
   }
@@ -2553,16 +2603,16 @@ describe('mixin depth and recursion boundaries', () => {
   });
 
   test('repeated sibling calls of one mixin are not recursion', () => {
-    const h = mixinDecl('h', [], [text('h')]);
-    const w = mixinDecl('w', [], [mixinCall('h', []), mixinCall('h', [])]);
+    const h = mixinDef('h', [], [text('h')]);
+    const w = mixinDef('w', [], [mixinCall('h', []), mixinCall('h', [])]);
     assert.strictEqual(render(block([h, w, mixinCall('w', [])])), 'hh');
   });
 
   test('diamond mixin calls are allowed (not recursion)', () => {
-    const h = mixinDecl('h', [], [text('h')]);
-    const a = mixinDecl('a', [], [mixinCall('h', [])]);
-    const b = mixinDecl('b', [], [mixinCall('h', [])]);
-    const w = mixinDecl('w', [], [mixinCall('a', []), mixinCall('b', [])]);
+    const h = mixinDef('h', [], [text('h')]);
+    const a = mixinDef('a', [], [mixinCall('h', [])]);
+    const b = mixinDef('b', [], [mixinCall('h', [])]);
+    const w = mixinDef('w', [], [mixinCall('a', []), mixinCall('b', [])]);
     assert.strictEqual(render(block([h, a, b, w, mixinCall('w', [])])), 'hh');
   });
 });
@@ -2572,7 +2622,7 @@ describe('attribute escaping after substitution', () => {
     // Security-relevant: resolveAttrValue runs first, escapeAttrValue second.
     // A value containing " and & must be escaped so it cannot break out of the
     // quoted attribute.
-    const decl = mixinDecl(
+    const decl = mixinDef(
       'link',
       [{name: 'u'}],
       [tag('a', [attr('title', '#{u}')], [text('x')])],

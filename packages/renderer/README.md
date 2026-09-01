@@ -109,12 +109,14 @@ line, which the lexer pre-renders into a text token the renderer
 buffers verbatim.
 
 HTML void-element identity is ASCII-case-insensitive, while output retains the
-tag name's authored spelling. The renderer's fixed SVG self-closing-name table
-is case-sensitive and currently applies regardless of ancestry. A direct AST
-node's `selfClosing` flag also suppresses its end tag. HTML void and explicit
-`selfClosing` nodes end with `>`; names in the SVG table end with ` />`.
-Self-closing nodes may contain whitespace-only `Text` children but reject other
-content with `PUGNEUM:VOID_ELEMENT_WITH_CONTENT`.
+tag name's authored spelling. Only void elements in the HTML namespace reject
+substantive content, using `PUGNEUM:VOID_ELEMENT_WITH_CONTENT`; whitespace-only
+source formatting is ignored. Empty common shapes inside `svg` retain compact
+` />` spelling, but SVG elements with children use explicit end tags. Children
+of SVG `foreignObject`, `desc`, and `title` return to HTML parsing, and a nested
+`svg` enters SVG again. SVG-like names outside SVG are ordinary paired HTML
+elements. Because HTML has no self-closing custom elements, a direct AST
+`selfClosing` flag never suppresses the end tag of a non-void HTML element.
 
 Class attributes are coalesced with the same HTML identity: string
 contributions are space-joined into one canonical `class="..."`, and a lone

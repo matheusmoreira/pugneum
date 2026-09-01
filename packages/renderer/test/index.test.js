@@ -321,10 +321,21 @@ describe('void elements', () => {
     assert.strictEqual(render(block([tag('img')])), '<img>');
   });
 
-  test('self-closing by property', () => {
+  test('a selfClosing flag cannot leave a non-void HTML element dangling', () => {
     assert.strictEqual(
-      render(block([tag('custom', [], [], {selfClosing: true})])),
-      '<custom>',
+      render(
+        block([
+          tag('custom', [], [], {selfClosing: true}),
+          tag('p', [], [text('sibling')]),
+        ]),
+      ),
+      '<custom></custom><p>sibling</p>',
+    );
+    assert.strictEqual(
+      render(
+        block([tag('custom', [], [text('content')], {selfClosing: true})]),
+      ),
+      '<custom>content</custom>',
     );
   });
 
@@ -349,8 +360,8 @@ describe('void elements', () => {
   });
 });
 
-describe('SVG void elements', () => {
-  test('rect is self-closing', () => {
+describe('SVG foreign elements', () => {
+  test('an empty rect uses compact SVG syntax', () => {
     var attrs = [
       attr('x', '0'),
       attr('y', '0'),
@@ -358,20 +369,20 @@ describe('SVG void elements', () => {
       attr('height', '50'),
     ];
     assert.strictEqual(
-      render(block([tag('rect', attrs)])),
-      '<rect x="0" y="0" width="100" height="50" />',
+      render(block([tag('svg', [], [tag('rect', attrs)])])),
+      '<svg><rect x="0" y="0" width="100" height="50" /></svg>',
     );
   });
 
-  test('circle is self-closing', () => {
+  test('an empty circle uses compact SVG syntax', () => {
     var attrs = [attr('cx', '50'), attr('cy', '50'), attr('r', '25')];
     assert.strictEqual(
-      render(block([tag('circle', attrs)])),
-      '<circle cx="50" cy="50" r="25" />',
+      render(block([tag('svg', [], [tag('circle', attrs)])])),
+      '<svg><circle cx="50" cy="50" r="25" /></svg>',
     );
   });
 
-  test('line is self-closing', () => {
+  test('an empty line uses compact SVG syntax', () => {
     var attrs = [
       attr('x1', '0'),
       attr('y1', '0'),
@@ -379,76 +390,141 @@ describe('SVG void elements', () => {
       attr('y2', '100'),
     ];
     assert.strictEqual(
-      render(block([tag('line', attrs)])),
-      '<line x1="0" y1="0" x2="100" y2="100" />',
+      render(block([tag('svg', [], [tag('line', attrs)])])),
+      '<svg><line x1="0" y1="0" x2="100" y2="100" /></svg>',
     );
   });
 
-  test('path is self-closing', () => {
+  test('an empty path uses compact SVG syntax', () => {
     var attrs = [attr('d', 'M0 0 L100 100')];
     assert.strictEqual(
-      render(block([tag('path', attrs)])),
-      '<path d="M0 0 L100 100" />',
+      render(block([tag('svg', [], [tag('path', attrs)])])),
+      '<svg><path d="M0 0 L100 100" /></svg>',
     );
   });
 
-  test('SVG container elements are NOT self-closing', () => {
+  test('SVG container elements retain explicit end tags', () => {
     assert.strictEqual(
       render(block([tag('svg', [], [tag('rect')])])),
       '<svg><rect /></svg>',
     );
     assert.strictEqual(
-      render(block([tag('g', [], [tag('circle')])])),
-      '<g><circle /></g>',
+      render(block([tag('svg', [], [tag('g', [], [tag('circle')])])])),
+      '<svg><g><circle /></g></svg>',
     );
     assert.strictEqual(
-      render(block([tag('text', [], [text('hello')])])),
-      '<text>hello</text>',
-    );
-    assert.strictEqual(
-      render(
-        block([
-          tag(
-            'use',
-            [
-              {
-                name: 'href',
-                val: '#icon',
-                line: 1,
-                column: 1,
-              },
-            ],
-            [text('')],
-          ),
-        ]),
-      ),
-      '<use href="#icon"></use>',
+      render(block([tag('svg', [], [tag('text', [], [text('hello')])])])),
+      '<svg><text>hello</text></svg>',
     );
     assert.strictEqual(
       render(
         block([
           tag(
-            'image',
+            'svg',
+            [],
             [
-              {
-                name: 'href',
-                val: 'pic.png',
-                line: 1,
-                column: 1,
-              },
+              tag(
+                'use',
+                [
+                  {
+                    name: 'href',
+                    val: '#icon',
+                    line: 1,
+                    column: 1,
+                  },
+                ],
+                [text('')],
+              ),
             ],
-            [text('')],
           ),
         ]),
       ),
-      '<image href="pic.png"></image>',
+      '<svg><use href="#icon"></use></svg>',
+    );
+    assert.strictEqual(
+      render(
+        block([
+          tag(
+            'svg',
+            [],
+            [
+              tag(
+                'image',
+                [
+                  {
+                    name: 'href',
+                    val: 'pic.png',
+                    line: 1,
+                    column: 1,
+                  },
+                ],
+                [text('')],
+              ),
+            ],
+          ),
+        ]),
+      ),
+      '<svg><image href="pic.png"></image></svg>',
     );
   });
 
-  test('SVG void element with content throws VOID_ELEMENT_WITH_CONTENT', () => {
-    assert.throws(
-      () => render(block([tag('rect', [], [text('content')])])),
-      (err) => err.code === 'PUGNEUM:VOID_ELEMENT_WITH_CONTENT',
+  test('non-empty SVG shapes retain descriptive and animation children', () => {
+    assert.strictEqual(
+      render(
+        block([
+          tag(
+            'svg',
+            [],
+            [
+              tag('rect', [], [tag('title', [], [text('A square')])]),
+              tag('path', [], [tag('desc', [], [text('A route')])]),
+              tag(
+                'animateMotion',
+                [],
+                [tag('mpath', [attr('href', '#route')])],
+              ),
+            ],
+          ),
+        ]),
+      ),
+      '<svg><rect><title>A square</title></rect>' +
+        '<path><desc>A route</desc></path>' +
+        '<animateMotion><mpath href="#route"></mpath></animateMotion></svg>',
+    );
+  });
+
+  test('SVG-like names in HTML remain ordinary paired elements', () => {
+    assert.strictEqual(
+      render(
+        block([
+          tag('rect', [], [tag('span', [], [text('ordinary')])]),
+          tag('p', [], [text('sibling')]),
+        ]),
+      ),
+      '<rect><span>ordinary</span></rect><p>sibling</p>',
+    );
+  });
+
+  test('foreignObject children return to the HTML namespace', () => {
+    assert.strictEqual(
+      render(
+        block([
+          tag(
+            'svg',
+            [],
+            [
+              tag(
+                'foreignObject',
+                [],
+                [tag('rect', [], [tag('span', [], [text('HTML child')])])],
+              ),
+              tag('rect'),
+            ],
+          ),
+        ]),
+      ),
+      '<svg><foreignObject><rect><span>HTML child</span></rect>' +
+        '</foreignObject><rect /></svg>',
     );
   });
 
@@ -1081,10 +1157,7 @@ describe('interpolated tags', () => {
     assert.strictEqual(render(block([node])), '<br>');
   });
 
-  test('selfClosing flag propagates through visitInterpolatedTag', () => {
-    // Non-void name, so the only thing that can close it is the selfClosing
-    // flag being copied onto the synthesized Tag. A regression dropping it in
-    // the Object.assign would emit <foo></foo> instead.
+  test('selfClosing cannot leave an interpolated non-void tag dangling', () => {
     var node = {
       type: 'InterpolatedTag',
       expr: 'foo',
@@ -1097,7 +1170,10 @@ describe('interpolated tags', () => {
       column: 1,
       filename: 'test',
     };
-    assert.strictEqual(render(block([node])), '<foo>');
+    assert.strictEqual(
+      render(block([node, tag('p', [], [text('sibling')])])),
+      '<foo></foo><p>sibling</p>',
+    );
   });
 
   test('does not mutate the input AST node', () => {
@@ -1203,7 +1279,8 @@ describe('error handling', () => {
     assert.match(readme, /var pugneum = require\('pugneum'\);/);
     assert.match(readme, /not an HTML sanitizer/);
     assert.match(readme, /escapes `&` as `&amp;` and `"` as `&quot;`/);
-    assert.match(readme, /currently applies regardless of ancestry/);
+    assert.match(readme, /SVG-like names outside SVG are ordinary paired HTML/);
+    assert.match(readme, /selfClosing.*never suppresses the end tag/s);
     assert.match(readme, /explicitly supplied empty\s+named block/);
     assert.match(readme, /code` begins\s+with `PUGNEUM:`/);
   });

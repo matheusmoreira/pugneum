@@ -204,6 +204,29 @@ describe('render()', () => {
     assert.strictEqual(pg.render('hr'), '<hr>');
   });
 
+  it('preserves content and namespace boundaries in SVG', () => {
+    var source = [
+      'svg',
+      '  rect',
+      '    title A square',
+      '  circle',
+      '  animateMotion',
+      '    mpath(href="#route")',
+      '  foreignObject',
+      '    rect',
+      '      span HTML child',
+      'rect',
+      '  span HTML sibling',
+    ].join('\n');
+    assert.strictEqual(
+      pg.render(source),
+      '<svg><rect><title>A square</title></rect><circle />' +
+        '<animateMotion><mpath href="#route"></mpath></animateMotion>' +
+        '<foreignObject><rect><span>HTML child</span></rect></foreignObject>' +
+        '</svg><rect><span>HTML sibling</span></rect>',
+    );
+  });
+
   it('should render buffered comments', () => {
     assert.strictEqual(pg.render('// comment'), '<!-- comment-->');
   });

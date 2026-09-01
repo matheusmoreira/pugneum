@@ -52,9 +52,11 @@ function requiredStage(node, type) {
 // Static tag names are validated by the lexer, and direct/generated AST names
 // are revalidated here. Attribute names are validated by the lexer.
 //
-// Void / self-closing elements: the HTML and SVG tables below, together with a
-// node's own selfClosing flag, are the other HTML-correctness mechanism in this
-// file. Such elements reject substantive content (VOID_ELEMENT_WITH_CONTENT).
+// HTML voidness is namespace-sensitive and rejects substantive content. SVG
+// elements are never void: selected childless shapes may use compact `/>`
+// syntax while non-empty shapes retain their children and explicit end tags.
+// A selfClosing flag on a non-void HTML node is normalized to an ordinary empty
+// element with an end tag because HTML has no self-closing custom elements.
 //
 // Value contract: the renderer expects attribute values (attr.val) to be
 // either a string or the boolean true (a valueless/boolean attribute), and
@@ -106,17 +108,19 @@ function nameSet(names) {
   }, Object.create(null));
 }
 
-// HTML void elements render with a bare '>' (HTML5 forbids the trailing slash).
+// HTML void elements render with a bare '>'.
 const htmlVoid = nameSet(
   'area, base, br, col, embed, hr, img, input, link, meta, source, track, wbr',
 );
 
-// SVG self-closing (foreign-content) elements render with ' />': without the
-// slash an SVG start tag stays open and its following siblings misnest.
-const svgSelfClosing = nameSet(
+// Empty forms of these common SVG elements retain the compact spelling used by
+// Pugneum historically. This is only a serialization preference inside SVG;
+// it never makes the element void or forbids children.
+const compactSvg = nameSet(
   'circle, ellipse, line, path, polygon, polyline, rect, stop, ' +
-    'animate, animateMotion, animateTransform, set',
+    'animate, animatemotion, animatetransform, set',
 );
+const svgHtmlIntegrationPoint = nameSet('foreignobject, desc, title');
 
 module.exports = compileToHTML;
 
@@ -136,6 +140,7 @@ class Compiler {
       throw new Error('Expected "options.warnings" to be a mutable array');
     }
     this.node = node;
+    this.namespace = 'html';
     this.mixins = Object.create(null);
     this.mixinSlots = new WeakMap();
     this.usedMixins = new Set();
@@ -398,19 +403,23 @@ class Compiler {
         tag,
       );
     }
-    const isHtmlVoid = htmlVoid[asciiLowerCase(name)];
-    const isSvgSelfClosing = svgSelfClosing[name];
+    const normalizedName = asciiLowerCase(name);
+    const namespace =
+      this.namespace === 'html' && normalizedName === 'svg'
+        ? 'svg'
+        : this.namespace;
+    const isHtmlVoid = namespace === 'html' && htmlVoid[normalizedName];
+    const nodes = tag.block ? tag.block.nodes || [] : [];
 
     this.buffer('<');
     this.buffer(name);
     this.visitAttributes(tag.attrs);
 
-    if (tag.selfClosing || isHtmlVoid || isSvgSelfClosing) {
-      // Void elements may carry whitespace-only content (formatting) but not
-      // substantive content. Each child is a node, not necessarily a Tag.
+    if (isHtmlVoid) {
+      // HTML void elements may carry whitespace-only source formatting but not
+      // substantive AST content. Each child is a node, not necessarily a Tag.
       if (
-        tag.block &&
-        (tag.block.nodes || []).some(function (child) {
+        nodes.some(function (child) {
           return child.type !== 'Text' || !/^\s*$/.test(child.val);
         })
       ) {
@@ -424,17 +433,33 @@ class Compiler {
         );
       }
 
-      // HTML void elements get a bare '>' (HTML5 forbids the trailing slash);
-      // SVG foreign-content elements REQUIRE ' />' or the start tag stays open
-      // and parses its following siblings as children, misnesting the shapes.
-      this.buffer(isSvgSelfClosing ? ' />' : '>');
-    } else {
       this.buffer('>');
-      this.visit(tag.block, tag);
-      this.buffer('</');
-      this.buffer(name);
-      this.buffer('>');
+      return;
     }
+
+    if (
+      namespace === 'svg' &&
+      nodes.length === 0 &&
+      (tag.selfClosing || compactSvg[normalizedName])
+    ) {
+      this.buffer(' />');
+      return;
+    }
+
+    this.buffer('>');
+    const parentNamespace = this.namespace;
+    this.namespace =
+      namespace === 'svg' && svgHtmlIntegrationPoint[normalizedName]
+        ? 'html'
+        : namespace;
+    try {
+      this.visit(tag.block, tag);
+    } finally {
+      this.namespace = parentNamespace;
+    }
+    this.buffer('</');
+    this.buffer(name);
+    this.buffer('>');
   }
 
   visitText(text) {

@@ -10,6 +10,7 @@ const attributeInterpolationSource = Symbol.for(
 
 module.exports = load;
 module.exports.resolve = resolve;
+module.exports.loadOwned = loadOwned;
 
 // Maximum include/extends recursion depth. Mirrors the parser's
 // MAX_PARSE_DEPTH and the linker's DEFAULT_MAX_LINK_DEPTH so that a deep
@@ -126,7 +127,21 @@ function transferAttributeInterpolationSources(source, target) {
   }
 }
 
+function cloneAST(ast) {
+  const copy = structuredClone(ast);
+  transferAttributeInterpolationSources(ast, copy);
+  return copy;
+}
+
 function load(ast, options) {
+  return loadWithOwnership(ast, options, false);
+}
+
+function loadOwned(ast, options) {
+  return loadWithOwnership(ast, options, true);
+}
+
+function loadWithOwnership(ast, options, ownsAst) {
   // Validate before mutating anything: load() is otherwise free to be called
   // with a non-object options bag, and writing options.sources onto it first
   // would mask the intended "options must be an object" error with a raw
@@ -148,9 +163,7 @@ function load(ast, options) {
   // Clone the caller's AST once: walk() mutates nodes in place, and the input
   // tree belongs to the caller. Recursive loads work on freshly-parsed,
   // single-owner ASTs and are not cloned again (see loadAST).
-  const inputAst = ast;
-  ast = structuredClone(inputAst);
-  transferAttributeInterpolationSources(inputAst, ast);
+  if (!ownsAst) ast = cloneAST(ast);
   const state = options[loadState];
   const entryFilename = options.filename || ast.filename;
   if (entryFilename) {
@@ -232,7 +245,9 @@ function loadAST(ast, options, depth) {
             options,
           );
         }
-        if (structured) canonical = canonicalIdentity(filePath, options);
+        if (structured || options.dependencyCache) {
+          canonical = canonicalIdentity(filePath, options);
+        }
       } catch (ex) {
         throw wrapLoadFailure(ex, options, node);
       }
@@ -251,17 +266,42 @@ function loadAST(ast, options, depth) {
       if (structured) visiting.add(canonical);
       try {
         let raw;
-        try {
-          raw = normalizeReadResult(options.read(filePath, options));
-        } catch (ex) {
-          throw wrapLoadFailure(ex, options, node);
+        let cacheEntry;
+        const cache = options.dependencyCache;
+        if (cache && cache.has(canonical)) {
+          cacheEntry = cache.get(canonical);
+          if (
+            cacheEntry === null ||
+            typeof cacheEntry !== 'object' ||
+            !Buffer.isBuffer(cacheEntry.raw)
+          ) {
+            throw new TypeError(
+              'options.dependencyCache contains an invalid loader entry',
+            );
+          }
+          raw = Buffer.from(cacheEntry.raw);
+        } else {
+          try {
+            raw = normalizeReadResult(options.read(filePath, options));
+          } catch (ex) {
+            throw wrapLoadFailure(ex, options, node);
+          }
+          if (cache) {
+            cacheEntry = {raw: Buffer.from(raw)};
+            cache.set(canonical, cacheEntry);
+          }
         }
         file.fullPath = filePath;
         if (node.type === 'RawInclude' && node.filters.length > 0) {
-          attachLazyText(file, filePath, options.sources);
+          attachLazyText(file, filePath, options.sources, cacheEntry);
           file.raw = raw;
         } else {
-          const str = raw.toString('utf8');
+          const str =
+            cacheEntry &&
+            Object.prototype.hasOwnProperty.call(cacheEntry, 'str')
+              ? cacheEntry.str
+              : raw.toString('utf8');
+          if (cacheEntry) cacheEntry.str = str;
           file.str = str;
           file.raw = raw;
           registerSource(options.sources, filePath, str);
@@ -276,8 +316,32 @@ function loadAST(ast, options, depth) {
           Object.defineProperty(opts, loadState, {
             value: options[loadState],
           });
-          const tokens = options.lex(str, opts);
-          const fileAst = options.parse(tokens, opts);
+          let fileAst;
+          if (
+            cacheEntry &&
+            Object.prototype.hasOwnProperty.call(cacheEntry, 'ast')
+          ) {
+            fileAst = cloneAST(cacheEntry.ast);
+            if (Array.isArray(options.warnings) && cacheEntry.warnings) {
+              for (const warning of cacheEntry.warnings) {
+                options.warnings.push(Object.assign({}, warning));
+              }
+            }
+          } else {
+            const warningStart = Array.isArray(options.warnings)
+              ? options.warnings.length
+              : 0;
+            const tokens = options.lex(str, opts);
+            fileAst = options.parse(tokens, opts);
+            if (cacheEntry) {
+              cacheEntry.ast = cloneAST(fileAst);
+              if (Array.isArray(options.warnings)) {
+                cacheEntry.warnings = options.warnings
+                  .slice(warningStart)
+                  .map((warning) => Object.assign({}, warning));
+              }
+            }
+          }
           file.ast = loadAST(fileAst, opts, depth + 1);
         }
       } finally {
@@ -302,12 +366,16 @@ function normalizeReadResult(raw) {
   throw new TypeError('read must return a Buffer, Uint8Array, or string');
 }
 
-function attachLazyText(file, filePath, sources) {
+function attachLazyText(file, filePath, sources, cacheEntry) {
   Object.defineProperty(file, 'str', {
     configurable: true,
     enumerable: true,
     get() {
-      const str = this.raw.toString('utf8');
+      const str =
+        cacheEntry && Object.prototype.hasOwnProperty.call(cacheEntry, 'str')
+          ? cacheEntry.str
+          : this.raw.toString('utf8');
+      if (cacheEntry) cacheEntry.str = str;
       Object.defineProperty(this, 'str', {
         configurable: true,
         enumerable: true,
@@ -681,6 +749,12 @@ function validateOptions(options) {
   }
   if (options.read !== undefined && typeof options.read !== 'function') {
     throw new TypeError('options.read must be a function');
+  }
+  if (
+    options.dependencyCache !== undefined &&
+    !(options.dependencyCache instanceof Map)
+  ) {
+    throw new TypeError('options.dependencyCache must be a Map');
   }
   if (
     options.canonicalize !== undefined &&

@@ -45,6 +45,13 @@ cloned, so callers must use the return value).
  - `resolve` (function): path resolution function (defaults to `load.resolve`)
  - `read` (function): file reading function (defaults to a synchronous read
    returning a `Buffer`)
+ - `dependencyCache` (Map): optional build-scoped cache keyed by canonical
+   dependency identity. Stable file bytes and pre-load parsed ASTs are reused;
+   every attachment receives its own bytes and AST clone. Reuse a cache only
+   while `resolve`, `read`, `canonicalize`, `lex`, parser options, and on-disk
+   inputs and warning-collection behavior remain stable. Cached dependency
+   warnings are replayed into each caller's sink; a deduplicating sink can
+   collapse them across a build
  - `canonicalize` (function): returns the stable identity used for cycle
    detection. Filesystem loading uses real paths by default; a custom resolver
    without `basedir` defaults to its returned string unchanged, so virtual
@@ -68,6 +75,13 @@ cloned, so callers must use the return value).
 The normalized `options` object is passed to `resolve`, `read`, and
 `canonicalize` hooks. Hook failures retain their original value as `err.cause`;
 arbitrary thrown values are normalized to located Pugneum diagnostics.
+
+### `load.loadOwned(ast, options)`
+
+Loads a fresh, single-owner AST in place and returns it. This is intended for
+pipeline orchestrators that created the AST immediately before loading and can
+prove that no caller can observe it. General callers should use `load()`, which
+retains its input-preserving clone contract.
 
 #### `resolve(filename, source, options)`
 

@@ -103,6 +103,21 @@ describe('option validation', () => {
     }
   }
 
+  for (const invalid of [null, {}, [], new Set()]) {
+    test(`rejects dependencyCache=${Object.prototype.toString.call(
+      invalid,
+    )}`, () => {
+      assert.throws(
+        () =>
+          load(
+            {type: 'Block', nodes: []},
+            {lex, parse, dependencyCache: invalid},
+          ),
+        /dependencyCache must be a Map/,
+      );
+    });
+  }
+
   test('undefined optional hooks select their defaults', () => {
     const ast = parseSource('include bing.pg', __dirname + '/test.pg');
     const loaded = load(ast, {
@@ -162,6 +177,16 @@ describe('option validation', () => {
 });
 
 describe('source registry and input ownership', () => {
+  test('keeps public input ownership while allowing an owned fast path', () => {
+    const publicInput = parseSource('p public', 'public.pg');
+    const publicLoaded = load(publicInput, {lex, parse});
+    assert.notStrictEqual(publicLoaded, publicInput);
+
+    const ownedInput = parseSource('p owned', 'owned.pg');
+    const ownedLoaded = load.loadOwned(ownedInput, {lex, parse});
+    assert.strictEqual(ownedLoaded, ownedInput);
+  });
+
   test('preserves a supplied map while refreshing root and dependency text', () => {
     const filename = path.join(__dirname, 'entry.pg');
     const source = 'include bing.pg';
@@ -838,6 +863,67 @@ describe('circular dependency detection', () => {
 });
 
 describe('custom resolve and read', () => {
+  test('a build cache reads and parses a shared dependency once', () => {
+    const dependencyCache = new Map();
+    const sharedPath = '/virtual/shared.pg';
+    let reads = 0;
+    let lexes = 0;
+    let parses = 0;
+    const firstWarnings = [];
+    const secondWarnings = [];
+    const dependencyWarning = {
+      code: 'PUGNEUM:CACHED_DEPENDENCY_WARNING',
+      message: '/virtual/shared.pg:1:1\n\nshared warning',
+      filename: sharedPath,
+      line: 1,
+      column: 1,
+    };
+    const options = {
+      dependencyCache,
+      resolve() {
+        return sharedPath;
+      },
+      canonicalize(filename) {
+        return filename;
+      },
+      read() {
+        reads++;
+        return Buffer.from('p shared');
+      },
+      lex(source, nestedOptions) {
+        lexes++;
+        nestedOptions.warnings.push(dependencyWarning);
+        return lex(source, nestedOptions);
+      },
+      parse(tokens, nestedOptions) {
+        parses++;
+        return parse(tokens, nestedOptions);
+      },
+    };
+
+    const first = load.loadOwned(
+      parseSource('include shared.pg', '/virtual/one.pg'),
+      Object.assign({}, options, {warnings: firstWarnings}),
+    );
+    const second = load.loadOwned(
+      parseSource('include shared.pg', '/virtual/two.pg'),
+      Object.assign({}, options, {warnings: secondWarnings}),
+    );
+    const firstFile = findNode(first, 'Include').file;
+    const secondFile = findNode(second, 'Include').file;
+
+    assert.strictEqual(reads, 1);
+    assert.strictEqual(lexes, 1);
+    assert.strictEqual(parses, 1);
+    assert.deepStrictEqual(firstWarnings, [dependencyWarning]);
+    assert.deepStrictEqual(secondWarnings, [dependencyWarning]);
+    assert.notStrictEqual(firstWarnings[0], secondWarnings[0]);
+    assert.notStrictEqual(firstFile.raw, secondFile.raw);
+    assert.notStrictEqual(firstFile.ast, secondFile.ast);
+    findNode(firstFile.ast, 'Text').val = 'changed';
+    assert.strictEqual(findNode(secondFile.ast, 'Text').val, 'shared');
+  });
+
   test('custom resolve return value drives resolution', () => {
     // Point the include at a name that does not exist on disk and have the
     // custom resolver redirect it to a real file, proving the loader uses the

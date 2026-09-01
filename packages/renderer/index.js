@@ -3,6 +3,9 @@ const generatedSourceOrigins = Symbol.for('pugneum.generatedSourceOrigins');
 const attributeInterpolationSource = Symbol.for(
   'pugneum.attributeInterpolationSource',
 );
+const attributeInterpolationResolved = Symbol.for(
+  'pugneum.attributeInterpolationResolved',
+);
 const attributeVariableNameCharacter = /[-a-zA-Z_?]/;
 const tagNamePattern = /^[A-Za-z](?:[-:A-Za-z0-9_]*[A-Za-z0-9_])?$/;
 
@@ -559,6 +562,7 @@ class Compiler {
   }
 
   resolveAttrValue(str, attr) {
+    if (attr[attributeInterpolationResolved]) return str;
     const retained = attr[attributeInterpolationSource];
     const source = typeof retained === 'string' ? retained : str;
     if (!source.includes('#{')) return source;

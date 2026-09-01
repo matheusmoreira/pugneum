@@ -7,7 +7,8 @@
     "linker"
   ],
   "files": [
-    "index.js"
+    "index.js",
+    "mixins.js"
   ],
   "dependencies": {
     "pugneum-error": "^1.1.0",

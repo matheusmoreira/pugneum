@@ -41,6 +41,7 @@ const packages = Object.freeze([
     'LICENSE.MIT',
     'README.md',
     'index.js',
+    'mixins.js',
     'package.json',
   ]),
   packagePolicy('packages/filterer', 'pugneum-filterer', '1.2.0', [

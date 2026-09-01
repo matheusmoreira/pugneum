@@ -1032,7 +1032,7 @@ describe('inheritance slot scope and occurrence ownership', () => {
     assert.deepStrictEqual(text, ['page']);
   });
 
-  test('including an extended page preserves named slots owned by mixins', () => {
+  test('including an extended page expands named slots at their call site', () => {
     var files = {
       'layout.pg': [
         'mixin card()',
@@ -1057,20 +1057,16 @@ describe('inheritance slot scope and occurrence ownership', () => {
       'main.pg': 'include page.pg\n',
     };
     const {linked} = linkProject(files, 'main.pg');
-    const mixinSlotNames = [];
+    const remainingControlNodes = [];
+    const text = [];
     walk(linked, function (node) {
-      if (node.type !== 'Mixin') return;
-      walk(node, function (owned) {
-        if (owned.type === 'NamedBlock') mixinSlotNames.push(owned.name);
-      });
-      return false;
+      if (node.type === 'Mixin' || node.type === 'NamedBlock') {
+        remainingControlNodes.push(node.type);
+      }
+      if (node.type === 'Text') text.push(node.val);
     });
-    assert.deepStrictEqual(mixinSlotNames.sort(), [
-      'body',
-      'body',
-      'title',
-      'title',
-    ]);
+    assert.deepStrictEqual(remainingControlNodes, []);
+    assert.deepStrictEqual(text, ['custom', 'custom']);
   });
 
   test('references declared by an extending template remain document-global', () => {

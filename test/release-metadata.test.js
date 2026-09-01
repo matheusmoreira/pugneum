@@ -63,7 +63,7 @@ const expectedReleaseManifests = Object.freeze({
   'packages/linker': {
     name: 'pugneum-linker',
     version: '1.2.0',
-    files: ['index.js'],
+    files: ['index.js', 'mixins.js'],
     dependencies: {
       'pugneum-error': '^1.1.0',
       'pugneum-walker': '^1.0.2',

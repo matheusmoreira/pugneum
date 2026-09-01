@@ -325,6 +325,25 @@ describe('render()', () => {
     );
   });
 
+  it('keeps a hidden footnote definition out of mixin expansion state', () => {
+    var source = [
+      '//',
+      '  footnotes',
+      '    n Hidden',
+      'mixin note(value)',
+      '  p visible^[n]',
+      '  footnotes',
+      '    n #{value}',
+      '+note(Live)',
+    ].join('\n');
+
+    var result = pg.render(source, {warnings: []});
+
+    assert.match(result, /<!--footnotes\n  n Hidden-->/);
+    assert.match(result, /<p>visible<sup>/);
+    assert.match(result, /role="doc-endnote">Live/);
+  });
+
   it('does not lint ids or images inside buffered comments as live DOM', () => {
     var warnings = [];
     var source = [
@@ -981,6 +1000,157 @@ describe('mixin-scoped fragments', () => {
       },
     );
   }
+});
+
+describe('mixin-expanded document semantics', () => {
+  it('excludes facts that exist only in an unused declaration', () => {
+    const source = [
+      'mixin ghost()',
+      '  h2#ghost Ghost',
+      '  img',
+      '  p hidden^[note]',
+      'h2#live Live',
+      'toc',
+      'footnotes',
+      '  note A note',
+    ].join('\n');
+    const warnings = [];
+
+    const html = pg.render(source, {filename: 'unused.pg', warnings});
+
+    assert.match(html, /<a href="#live">Live<\/a>/);
+    assert.doesNotMatch(html, /ghost|doc-endnotes|doc-noteref/);
+    assert.deepStrictEqual(warnings.map((warning) => warning.code).sort(), [
+      'PUGNEUM:UNUSED_FOOTNOTE',
+      'PUGNEUM:UNUSED_MIXIN',
+    ]);
+  });
+
+  it('resolves each parameterized call as an independent document instance', () => {
+    const source = [
+      'mixin item(id title)',
+      '  h2(id="#{id}") #{title}',
+      '  p note^[n]',
+      '+item(one First)',
+      '+item(two Second)',
+      'toc',
+      'footnotes',
+      '  n The note',
+    ].join('\n');
+    const warnings = [];
+
+    const html = pg.render(source, {filename: 'instances.pg', warnings});
+
+    assert.match(html, /<a href="#one">First<\/a>/);
+    assert.match(html, /<a href="#two">Second<\/a>/);
+    assert.match(html, /id="footnote-reference-n"/);
+    assert.match(html, /id="footnote-reference-n-2"/);
+    assert.strictEqual((html.match(/role="doc-backlink"/g) || []).length, 2);
+    assert.deepStrictEqual(warnings, []);
+  });
+
+  it('retains each call environment for deferred reference URLs', () => {
+    const source = [
+      'references',
+      '  site "#{url}"',
+      'mixin linked(url label)',
+      '  p @[site #{label}]',
+      '+linked(/one One)',
+      '+linked(/two Two)',
+    ].join('\n');
+
+    const html = pg.render(source, {
+      filename: 'reference-environments.pg',
+      warnings: [],
+    });
+
+    assert.strictEqual(
+      html,
+      '<p><a href="/one">One</a></p><p><a href="/two">Two</a></p>',
+    );
+  });
+
+  it('keeps substituted interpolation markers literal in generated attributes', () => {
+    const source = [
+      'mixin example(id label)',
+      '  h2(id="#{id}") #{label}',
+      "+example('section#{literal}' 'Text#{literal}')",
+      'toc',
+    ].join('\n');
+
+    const html = pg.render(source, {
+      filename: 'single-pass-generated-attrs.pg',
+      warnings: [],
+    });
+
+    assert.match(html, /id="section#\{literal\}"/);
+    assert.match(html, /href="#section#\{literal\}"/);
+  });
+
+  it('counts only caller content consumed by a rendered slot', () => {
+    const source = [
+      'mixin ignoresBody()',
+      '  p fixed',
+      'mixin usesBody()',
+      '  main',
+      '    block',
+      '+ignoresBody()',
+      '  h2#ignored Ignored',
+      '+usesBody()',
+      '  h2#used Used',
+      'toc',
+    ].join('\n');
+    const warnings = [];
+
+    const html = pg.render(source, {filename: 'slots.pg', warnings});
+
+    assert.doesNotMatch(html, /ignored/i);
+    assert.match(html, /<h2 id="used">Used<\/h2>/);
+    assert.match(html, /<a href="#used">Used<\/a>/);
+    assert.deepStrictEqual(warnings, []);
+  });
+
+  it('lints duplicate facts produced by separate calls', () => {
+    const source = [
+      'mixin badge()',
+      '  p#same badge',
+      '+badge()',
+      '+badge()',
+    ].join('\n');
+    const warnings = [];
+
+    assert.strictEqual(
+      pg.render(source, {filename: 'duplicate-calls.pg', warnings}),
+      '<p id="same">badge</p><p id="same">badge</p>',
+    );
+    assert.deepStrictEqual(
+      warnings.map((warning) => warning.code),
+      ['PUGNEUM:DUPLICATE_ID'],
+    );
+  });
+
+  it('preserves mixin diagnostics in the pre-resolution expansion stage', () => {
+    const cases = [
+      ['+missing()', 'PUGNEUM:UNDEFINED_MIXIN'],
+      ['mixin loop()\n  +loop()\n+loop()', 'PUGNEUM:RECURSIVE_MIXIN'],
+      [
+        'mixin one(value)\n  p #{value}\n+one(first second)',
+        'PUGNEUM:MIXIN_ARGUMENT_COUNT_MISMATCH',
+      ],
+      [
+        'mixin card()\n  block title\n+card()\n  block body',
+        'PUGNEUM:UNEXPECTED_NAMED_BLOCK',
+      ],
+    ];
+
+    for (const [source, code] of cases) {
+      assert.throws(
+        () => pg.render(source, {filename: 'mixin-error.pg', warnings: []}),
+        (err) => err.code === code,
+        code,
+      );
+    }
+  });
 });
 
 describe('variables in attributes', () => {

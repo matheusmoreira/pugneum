@@ -1,8 +1,12 @@
 const makeError = require('pugneum-error');
 const walk = require('pugneum-walker');
-const attributeInterpolationSource = Symbol.for(
-  'pugneum.attributeInterpolationSource',
+const expandMixinInstances = require('./mixins');
+const resolveRetainedInterpolation =
+  expandMixinInstances.resolveRetainedInterpolation;
+const attributeInterpolationResolved = Symbol.for(
+  'pugneum.attributeInterpolationResolved',
 );
+const mixinEnvironment = Symbol.for('pugneum.mixinEnvironment');
 
 function diagnosticSources(options) {
   return {
@@ -50,15 +54,48 @@ function asciiLowerCase(value) {
   });
 }
 
-function copyAttributeInterpolationSource(source, target) {
-  const descriptor = Object.getOwnPropertyDescriptor(
-    source,
-    attributeInterpolationSource,
+function resolvedReferenceUrl(definition, use, sources) {
+  const environment = use[mixinEnvironment];
+  return resolveRetainedInterpolation(
+    String(definition.url),
+    definition,
+    function (name) {
+      if (!environment) {
+        error(
+          'VARIABLE_OUTSIDE_MIXIN',
+          `Variable '${name}' used outside mixin`,
+          use,
+          sources,
+        );
+      }
+      const value = environment[name];
+      if (value === undefined) {
+        error(
+          'UNDEFINED_VARIABLE',
+          `Variable '${name}' is undefined`,
+          use,
+          sources,
+        );
+      }
+      return value;
+    },
   );
-  if (descriptor) {
-    Object.defineProperty(target, attributeInterpolationSource, descriptor);
-  }
-  return target;
+}
+
+function resolvedAttribute(name, value, node) {
+  const attr = {
+    name,
+    val: value,
+    line: node.line,
+    column: node.column,
+    filename: node.filename,
+  };
+  Object.defineProperty(attr, attributeInterpolationResolved, {
+    configurable: true,
+    value: true,
+    writable: true,
+  });
+  return attr;
 }
 
 function appendItems(target, items) {
@@ -274,6 +311,8 @@ link.assemble = function (ast, options) {
 // its TOC entry). lintDocument runs last so it sees resolution-generated ids
 // (footnote ids, etc.).
 function resolveDocument(ast, options) {
+  const expansion = expandMixinInstances(ast, options, isolateCommentBlock);
+  ast = expansion.ast;
   const sources = diagnosticSources(options);
   const warnings = options.warnings;
   const census = censusDocumentSemantics(ast, sources);
@@ -294,6 +333,7 @@ function resolveDocument(ast, options) {
   } else {
     appendItems(warnings, census.lintWarnings);
   }
+  expansion.finish();
   return ast;
 }
 link.resolve = function (ast, options) {
@@ -775,7 +815,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
     }
     if (node.type === 'ReferenceLink') {
       const def = resolveDefOrThrow(node, definitions, sources);
-      const url = def.url;
+      const url = resolvedReferenceUrl(def.node, node, sources);
 
       let block = node.block;
       if (!block || block.nodes.length === 0) {
@@ -797,15 +837,10 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
         };
       }
 
-      const attrs = [
-        copyAttributeInterpolationSource(def.node, {
-          name: 'href',
-          val: url,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        }),
-      ];
+      const attrs = [];
+      if (url !== null) {
+        attrs.push(resolvedAttribute('href', url, node));
+      }
       appendReferenceAttributes(
         attrs,
         node.attrs,
@@ -827,7 +862,7 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
     }
     if (node.type === 'ReferenceImage') {
       const def = resolveDefOrThrow(node, definitions, sources);
-      const url = def.url;
+      const url = resolvedReferenceUrl(def.node, node, sources);
 
       let altBlock = node.block;
       if (!altBlock || altBlock.nodes.length === 0) {
@@ -854,22 +889,11 @@ function resolveReferences(ast, sources, warnings, reachableFootnotes) {
       // dropped the way a top-level-Text-only filter would drop it.
       const altText = extractText(altBlock.nodes);
 
-      const attrs = [
-        copyAttributeInterpolationSource(def.node, {
-          name: 'src',
-          val: url,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        }),
-        {
-          name: 'alt',
-          val: altText,
-          line: node.line,
-          column: node.column,
-          filename: node.filename,
-        },
-      ];
+      const attrs = [];
+      if (url !== null) {
+        attrs.push(resolvedAttribute('src', url, node));
+      }
+      attrs.push(resolvedAttribute('alt', altText, node));
       appendReferenceAttributes(
         attrs,
         node.attrs,
@@ -1474,15 +1498,7 @@ function buildTocItems(headings, start, end, tocNode) {
     const link = {
       type: 'Tag',
       name: 'a',
-      attrs: [
-        {
-          name: 'href',
-          val: '#' + heading.id,
-          line: tocNode.line,
-          column: tocNode.column,
-          filename: tocNode.filename,
-        },
-      ],
+      attrs: [resolvedAttribute('href', '#' + heading.id, tocNode)],
       attributeBlocks: [],
       isInline: true,
       block: {

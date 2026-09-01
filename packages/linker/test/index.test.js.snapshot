@@ -952,46 +952,23 @@ exports[`cases from pugneum sources > includes.pg 1`] = `
   "nodes": [
     {
       "type": "Block",
-      "nodes": [
-        {
-          "type": "Mixin",
-          "name": "foo",
-          "args": [],
-          "block": {
-            "type": "Block",
-            "nodes": [
-              {
-                "type": "Tag",
-                "name": "p",
-                "block": {
-                  "type": "Block",
-                  "nodes": [
-                    {
-                      "type": "Text",
-                      "val": "bar"
-                    }
-                  ]
-                },
-                "attrs": [],
-                "attributeBlocks": [],
-                "isInline": false
-              }
-            ]
-          },
-          "call": false,
-          "usesNamedBlocks": false,
-          "usesUnnamedBlock": false
-        }
-      ]
+      "nodes": []
     },
     {
-      "type": "Mixin",
-      "name": "foo",
-      "args": [],
-      "block": null,
-      "call": true,
+      "type": "Tag",
+      "name": "p",
+      "block": {
+        "type": "Block",
+        "nodes": [
+          {
+            "type": "Text",
+            "val": "bar"
+          }
+        ]
+      },
       "attrs": [],
-      "attributeBlocks": []
+      "attributeBlocks": [],
+      "isInline": false
     },
     {
       "type": "Tag",

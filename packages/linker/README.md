@@ -42,8 +42,11 @@ var resolved = link.resolve(filtered, options);
 `link(ast, options)` is the convenient equivalent for already-filtered trees or
 trees with no filters. `link.assemble(ast, options)` performs only inheritance
 and inclusion. `link.resolve(ast, options)` performs only document-global
-resolution and linting. All three return owned copies without mutating their
-input tree.
+resolution and linting. Before resolving those document facts, `link()` and
+`link.resolve()` lower mixin declarations and calls into independent call-site
+AST instances. The resolved result therefore contains the nodes that will
+actually render rather than reusable declarations or ignored caller blocks.
+All three return owned copies without mutating their input tree.
 
 `options` can contain the following properties:
 
@@ -141,11 +144,12 @@ definitions as used. When a footnote is reached from the document—or
 transitively from another reached footnote—its definition body joins the same
 document-global reference namespace and is resolved normally.
 
-Resolution runs before the renderer expands mixin calls. A construct inside a
-mixin definition is therefore seen once at its definition site rather than once
-per rendered call, including when the mixin is unused. Avoid IDs, footnote
-references, and TOC headings inside reusable mixin definitions until call-site
-instantiation becomes part of the final-tree pipeline.
+Mixin calls are instantiated before this document-global pass. An unused
+declaration contributes no IDs, headings, references, footnotes, images, or
+lints; each rendered call contributes an independent instance; and only caller
+content consumed by a named or unnamed slot participates. Parameter values are
+resolved while lowering, including values used by heading IDs, visible TOC
+text, attributes, reachable footnote bodies, and deferred reference URLs.
 
 ## License
 
